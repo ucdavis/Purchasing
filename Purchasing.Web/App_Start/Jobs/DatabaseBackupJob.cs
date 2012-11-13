@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Mail;
+using Microsoft.Practices.ServiceLocation;
 using Purchasing.Core.Domain;
 using Purchasing.WS;
 using Quartz;
@@ -12,17 +13,13 @@ namespace Purchasing.Web.App_Start.Jobs
     {
         private readonly IRepository<BackupLog> _backupLogRespoitory;
 
-        public DatabaseBackupJob(IRepository<BackupLog> backupLogRespoitory)
+        public DatabaseBackupJob()
         {
-            _backupLogRespoitory = backupLogRespoitory;
+            _backupLogRespoitory = ServiceLocator.Current.GetInstance<IRepository<BackupLog>>();
         }
 
         public void Execute(IJobExecutionContext context)
         {
-            var client = new SmtpClient("smtp.ucdavis.edu");
-            var message = new MailMessage("anlai@ucdavis.edu", "anlai@ucdavis.edu", "db job triggered", "job has been triggered at " + DateTime.Now.ToString());
-            client.Send(message);
-
             var storageAccountName = context.MergedJobDataMap["storageAccountName"] as string;
             var serverName = context.MergedJobDataMap["serverName"] as string;
             var username = context.MergedJobDataMap["username"] as string;
@@ -57,10 +54,7 @@ namespace Purchasing.Web.App_Start.Jobs
 
             if (!flag)
             {
-                var message2 = new MailMessage("anlai@ucdavis.edu", "anlai@ucdavis.edu", "db job started", "job has been started at " + DateTime.Now.ToString());
-                client.Send(message2);
-
-                var filename = string.Empty;
+                string filename;
 
                 // record the request
                 var requestId = azureService.Backup("PrePurchasing", out filename);
