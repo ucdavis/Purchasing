@@ -373,6 +373,10 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new { success, message });
         }
 
+        /// <summary>
+        /// #16
+        /// </summary>
+        /// <returns></returns>
         public ActionResult ValidateChildWorkgroups()
         {
             //Example for comparing lists
@@ -429,6 +433,10 @@ namespace Purchasing.Web.Controllers
             return View(view);
         }
 
+        /// <summary>
+        /// #17
+        /// </summary>
+        /// <returns></returns>
         public ActionResult RemoveExtraChildPermissions()
         {
             var view = new List<ValidateChildWorkgroupsViewModel>();
