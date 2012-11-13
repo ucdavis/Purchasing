@@ -25,7 +25,7 @@ namespace Purchasing.Web.App_Start
             CreateNightlySyncJobs();
             CreateEmailJob();
 
-            //CreateDatabaseBackupJob();
+            CreateDatabaseBackupJob();
         }
 
         private static void CreateNightlySyncJobs()
@@ -126,7 +126,7 @@ namespace Purchasing.Web.App_Start
 
             var jobDetails = JobBuilder.Create<DatabaseBackupJob>().UsingJobData("storageAccountName", storageAccountName).UsingJobData("serverName", serverName).UsingJobData("username", username).UsingJobData("password", password).UsingJobData("storageKey", storageKey).UsingJobData("blobContainer", blobContainer).Build();
 
-            var nightly = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9, 42)).StartNow().Build();
+            var nightly = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(1, 0)).StartNow().Build();
             var sched = StdSchedulerFactory.GetDefaultScheduler();
             sched.ScheduleJob(jobDetails, nightly);
             sched.Start();
