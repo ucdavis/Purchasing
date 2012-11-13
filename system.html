@@ -108,7 +108,7 @@
 <h3>Supported Browsers</h3>
 
 <ul>
-    <li><a href="http://windows.microsoft.com/en-us/internet-explorer/products/ie/home/">Internet Explorer 9+</a></li>
+    <li><a href="http://windows.microsoft.com/en-us/internet-explorer/products/ie/home/">Internet Explorer 10+</a></li>
     <li><a href="http://www.apple.com/safari/download/" target="_blank">Safari 4+</a></li>
     <li><a href="http://www.opera.com/browser/download/" target="_blank">Opera 11+</a></li>
 </ul>
@@ -116,7 +116,7 @@
 <h3>Unsupported Browsers</h3>
 
 <ul>
-    <li>Internet Explorer 8- (version 8 or lower)</li>
+    <li>Internet Explorer 9- (version 9 or lower)</li>
     <li>Older browsers not listed in recommended or supported browsers</li>
 </ul>
 
@@ -141,10 +141,15 @@
 
             if(BrowserDetect.browser === "Chrome" || BrowserDetect.browser === "Firefox") {
                 container.className = "alert alert-success";
-            } else if(BrowserDetect.browser === "Safari" || BrowserDetect.browser === "Opera") {
+            } else if(BrowserDetect.browser === "Safari" || BrowserDetect.browser === "Opera" || 
+                    (BrowserDetect.browser === "Internet Explorer" && BrowserDetect.version >= 10)) {
                 container.className = "alert alert-info";
                 recommendation.innerHTML = "Your browser is supported and should work with the UC Davis PrePurchasing system."
-            } else {
+            } else if (BrowserDetect.browser === "Internet Explorer" && BrowserDetect.version <= 9){                
+                container.className = "alert alert-error";
+                recommendation.innerHTML = "Your browser is not supported. Please use one of the recommended browsers below or install <a href='https://www.google.com/chromeframe'>Google Chrome Frame</a>."
+            }
+            else {
                 container.className = "alert alert-error";
                 recommendation.innerHTML = "Your browser is not supported. Please use one of the recommended browsers below."
             }
