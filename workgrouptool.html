@@ -6,12 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="Purchasing : UC Davis Pre-Purchasing Application" />
 
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="javascripts/jquery.jOrgChart.js"></script>
-	<script type="text/javascript" src="javascripts/jquery.inlineedit.js"></script>
-	<script type="text/javascript" src="javascripts/WorkgroupTool.js"></script>
-	
 	<link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/ui-darkness/jquery-ui.css"/>
 	<link rel="stylesheet" href="stylesheets/jquery.jOrgChart.css"/>
 	<link rel="stylesheet" href="stylesheets/jOrgChartCustom.css"/>
@@ -200,7 +194,7 @@
 							<li class='org'><span class="org" data-id="Sub-Department 1">Sub-Department 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 								<ul>
 									<li class='workgroup'>
-										<span class="workgroup" data-id="workgroup 1">Workgroup 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
+										<span class="workgroup" data-id="Workgroup 1">Workgroup 1</span><div class="ui-icon ui-icon-closethick"></div><div class="ui-icon ui-icon-transferthick-e-w"></div>
 										<span class="person requester" data-id="pjfry">pjfry</span><div class="ui-icon ui-icon-closethick"></div>
 										<span class="person approver" data-id="leela">leela</span><div class="ui-icon ui-icon-closethick"></div>
 										<span class="person requester" data-id="bender">bender</span><div class="ui-icon ui-icon-closethick"></div>
@@ -317,6 +311,31 @@
 	</div>
 	
 	</div>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.jOrgChart.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.inlineedit.js"></script>
+	<script type="text/javascript" src="javascripts/WorkgroupTool.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.tmpl.min.js"></script>
+	
+	<script type="text/x-jquery-tmpl" id="org-template">
+		<li class='org'>
+			<span class='org' data-id='${name}'>${name}</span><div class='ui-icon ui-icon-closethick'></div>
+			<ul>
+			</ul>
+		</li>
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="workgroup-template">
+		<li class='${admin} workgroup'>
+			<span class='${admin} workgroup' data-id='${name}'>${name}</span><div class='ui-icon ui-icon-closethick'></div>
+		</li>
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="person-template">
+		<span class='person ${role}' data-id='${name}'>${name}</span><div class="ui-icon ui-icon-closethick"></div>
+	</script>
 	
   </body>
 </html>

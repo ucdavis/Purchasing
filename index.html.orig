@@ -39,12 +39,13 @@
         <li><a href="http://prepurchasing.ucdavis.edu/">Purchasing Production Website (Beta)</a></li>
         <li><a href="https://ucdavis.uservoice.com/forums/126891-purchasing/category/31579-issues">Purchasing Feeback Forum</a></li>
         <li><a href="https://github.com/ucdavis/Purchasing">Complete Source Code (GitHub access required)</a></li>
+<<<<<<< HEAD
 		<li><a href="https://ucdavis.uservoice.com/forums/126891-purchasing">Knowledge Base</a></li>
 		<li><a href="help.html">Getting Help</a></li>
+=======
+		<li><a href="faq.html">Frequently Asked Questions</a></li>
         <li><a href="system.html">System Browser Requirements</a></li>
-        <li><a href="workgrouptool.html">Templating Tool to plan your workgroups</a></li>
-		<li><a href="presentations/townhall.pdf">Town Hall Slide Deck</a></li>
-		<li><a href="workgrouptool.html">Workgroup Tool</a></li>
+>>>>>>> 81243709e0dbbc521d7aebdc074ec4630c8e3d62
     </ul>
 </p>
 

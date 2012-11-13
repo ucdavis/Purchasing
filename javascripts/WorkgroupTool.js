@@ -78,7 +78,6 @@ function CreateObject(orgName, name, className)
 		var $li = $("<li>").addClass(className);
 		$li.append($("<span>").addClass(className).data("id", name).html(name));
 		$li.append($dlt);
-		//$childUl.append($li);
 		
 		$ul.append($li);
 		$org.append($ul);
@@ -202,18 +201,13 @@ function CreatePerson(workgroupName, name, className)
 {
 	// remove any unnecessary spaces
 	className = className.replace(/\s/g, '');
-debugger;
+
 	// get the workgroup li element
 	var $workgroup = $('#org span.workgroup').filter(function(){ return $(this).data('id') == workgroupName; }).parent(); 
-	//$("span[data-id='"+workgroupName+"']");
 	
-	var $span = $("<span>").addClass(className.toLowerCase()).addClass("person").html(name).data("id", name);
-	var $icon = $("<div>").addClass("ui-icon ui-icon-closethick");
-	
-	$workgroup.append($span);
-	$workgroup.append($icon);
-	
-	//$span.insertAfter($workgroup);
+	// create the object and insert 
+	var person = [{role:className.toLowerCase(), name: name}];
+	var $span = $('#person-template').tmpl(person).appendTo($workgroup);
 }
 
 // *** Approval Calculations
@@ -229,32 +223,33 @@ function InitializeApprovalCalculations() {
 
 	$('#chart').delegate('.requester', 'click', function () {
 	
+		// requester's name
 		var id = $(this).data("id");
 	
 		// node in org chart
-		var $node = $("#org span[data-id='"+id+"']");
+		var $node = $("#org span").filter(function(){ return $(this).data('id') == id;});
 		
 		// roles
 		var ap = [];
 		var am = [];
 		var pr = [];
 			
+		//var test = $node.parents("li.org");
+		
 		// iterate through all orgs (that this workgroup's org reports to)
 		$node.parents("li.org").each(function(index,item){
-					
 			// look at each org's workgroup
 			$(item).children("ul").children("li.workgroup").each(function(index2,item2){
-				// workgroup order was placed against
-				if ($(item2).data("id") == $node.parent().data("id"))
+				// workgroup origination
+				var origWkName = $node.siblings('.workgroup').data('id');
+				// the workgroup's name we're looking at
+				var wkname = $(item2).find('.workgroup').data('id');	
+				
+				if (origWkName == wkname || $(item2).hasClass('admin'))
 				{
 					parseWorkgroup($(item2), ap, am, pr);
 				}
-				// admin workgroup that has access
-				else if ($(item2).hasClass("admin"))
-				{
-					parseWorkgroup($(item2), ap, am, pr);
-				}
-			
+						
 			});
 		});
 		
@@ -323,10 +318,7 @@ function InitializeMove() {
 		autoOpen: false,
 		modal: true,
 		buttons: {
-			save: function(){
-			
-				debugger;
-			
+			save: function(){		
 				var $obj = $("#org .selected");
 				
 				var org = $("#moveAttachTo").val();
