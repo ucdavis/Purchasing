@@ -139,6 +139,7 @@
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
     <None Include="SchemaCompares\Azure.scmp" />
+    <None Include="SchemaCompares\Terry.scmp" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="PurchasingTP.AzureDb.refactorlog" />
