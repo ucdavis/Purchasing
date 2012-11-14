@@ -154,21 +154,33 @@ namespace Purchasing.Web.Services
             
             //Default to standard analyzer-- id field is tokenized into searchid non-stored field
             var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+            try
+            {
+                var termsQuery = new MultiFieldQueryParser(Version.LUCENE_29, new[] { "searchid", "name" }, analyzer).Parse(searchTerm);
+                var results = searcher.Search(termsQuery, topN).ScoreDocs;
+
+                analyzer.Close();
+
+                var entities = results
+                    .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                    .Select(doc => new IdAndName(doc.Get("id"), doc.Get("name"))).ToList();
+
+                searcher.Close();
+                searcher.Dispose();
+                return entities;
+            }
+            catch (Exception)
+            {
+                analyzer.Close();
+                searcher.Close();
+                searcher.Dispose();
+                return new List<IdAndName>();
+
+            }
+       
+
+
             
-            var termsQuery =
-                new MultiFieldQueryParser(Version.LUCENE_29, new[] { "searchid", "name" }, analyzer).Parse(searchTerm);
-            var results = searcher.Search(termsQuery, topN).ScoreDocs;
-
-            analyzer.Close();
-
-            var entities = results
-                .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
-                .Select(doc => new IdAndName(doc.Get("id"), doc.Get("name"))).ToList();
-
-            searcher.Close();
-            searcher.Dispose();
-
-            return entities;
         }
 
         /// <summary>
