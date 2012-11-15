@@ -44,6 +44,7 @@
                     if (hasLinesplits)
                     {
                         <tr class="@(odd ? "row-odd" : "row-even") @(hasMoreInfo ? "row-bottom" : string.Empty)">
+                            <td></td>
                             <td colspan="7">
                                 @*<div class="row-split ui-corner-all @(line.UnitPrice * line.Quantity != line.Splits.Sum(a => a.Amount) ? "row-split-prob" : string.Empty)">*@
                                 <div class="row-split ui-corner-all" style="width:90%">
@@ -79,6 +80,7 @@
                     if (hasMoreInfo)
                     {
                         <tr class="@(odd ? "row-odd" : "row-even") row-bottom">
+                            <td></td>
                             <td colspan="7" class="extra-info">
                                 @if (line.Commodity != null)
                                 {
