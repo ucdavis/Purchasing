@@ -6,6 +6,30 @@
 
 }
 
+@{
+    Bundles.Reference("Scripts/public/common/jquery.qtip.js");
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".showTip").qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+
+    </script>
+}
+
 
 @using (Html.BeginForm())
 {
@@ -13,7 +37,7 @@
 	@Html.ValidationSummary(true)
     @Html.Hidden("id", Model.Workgroup.Id)
 
-    <section class="padded">
+    <section class="display-form ui-corner-all box-shadow">
         <header class="ui-widget-header ui-corner-top">Default Values For Accounts</header>
 
         <div class="section-contents">
@@ -33,8 +57,9 @@
                             @Html.Label("Default for new account")
                         </div>
                         <div class="editor-field">
-                            @Html.EditorFor(model => model.DefaultSelectedApprover)
+                            @Html.EditorFor(model => model.DefaultSelectedApprover)                            
                         </div>
+                        <div style="display: inline-block;">@Html.ValidationMessageFor(model => model.DefaultSelectedApprover, null , new {style="display: inline-block; padding-top: 6px; margin-top: -27px;"})</div>
 					</div>
 				</li>
                 <li>
@@ -49,6 +74,7 @@
                         <div class="editor-field">
                             @Html.EditorFor(model => model.DefaultSelectedAccountManager)
                         </div>
+                        <div style="display: inline-block;">@Html.ValidationMessageFor(model => model.DefaultSelectedAccountManager, null , new {style="display: inline-block; padding-top: 6px; margin-top: -27px;"})</div>
 					</div>
 				</li>
                 <li>
@@ -63,12 +89,13 @@
                         <div class="editor-field">
                             @Html.EditorFor(model => model.DefaultSelectedPurchaser)
                         </div>
+                        <div style="display: inline-block;">@Html.ValidationMessageFor(model => model.DefaultSelectedPurchaser, null , new {style="display: inline-block; padding-top: 6px; margin-top: -27px;"})</div>
 					</div>
 				</li>
                 <li>
                     <div class="editor-label">&nbsp;</div>
                     <div class="editor-field">
-                        <input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Accounts", new {id=@Model.Workgroup.Id})
+                            <input class="button showTip" type="submit" value="Update Defaults"  title="Save your defaults above for newly created or sync'd accounts" /> <a id="updateAll" href="#" class="button showTip" title="Update the accounts below with these choices.">Update Existing</a> | @Html.ActionLink("Cancel", "Accounts", new { id = @Model.Workgroup.Id })
                     </div>
 			        
 		        </li>
@@ -80,4 +107,58 @@
 }
 
 
+<section class="display-form ui-corner-all box-shadow">
+    <header class="ui-widget-header ui-corner-top">Accounts</header>
 
+    <div class="section-contents">
+        <table>
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>
+                        Approver
+                    </th>
+
+                    <th>
+                        Account Manager
+                    </th>
+                    <th>
+                        Purchaser
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ var odd = false; }
+                @foreach (var item in Model.Workgroup.Accounts)
+                {
+                    <tr class="@(odd ? "odd" : "even")">
+        
+                        <td>@item.Account.NameAndId</td>
+                        <td>
+                            @(item.Approver != null ? @item.Approver.FullNameAndId : string.Empty)
+                        </td>
+
+                        <td>
+                            @(item.AccountManager != null ? @item.AccountManager.FullNameAndId : string.Empty)
+                        </td>	
+                        
+                        <td>
+                            @(item.Purchaser != null ? @item.Purchaser.FullNameAndId : string.Empty)
+                        </td>	
+
+                        <td id="@item.Id" class="rowsToUpdate">
+				
+                        </td>
+
+
+                    </tr>
+                    odd = !odd;
+                }
+            </tbody>
+        </table>
+
+    </div>
+</section>

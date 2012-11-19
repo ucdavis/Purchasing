@@ -688,6 +688,100 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        public ActionResult UpdateMultipleAccounts(int id, UpdateMultipleAccountsViewModel updateMultipleAccountsViewModel)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index(false));
+            }
+
+            if (updateMultipleAccountsViewModel.DefaultSelectedApprover)
+            {
+                if (updateMultipleAccountsViewModel.SelectedApprover == "DO_NOT_UPDATE" || updateMultipleAccountsViewModel.SelectedApprover == "CLEAR_ALL")
+                {
+                    ModelState.AddModelError("DefaultSelectedApprover", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+                }
+            }
+
+            if (updateMultipleAccountsViewModel.DefaultSelectedAccountManager)
+            {
+                if (updateMultipleAccountsViewModel.SelectedAccountManager == "DO_NOT_UPDATE" || updateMultipleAccountsViewModel.SelectedAccountManager == "CLEAR_ALL")
+                {
+                    ModelState.AddModelError("DefaultSelectedAccountManager", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+                }
+            }
+
+            if (updateMultipleAccountsViewModel.DefaultSelectedPurchaser)
+            {
+                if (updateMultipleAccountsViewModel.SelectedPurchaser == "DO_NOT_UPDATE" || updateMultipleAccountsViewModel.SelectedPurchaser == "CLEAR_ALL")
+                {
+                    ModelState.AddModelError("DefaultSelectedPurchaser", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+                }
+            }
+
+
+            if (!ModelState.IsValid)
+            {
+                var viewModel = UpdateMultipleAccountsViewModel.Create(workgroup);
+
+                viewModel.SelectedApprover = updateMultipleAccountsViewModel.SelectedApprover;
+                viewModel.DefaultSelectedApprover = updateMultipleAccountsViewModel.DefaultSelectedApprover;
+
+                viewModel.SelectedAccountManager = updateMultipleAccountsViewModel.SelectedAccountManager;
+                viewModel.DefaultSelectedAccountManager = updateMultipleAccountsViewModel.DefaultSelectedAccountManager;
+
+                viewModel.SelectedPurchaser = updateMultipleAccountsViewModel.SelectedPurchaser;
+                viewModel.DefaultSelectedPurchaser = updateMultipleAccountsViewModel.DefaultSelectedPurchaser;
+       
+
+                viewModel.ApproverChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+                viewModel.AccountManagerChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.AccountManager && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+                viewModel.PurchaserChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Purchaser && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+
+
+                return View(viewModel);
+            }
+
+            throw new NotImplementedException("Still Working on this.");
+            var existingApprover = _workgroupPermissionRepository.Queryable.SingleOrDefault(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && a.IsDefaultForAccount);
+            if (!updateMultipleAccountsViewModel.DefaultSelectedApprover)
+            {                
+                if (existingApprover != null)
+                {
+                    existingApprover.IsDefaultForAccount = false;
+                    _workgroupPermissionRepository.EnsurePersistent(existingApprover);
+                }
+            }
+            else
+            {
+                if (existingApprover != null)
+                {
+                    if (existingApprover.User.Id != updateMultipleAccountsViewModel.SelectedApprover)
+                    {
+                        existingApprover.IsDefaultForAccount = false;
+                        _workgroupPermissionRepository.EnsurePersistent(existingApprover);
+                        var newApprover = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin);
+                        newApprover.IsDefaultForAccount = true;
+                        _workgroupPermissionRepository.EnsurePersistent(newApprover);
+                    }
+                }
+                else
+                {
+                    var newApprover = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin);
+                    newApprover.IsDefaultForAccount = true;
+                    _workgroupPermissionRepository.EnsurePersistent(newApprover);
+                }
+
+            }
+
+
+
+            return this.RedirectToAction(a => a.UpdateMultipleAccounts(id));
+        }
+
 
         #endregion
 
