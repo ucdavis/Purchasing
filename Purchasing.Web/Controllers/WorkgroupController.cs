@@ -649,7 +649,48 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Accounts(saveWorkgroupId));
         }
 
+        public ActionResult UpdateMultipleAccounts(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index(false));
+            }
+
+            var viewModel = UpdateMultipleAccountsViewModel.Create(workgroup);
+            var approver = _workgroupPermissionRepository.Queryable.FirstOrDefault(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && a.IsDefaultForAccount);
+            if (approver != null)
+            {
+                viewModel.SelectedApprover = approver.User.Id;
+                viewModel.DefaultSelectedApprover = true;
+            }
+
+            var accountManager = _workgroupPermissionRepository.Queryable.FirstOrDefault(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.AccountManager && a.IsDefaultForAccount);
+            if (accountManager != null)
+            {
+                viewModel.SelectedAccountManager = accountManager.User.Id;
+                viewModel.DefaultSelectedAccountManager = true;
+            }
+
+            var purchaser = _workgroupPermissionRepository.Queryable.FirstOrDefault(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Purchaser && a.IsDefaultForAccount);
+            if (purchaser != null)
+            {
+                viewModel.SelectedPurchaser = purchaser.User.Id;
+                viewModel.DefaultSelectedPurchaser = true;
+            }
+
+            viewModel.ApproverChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+            viewModel.AccountManagerChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.AccountManager && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+            viewModel.PurchaserChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Purchaser && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+
+
+            return View(viewModel);
+        }
+
+
         #endregion
+
 
         #region Workgroup Vendors
         /// <summary>
@@ -1876,6 +1917,48 @@ namespace Purchasing.Web.Controllers
 
             return viewModel;
         }
+    }
+
+    public class UpdateMultipleAccountsViewModel
+    {
+        public Workgroup Workgroup { get; set; }
+
+        public string SelectedApprover { get; set; }
+        public string SelectedAccountManager { get; set; }
+        public string SelectedPurchaser { get; set; }
+
+        public bool DefaultSelectedApprover { get; set; }
+        public bool DefaultSelectedAccountManager { get; set; }
+        public bool DefaultSelectedPurchaser { get; set; }
+
+        public List<Tuple<string, string>> ApproverChoices { get; set; }
+        public List<Tuple<string, string>> AccountManagerChoices { get; set; }
+        public List<Tuple<string, string>> PurchaserChoices { get; set; }
+
+        public static UpdateMultipleAccountsViewModel Create(Workgroup workgroup)
+        {
+            var viewModel = new UpdateMultipleAccountsViewModel {Workgroup = workgroup};
+            
+            viewModel.ApproverChoices = new List<Tuple<string, string>>();
+            viewModel.AccountManagerChoices = new List<Tuple<string, string>>();
+            viewModel.PurchaserChoices = new List<Tuple<string, string>>();
+
+            viewModel.ApproverChoices.Add(new Tuple<string, string>("DO_NOT_UPDATE", "-- Do Not Update --"));
+            viewModel.ApproverChoices.Add(new Tuple<string, string>("CLEAR_ALL", "-- Clear All --"));
+
+            viewModel.AccountManagerChoices.Add(new Tuple<string, string>("DO_NOT_UPDATE", "-- Do Not Update --"));
+            viewModel.AccountManagerChoices.Add(new Tuple<string, string>("CLEAR_ALL", "-- Clear All --"));
+
+            viewModel.PurchaserChoices.Add(new Tuple<string, string>("DO_NOT_UPDATE", "-- Do Not Update --"));
+            viewModel.PurchaserChoices.Add(new Tuple<string, string>("CLEAR_ALL", "-- Clear All --"));
+
+            viewModel.DefaultSelectedApprover = false;
+            viewModel.DefaultSelectedAccountManager = false;
+            viewModel.DefaultSelectedPurchaser = false;
+
+            return viewModel;
+        }
+
     }
 
 }

@@ -1,0 +1,83 @@
+﻿@model Purchasing.Web.Controllers.UpdateMultipleAccountsViewModel
+
+
+@{
+    ViewBag.Title = "Update Multiple Accounts";
+
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    @Html.Hidden("id", Model.Workgroup.Id)
+
+    <section class="padded">
+        <header class="ui-widget-header ui-corner-top">Default Values For Accounts</header>
+
+        <div class="section-contents">
+
+            <div class="section-text">
+                <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+            </div>
+
+            <ul>
+                <li>
+		            <div class="editor-label">
+					    @Html.Label("Approver")
+					</div>
+					<div class="editor-field">
+                        @Html.DropDownListFor(model => model.SelectedApprover, new SelectList(Model.ApproverChoices, "Item1", "Item2"))
+                        <div class="editor-label">
+                            @Html.Label("Default for new account")
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.DefaultSelectedApprover)
+                        </div>
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    @Html.Label("Account Manager")
+					</div>
+					<div class="editor-field">
+						@Html.DropDownListFor(model => model.SelectedAccountManager, new SelectList(Model.AccountManagerChoices, "Item1", "Item2"))
+                        <div class="editor-label">
+                            @Html.Label("Default for new account")
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.DefaultSelectedAccountManager)
+                        </div>
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    @Html.Label("Purchaser")
+					</div>
+					<div class="editor-field">
+						@Html.DropDownListFor(model => model.SelectedPurchaser, new SelectList(Model.PurchaserChoices, "Item1", "Item2"))
+                        <div class="editor-label">
+                            @Html.Label("Default for new account")
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.DefaultSelectedPurchaser)
+                        </div>
+					</div>
+				</li>
+                <li>
+                    <div class="editor-label">&nbsp;</div>
+                    <div class="editor-field">
+                        <input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Accounts", new {id=@Model.Workgroup.Id})
+                    </div>
+			        
+		        </li>
+            </ul>
+
+        </div>
+
+    </section>
+}
+
+
+
