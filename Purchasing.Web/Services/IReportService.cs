@@ -202,10 +202,11 @@ namespace Purchasing.Web.Services
         
         private void AddLineItems(Document doc, Order order, bool forVendor)
         {
-            var table = InitializeTable(6);
-            table.SetWidths(new float[] {1f, 1f, 1f, 4f, 1.5f, 1.5f});
+            var table = InitializeTable(7);
+            table.SetWidths(new float[] {0.5f, 1f, 1f, 1f, 4f, 1.5f, 1.5f});
 
             // add table headers
+            table.AddCell(InitializeCell(string.Empty, _tableHeaderFont, true));
             table.AddCell(InitializeCell("Qty.", _tableHeaderFont, true));
             table.AddCell(InitializeCell("Unit", _tableHeaderFont, true));
             table.AddCell(InitializeCell("Catalog #", _tableHeaderFont, true));
@@ -217,19 +218,19 @@ namespace Purchasing.Web.Services
             ProcessLineItems(table, order, forVendor);
            
             // foot of table
-            table.AddCell(InitializeCell("Subtotal:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
+            table.AddCell(InitializeCell("Subtotal:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 6, bottomBorder: false));
             table.AddCell(InitializeCell(forVendor ? string.Empty : order.Total().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
-            table.AddCell(InitializeCell("Estimated Freight:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
+            table.AddCell(InitializeCell("Estimated Freight:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 6, bottomBorder: false));
             table.AddCell(InitializeCell(forVendor ? string.Empty : order.FreightAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
-            table.AddCell(InitializeCell("Estimated Shipping and Handling:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
+            table.AddCell(InitializeCell("Estimated Shipping and Handling:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 6, bottomBorder: false));
             table.AddCell(InitializeCell(forVendor ? string.Empty : order.ShippingAmount.ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
-            table.AddCell(InitializeCell(string.Format("Estimated Tax: ({0}%)", order.EstimatedTax), _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5, bottomBorder: false));
+            table.AddCell(InitializeCell(string.Format("Estimated Tax: ({0}%)", order.EstimatedTax), _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 6, bottomBorder: false));
             table.AddCell(InitializeCell(forVendor ? string.Empty : order.Tax().ToString("c"), _font, halignment: Element.ALIGN_RIGHT, bottomBorder: false));
 
-            table.AddCell(InitializeCell("Total:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 5));
+            table.AddCell(InitializeCell("Total:", _boldFont, halignment: Element.ALIGN_RIGHT, colspan: 6));
             table.AddCell(InitializeCell(forVendor ? string.Empty : order.GrandTotal().ToString("c"), _font, halignment: Element.ALIGN_RIGHT));
 
             doc.Add(table);
@@ -237,8 +238,10 @@ namespace Purchasing.Web.Services
 
         private void ProcessLineItems(PdfPTable table, Order order, bool forVendor)
         {
+            var count = 1;
             foreach (var li in order.LineItems)
             {
+                table.AddCell(InitializeCell(count++.ToString(), _font));
                 table.AddCell(InitializeCell(li.Quantity.ToString(), _font));
                 table.AddCell(InitializeCell(li.Unit, _font));
                 table.AddCell(InitializeCell(li.CatalogNumber, _font));
@@ -251,7 +254,7 @@ namespace Purchasing.Web.Services
                     var urlCell1 = InitializeCell("Url:", _boldFont, colspan: 2, backgroundColor:_tableDataColor, bottomBorder: false);
                     table.AddCell(urlCell1);
 
-                    var urlCell2 = InitializeCell(li.Url, _font, colspan:4, backgroundColor:_tableDataColor, bottomBorder: false);
+                    var urlCell2 = InitializeCell(li.Url, _font, colspan:5, backgroundColor:_tableDataColor, bottomBorder: false);
                     table.AddCell(urlCell2);
                 }
                 if (!forVendor)
@@ -261,7 +264,7 @@ namespace Purchasing.Web.Services
                         var commodityCell1 = InitializeCell("Commodity Code:", _boldFont, colspan: 2,backgroundColor: _tableDataColor, bottomBorder: false);
                         table.AddCell(commodityCell1);
 
-                        var commodityCell2 = InitializeCell(string.Format("{0} ({1})", li.Commodity.Name, li.Commodity.Id), _font,colspan: 4, backgroundColor: _tableDataColor, bottomBorder: false);
+                        var commodityCell2 = InitializeCell(string.Format("{0} ({1})", li.Commodity.Name, li.Commodity.Id), _font,colspan: 5, backgroundColor: _tableDataColor, bottomBorder: false);
                         table.AddCell(commodityCell2);
                     }
                 }
@@ -271,7 +274,7 @@ namespace Purchasing.Web.Services
                     var noteCell1 = InitializeCell("Notes:", _boldFont, colspan: 2, backgroundColor: _tableDataColor, bottomBorder: false);
                     table.AddCell(noteCell1);
 
-                    var noteCell2 = InitializeCell(li.Notes, _font, colspan: 4, backgroundColor: _tableDataColor, bottomBorder: false);
+                    var noteCell2 = InitializeCell(li.Notes, _font, colspan: 5, backgroundColor: _tableDataColor, bottomBorder: false);
                     table.AddCell(noteCell2);
                 }
                 if (!forVendor)
@@ -279,7 +282,7 @@ namespace Purchasing.Web.Services
                     if (order.HasLineSplits)
                     {
                         var accountTable = SplitAccountingInformation(li.Splits);
-                        var acell = InitializeCell(colspan: 6);
+                        var acell = InitializeCell(colspan: 7);
                         acell.AddElement(accountTable);
                         table.AddCell(acell);
                     }

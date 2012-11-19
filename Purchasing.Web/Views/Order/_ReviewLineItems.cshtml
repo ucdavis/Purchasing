@@ -14,6 +14,7 @@
         <table>
             <thead>
                 <tr>
+                    <th></th>
                     <th>Qty.</th>
                     <th>Unit</th>
                     <th>Catalog #</th>
@@ -23,13 +24,15 @@
                 </tr>
             </thead>
             <tbody>
-                @{ var odd = false; }
+                @{ var odd = false; var count = 0;}
                 @foreach (var line in Model.LineItems)
                 {
+                    count++;
                     var hasLinesplits = Model.HasLineSplits;
                     var hasMoreInfo = line.Commodity != null || !string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url);
                 
                     <tr class="row-item @(odd ? "row-odd" : "row-even") @(!hasLinesplits && !hasMoreInfo ? "row-bottom" : string.Empty)">
+                        <td class="lineitem">@count</td>
                         <td>@line.Quantity</td>
                         <td>@line.Unit</td>
                         <td>@(string.IsNullOrWhiteSpace(line.CatalogNumber) ? "n/a" : line.CatalogNumber)</td>
@@ -41,7 +44,8 @@
                     if (hasLinesplits)
                     {
                         <tr class="@(odd ? "row-odd" : "row-even") @(hasMoreInfo ? "row-bottom" : string.Empty)">
-                            <td colspan="6">
+                            <td class="lineitem"></td>
+                            <td colspan="7">
                                 @*<div class="row-split ui-corner-all @(line.UnitPrice * line.Quantity != line.Splits.Sum(a => a.Amount) ? "row-split-prob" : string.Empty)">*@
                                 <div class="row-split ui-corner-all" style="width:90%">
                                     <table>
@@ -76,7 +80,8 @@
                     if (hasMoreInfo)
                     {
                         <tr class="@(odd ? "row-odd" : "row-even") row-bottom">
-                            <td colspan="6" class="extra-info">
+                            <td class="lineitem"></td>
+                            <td colspan="7" class="extra-info">
                                 @if (line.Commodity != null)
                                 {
                                     <div class="line-commodity"><strong>Commodity:</strong> @string.Format("[{0}] {1}", line.Commodity.Id, line.Commodity.Name)</div>
@@ -109,27 +114,27 @@
             </tbody>
             <tfoot>
                 <tr class="item-footer">
-                    <td colspan="4">&nbsp;</td>
+                    <td colspan="5">&nbsp;</td>
                     <td class="label row-total-label">Subtotal:</td>
                     <td class="row-total-value">@Model.Order.TotalFromDb.ToString("c")</td>
                 </tr>
                 <tr class="item-footer">
-                    <td colspan="4">&nbsp;</td>
+                    <td colspan="5">&nbsp;</td>
                     <td class="label row-total-label">Estimated Freight:</td>
                     <td class="row-total-value">@Model.Order.FreightAmount.ToString("c")</td>            
                 </tr>
                 <tr class="item-footer">
-                    <td colspan="4">&nbsp;</td>
+                    <td colspan="5">&nbsp;</td>
                     <td class="label row-total-label">Estimated Shipping & Handling:</td>
                     <td class="row-total-value">@Model.Order.ShippingAmount.ToString("c")</td>            
                 </tr>
                 <tr class="item-footer">
-                    <td colspan="4"></td>
+                    <td colspan="5"></td>
                     <td class="label row-total-label">Estimated Tax (@string.Format("{0:f}%", Model.Order.EstimatedTax)):</td>
                     <td class="row-total-value">@Model.Order.Tax().ToString("c")</td>
                 </tr>
                 <tr class="item-footer">
-                    <td colspan="4"><em>*All totals are estimated, final values are determined after uploaded to KFS.</em></td>
+                    <td colspan="5"><em>*All totals are estimated, final values are determined after uploaded to KFS.</em></td>
                     <td class="label row-total-label row-total-grandtotal">Grand Total:</td>
                     <td class="row-total-value">@Model.Order.GrandTotalFromDb.ToString("c")</td>
                 </tr>
