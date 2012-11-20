@@ -745,38 +745,13 @@ namespace Purchasing.Web.Controllers
                 return View(viewModel);
             }
 
-            throw new NotImplementedException("Still Working on this.");
-            var existingApprover = _workgroupPermissionRepository.Queryable.SingleOrDefault(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && a.IsDefaultForAccount);
-            if (!updateMultipleAccountsViewModel.DefaultSelectedApprover)
-            {                
-                if (existingApprover != null)
-                {
-                    existingApprover.IsDefaultForAccount = false;
-                    _workgroupPermissionRepository.EnsurePersistent(existingApprover);
-                }
-            }
-            else
-            {
-                if (existingApprover != null)
-                {
-                    if (existingApprover.User.Id != updateMultipleAccountsViewModel.SelectedApprover)
-                    {
-                        existingApprover.IsDefaultForAccount = false;
-                        _workgroupPermissionRepository.EnsurePersistent(existingApprover);
-                        var newApprover = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin);
-                        newApprover.IsDefaultForAccount = true;
-                        _workgroupPermissionRepository.EnsurePersistent(newApprover);
-                    }
-                }
-                else
-                {
-                    var newApprover = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin);
-                    newApprover.IsDefaultForAccount = true;
-                    _workgroupPermissionRepository.EnsurePersistent(newApprover);
-                }
+            
+            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedApprover, updateMultipleAccountsViewModel.SelectedApprover);
+            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedAccountManager, updateMultipleAccountsViewModel.SelectedAccountManager);
+            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedPurchaser, updateMultipleAccountsViewModel.SelectedPurchaser);
 
-            }
 
+            Message = "Values Updated";
 
 
             return this.RedirectToAction(a => a.UpdateMultipleAccounts(id));
