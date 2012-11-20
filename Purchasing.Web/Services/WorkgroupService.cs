@@ -35,7 +35,7 @@ namespace Purchasing.Web.Services
         void RemoveUserFromAccounts(WorkgroupPermission workgroupPermission);
         void RemoveUserFromPendingApprovals(WorkgroupPermission workgroupPermission);
 
-        void UpdateDefaultAccountApprover(Workgroup workgroup, bool isDefault, string selectedApprover);
+        void UpdateDefaultAccountApprover(Workgroup workgroup, bool isDefault, string selectedApprover, string roleId);
     }
 
     public class WorkgroupService : IWorkgroupService
@@ -75,11 +75,9 @@ namespace Purchasing.Web.Services
             _userIdentity = userIdentity;
         }
 
-        public void UpdateDefaultAccountApprover(Workgroup workgroup, bool isDefault, string selectedApprover)
+        public void UpdateDefaultAccountApprover(Workgroup workgroup, bool isDefault, string selectedApprover, string roleId)
         {
-            var existingApprover =
-                _workgroupPermissionRepository.Queryable.SingleOrDefault(
-                    a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && a.IsDefaultForAccount);
+            var existingApprover = _workgroupPermissionRepository.Queryable.SingleOrDefault(a => a.Workgroup == workgroup && a.Role.Id == roleId && a.IsDefaultForAccount);
             if (!isDefault)
             {
                 if (existingApprover != null)
@@ -96,18 +94,14 @@ namespace Purchasing.Web.Services
                     {
                         existingApprover.IsDefaultForAccount = false;
                         _workgroupPermissionRepository.EnsurePersistent(existingApprover);
-                        var newApprover =
-                            _workgroupPermissionRepository.Queryable.Single(
-                                a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin);
+                        var newApprover = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.Role.Id == roleId && !a.IsAdmin && a.User.Id == selectedApprover);
                         newApprover.IsDefaultForAccount = true;
                         _workgroupPermissionRepository.EnsurePersistent(newApprover);
                     }
                 }
                 else
                 {
-                    var newApprover =
-                        _workgroupPermissionRepository.Queryable.Single(
-                            a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin);
+                    var newApprover = _workgroupPermissionRepository.Queryable.Single(a => a.Workgroup == workgroup && a.Role.Id == roleId && !a.IsAdmin && a.User.Id == selectedApprover);
                     newApprover.IsDefaultForAccount = true;
                     _workgroupPermissionRepository.EnsurePersistent(newApprover);
                 }

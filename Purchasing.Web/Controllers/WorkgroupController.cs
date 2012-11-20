@@ -746,9 +746,9 @@ namespace Purchasing.Web.Controllers
             }
 
             
-            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedApprover, updateMultipleAccountsViewModel.SelectedApprover);
-            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedAccountManager, updateMultipleAccountsViewModel.SelectedAccountManager);
-            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedPurchaser, updateMultipleAccountsViewModel.SelectedPurchaser);
+            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedApprover, updateMultipleAccountsViewModel.SelectedApprover, Role.Codes.Approver);
+            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedAccountManager, updateMultipleAccountsViewModel.SelectedAccountManager, Role.Codes.AccountManager);
+            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedPurchaser, updateMultipleAccountsViewModel.SelectedPurchaser, Role.Codes.Purchaser);
 
 
             Message = "Values Updated";
