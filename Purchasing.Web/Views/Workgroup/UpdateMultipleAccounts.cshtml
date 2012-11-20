@@ -3,7 +3,14 @@
 
 @{
     ViewBag.Title = "Update Multiple Accounts";
+}
 
+@section SubNav
+{
+    <ul class="navigation">
+        <li><a href='@Url.Action("Accounts", new { id = Model.Workgroup.Id })' class="ui-button button ui-state-default">Back to Accounts</a></li>
+        <li><a href="@Url.Action("Details", new {id=Model.Workgroup.Id})" class="ui-button button ui-state-default">Back to Workgroup</a></li>
+    </ul>
 }
 
 @{
@@ -27,6 +34,56 @@
             });
         });
 
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#updateAll").click(function () {
+                var toProcess = $("#account-to-process-count");
+                var toProcessCount = toProcess.html();
+                if (toProcessCount != 0) {
+                    alert("Please wait for all account to update before updating again");
+                } else {
+                    toProcessCount = $("#account-total-count").html();
+                    toProcess.html(toProcessCount);
+                    var selectedApprover = $("#SelectedApprover :selected")[0].value;
+                    var selectedAccountManager = $("#SelectedAccountManager :selected")[0].value;
+                    var selectedPurchaser = $("#SelectedPurchaser :selected")[0].value;
+
+                    var url = '@Url.Action("UpdateAccount", new { id = Model.Workgroup.Id })';
+                    $(".update-row").each(function () {
+                        var waId = this.id;
+                        var status = $("#" + waId + " .update-status");
+                        var approver = $("#" + waId + " .update-approver");
+                        var accountManager = $("#" + waId + " .update-accountmanager");
+                        var purchaser = $("#" + waId + " .update-purchaser");
+                        var antiforgery = $("input[name='__RequestVerificationToken']").val();
+
+                        status.html("Processing");
+                        status.removeClass("green");
+                        status.addClass("red");
+                        $.post(url, { workgroupAccountId: waId, approver: selectedApprover, accountManager: selectedAccountManager, purchaser: selectedPurchaser, __RequestVerificationToken: antiforgery }, function (result) {
+                            if (result) {
+                                if (result.success == true) {
+                                    status.html(result.message);
+                                    status.removeClass("red");
+                                    status.addClass("green");
+
+                                    approver.html(result.rtApprover);
+                                    accountManager.html(result.rtAccountManager);
+                                    purchaser.html(result.rtPurchaser);
+                                    toProcessCount--;
+                                    toProcess.html(toProcessCount);
+                                } else {
+                                    status.html("Error :" + result.message);
+                                }
+                            } else {
+                                alert("There was a problem updating");
+                            }
+                        });
+                    });
+                }
+            });
+        });
     </script>
 }
 
@@ -108,9 +165,10 @@
 
 
 <section class="display-form ui-corner-all box-shadow">
-    <header class="ui-widget-header ui-corner-top">Accounts</header>
+    <header class="ui-widget-header ui-corner-top">Accounts to process  <div id="account-to-process-count" style="display: inline-block">0</div> / <div id="account-total-count" style="display: inline-block">@Model.Workgroup.Accounts.Count()</div></header>
 
     <div class="section-contents">
+
         <table>
             <thead>
                 <tr>
@@ -134,26 +192,24 @@
                 @{ var odd = false; }
                 @foreach (var item in Model.Workgroup.Accounts)
                 {
-                    <tr class="@(odd ? "odd" : "even")">
+                    <tr id="@item.Id" class="@(odd ? "odd" : "even") update-row">
         
                         <td>@item.Account.NameAndId</td>
-                        <td>
+                        <td class="update-approver">
                             @(item.Approver != null ? @item.Approver.FullNameAndId : string.Empty)
                         </td>
 
-                        <td>
+                        <td class="update-accountmanager">
                             @(item.AccountManager != null ? @item.AccountManager.FullNameAndId : string.Empty)
                         </td>	
                         
-                        <td>
+                        <td class="update-purchaser">
                             @(item.Purchaser != null ? @item.Purchaser.FullNameAndId : string.Empty)
                         </td>	
 
-                        <td id="@item.Id" class="rowsToUpdate">
+                        <td  class="update-status">
 				
                         </td>
-
-
                     </tr>
                     odd = !odd;
                 }

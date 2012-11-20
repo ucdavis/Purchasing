@@ -1968,6 +1968,111 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(requesterInfo);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">Workgroup id</param>
+        /// <param name="workgroupAccountId"></param>
+        /// <param name="approver"></param>
+        /// <param name="accountManager"></param>
+        /// <param name="purchaser"></param>
+        /// <returns></returns>
+        public JsonNetResult UpdateAccount(int id, int workgroupAccountId, string approver, string accountManager, string purchaser)
+        {          
+            //Note, the workgroup id (id) is needed I think to determine workgroup access
+            var success = false;
+            var message = "Done";
+            var rtApprover = string.Empty;
+            var rtAccountManager = string.Empty;
+            var rtPurchaser = string.Empty;
+
+            var somethingChanged = false;
+            try
+            {
+                var workgroupAccount = _workgroupAccountRepository.Queryable.Single(a => a.Id == workgroupAccountId);
+                switch (approver)
+                {
+                    case "DO_NOT_UPDATE":
+                        break;
+                    case "CLEAR_ALL":
+                        if (workgroupAccount.Approver != null)
+                        {
+                            workgroupAccount.Approver = null;
+                            somethingChanged = true;
+                            //TODO: Return result here                            
+                        }
+                        break;
+                    default:
+                        if (workgroupAccount.Approver == null || workgroupAccount.Approver.Id != approver)
+                        {
+                            var user = _userRepository.Queryable.Single(a => a.Id == approver);
+                            workgroupAccount.Approver = user;
+                            somethingChanged = true;
+                        }
+                        break;
+                }
+
+                switch (accountManager)
+                {
+                    case "DO_NOT_UPDATE":
+                        break;
+                    case "CLEAR_ALL":
+                        if (workgroupAccount.AccountManager != null)
+                        {
+                            workgroupAccount.AccountManager = null;
+                            somethingChanged = true;
+                            //TODO: Return result here                            
+                        }
+                        break;
+                    default:
+                        if (workgroupAccount.AccountManager == null || workgroupAccount.AccountManager.Id != accountManager)
+                        {
+                            var user = _userRepository.Queryable.Single(a => a.Id == accountManager);
+                            workgroupAccount.AccountManager = user;
+                            somethingChanged = true;
+                        }
+                        break;
+                }
+                switch (purchaser)
+                {
+                    case "DO_NOT_UPDATE":
+                        break;
+                    case "CLEAR_ALL":
+                        if (workgroupAccount.Purchaser != null)
+                        {
+                            workgroupAccount.Purchaser = null;
+                            somethingChanged = true;
+                            //TODO: Return result here                            
+                        }
+                        break;
+                    default:
+                        if (workgroupAccount.Purchaser == null || workgroupAccount.Purchaser.Id != purchaser)
+                        {
+                            var user = _userRepository.Queryable.Single(a => a.Id == purchaser);
+                            workgroupAccount.Purchaser = user;
+                            somethingChanged = true;
+                        }
+                        break;
+                }
+
+                if (somethingChanged)
+                {
+                    _workgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                }
+                success = true;
+                rtApprover = workgroupAccount.Approver != null ? workgroupAccount.Approver.FullNameAndId : string.Empty;
+                rtAccountManager = workgroupAccount.AccountManager != null ? workgroupAccount.AccountManager.FullNameAndId : string.Empty;
+                rtPurchaser = workgroupAccount.Purchaser != null ? workgroupAccount.Purchaser.FullNameAndId : string.Empty;
+            }
+            catch(Exception)
+            {
+                success = false;
+                message = "Error";
+            }
+
+            return new JsonNetResult(new { success, message, rtApprover, rtAccountManager, rtPurchaser });
+
+        }
         #endregion
     }
 
