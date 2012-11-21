@@ -35,6 +35,8 @@ namespace Purchasing.Web.App_Start.Jobs
         {
             var sendGridUserName = context.MergedJobDataMap["sendGridUser"] as string;
             var sendGridPassword = context.MergedJobDataMap["sendGridPassword"] as string;
+            var totalMissing = 0;
+            var totalExtra = 0;
             try
             {
                 var workgroupService = new WorkgroupService(null, null, null, null, _workgroupPermissionRepository, null, null, null, null, _queryRepositoryFactory, null);
@@ -49,16 +51,19 @@ namespace Purchasing.Web.App_Start.Jobs
                     var missingChildPermissions = parentPermissions.Where(a => !childPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
                     var extraChildPermissions = childPermissions.Where(a => !parentPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
 
-                    if (missingChildPermissions.Count > 0 || extraChildPermissions.Count > 0)
-                    {
-                        //Send message that there is a problem
-                        SendSingleEmail("jsylvestre@ucdavis.edu", "PrePurchasing Permissions Error", string.Format("Missing Child Permission count: {0}<br />Extra Child Permission count: {1}", missingChildPermissions.Count, extraChildPermissions.Count), sendGridUserName, sendGridPassword);
-                    }
-                    else
-                    {
-                        //Send message AOK
-                        SendSingleEmail("jsylvestre@ucdavis.edu", "PrePurchasing Permissions Ok", string.Format("Missing Child Permission count: {0}<br />Extra Child Permission count: {1}", missingChildPermissions.Count, extraChildPermissions.Count), sendGridUserName, sendGridPassword);
-                    }
+                    totalExtra += extraChildPermissions.Count;
+                    totalMissing += missingChildPermissions.Count;
+                }
+
+                if (totalExtra > 0 || totalMissing > 0)
+                {
+                    //Send message that there is a problem
+                    SendSingleEmail("jsylvestre@ucdavis.edu", "PrePurchasing Permissions Error", string.Format("Missing Child Permission count: {0}<br />Extra Child Permission count: {1}", totalMissing, totalExtra), sendGridUserName, sendGridPassword);
+                }
+                else
+                {
+                    //Send message AOK
+                    SendSingleEmail("jsylvestre@ucdavis.edu", "PrePurchasing Permissions Ok", string.Format("Missing Child Permission count: {0}<br />Extra Child Permission count: {1}", totalMissing, totalExtra), sendGridUserName, sendGridPassword);
                 }
             }
             catch (Exception ex)
