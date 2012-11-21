@@ -649,6 +649,11 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Accounts(saveWorkgroupId));
         }
 
+        /// <summary>
+        /// Accounts #9 (43)
+        /// </summary>
+        /// <param name="id">Workgroup id</param>
+        /// <returns></returns>
         public ActionResult UpdateMultipleAccounts(int id)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -688,6 +693,12 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Account #10 (44)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateMultipleAccountsViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult UpdateMultipleAccounts(int id, UpdateMultipleAccountsViewModel updateMultipleAccountsViewModel)
         {
@@ -1989,7 +2000,7 @@ namespace Purchasing.Web.Controllers
             var somethingChanged = false;
             try
             {
-                var workgroupAccount = _workgroupAccountRepository.Queryable.Single(a => a.Id == workgroupAccountId);
+                var workgroupAccount = _workgroupAccountRepository.Queryable.Single(a => a.Id == workgroupAccountId && a.Workgroup.Id == id); //I'm checking the workgroup id here as well as an extra security check.
                 switch (approver)
                 {
                     case "DO_NOT_UPDATE":
