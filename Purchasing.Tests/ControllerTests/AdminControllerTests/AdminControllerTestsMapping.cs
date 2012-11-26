@@ -118,6 +118,12 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             "~/Admin/ValidateChildWorkgroups/5".ShouldMapTo<AdminController>(a => a.ValidateChildWorkgroups());
         }
+
+        [TestMethod]
+        public void TestRemoveExtraChildPermissionsMapping()
+        {
+            "~/Admin/RemoveExtraChildPermissions/".ShouldMapTo<AdminController>(a => a.RemoveExtraChildPermissions());
+        }
         #endregion Mapping Tests
     }
 }

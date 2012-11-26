@@ -26,6 +26,8 @@ namespace Purchasing.Web.App_Start
             CreateEmailJob();
 
             CreateDatabaseBackupJob();
+
+            CreateVerifyPermissionsJob(); // If the org descendants changes, it is possible the inherited workgroup permissions will change. This checks that and emails me. -JCS
         }
 
         private static void CreateNightlySyncJobs()
@@ -126,7 +128,22 @@ namespace Purchasing.Web.App_Start
 
             var jobDetails = JobBuilder.Create<DatabaseBackupJob>().UsingJobData("storageAccountName", storageAccountName).UsingJobData("serverName", serverName).UsingJobData("username", username).UsingJobData("password", password).UsingJobData("storageKey", storageKey).UsingJobData("blobContainer", blobContainer).Build();
 
-            var nightly = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9, 42)).StartNow().Build();
+            var nightly = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(1, 0)).StartNow().Build();
+            var sched = StdSchedulerFactory.GetDefaultScheduler();
+            sched.ScheduleJob(jobDetails, nightly);
+            sched.Start();
+        }
+
+        private static void CreateVerifyPermissionsJob()
+        {
+            var sendGridUser = WebConfigurationManager.AppSettings["SendGridUserName"];
+            var sendGridPassword = WebConfigurationManager.AppSettings["SendGridPassword"];
+
+            var jobDetails = JobBuilder.Create<VerifyPermissionsJob>().UsingJobData("sendGridUser", sendGridUser).UsingJobData("sendGridPassword", sendGridPassword).Build();
+
+            var nightly =
+                TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(
+                    CronScheduleBuilder.DailyAtHourAndMinute(6, 0)).StartNow().Build();
             var sched = StdSchedulerFactory.GetDefaultScheduler();
             sched.ScheduleJob(jobDetails, nightly);
             sched.Start();

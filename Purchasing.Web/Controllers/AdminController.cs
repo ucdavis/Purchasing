@@ -373,6 +373,10 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new { success, message });
         }
 
+        /// <summary>
+        /// #16
+        /// </summary>
+        /// <returns></returns>
         public ActionResult ValidateChildWorkgroups()
         {
             //Example for comparing lists
@@ -427,6 +431,42 @@ namespace Purchasing.Web.Controllers
             }
 
             return View(view);
+        }
+
+        /// <summary>
+        /// #17
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult RemoveExtraChildPermissions()
+        {
+            var view = new List<ValidateChildWorkgroupsViewModel>();
+            var count = 0;
+            var childWorkGroups = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && !a.Administrative);
+            foreach (var childWorkGroup in childWorkGroups)
+            {
+                var parentWorkGroupIds = _workgroupService.GetParentWorkgroups(childWorkGroup.Id);
+                var parentPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => parentWorkGroupIds.Contains(a.Workgroup.Id)).Select(s => new { s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.Workgroup.Id, s.Workgroup.IsFullFeatured }).ToList();
+                var childPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.Workgroup == childWorkGroup && a.IsAdmin).Select(s => new { s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.ParentWorkgroup.Id, s.IsFullFeatured }).ToList();
+
+                //var missingChildPermissions = parentPermissions.Where(a => !childPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
+                var extraChildPermissions = childPermissions.Where(a => !parentPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
+
+                
+                if (extraChildPermissions.Count > 0)
+                {
+                    foreach (var extraChildPermission in extraChildPermissions)
+                    {
+                        var wp = _repositoryFactory.WorkgroupPermissionRepository.GetNullableById(extraChildPermission.Id);
+                        if (wp != null)
+                        {
+                            _repositoryFactory.WorkgroupPermissionRepository.Remove(wp);
+                            count++;
+                        }
+                    }
+                }
+            }
+            Message = string.Format("{0} permissions removed", count);
+            return this.RedirectToAction(a => a.ValidateChildWorkgroups());
         }
 
 

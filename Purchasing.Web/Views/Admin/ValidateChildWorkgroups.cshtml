@@ -6,6 +6,14 @@
 
 }
 
+@section SubNav
+{
+	<ul class="navigation">
+        <li>@Html.ActionLink("Remove Extra Child Permissions", "RemoveExtraChildPermissions", null, new { @class = "button" })</li>
+	</ul>
+}
+
+
 <h2>Child Workgroups with Missing or Extra Permissions:</h2>
 
 @foreach (var item in Model)

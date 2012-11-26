@@ -256,6 +256,7 @@
         <table class="no-icon-table">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Receive Qty</th>
                     <th>Ordered Qty</th>
                     <th>Outstanding Qty</th>
@@ -276,9 +277,11 @@
                     var notesLineId = "";
                     var displayNotes = "";
                     var by = new HistoryReceivedLineItem();
+                    var count = 0;
                 }
                 @foreach(var item in Model.LineItems.Where(a => a.Quantity != 0))
                 {
+                    count++;
                     notesLineId = "notesLineId" + item.Id;
                     displayNotes = string.IsNullOrWhiteSpace(item.ReceivedNotes) ? "display: none;" : string.Empty;               
 
@@ -287,7 +290,8 @@
                         by = null;
                     }
                     
-                    <tr id="@item.Id" class="@(odd ? "odd" : "even")">               
+                    <tr id="@item.Id" class="@(odd ? "odd" : "even")">
+                        <td class="lineitem">@count</td>               
                         <td class="receiveLineItemCell">
                             <input class="receiveLineItem showTip" data-id="@item.Id" title="Number of Units received for this line item. Amount will be added to the current number of received items." />
                             <div class="receiveQuantity">@item.QuantityReceived</div>
@@ -315,7 +319,7 @@
                         </td>
                     </tr>
                     <tr id="@notesLineId" class="@(odd ? "odd":"even")" style="@displayNotes">
-                        <td colspan="12">
+                        <td colspan="13">
                             <table class="sub-line-item">
                                 <th></th>                           
                                 <tr>

@@ -10,7 +10,7 @@ namespace Purchasing.Web.App_Start.Jobs
 
         public EmailJob()
         {
-            _notificationSender = ServiceLocator.Current.GetInstance<INotificationSender>(); ;
+            _notificationSender = ServiceLocator.Current.GetInstance<INotificationSender>();
         }
 
         public void Execute(IJobExecutionContext context)
@@ -25,7 +25,7 @@ namespace Purchasing.Web.App_Start.Jobs
 
         public DailyEmailJob()
         {
-            _notificationSender = ServiceLocator.Current.GetInstance<INotificationSender>(); ;
+            _notificationSender = ServiceLocator.Current.GetInstance<INotificationSender>();
         }
 
         public void Execute(IJobExecutionContext context)
