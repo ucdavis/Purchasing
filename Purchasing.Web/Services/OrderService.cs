@@ -458,7 +458,8 @@ namespace Purchasing.Web.Services
                 foreach (
                     var approvalForAway in
                         order.Approvals.Where(a =>
-                            a.StatusCode.Level == currentApprovalLevel &&
+                            a.StatusCode.Level == currentApprovalLevel && 
+                            a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && //These can never be bypassed
                             !a.Completed &&
                             a.User != null &&
                             a.User.IsAway &&
@@ -467,6 +468,19 @@ namespace Purchasing.Web.Services
                     approvalForAway.Completed = true;
                     _eventService.OrderApproved(order, approvalForAway);
                     didApprovalHappen = true;
+                }
+
+                if (!didApprovalHappen && _securityService.hasAdminWorkgroupRole(order.StatusCode.Id, order.Workgroup.Id))
+                {
+                    //Ok, so the approval didn't happen. Now check to see if the current user is an admin for that level.
+                    foreach (
+                    var approvalForAdmin in
+                        order.Approvals.Where(a => a.StatusCode.Level == currentApprovalLevel && a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && !a.Completed && a.User != null))
+                    {
+                        approvalForAdmin.Completed = true;
+                        _eventService.OrderApproved(order, approvalForAdmin, true);
+                        didApprovalHappen = true;
+                    }
                 }
             }
 
