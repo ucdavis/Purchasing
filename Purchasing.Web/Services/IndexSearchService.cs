@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using C5;
-using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
-using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
-using Version = Lucene.Net.Util.Version;
-using UCDArch.Core.Utils;
 using Purchasing.Web.Utility;
+using Version = Lucene.Net.Util.Version;
 
 namespace Purchasing.Web.Services
 {
@@ -27,7 +23,7 @@ namespace Purchasing.Web.Services
             _indexService = indexService;
         }
 
-        public System.Collections.Generic.IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds)
+        public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds)
         {
             var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
             try
@@ -62,7 +58,7 @@ namespace Purchasing.Web.Services
 
         }
 
-        public System.Collections.Generic.IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds)
+        public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds)
         {
             var searcher = _indexService.GetIndexSearcherFor(Indexes.LineItems);
             try
@@ -95,7 +91,7 @@ namespace Purchasing.Web.Services
 
         }
 
-        public System.Collections.Generic.IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, int[] allowedIds)
+        public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, int[] allowedIds)
         {
             var searcher = _indexService.GetIndexSearcherFor(Indexes.CustomAnswers);
             try
@@ -122,7 +118,7 @@ namespace Purchasing.Web.Services
             }
         }
 
-        public System.Collections.Generic.IList<SearchResults.CommentResult> SearchComments(string searchTerm, int[] allowedIds)
+        public IList<SearchResults.CommentResult> SearchComments(string searchTerm, int[] allowedIds)
         {
             var searcher = _indexService.GetIndexSearcherFor(Indexes.Comments);
             try
@@ -150,27 +146,27 @@ namespace Purchasing.Web.Services
 
         }
 
-        public System.Collections.Generic.IList<IdAndName> SearchCommodities(string searchTerm)
+        public IList<IdAndName> SearchCommodities(string searchTerm)
         {
             return SearchLookupIndex(Indexes.Commodities, searchTerm);
         }
 
-        public System.Collections.Generic.IList<IdAndName> SearchVendors(string searchTerm)
+        public IList<IdAndName> SearchVendors(string searchTerm)
         {
             return SearchLookupIndex(Indexes.Vendors, searchTerm);
         }
 
-        public System.Collections.Generic.IList<IdAndName> SearchAccounts(string searchTerm)
+        public IList<IdAndName> SearchAccounts(string searchTerm)
         {
             return SearchLookupIndex(Indexes.Accounts, searchTerm);
         }
 
-        public System.Collections.Generic.IList<IdAndName> SearchBuildings(string searchTerm)
+        public IList<IdAndName> SearchBuildings(string searchTerm)
         {
             return SearchLookupIndex(Indexes.Buildings, searchTerm);
         }
 
-        private System.Collections.Generic.IList<IdAndName> SearchLookupIndex(Indexes index, string searchTerm, int topN = 20)
+        private IList<IdAndName> SearchLookupIndex(Indexes index, string searchTerm, int topN = 20)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
