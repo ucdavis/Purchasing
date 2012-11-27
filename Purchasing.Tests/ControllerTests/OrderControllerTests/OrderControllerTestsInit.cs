@@ -261,6 +261,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             throw new NotImplementedException();
         }
 
+        public bool hasAdminWorkgroupRole(string roleCode, int workgroupId)
+        {
+            throw new NotImplementedException();
+        }
+
         public OrderAccessLevel GetAccessLevel(Order order, bool? closed = null)
         {
             throw new NotImplementedException();
