@@ -422,7 +422,11 @@
             };
 
             self.addLine = function () {
-                self.items.push(new purchasing.LineItem(self.items().length, self));
+                if (self.items().length < 100) {
+                    self.items.push(new purchasing.LineItem(self.items().length, self));
+                } else {
+                    alert("You may only have a maximum on 100 Items per order");
+                }
             };
 
             self.resetOrderRouting = function () {
