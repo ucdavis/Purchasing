@@ -191,7 +191,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(42, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(44, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -783,6 +783,49 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "AccountDelete");
+            #endregion Arrange
+
+            #region Act
+            var element = controllerMethod.ElementAt(1);
+            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count());
+            Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Accounts #9 (43)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodUpdateMultipleAccountsGetContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "UpdateMultipleAccounts");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Accounts #10 (44)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethoUpdateMultipleAccountsPostContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "UpdateMultipleAccounts");
             #endregion Arrange
 
             #region Act
