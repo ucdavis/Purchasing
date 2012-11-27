@@ -478,7 +478,7 @@ namespace Purchasing.Web.Services
                         order.Approvals.Where(a => a.StatusCode.Level == currentApprovalLevel && a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover && !a.Completed && a.User != null))
                     {
                         approvalForAdmin.Completed = true;
-                        _eventService.OrderApproved(order, approvalForAdmin, true);
+                        _eventService.OrderApprovedByAdmin(order, approvalForAdmin);
                         didApprovalHappen = true;
                     }
                 }

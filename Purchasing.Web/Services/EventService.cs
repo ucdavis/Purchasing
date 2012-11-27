@@ -5,7 +5,8 @@ namespace Purchasing.Web.Services
 {
     public interface IEventService
     {
-        void OrderApproved(Order order, Approval approval, bool adminOverride = false);
+        void OrderApproved(Order order, Approval approval);
+        void OrderApprovedByAdmin(Order order, Approval approval);
         void OrderStatusChange(Order order, OrderStatusCode newStatusCode);
         void OrderApprovalAdded(Order order, Approval approval, bool notify = false);
         void OrderCreated(Order order);
@@ -81,15 +82,33 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order">Order's status is at the current level</param>
         /// <param name="approval">Approval is at the current level, and completed is true</param>
-        /// <param name="adminOverride">Was approved because admin </param>
-        public void OrderApproved(Order order, Approval approval, bool adminOverride = false)
+        public void OrderApproved(Order order, Approval approval)
         {
             var trackingEvent = new OrderTracking
                                     {
                                         User = _userRepository.GetById(_userIdentity.Current),
                                         StatusCode = approval.StatusCode,
-                                        Description = adminOverride == false ? "approved" : "approved (Admin Override)"
+                                        Description = "approved"
                                     };
+
+            order.AddTracking(trackingEvent);
+
+            _notificationService.OrderApproved(order, approval);
+        }
+
+        /// <summary>
+        /// Same as OrderApproved, except Description is different
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="approval"></param>
+        public void OrderApprovedByAdmin(Order order, Approval approval)
+        {
+            var trackingEvent = new OrderTracking
+            {
+                User = _userRepository.GetById(_userIdentity.Current),
+                StatusCode = approval.StatusCode,
+                Description = "approved (Admin Override)"
+            };
 
             order.AddTracking(trackingEvent);
 
