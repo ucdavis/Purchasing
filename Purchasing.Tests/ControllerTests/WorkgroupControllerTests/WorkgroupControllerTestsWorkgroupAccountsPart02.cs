@@ -423,5 +423,1120 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         #endregion AccountDelete Post Tests
+
+        #region UpdateMultipleAccounts Get Tests
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsGetRedirectsToIndexWhenWorkgroupNotFound()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            #endregion Arrange
+
+            #region Act
+            Controller.UpdateMultipleAccounts(4)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index(false));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Workgroup could not be found", Controller.ErrorMessage);
+            #endregion Assert		
+        }
+
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsReturnsViewWithExpectedValues1()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeWorkgroupPermissions(3, WorkgroupPermissionRepository);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3)
+                .AssertViewRendered()
+                .WithViewData<UpdateMultipleAccountsViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.ApproverChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.ApproverChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.ApproverChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.ApproverChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.ApproverChoices[1].Item2);
+
+            Assert.AreEqual(2, result.AccountManagerChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.AccountManagerChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.AccountManagerChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.AccountManagerChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.AccountManagerChoices[1].Item2);
+
+            Assert.AreEqual(2, result.PurchaserChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.PurchaserChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.PurchaserChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.PurchaserChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.PurchaserChoices[1].Item2);
+
+            Assert.IsNull(result.SelectedApprover);
+            Assert.IsNull(result.SelectedAccountManager);
+            Assert.IsNull(result.SelectedPurchaser);
+
+            Assert.IsFalse(result.DefaultSelectedApprover);
+            Assert.IsFalse(result.DefaultSelectedAccountManager);
+            Assert.IsFalse(result.DefaultSelectedPurchaser);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsReturnsViewWithExpectedValues2()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3)
+                .AssertViewRendered()
+                .WithViewData<UpdateMultipleAccountsViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.ApproverChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.ApproverChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.ApproverChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.ApproverChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.ApproverChoices[1].Item2);
+
+            Assert.AreEqual("3", result.ApproverChoices[2].Item1);
+            Assert.AreEqual("LastName3, FirstName3 (3)", result.ApproverChoices[2].Item2);
+
+            Assert.AreEqual(2, result.AccountManagerChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.AccountManagerChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.AccountManagerChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.AccountManagerChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.AccountManagerChoices[1].Item2);
+
+            Assert.AreEqual(2, result.PurchaserChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.PurchaserChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.PurchaserChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.PurchaserChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.PurchaserChoices[1].Item2);
+
+            Assert.IsNull(result.SelectedApprover);
+            Assert.IsNull(result.SelectedAccountManager);
+            Assert.IsNull(result.SelectedPurchaser);
+
+            Assert.IsFalse(result.DefaultSelectedApprover);
+            Assert.IsFalse(result.DefaultSelectedAccountManager);
+            Assert.IsFalse(result.DefaultSelectedPurchaser);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsReturnsViewWithExpectedValues3()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3)
+                .AssertViewRendered()
+                .WithViewData<UpdateMultipleAccountsViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.ApproverChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.ApproverChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.ApproverChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.ApproverChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.ApproverChoices[1].Item2);
+
+            Assert.AreEqual("3", result.ApproverChoices[2].Item1);
+            Assert.AreEqual("LastName3, FirstName3 (3)", result.ApproverChoices[2].Item2);
+
+            Assert.AreEqual(2, result.AccountManagerChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.AccountManagerChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.AccountManagerChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.AccountManagerChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.AccountManagerChoices[1].Item2);
+
+            Assert.AreEqual(2, result.PurchaserChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.PurchaserChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.PurchaserChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.PurchaserChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.PurchaserChoices[1].Item2);
+
+            Assert.AreEqual("3", result.SelectedApprover);
+            Assert.IsNull(result.SelectedAccountManager);
+            Assert.IsNull(result.SelectedPurchaser);
+
+            Assert.IsTrue(result.DefaultSelectedApprover);
+            Assert.IsFalse(result.DefaultSelectedAccountManager);
+            Assert.IsFalse(result.DefaultSelectedPurchaser);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsReturnsViewWithExpectedValues4()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(2));
+            workgroupPermissions[1].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(3));
+            workgroupPermissions[2].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[2].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(4));
+            workgroupPermissions[3].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[3].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(5));
+            workgroupPermissions[4].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[4].IsDefaultForAccount = true;
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3)
+                .AssertViewRendered()
+                .WithViewData<UpdateMultipleAccountsViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.ApproverChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.ApproverChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.ApproverChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.ApproverChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.ApproverChoices[1].Item2);
+
+            Assert.AreEqual("3", result.ApproverChoices[2].Item1);
+            Assert.AreEqual("LastName3, FirstName3 (3)", result.ApproverChoices[2].Item2);
+
+            Assert.AreEqual(4, result.AccountManagerChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.AccountManagerChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.AccountManagerChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.AccountManagerChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.AccountManagerChoices[1].Item2);
+
+            Assert.AreEqual("1", result.AccountManagerChoices[2].Item1);
+            Assert.AreEqual("LastName1, FirstName1 (1)", result.AccountManagerChoices[2].Item2);
+            Assert.AreEqual("4", result.AccountManagerChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.AccountManagerChoices[3].Item2);
+
+            Assert.AreEqual(4, result.PurchaserChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.PurchaserChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.PurchaserChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.PurchaserChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.PurchaserChoices[1].Item2);
+
+            Assert.AreEqual("2", result.PurchaserChoices[2].Item1);
+            Assert.AreEqual("LastName2, FirstName2 (2)", result.PurchaserChoices[2].Item2);
+            Assert.AreEqual("4", result.PurchaserChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.PurchaserChoices[3].Item2);
+
+            Assert.AreEqual("3", result.SelectedApprover);
+            Assert.AreEqual("1", result.SelectedAccountManager);
+            Assert.AreEqual("4", result.SelectedPurchaser);
+
+            Assert.IsTrue(result.DefaultSelectedApprover);
+            Assert.IsTrue(result.DefaultSelectedAccountManager);
+            Assert.IsTrue(result.DefaultSelectedPurchaser);
+            #endregion Assert
+        }
+        #endregion UpdateMultipleAccounts Get Tests
+
+        #region UpdateMultipleAccounts Post Tests
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostRedirectsToIndexWhenWorkgroupNotFound()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            #endregion Arrange
+
+            #region Act
+            Controller.UpdateMultipleAccounts(4, new UpdateMultipleAccountsViewModel())
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.Index(false));
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Workgroup could not be found", Controller.ErrorMessage);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostReturnsViewWithExpectedValuesWhenInvalid1()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeWorkgroupPermissions(3, WorkgroupPermissionRepository);
+            var updateMultipleAccountsViewModel = new UpdateMultipleAccountsViewModel();
+            updateMultipleAccountsViewModel.DefaultSelectedApprover = true;
+            updateMultipleAccountsViewModel.SelectedApprover = "DO_NOT_UPDATE";
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
+                .AssertViewRendered()
+                .WithViewData<UpdateMultipleAccountsViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.ApproverChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.ApproverChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.ApproverChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.ApproverChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.ApproverChoices[1].Item2);
+
+            Assert.AreEqual(2, result.AccountManagerChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.AccountManagerChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.AccountManagerChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.AccountManagerChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.AccountManagerChoices[1].Item2);
+
+            Assert.AreEqual(2, result.PurchaserChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.PurchaserChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.PurchaserChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.PurchaserChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.PurchaserChoices[1].Item2);
+
+            Assert.AreEqual("DO_NOT_UPDATE", result.SelectedApprover);
+            Assert.IsNull(result.SelectedAccountManager);
+            Assert.IsNull(result.SelectedPurchaser);
+
+            Assert.IsTrue(result.DefaultSelectedApprover);
+            Assert.IsFalse(result.DefaultSelectedAccountManager);
+            Assert.IsFalse(result.DefaultSelectedPurchaser);
+
+            Assert.IsFalse(Controller.ModelState.IsValid);
+            Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostReturnsViewWithExpectedValuesWhenInvalid2()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(2));
+            workgroupPermissions[1].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(3));
+            workgroupPermissions[2].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[2].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(4));
+            workgroupPermissions[3].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[3].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(5));
+            workgroupPermissions[4].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[4].IsDefaultForAccount = true;
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+
+            var updateMultipleAccountsViewModel = new UpdateMultipleAccountsViewModel();
+            updateMultipleAccountsViewModel.DefaultSelectedApprover = true;
+            updateMultipleAccountsViewModel.DefaultSelectedAccountManager = true;
+            updateMultipleAccountsViewModel.DefaultSelectedPurchaser = true;
+            updateMultipleAccountsViewModel.SelectedApprover = "CLEAR_ALL";
+            updateMultipleAccountsViewModel.SelectedAccountManager = "1";
+            updateMultipleAccountsViewModel.SelectedPurchaser = "4";
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
+                .AssertViewRendered()
+                .WithViewData<UpdateMultipleAccountsViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.ApproverChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.ApproverChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.ApproverChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.ApproverChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.ApproverChoices[1].Item2);
+
+            Assert.AreEqual("3", result.ApproverChoices[2].Item1);
+            Assert.AreEqual("LastName3, FirstName3 (3)", result.ApproverChoices[2].Item2);
+
+            Assert.AreEqual(4, result.AccountManagerChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.AccountManagerChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.AccountManagerChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.AccountManagerChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.AccountManagerChoices[1].Item2);
+
+            Assert.AreEqual("1", result.AccountManagerChoices[2].Item1);
+            Assert.AreEqual("LastName1, FirstName1 (1)", result.AccountManagerChoices[2].Item2);
+            Assert.AreEqual("4", result.AccountManagerChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.AccountManagerChoices[3].Item2);
+
+            Assert.AreEqual(4, result.PurchaserChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.PurchaserChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.PurchaserChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.PurchaserChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.PurchaserChoices[1].Item2);
+
+            Assert.AreEqual("2", result.PurchaserChoices[2].Item1);
+            Assert.AreEqual("LastName2, FirstName2 (2)", result.PurchaserChoices[2].Item2);
+            Assert.AreEqual("4", result.PurchaserChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.PurchaserChoices[3].Item2);
+
+            Assert.AreEqual("CLEAR_ALL", result.SelectedApprover);
+            Assert.AreEqual("1", result.SelectedAccountManager);
+            Assert.AreEqual("4", result.SelectedPurchaser);
+
+            Assert.IsTrue(result.DefaultSelectedApprover);
+            Assert.IsTrue(result.DefaultSelectedAccountManager);
+            Assert.IsTrue(result.DefaultSelectedPurchaser);
+
+            Assert.IsFalse(Controller.ModelState.IsValid);
+            Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostReturnsViewWithExpectedValuesWhenInvalid3()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(2));
+            workgroupPermissions[1].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(3));
+            workgroupPermissions[2].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[2].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(4));
+            workgroupPermissions[3].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[3].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(5));
+            workgroupPermissions[4].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[4].IsDefaultForAccount = true;
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+
+            var updateMultipleAccountsViewModel = new UpdateMultipleAccountsViewModel();
+            updateMultipleAccountsViewModel.DefaultSelectedApprover = true;
+            updateMultipleAccountsViewModel.DefaultSelectedAccountManager = true;
+            updateMultipleAccountsViewModel.DefaultSelectedPurchaser = true;
+            updateMultipleAccountsViewModel.SelectedApprover = "CLEAR_ALL";
+            updateMultipleAccountsViewModel.SelectedAccountManager = "CLEAR_ALL";
+            updateMultipleAccountsViewModel.SelectedPurchaser = "CLEAR_ALL";
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
+                .AssertViewRendered()
+                .WithViewData<UpdateMultipleAccountsViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.ApproverChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.ApproverChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.ApproverChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.ApproverChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.ApproverChoices[1].Item2);
+
+            Assert.AreEqual("3", result.ApproverChoices[2].Item1);
+            Assert.AreEqual("LastName3, FirstName3 (3)", result.ApproverChoices[2].Item2);
+
+            Assert.AreEqual(4, result.AccountManagerChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.AccountManagerChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.AccountManagerChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.AccountManagerChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.AccountManagerChoices[1].Item2);
+
+            Assert.AreEqual("1", result.AccountManagerChoices[2].Item1);
+            Assert.AreEqual("LastName1, FirstName1 (1)", result.AccountManagerChoices[2].Item2);
+            Assert.AreEqual("4", result.AccountManagerChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.AccountManagerChoices[3].Item2);
+
+            Assert.AreEqual(4, result.PurchaserChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.PurchaserChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.PurchaserChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.PurchaserChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.PurchaserChoices[1].Item2);
+
+            Assert.AreEqual("2", result.PurchaserChoices[2].Item1);
+            Assert.AreEqual("LastName2, FirstName2 (2)", result.PurchaserChoices[2].Item2);
+            Assert.AreEqual("4", result.PurchaserChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.PurchaserChoices[3].Item2);
+
+            Assert.AreEqual("CLEAR_ALL", result.SelectedApprover);
+            Assert.AreEqual("CLEAR_ALL", result.SelectedAccountManager);
+            Assert.AreEqual("CLEAR_ALL", result.SelectedPurchaser);
+
+            Assert.IsTrue(result.DefaultSelectedApprover);
+            Assert.IsTrue(result.DefaultSelectedAccountManager);
+            Assert.IsTrue(result.DefaultSelectedPurchaser);
+
+            Assert.IsFalse(Controller.ModelState.IsValid);
+            Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostReturnsViewWithExpectedValuesWhenInvalid4()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(2));
+            workgroupPermissions[1].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(3));
+            workgroupPermissions[2].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[2].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(4));
+            workgroupPermissions[3].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[3].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(5));
+            workgroupPermissions[4].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[4].IsDefaultForAccount = true;
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+
+            var updateMultipleAccountsViewModel = new UpdateMultipleAccountsViewModel();
+            updateMultipleAccountsViewModel.DefaultSelectedApprover = true;
+            updateMultipleAccountsViewModel.DefaultSelectedAccountManager = true;
+            updateMultipleAccountsViewModel.DefaultSelectedPurchaser = true;
+            updateMultipleAccountsViewModel.SelectedApprover = "DO_NOT_UPDATE";
+            updateMultipleAccountsViewModel.SelectedAccountManager = "DO_NOT_UPDATE";
+            updateMultipleAccountsViewModel.SelectedPurchaser = "DO_NOT_UPDATE";
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
+                .AssertViewRendered()
+                .WithViewData<UpdateMultipleAccountsViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.ApproverChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.ApproverChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.ApproverChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.ApproverChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.ApproverChoices[1].Item2);
+
+            Assert.AreEqual("3", result.ApproverChoices[2].Item1);
+            Assert.AreEqual("LastName3, FirstName3 (3)", result.ApproverChoices[2].Item2);
+
+            Assert.AreEqual(4, result.AccountManagerChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.AccountManagerChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.AccountManagerChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.AccountManagerChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.AccountManagerChoices[1].Item2);
+
+            Assert.AreEqual("1", result.AccountManagerChoices[2].Item1);
+            Assert.AreEqual("LastName1, FirstName1 (1)", result.AccountManagerChoices[2].Item2);
+            Assert.AreEqual("4", result.AccountManagerChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.AccountManagerChoices[3].Item2);
+
+            Assert.AreEqual(4, result.PurchaserChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.PurchaserChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.PurchaserChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.PurchaserChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.PurchaserChoices[1].Item2);
+
+            Assert.AreEqual("2", result.PurchaserChoices[2].Item1);
+            Assert.AreEqual("LastName2, FirstName2 (2)", result.PurchaserChoices[2].Item2);
+            Assert.AreEqual("4", result.PurchaserChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.PurchaserChoices[3].Item2);
+
+            Assert.AreEqual("DO_NOT_UPDATE", result.SelectedApprover);
+            Assert.AreEqual("DO_NOT_UPDATE", result.SelectedAccountManager);
+            Assert.AreEqual("DO_NOT_UPDATE", result.SelectedPurchaser);
+
+            Assert.IsTrue(result.DefaultSelectedApprover);
+            Assert.IsTrue(result.DefaultSelectedAccountManager);
+            Assert.IsTrue(result.DefaultSelectedPurchaser);
+
+            Assert.IsFalse(Controller.ModelState.IsValid);
+            Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostReturnsViewWithExpectedValuesWhenInvalid5()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(2));
+            workgroupPermissions[1].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(3));
+            workgroupPermissions[2].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[2].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(4));
+            workgroupPermissions[3].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[3].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(5));
+            workgroupPermissions[4].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[4].IsDefaultForAccount = true;
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+
+            var updateMultipleAccountsViewModel = new UpdateMultipleAccountsViewModel();
+            updateMultipleAccountsViewModel.DefaultSelectedApprover = false;
+            updateMultipleAccountsViewModel.DefaultSelectedAccountManager = true;
+            updateMultipleAccountsViewModel.DefaultSelectedPurchaser = false;
+            updateMultipleAccountsViewModel.SelectedApprover = "DO_NOT_UPDATE";
+            updateMultipleAccountsViewModel.SelectedAccountManager = "DO_NOT_UPDATE";
+            updateMultipleAccountsViewModel.SelectedPurchaser = "DO_NOT_UPDATE";
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
+                .AssertViewRendered()
+                .WithViewData<UpdateMultipleAccountsViewModel>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.ApproverChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.ApproverChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.ApproverChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.ApproverChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.ApproverChoices[1].Item2);
+
+            Assert.AreEqual("3", result.ApproverChoices[2].Item1);
+            Assert.AreEqual("LastName3, FirstName3 (3)", result.ApproverChoices[2].Item2);
+
+            Assert.AreEqual(4, result.AccountManagerChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.AccountManagerChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.AccountManagerChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.AccountManagerChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.AccountManagerChoices[1].Item2);
+
+            Assert.AreEqual("1", result.AccountManagerChoices[2].Item1);
+            Assert.AreEqual("LastName1, FirstName1 (1)", result.AccountManagerChoices[2].Item2);
+            Assert.AreEqual("4", result.AccountManagerChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.AccountManagerChoices[3].Item2);
+
+            Assert.AreEqual(4, result.PurchaserChoices.Count);
+            Assert.AreEqual("DO_NOT_UPDATE", result.PurchaserChoices[0].Item1);
+            Assert.AreEqual("-- Do Not Update --", result.PurchaserChoices[0].Item2);
+            Assert.AreEqual("CLEAR_ALL", result.PurchaserChoices[1].Item1);
+            Assert.AreEqual("-- Clear All --", result.PurchaserChoices[1].Item2);
+
+            Assert.AreEqual("2", result.PurchaserChoices[2].Item1);
+            Assert.AreEqual("LastName2, FirstName2 (2)", result.PurchaserChoices[2].Item2);
+            Assert.AreEqual("4", result.PurchaserChoices[3].Item1);
+            Assert.AreEqual("LastName4, FirstName4 (4)", result.PurchaserChoices[3].Item2);
+
+            Assert.AreEqual("DO_NOT_UPDATE", result.SelectedApprover);
+            Assert.AreEqual("DO_NOT_UPDATE", result.SelectedAccountManager);
+            Assert.AreEqual("DO_NOT_UPDATE", result.SelectedPurchaser);
+
+            Assert.IsFalse(result.DefaultSelectedApprover);
+            Assert.IsTrue(result.DefaultSelectedAccountManager);
+            Assert.IsFalse(result.DefaultSelectedPurchaser);
+
+            Assert.IsFalse(Controller.ModelState.IsValid);
+            Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+
+            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostRedirectsWhenValid1()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(2));
+            workgroupPermissions[1].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(3));
+            workgroupPermissions[2].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[2].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(4));
+            workgroupPermissions[3].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[3].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(5));
+            workgroupPermissions[4].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[4].IsDefaultForAccount = true;
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+
+            var updateMultipleAccountsViewModel = new UpdateMultipleAccountsViewModel();
+            updateMultipleAccountsViewModel.DefaultSelectedApprover = true;
+            updateMultipleAccountsViewModel.DefaultSelectedAccountManager = true;
+            updateMultipleAccountsViewModel.DefaultSelectedPurchaser = true;
+            updateMultipleAccountsViewModel.SelectedApprover = "3";
+            updateMultipleAccountsViewModel.SelectedAccountManager = "1";
+            updateMultipleAccountsViewModel.SelectedPurchaser = "4";
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.UpdateMultipleAccounts(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.IsTrue(Controller.ModelState.IsValid);
+            Assert.AreEqual("Values Updated", Controller.Message);
+            
+
+            WorkgroupService.AssertWasCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything), x => x.Repeat.Times(3));
+            var args1 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            var args2 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[1];
+            var args3 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[2]; 
+
+            Assert.AreEqual(3, ((Workgroup)args1[0]).Id);
+            Assert.AreEqual(3, ((Workgroup)args2[0]).Id);
+            Assert.AreEqual(3, ((Workgroup)args3[0]).Id);
+
+            Assert.AreEqual(true, args1[1]);
+            Assert.AreEqual(true, args2[1]);
+            Assert.AreEqual(true, args3[1]);
+
+            Assert.AreEqual("3", args1[2]);
+            Assert.AreEqual("1", args2[2]);
+            Assert.AreEqual("4", args3[2]);
+
+            Assert.AreEqual("AP", args1[3]);
+            Assert.AreEqual("AM", args2[3]);
+            Assert.AreEqual("PR", args3[3]);
+
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostRedirectsWhenValid2()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(2));
+            workgroupPermissions[1].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(3));
+            workgroupPermissions[2].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[2].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(4));
+            workgroupPermissions[3].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[3].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(5));
+            workgroupPermissions[4].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[4].IsDefaultForAccount = true;
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+
+            var updateMultipleAccountsViewModel = new UpdateMultipleAccountsViewModel();
+            updateMultipleAccountsViewModel.DefaultSelectedApprover = true;
+            updateMultipleAccountsViewModel.DefaultSelectedAccountManager = false;
+            updateMultipleAccountsViewModel.DefaultSelectedPurchaser = true;
+            updateMultipleAccountsViewModel.SelectedApprover = "3";
+            updateMultipleAccountsViewModel.SelectedAccountManager = "1";
+            updateMultipleAccountsViewModel.SelectedPurchaser = "4";
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.UpdateMultipleAccounts(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.IsTrue(Controller.ModelState.IsValid);
+            Assert.AreEqual("Values Updated", Controller.Message);
+
+
+            WorkgroupService.AssertWasCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything), x => x.Repeat.Times(3));
+            var args1 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            var args2 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[1];
+            var args3 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[2];
+
+            Assert.AreEqual(3, ((Workgroup)args1[0]).Id);
+            Assert.AreEqual(3, ((Workgroup)args2[0]).Id);
+            Assert.AreEqual(3, ((Workgroup)args3[0]).Id);
+
+            Assert.AreEqual(true, args1[1]);
+            Assert.AreEqual(false, args2[1]);
+            Assert.AreEqual(true, args3[1]);
+
+            Assert.AreEqual("3", args1[2]);
+            Assert.AreEqual("1", args2[2]);
+            Assert.AreEqual("4", args3[2]);
+
+            Assert.AreEqual("AP", args1[3]);
+            Assert.AreEqual("AM", args2[3]);
+            Assert.AreEqual("PR", args3[3]);
+
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostRedirectsWhenValid3()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(2));
+            workgroupPermissions[1].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(3));
+            workgroupPermissions[2].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[2].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(4));
+            workgroupPermissions[3].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[3].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(5));
+            workgroupPermissions[4].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[4].IsDefaultForAccount = true;
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+
+            var updateMultipleAccountsViewModel = new UpdateMultipleAccountsViewModel();
+            updateMultipleAccountsViewModel.DefaultSelectedApprover = true;
+            updateMultipleAccountsViewModel.DefaultSelectedAccountManager = true;
+            updateMultipleAccountsViewModel.DefaultSelectedPurchaser = false;
+            updateMultipleAccountsViewModel.SelectedApprover = "3";
+            updateMultipleAccountsViewModel.SelectedAccountManager = "1";
+            updateMultipleAccountsViewModel.SelectedPurchaser = "4";
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.UpdateMultipleAccounts(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.IsTrue(Controller.ModelState.IsValid);
+            Assert.AreEqual("Values Updated", Controller.Message);
+
+
+            WorkgroupService.AssertWasCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything), x => x.Repeat.Times(3));
+            var args1 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            var args2 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[1];
+            var args3 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[2];
+
+            Assert.AreEqual(3, ((Workgroup)args1[0]).Id);
+            Assert.AreEqual(3, ((Workgroup)args2[0]).Id);
+            Assert.AreEqual(3, ((Workgroup)args3[0]).Id);
+
+            Assert.AreEqual(true, args1[1]);
+            Assert.AreEqual(true, args2[1]);
+            Assert.AreEqual(false, args3[1]);
+
+            Assert.AreEqual("3", args1[2]);
+            Assert.AreEqual("1", args2[2]);
+            Assert.AreEqual("4", args3[2]);
+
+            Assert.AreEqual("AP", args1[3]);
+            Assert.AreEqual("AM", args2[3]);
+            Assert.AreEqual("PR", args3[3]);
+
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateMultipleAccountsPostRedirectsWhenValid4()
+        {
+            #region Arrange
+            new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeUsers(5, UserRepository);
+            SetupRoles(new List<Role>());
+
+            var workgroupPermissions = new List<WorkgroupPermission>();
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            workgroupPermissions[0].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Approver);
+            workgroupPermissions[0].User = UserRepository.Queryable.Single(a => a.Id == "3");
+            workgroupPermissions[0].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(2));
+            workgroupPermissions[1].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[1].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            workgroupPermissions[1].IsDefaultForAccount = true;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(3));
+            workgroupPermissions[2].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[2].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.AccountManager);
+            workgroupPermissions[2].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[2].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(4));
+            workgroupPermissions[3].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[3].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[3].User = UserRepository.Queryable.Single(a => a.Id == "2");
+            workgroupPermissions[3].IsDefaultForAccount = false;
+
+            workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(5));
+            workgroupPermissions[4].Workgroup = WorkgroupRepository.Queryable.Single(a => a.Id == 3);
+            workgroupPermissions[4].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            workgroupPermissions[4].User = UserRepository.Queryable.Single(a => a.Id == "4");
+            workgroupPermissions[4].IsDefaultForAccount = true;
+
+            new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
+
+            var updateMultipleAccountsViewModel = new UpdateMultipleAccountsViewModel();
+            updateMultipleAccountsViewModel.DefaultSelectedApprover = false;
+            updateMultipleAccountsViewModel.DefaultSelectedAccountManager = true;
+            updateMultipleAccountsViewModel.DefaultSelectedPurchaser = true;
+            updateMultipleAccountsViewModel.SelectedApprover = "3";
+            updateMultipleAccountsViewModel.SelectedAccountManager = "1";
+            updateMultipleAccountsViewModel.SelectedPurchaser = "4";
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
+                .AssertActionRedirect()
+                .ToAction<WorkgroupController>(a => a.UpdateMultipleAccounts(3));
+            #endregion Act
+
+            #region Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.RouteValues["id"]);
+            Assert.IsTrue(Controller.ModelState.IsValid);
+            Assert.AreEqual("Values Updated", Controller.Message);
+
+
+            WorkgroupService.AssertWasCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything), x => x.Repeat.Times(3));
+            var args1 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            var args2 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[1];
+            var args3 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[2];
+
+            Assert.AreEqual(3, ((Workgroup)args1[0]).Id);
+            Assert.AreEqual(3, ((Workgroup)args2[0]).Id);
+            Assert.AreEqual(3, ((Workgroup)args3[0]).Id);
+
+            Assert.AreEqual(false, args1[1]);
+            Assert.AreEqual(true, args2[1]);
+            Assert.AreEqual(true, args3[1]);
+
+            Assert.AreEqual("3", args1[2]);
+            Assert.AreEqual("1", args2[2]);
+            Assert.AreEqual("4", args3[2]);
+
+            Assert.AreEqual("AP", args1[3]);
+            Assert.AreEqual("AM", args2[3]);
+            Assert.AreEqual("PR", args3[3]);
+
+            #endregion Assert
+        }
+        #endregion UpdateMultipleAccounts Post Tests
+
+
+        [TestMethod]
+        public void TestDescription()
+        {
+            #region Arrange
+            Assert.Inconclusive("Write tests for UpdateAccount");
+            #endregion Arrange
+
+            #region Act
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
+        }
     }
 }
