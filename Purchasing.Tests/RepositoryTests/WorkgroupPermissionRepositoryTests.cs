@@ -544,6 +544,59 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion ParentWorkgroup Tests
 
+        #region IsDefaultForAccount Tests
+
+        /// <summary>
+        /// Tests the IsDefaultForAccount is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsDefaultForAccountIsFalseSaves()
+        {
+            #region Arrange
+            WorkgroupPermission workgroupPermission = GetValid(9);
+            workgroupPermission.IsDefaultForAccount = false;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupPermissionRepository.DbContext.BeginTransaction();
+            WorkgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+            WorkgroupPermissionRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroupPermission.IsDefaultForAccount);
+            Assert.IsFalse(workgroupPermission.IsTransient());
+            Assert.IsTrue(workgroupPermission.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsDefaultForAccount is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsDefaultForAccountIsTrueSaves()
+        {
+            #region Arrange
+            var workgroupPermission = GetValid(9);
+            workgroupPermission.IsDefaultForAccount = true;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupPermissionRepository.DbContext.BeginTransaction();
+            WorkgroupPermissionRepository.EnsurePersistent(workgroupPermission);
+            WorkgroupPermissionRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(workgroupPermission.IsDefaultForAccount);
+            Assert.IsFalse(workgroupPermission.IsTransient());
+            Assert.IsTrue(workgroupPermission.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsDefaultForAccount Tests
+
+
         
         #region Reflection of Database.
 
@@ -563,6 +616,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
             expectedFields.Add(new NameAndType("IsAdmin", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("IsDefaultForAccount", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("IsFullFeatured", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("ParentWorkgroup", "Purchasing.Core.Domain.Workgroup", new List<string>()));
             expectedFields.Add(new NameAndType("Role", "Purchasing.Core.Domain.Role", new List<string>

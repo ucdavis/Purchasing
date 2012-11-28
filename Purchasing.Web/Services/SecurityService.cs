@@ -70,6 +70,15 @@ namespace Purchasing.Web.Services
         /// <param name="workgroupId"></param>
         /// <returns></returns>
         bool hasWorkgroupRole(string roleCode, int workgroupId);
+        
+        /// <summary>
+        /// Checks if a user is an admin for that level.  
+        /// </summary>
+        /// <param name="roleCode"></param>
+        /// <param name="workgroupId"></param>
+        /// <returns></returns>
+        bool hasAdminWorkgroupRole(string roleCode, int workgroupId);
+        
 
         /// <summary>
         /// Get the current user's access to the order
@@ -243,6 +252,11 @@ namespace Purchasing.Web.Services
         public bool hasWorkgroupRole(string roleCode, int workgroupId)
         {
             return _queryRepositoryFactory.WorkgroupRoleRepository.Queryable.Any(a => a.AccessUserId == _userIdentity.Current && a.RoleId == roleCode && a.WorkgroupId == workgroupId);
+        }
+
+        public bool hasAdminWorkgroupRole(string roleCode, int workgroupId)
+        {
+            return _queryRepositoryFactory.WorkgroupRoleRepository.Queryable.Any(a => a.AccessUserId == _userIdentity.Current && a.RoleId == roleCode && a.WorkgroupId == workgroupId && a.IsAdmin);
         }
 
         public RolesAndAccessLevel GetAccessRoleAndLevel(Order order)

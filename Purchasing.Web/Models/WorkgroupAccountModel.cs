@@ -31,6 +31,42 @@ namespace Purchasing.Web.Models
             viewModel.AccountManagers = viewModel.WorkGroupPermissions.Where(x => x.Role.Id == Role.Codes.AccountManager).Select(x => x.User).Distinct().ToList();
             viewModel.Purchasers = viewModel.WorkGroupPermissions.Where(x => x.Role.Id == Role.Codes.Purchaser).Select(x => x.User).Distinct().ToList();
 
+            if (viewModel.WorkgroupAccount.Approver == null)
+            {
+                var approver = repository.OfType<WorkgroupPermission>().Queryable.SingleOrDefault(
+                        a =>
+                        a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin &&
+                        a.IsDefaultForAccount);
+                if (approver != null)
+                {
+                    viewModel.WorkgroupAccount.Approver = approver.User;
+                }
+            }
+
+            if (viewModel.WorkgroupAccount.AccountManager == null)
+            {
+                var approver = repository.OfType<WorkgroupPermission>().Queryable.SingleOrDefault(
+                        a =>
+                        a.Workgroup == workgroup && a.Role.Id == Role.Codes.AccountManager && !a.IsAdmin &&
+                        a.IsDefaultForAccount);
+                if (approver != null)
+                {
+                    viewModel.WorkgroupAccount.AccountManager = approver.User;
+                }
+            }
+
+            if (viewModel.WorkgroupAccount.Purchaser == null)
+            {
+                var approver = repository.OfType<WorkgroupPermission>().Queryable.SingleOrDefault(
+                        a =>
+                        a.Workgroup == workgroup && a.Role.Id == Role.Codes.Purchaser && !a.IsAdmin &&
+                        a.IsDefaultForAccount);
+                if (approver != null)
+                {
+                    viewModel.WorkgroupAccount.Purchaser = approver.User;
+                }
+            }
+
             return viewModel;
         }
     }

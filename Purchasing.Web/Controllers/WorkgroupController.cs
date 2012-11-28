@@ -649,7 +649,128 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.Accounts(saveWorkgroupId));
         }
 
+        /// <summary>
+        /// Accounts #9 (43)
+        /// </summary>
+        /// <param name="id">Workgroup id</param>
+        /// <returns></returns>
+        public ActionResult UpdateMultipleAccounts(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index(false));
+            }
+
+            var viewModel = UpdateMultipleAccountsViewModel.Create(workgroup);
+            var approver = _workgroupPermissionRepository.Queryable.FirstOrDefault(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && a.IsDefaultForAccount);
+            if (approver != null)
+            {
+                viewModel.SelectedApprover = approver.User.Id;
+                viewModel.DefaultSelectedApprover = true;
+            }
+
+            var accountManager = _workgroupPermissionRepository.Queryable.FirstOrDefault(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.AccountManager && a.IsDefaultForAccount);
+            if (accountManager != null)
+            {
+                viewModel.SelectedAccountManager = accountManager.User.Id;
+                viewModel.DefaultSelectedAccountManager = true;
+            }
+
+            var purchaser = _workgroupPermissionRepository.Queryable.FirstOrDefault(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Purchaser && a.IsDefaultForAccount);
+            if (purchaser != null)
+            {
+                viewModel.SelectedPurchaser = purchaser.User.Id;
+                viewModel.DefaultSelectedPurchaser = true;
+            }
+
+            viewModel.ApproverChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+            viewModel.AccountManagerChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.AccountManager && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+            viewModel.PurchaserChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Purchaser && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+
+
+            return View(viewModel);
+        }
+
+        /// <summary>
+        /// Account #10 (44)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateMultipleAccountsViewModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UpdateMultipleAccounts(int id, UpdateMultipleAccountsViewModel updateMultipleAccountsViewModel)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index(false));
+            }
+
+            if (updateMultipleAccountsViewModel.DefaultSelectedApprover)
+            {
+                if (updateMultipleAccountsViewModel.SelectedApprover == "DO_NOT_UPDATE" || updateMultipleAccountsViewModel.SelectedApprover == "CLEAR_ALL")
+                {
+                    ModelState.AddModelError("DefaultSelectedApprover", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+                }
+            }
+
+            if (updateMultipleAccountsViewModel.DefaultSelectedAccountManager)
+            {
+                if (updateMultipleAccountsViewModel.SelectedAccountManager == "DO_NOT_UPDATE" || updateMultipleAccountsViewModel.SelectedAccountManager == "CLEAR_ALL")
+                {
+                    ModelState.AddModelError("DefaultSelectedAccountManager", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+                }
+            }
+
+            if (updateMultipleAccountsViewModel.DefaultSelectedPurchaser)
+            {
+                if (updateMultipleAccountsViewModel.SelectedPurchaser == "DO_NOT_UPDATE" || updateMultipleAccountsViewModel.SelectedPurchaser == "CLEAR_ALL")
+                {
+                    ModelState.AddModelError("DefaultSelectedPurchaser", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
+                }
+            }
+
+
+            if (!ModelState.IsValid)
+            {
+                var viewModel = UpdateMultipleAccountsViewModel.Create(workgroup);
+
+                viewModel.SelectedApprover = updateMultipleAccountsViewModel.SelectedApprover;
+                viewModel.DefaultSelectedApprover = updateMultipleAccountsViewModel.DefaultSelectedApprover;
+
+                viewModel.SelectedAccountManager = updateMultipleAccountsViewModel.SelectedAccountManager;
+                viewModel.DefaultSelectedAccountManager = updateMultipleAccountsViewModel.DefaultSelectedAccountManager;
+
+                viewModel.SelectedPurchaser = updateMultipleAccountsViewModel.SelectedPurchaser;
+                viewModel.DefaultSelectedPurchaser = updateMultipleAccountsViewModel.DefaultSelectedPurchaser;
+       
+
+                viewModel.ApproverChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Approver && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+                viewModel.AccountManagerChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.AccountManager && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+                viewModel.PurchaserChoices.AddRange(_workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroup && a.Role.Id == Role.Codes.Purchaser && !a.IsAdmin).OrderBy(a => a.User.LastName).ToList().Select(b => new Tuple<string, string>(b.User.Id, b.User.FullNameAndIdLastFirst)).ToList());
+
+
+                return View(viewModel);
+            }
+
+            
+            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedApprover, updateMultipleAccountsViewModel.SelectedApprover, Role.Codes.Approver);
+            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedAccountManager, updateMultipleAccountsViewModel.SelectedAccountManager, Role.Codes.AccountManager);
+            _workgroupService.UpdateDefaultAccountApprover(workgroup, updateMultipleAccountsViewModel.DefaultSelectedPurchaser, updateMultipleAccountsViewModel.SelectedPurchaser, Role.Codes.Purchaser);
+
+
+            Message = "Values Updated";
+
+
+            return this.RedirectToAction(a => a.UpdateMultipleAccounts(id));
+        }
+
+
         #endregion
+
 
         #region Workgroup Vendors
         /// <summary>
@@ -1858,6 +1979,111 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(requesterInfo);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">Workgroup id</param>
+        /// <param name="workgroupAccountId"></param>
+        /// <param name="approver"></param>
+        /// <param name="accountManager"></param>
+        /// <param name="purchaser"></param>
+        /// <returns></returns>
+        public JsonNetResult UpdateAccount(int id, int workgroupAccountId, string approver, string accountManager, string purchaser)
+        {          
+            //Note, the workgroup id (id) is needed I think to determine workgroup access
+            var success = false;
+            var message = "Done";
+            var rtApprover = string.Empty;
+            var rtAccountManager = string.Empty;
+            var rtPurchaser = string.Empty;
+
+            var somethingChanged = false;
+            try
+            {
+                var workgroupAccount = _workgroupAccountRepository.Queryable.Single(a => a.Id == workgroupAccountId && a.Workgroup.Id == id); //I'm checking the workgroup id here as well as an extra security check.
+                switch (approver)
+                {
+                    case "DO_NOT_UPDATE":
+                        break;
+                    case "CLEAR_ALL":
+                        if (workgroupAccount.Approver != null)
+                        {
+                            workgroupAccount.Approver = null;
+                            somethingChanged = true;
+                            //TODO: Return result here                            
+                        }
+                        break;
+                    default:
+                        if (workgroupAccount.Approver == null || workgroupAccount.Approver.Id != approver)
+                        {
+                            var user = _userRepository.Queryable.Single(a => a.Id == approver);
+                            workgroupAccount.Approver = user;
+                            somethingChanged = true;
+                        }
+                        break;
+                }
+
+                switch (accountManager)
+                {
+                    case "DO_NOT_UPDATE":
+                        break;
+                    case "CLEAR_ALL":
+                        if (workgroupAccount.AccountManager != null)
+                        {
+                            workgroupAccount.AccountManager = null;
+                            somethingChanged = true;
+                            //TODO: Return result here                            
+                        }
+                        break;
+                    default:
+                        if (workgroupAccount.AccountManager == null || workgroupAccount.AccountManager.Id != accountManager)
+                        {
+                            var user = _userRepository.Queryable.Single(a => a.Id == accountManager);
+                            workgroupAccount.AccountManager = user;
+                            somethingChanged = true;
+                        }
+                        break;
+                }
+                switch (purchaser)
+                {
+                    case "DO_NOT_UPDATE":
+                        break;
+                    case "CLEAR_ALL":
+                        if (workgroupAccount.Purchaser != null)
+                        {
+                            workgroupAccount.Purchaser = null;
+                            somethingChanged = true;
+                            //TODO: Return result here                            
+                        }
+                        break;
+                    default:
+                        if (workgroupAccount.Purchaser == null || workgroupAccount.Purchaser.Id != purchaser)
+                        {
+                            var user = _userRepository.Queryable.Single(a => a.Id == purchaser);
+                            workgroupAccount.Purchaser = user;
+                            somethingChanged = true;
+                        }
+                        break;
+                }
+
+                if (somethingChanged)
+                {
+                    _workgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                }
+                success = true;
+                rtApprover = workgroupAccount.Approver != null ? workgroupAccount.Approver.FullNameAndId : string.Empty;
+                rtAccountManager = workgroupAccount.AccountManager != null ? workgroupAccount.AccountManager.FullNameAndId : string.Empty;
+                rtPurchaser = workgroupAccount.Purchaser != null ? workgroupAccount.Purchaser.FullNameAndId : string.Empty;
+            }
+            catch(Exception)
+            {
+                success = false;
+                message = "Error";
+            }
+
+            return new JsonNetResult(new { success, message, rtApprover, rtAccountManager, rtPurchaser });
+
+        }
         #endregion
     }
 
@@ -1876,6 +2102,48 @@ namespace Purchasing.Web.Controllers
 
             return viewModel;
         }
+    }
+
+    public class UpdateMultipleAccountsViewModel
+    {
+        public Workgroup Workgroup { get; set; }
+
+        public string SelectedApprover { get; set; }
+        public string SelectedAccountManager { get; set; }
+        public string SelectedPurchaser { get; set; }
+
+        public bool DefaultSelectedApprover { get; set; }
+        public bool DefaultSelectedAccountManager { get; set; }
+        public bool DefaultSelectedPurchaser { get; set; }
+
+        public List<Tuple<string, string>> ApproverChoices { get; set; }
+        public List<Tuple<string, string>> AccountManagerChoices { get; set; }
+        public List<Tuple<string, string>> PurchaserChoices { get; set; }
+
+        public static UpdateMultipleAccountsViewModel Create(Workgroup workgroup)
+        {
+            var viewModel = new UpdateMultipleAccountsViewModel {Workgroup = workgroup};
+            
+            viewModel.ApproverChoices = new List<Tuple<string, string>>();
+            viewModel.AccountManagerChoices = new List<Tuple<string, string>>();
+            viewModel.PurchaserChoices = new List<Tuple<string, string>>();
+
+            viewModel.ApproverChoices.Add(new Tuple<string, string>("DO_NOT_UPDATE", "-- Do Not Update --"));
+            viewModel.ApproverChoices.Add(new Tuple<string, string>("CLEAR_ALL", "-- Clear All --"));
+
+            viewModel.AccountManagerChoices.Add(new Tuple<string, string>("DO_NOT_UPDATE", "-- Do Not Update --"));
+            viewModel.AccountManagerChoices.Add(new Tuple<string, string>("CLEAR_ALL", "-- Clear All --"));
+
+            viewModel.PurchaserChoices.Add(new Tuple<string, string>("DO_NOT_UPDATE", "-- Do Not Update --"));
+            viewModel.PurchaserChoices.Add(new Tuple<string, string>("CLEAR_ALL", "-- Clear All --"));
+
+            viewModel.DefaultSelectedApprover = false;
+            viewModel.DefaultSelectedAccountManager = false;
+            viewModel.DefaultSelectedPurchaser = false;
+
+            return viewModel;
+        }
+
     }
 
 }

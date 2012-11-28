@@ -15,10 +15,9 @@
                 <li><span>Workgroup:</span><strong>@Model.WorkgroupName</strong></li>
                 <li><span>Department:</span><strong>@Model.OrganizationName</strong></li>
                 <li><span>Date Needed:</span><strong>@Model.Order.DateNeeded.ToString("d")</strong></li>
-                @if (Model.Order.AllowBackorder)
-                {
-                    <li><span>Allow Backorder:</span><strong>@(Model.Order.AllowBackorder ? "Yes" : "No")</strong></li>
-                }
+
+                <li><span>Allow Backorder:</span><strong style="@(Model.Order.AllowBackorder ? "color: green" : "color: red")">@(Model.Order.AllowBackorder ? "Yes" : "No")</strong></li>
+
                 
                 @if (Model.Order.StatusCode.IsComplete)
                 {

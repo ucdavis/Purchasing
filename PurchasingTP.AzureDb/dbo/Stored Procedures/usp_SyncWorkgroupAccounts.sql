@@ -17,6 +17,9 @@ begin
 	merge workgroupaccounts as t
 	using (
 		select w.id workgroupid, va.id accountid
+			, (select userid from WorkgroupPermissions where workgroupid = w.id and roleid = 'AP' and IsDefaultForAccount = 1) AP
+			, (select userid from WorkgroupPermissions where workgroupid = w.id and roleid = 'AM' and IsDefaultForAccount = 1) AM
+			, (select userid from WorkgroupPermissions where workgroupid = w.id and roleid = 'PR' and IsDefaultForAccount = 1) PR
 		from workgroups w
 			inner join WorkgroupsXOrganizations wo on w.id = wo.WorkgroupId
 			inner join vAccounts va on wo.OrganizationId = va.OrganizationId
@@ -25,7 +28,7 @@ begin
 		) as src
 	on t.workgroupid = src.workgroupid and t.accountid = src.accountid
 	when not matched then 
-		insert (accountid, workgroupid) values (src.accountid, src.workgroupid);
+		insert (accountid, workgroupid, ApproverUserId, AccountManagerUserId, PurchaserUserId) values (src.accountid, src.workgroupid, src.AP, src.AM, src.PR);
 
 	-- remove the inactive ones
 	delete from WorkgroupAccounts

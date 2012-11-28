@@ -6,6 +6,7 @@
     [IsAdmin]           BIT          DEFAULT ((0)) NOT NULL,
     [ParentWorkgroupId] INT          NULL,
     [IsFullFeatured]    BIT          DEFAULT ((0)) NOT NULL,
+    [IsDefaultForAccount] BIT NOT NULL DEFAULT ((0)), 
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_WorkgroupPermissions_Roles] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Roles] ([Id]),
     CONSTRAINT [FK_WorkgroupPermissions_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]),

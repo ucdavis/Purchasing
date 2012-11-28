@@ -21,6 +21,8 @@ namespace Purchasing.Core.Domain
 
         public virtual bool IsAdmin { get; set; }
         public virtual bool IsFullFeatured { get; set; }
+
+        public virtual bool IsDefaultForAccount { get; set; }
         /// <summary>
         /// When permission is an admin role, what workgroup is this permission coming from?
         /// </summary>
@@ -39,6 +41,9 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.IsAdmin);
             Map(x => x.IsFullFeatured);
+
+            Map(x => x.IsDefaultForAccount);
+
             References(x => x.ParentWorkgroup).Column("ParentWorkgroupId");
         }
     }
