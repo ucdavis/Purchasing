@@ -312,6 +312,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             "~/Workgroup/UpdateMultipleAccounts/5".ShouldMapTo<WorkgroupController>(a => a.UpdateMultipleAccounts(5, new UpdateMultipleAccountsViewModel()), true);
         }
+
+        /// <summary>
+        /// (45)
+        /// </summary>
+        [TestMethod]
+        public void TestUpdateAccountMapping()
+        {
+            "~/Workgroup/UpdateAccount/5".ShouldMapTo<WorkgroupController>(a => a.UpdateAccount(5, 5, "test", "test", "test"), true);
+        }
         #endregion Workgroup Accounts Mapping Tests
 
         #region Workgroup Vendors Mapping Tests
