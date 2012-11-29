@@ -420,6 +420,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserGetReturnsView2()
         {
             #region Arrange
+            new FakeUsers(12, UserRepository);
+            SetupRoles();
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
@@ -427,8 +429,15 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
             orders[0].Workgroup.SetIdTo(2);
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
             //var orderPeeps = new List<OrderPeep>();
             //for (int i = 0; i < 12; i++)
@@ -483,6 +492,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserGetReturnsView3()
         {
             #region Arrange
+            SetupRoles();
+            new FakeUsers(12, UserRepository);
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
@@ -490,8 +501,15 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
             orders[0].Workgroup.SetIdTo(2);
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
             //var orderPeeps = new List<OrderPeep>();
             //for (int i = 0; i < 12; i++)
@@ -873,6 +891,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserWhenValid1()
         {
             #region Arrange
+            new FakeUsers(12, UserRepository);
+            SetupRoles();
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
@@ -883,8 +903,15 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
             orders[0].Approvals[1].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
             orders[0].Approvals[1].User = null;
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
             //var orderPeeps = new List<OrderPeep>();
             //for (int i = 0; i < 12; i++)
@@ -936,6 +963,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserWhenValid2()
         {
             #region Arrange
+            SetupRoles();
+            new FakeUsers(12, UserRepository);
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
@@ -946,8 +975,15 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
             orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
             //var orderPeeps = new List<OrderPeep>();
             //for (int i = 0; i < 12; i++)
@@ -1000,6 +1036,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserWhenValid3()
         {
             #region Arrange
+            new FakeUsers(12, UserRepository);
+            SetupRoles();
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
@@ -1010,8 +1048,15 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
             orders[0].Approvals[1].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
             orders[0].Approvals[1].User = null;
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
             //var orderPeeps = new List<OrderPeep>();
             //for (int i = 0; i < 12; i++)
