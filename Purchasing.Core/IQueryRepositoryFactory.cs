@@ -19,7 +19,7 @@ namespace Purchasing.Core
         IRepository<CompletedOrdersThisWeek> CompletedOrdersThisWeekRepository { get; set; }
         IRepository<OpenOrderByUser> OpenOrderByUserRepository { get; set; }
         IRepository<PendingOrder> PendingOrderRepository { get; set; }
-        IRepository<OrderPeep> OrderPeepRepository { get; set; }
+        //IRepository<OrderPeep> OrderPeepRepository { get; set; }
         IRepository<OrderHistory> OrderHistoryRepository { get; set; }
         IRepository<WorkgroupAdmin> WorkgroupAdminRepository { get; set; }
         IRepositoryWithTypedId<CommentHistory, Guid> CommentHistoryRepository { get; set; }
@@ -42,7 +42,7 @@ namespace Purchasing.Core
         public IRepository<CompletedOrdersThisWeek> CompletedOrdersThisWeekRepository { get; set; }
         public IRepository<PendingOrder> PendingOrderRepository { get; set; }
         public IRepository<OpenOrderByUser> OpenOrderByUserRepository { get; set; }
-        public IRepository<OrderPeep> OrderPeepRepository { get; set; }
+        //public IRepository<OrderPeep> OrderPeepRepository { get; set; }
         public IRepository<OrderHistory> OrderHistoryRepository { get; set; }
         public IRepository<WorkgroupAdmin> WorkgroupAdminRepository { get; set; }
         public IRepository<RelatedWorkgroups> RelatatedWorkgroupsRepository { get; set; } 
