@@ -36,7 +36,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public IRepositoryWithTypedId<User, string> UserRepository; 
         public IRepository<User> UserRepository2;
         public IRepositoryWithTypedId<Role, string> RoleRepository;
-        public IRepository<OrderPeep> OrderPeepRepository;
+        //public IRepository<OrderPeep> OrderPeepRepository;
         public IRepository<Approval> ApprovalRepository;
         public IRepository<Workgroup> WorkgroupRepository;
         public IRepository<WorkgroupPermission> WorkgroupPermissionRepository; 
@@ -63,7 +63,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             BugTrackingService = MockRepository.GenerateStub<IBugTrackingService>();
             UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
             RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
-            OrderPeepRepository = MockRepository.GenerateStub<IRepository<OrderPeep>>();
+            //OrderPeepRepository = MockRepository.GenerateStub<IRepository<OrderPeep>>();
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
             WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
             WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
@@ -90,7 +90,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             RepositoryFactory.SplitRepository = MockRepository.GenerateStub<IRepository<Split>>();
             RepositoryFactory.AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
 
-            QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
+            //QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 
             Controller = new TestControllerBuilder().CreateController<OrderController>(
                 RepositoryFactory,

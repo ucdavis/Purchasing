@@ -123,7 +123,6 @@
     <Build Include="dbo\Views\vCustomFieldResults.sql" />
     <Build Include="dbo\Views\vLineResults.sql" />
     <Build Include="dbo\Views\vOpenOrdersByUser.sql" />
-    <Build Include="dbo\Views\vOrderPeeps.sql" />
     <Build Include="dbo\Views\vOrderHistory.sql" />
     <Build Include="dbo\Views\vOrderResults.sql" />
     <Build Include="dbo\Views\vOrderTracking.sql" />

@@ -401,7 +401,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
             new FakeOrders(0, OrderRepository, orders);
             new FakeUsers(3, UserRepository);
-            new FakeOrderPeeps(3, OrderPeepRepository);
+            //new FakeOrderPeeps(3, OrderPeepRepository);
             #endregion Arrange
 
             #region Act
@@ -420,6 +420,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserGetReturnsView2()
         {
             #region Arrange
+            new FakeUsers(12, UserRepository);
+            SetupRoles();
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
@@ -427,38 +429,45 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
             orders[0].Workgroup.SetIdTo(2);
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
-            var orderPeeps = new List<OrderPeep>();
-            for (int i = 0; i < 12; i++)
-            {
-                orderPeeps.Add(CreateValidEntities.OrderPeep(i+1));
-                orderPeeps[i].OrderId = 1;
-                orderPeeps[i].WorkgroupId = 2;
-                orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
-                orderPeeps[i].UserId = (i+1).ToString();
-            }
-            orderPeeps[1].UserId = "99";
-            orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
-            orderPeeps[3].OrderId = 9;
-            orderPeeps[4].WorkgroupId = 1;
-            orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
-            orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
-            orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
-            orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
-            orderPeeps[9].UserId = "1";
-            orderPeeps[10].UserId = "1";
+            //var orderPeeps = new List<OrderPeep>();
+            //for (int i = 0; i < 12; i++)
+            //{
+            //    orderPeeps.Add(CreateValidEntities.OrderPeep(i+1));
+            //    orderPeeps[i].OrderId = 1;
+            //    orderPeeps[i].WorkgroupId = 2;
+            //    orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
+            //    orderPeeps[i].UserId = (i+1).ToString();
+            //}
+            //orderPeeps[1].UserId = "99";
+            //orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
+            //orderPeeps[3].OrderId = 9;
+            //orderPeeps[4].WorkgroupId = 1;
+            //orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
+            //orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
+            //orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
+            //orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
+            //orderPeeps[9].UserId = "1";
+            //orderPeeps[10].UserId = "1";
 
-            new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
+            //new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
 
-            var peeps = new List<OrderPeep>();
-            for (int i = 0; i < 10; i++)
-            {
-                peeps.Add(CreateValidEntities.OrderPeep(i+1));
-                peeps[i].OrderId = 1;
-                peeps[i].WorkgroupId = 2;
-            }
+            //var peeps = new List<OrderPeep>();
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    peeps.Add(CreateValidEntities.OrderPeep(i+1));
+            //    peeps[i].OrderId = 1;
+            //    peeps[i].WorkgroupId = 2;
+            //}
 
             #endregion Arrange
 
@@ -483,6 +492,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserGetReturnsView3()
         {
             #region Arrange
+            SetupRoles();
+            new FakeUsers(12, UserRepository);
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
@@ -490,38 +501,45 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
             orders[0].Workgroup.SetIdTo(2);
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
-            var orderPeeps = new List<OrderPeep>();
-            for (int i = 0; i < 12; i++)
-            {
-                orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                orderPeeps[i].OrderId = 1;
-                orderPeeps[i].WorkgroupId = 2;
-                orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
-                orderPeeps[i].UserId = (i + 1).ToString();
-            }
-            orderPeeps[1].UserId = "99";
-            orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
-            orderPeeps[3].OrderId = 9;
-            orderPeeps[4].WorkgroupId = 1;
-            orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
-            orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
-            orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
-            orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
-            orderPeeps[9].UserId = "1";
-            orderPeeps[10].UserId = "1";
+            //var orderPeeps = new List<OrderPeep>();
+            //for (int i = 0; i < 12; i++)
+            //{
+            //    orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
+            //    orderPeeps[i].OrderId = 1;
+            //    orderPeeps[i].WorkgroupId = 2;
+            //    orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
+            //    orderPeeps[i].UserId = (i + 1).ToString();
+            //}
+            //orderPeeps[1].UserId = "99";
+            //orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
+            //orderPeeps[3].OrderId = 9;
+            //orderPeeps[4].WorkgroupId = 1;
+            //orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
+            //orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
+            //orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
+            //orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
+            //orderPeeps[9].UserId = "1";
+            //orderPeeps[10].UserId = "1";
 
-            new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
+            //new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
 
-            var peeps = new List<OrderPeep>();
-            for (int i = 0; i < 10; i++)
-            {
-                peeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                peeps[i].OrderId = 1;
-                peeps[i].WorkgroupId = 2;
-            }
+            //var peeps = new List<OrderPeep>();
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    peeps.Add(CreateValidEntities.OrderPeep(i + 1));
+            //    peeps[i].OrderId = 1;
+            //    peeps[i].WorkgroupId = 2;
+            //}
 
             #endregion Arrange
 
@@ -785,7 +803,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 orders[0].Approvals[0].User = CreateValidEntities.User(99);
                 new FakeOrders(0, OrderRepository, orders);
                 new FakeUsers(3, UserRepository);
-                new FakeOrderPeeps(3, OrderPeepRepository);
+                //new FakeOrderPeeps(3, OrderPeepRepository);
                 thisFar = true;
                 #endregion Arrange
 
@@ -823,35 +841,35 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 new FakeOrders(0, OrderRepository, orders);
                 new FakeUsers(12, UserRepository);
 
-                var orderPeeps = new List<OrderPeep>();
-                for (int i = 0; i < 12; i++)
-                {
-                    orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                    orderPeeps[i].OrderId = 1;
-                    orderPeeps[i].WorkgroupId = 2;
-                    orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
-                    orderPeeps[i].UserId = (i + 1).ToString();
-                }
-                orderPeeps[1].UserId = "99";
-                orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
-                orderPeeps[3].OrderId = 9;
-                orderPeeps[4].WorkgroupId = 1;
-                orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
-                orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
-                orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
-                orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
-                orderPeeps[9].UserId = "1";
-                orderPeeps[10].UserId = "1";
+                //var orderPeeps = new List<OrderPeep>();
+                //for (int i = 0; i < 12; i++)
+                //{
+                //    orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
+                //    orderPeeps[i].OrderId = 1;
+                //    orderPeeps[i].WorkgroupId = 2;
+                //    orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
+                //    orderPeeps[i].UserId = (i + 1).ToString();
+                //}
+                //orderPeeps[1].UserId = "99";
+                //orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
+                //orderPeeps[3].OrderId = 9;
+                //orderPeeps[4].WorkgroupId = 1;
+                //orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
+                //orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
+                //orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
+                //orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
+                //orderPeeps[9].UserId = "1";
+                //orderPeeps[10].UserId = "1";
 
-                new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
+                //new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
 
-                var peeps = new List<OrderPeep>();
-                for (int i = 0; i < 10; i++)
-                {
-                    peeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                    peeps[i].OrderId = 1;
-                    peeps[i].WorkgroupId = 2;
-                }
+                //var peeps = new List<OrderPeep>();
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    peeps.Add(CreateValidEntities.OrderPeep(i + 1));
+                //    peeps[i].OrderId = 1;
+                //    peeps[i].WorkgroupId = 2;
+                //}
                 thisFar = true;
                 #endregion Arrange
 
@@ -873,6 +891,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserWhenValid1()
         {
             #region Arrange
+            new FakeUsers(12, UserRepository);
+            SetupRoles();
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
@@ -883,38 +903,45 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
             orders[0].Approvals[1].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
             orders[0].Approvals[1].User = null;
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
-            var orderPeeps = new List<OrderPeep>();
-            for (int i = 0; i < 12; i++)
-            {
-                orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                orderPeeps[i].OrderId = 1;
-                orderPeeps[i].WorkgroupId = 2;
-                orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
-                orderPeeps[i].UserId = (i + 1).ToString();
-            }
-            orderPeeps[1].UserId = "99";
-            orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
-            orderPeeps[3].OrderId = 9;
-            orderPeeps[4].WorkgroupId = 1;
-            orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
-            orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
-            orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
-            orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
-            orderPeeps[9].UserId = "1";
-            orderPeeps[10].UserId = "1";
+            //var orderPeeps = new List<OrderPeep>();
+            //for (int i = 0; i < 12; i++)
+            //{
+            //    orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
+            //    orderPeeps[i].OrderId = 1;
+            //    orderPeeps[i].WorkgroupId = 2;
+            //    orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
+            //    orderPeeps[i].UserId = (i + 1).ToString();
+            //}
+            //orderPeeps[1].UserId = "99";
+            //orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
+            //orderPeeps[3].OrderId = 9;
+            //orderPeeps[4].WorkgroupId = 1;
+            //orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
+            //orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
+            //orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
+            //orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
+            //orderPeeps[9].UserId = "1";
+            //orderPeeps[10].UserId = "1";
 
-            new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
+            //new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
 
-            var peeps = new List<OrderPeep>();
-            for (int i = 0; i < 10; i++)
-            {
-                peeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                peeps[i].OrderId = 1;
-                peeps[i].WorkgroupId = 2;
-            }
+            //var peeps = new List<OrderPeep>();
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    peeps.Add(CreateValidEntities.OrderPeep(i + 1));
+            //    peeps[i].OrderId = 1;
+            //    peeps[i].WorkgroupId = 2;
+            //}
             #endregion Arrange
 
             #region Act
@@ -936,6 +963,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserWhenValid2()
         {
             #region Arrange
+            SetupRoles();
+            new FakeUsers(12, UserRepository);
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
@@ -946,38 +975,45 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
             orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
-            var orderPeeps = new List<OrderPeep>();
-            for (int i = 0; i < 12; i++)
-            {
-                orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                orderPeeps[i].OrderId = 1;
-                orderPeeps[i].WorkgroupId = 2;
-                orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
-                orderPeeps[i].UserId = (i + 1).ToString();
-            }
-            orderPeeps[1].UserId = "99";
-            orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
-            orderPeeps[3].OrderId = 9;
-            orderPeeps[4].WorkgroupId = 1;
-            orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
-            orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
-            orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
-            orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
-            orderPeeps[9].UserId = "1";
-            orderPeeps[10].UserId = "1";
+            //var orderPeeps = new List<OrderPeep>();
+            //for (int i = 0; i < 12; i++)
+            //{
+            //    orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
+            //    orderPeeps[i].OrderId = 1;
+            //    orderPeeps[i].WorkgroupId = 2;
+            //    orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
+            //    orderPeeps[i].UserId = (i + 1).ToString();
+            //}
+            //orderPeeps[1].UserId = "99";
+            //orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
+            //orderPeeps[3].OrderId = 9;
+            //orderPeeps[4].WorkgroupId = 1;
+            //orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
+            //orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
+            //orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
+            //orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
+            //orderPeeps[9].UserId = "1";
+            //orderPeeps[10].UserId = "1";
 
-            new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
+            //new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
 
-            var peeps = new List<OrderPeep>();
-            for (int i = 0; i < 10; i++)
-            {
-                peeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                peeps[i].OrderId = 1;
-                peeps[i].WorkgroupId = 2;
-            }
+            //var peeps = new List<OrderPeep>();
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    peeps.Add(CreateValidEntities.OrderPeep(i + 1));
+            //    peeps[i].OrderId = 1;
+            //    peeps[i].WorkgroupId = 2;
+            //}
             #endregion Arrange
 
             #region Act
@@ -1000,6 +1036,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestReroutePurchaserWhenValid3()
         {
             #region Arrange
+            new FakeUsers(12, UserRepository);
+            SetupRoles();
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
             orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
@@ -1010,38 +1048,45 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
             orders[0].Approvals[1].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
             orders[0].Approvals[1].User = null;
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
+            orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
+            orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
+            orders[0].Workgroup.Permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].User = UserRepository.Queryable.Single(a => a.Id == "12");
+            orders[0].Workgroup.Permissions[1].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Purchaser);
+            orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
-            new FakeUsers(12, UserRepository);
+            
 
-            var orderPeeps = new List<OrderPeep>();
-            for (int i = 0; i < 12; i++)
-            {
-                orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                orderPeeps[i].OrderId = 1;
-                orderPeeps[i].WorkgroupId = 2;
-                orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
-                orderPeeps[i].UserId = (i + 1).ToString();
-            }
-            orderPeeps[1].UserId = "99";
-            orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
-            orderPeeps[3].OrderId = 9;
-            orderPeeps[4].WorkgroupId = 1;
-            orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
-            orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
-            orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
-            orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
-            orderPeeps[9].UserId = "1";
-            orderPeeps[10].UserId = "1";
+            //var orderPeeps = new List<OrderPeep>();
+            //for (int i = 0; i < 12; i++)
+            //{
+            //    orderPeeps.Add(CreateValidEntities.OrderPeep(i + 1));
+            //    orderPeeps[i].OrderId = 1;
+            //    orderPeeps[i].WorkgroupId = 2;
+            //    orderPeeps[i].OrderStatusCodeId = OrderStatusCode.Codes.Purchaser;
+            //    orderPeeps[i].UserId = (i + 1).ToString();
+            //}
+            //orderPeeps[1].UserId = "99";
+            //orderPeeps[2].OrderStatusCodeId = OrderStatusCode.Codes.AccountManager;
+            //orderPeeps[3].OrderId = 9;
+            //orderPeeps[4].WorkgroupId = 1;
+            //orderPeeps[5].OrderStatusCodeId = OrderStatusCode.Codes.Approver;
+            //orderPeeps[6].OrderStatusCodeId = OrderStatusCode.Codes.Requester;
+            //orderPeeps[7].OrderStatusCodeId = OrderStatusCode.Codes.Cancelled;
+            //orderPeeps[8].OrderStatusCodeId = OrderStatusCode.Codes.Complete;
+            //orderPeeps[9].UserId = "1";
+            //orderPeeps[10].UserId = "1";
 
-            new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
+            //new FakeOrderPeeps(0, OrderPeepRepository, orderPeeps);
 
-            var peeps = new List<OrderPeep>();
-            for (int i = 0; i < 10; i++)
-            {
-                peeps.Add(CreateValidEntities.OrderPeep(i + 1));
-                peeps[i].OrderId = 1;
-                peeps[i].WorkgroupId = 2;
-            }
+            //var peeps = new List<OrderPeep>();
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    peeps.Add(CreateValidEntities.OrderPeep(i + 1));
+            //    peeps[i].OrderId = 1;
+            //    peeps[i].WorkgroupId = 2;
+            //}
             #endregion Arrange
 
             #region Act

@@ -8,6 +8,7 @@ using Purchasing.Web.Controllers;
 using Purchasing.Web.Models;
 using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Web.ActionResults;
 
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
@@ -1524,19 +1525,394 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
         #endregion UpdateMultipleAccounts Post Tests
 
+        #region UpdateAccount Tests
 
         [TestMethod]
-        public void TestDescription()
+        public void TestUpdateAccountWhenException1()
         {
             #region Arrange
-            Assert.Inconclusive("Write tests for UpdateAccount");
+            //Nothing
             #endregion Arrange
 
             #region Act
+            var result = Controller.UpdateAccount(1, 1, "test", "test", "test")
+                .AssertResultIs<JsonNetResult>();
             #endregion Act
 
             #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(false, data.success);
+            Assert.AreEqual("Error", data.message);
+            Assert.AreEqual(string.Empty, data.rtApprover);
+            Assert.AreEqual(string.Empty, data.rtAccountManager);
+            Assert.AreEqual(string.Empty, data.rtPurchaser);
             #endregion Assert		
         }
+
+        [TestMethod]
+        public void TestUpdateAccountWhenException2()
+        {
+            #region Arrange
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i+1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(1, 1, "DO_NOT_UPDATE", "DO_NOT_UPDATE", "DO_NOT_UPDATE")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(false, data.success);
+            Assert.AreEqual("Error", data.message);
+            Assert.AreEqual(string.Empty, data.rtApprover);
+            Assert.AreEqual(string.Empty, data.rtAccountManager);
+            Assert.AreEqual(string.Empty, data.rtPurchaser);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateAccountReturnsExpectedValue1()
+        {
+            #region Arrange
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Approver = null;
+                workgroupsAccounts[i].AccountManager = null;
+                workgroupsAccounts[i].Purchaser = null;
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(7, 1, "DO_NOT_UPDATE", "DO_NOT_UPDATE", "DO_NOT_UPDATE")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(true, data.success);
+            Assert.AreEqual("Done", data.message);
+            Assert.AreEqual(string.Empty, data.rtApprover);
+            Assert.AreEqual(string.Empty, data.rtAccountManager);
+            Assert.AreEqual(string.Empty, data.rtPurchaser);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateAccountReturnsExpectedValue2()
+        {
+            #region Arrange
+            new FakeUsers(10, UserRepository);
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
+                workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
+                workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(7, 1, "DO_NOT_UPDATE", "DO_NOT_UPDATE", "DO_NOT_UPDATE")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(true, data.success);
+            Assert.AreEqual("Done", data.message);
+            Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover);
+            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager);
+            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser);
+            WorkgroupAccountRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateAccountReturnsExpectedValue3()
+        {
+            #region Arrange
+            new FakeUsers(10, UserRepository);
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
+                workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
+                workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(7, 1, "CLEAR_ALL", "DO_NOT_UPDATE", "DO_NOT_UPDATE")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(true, data.success);
+            Assert.AreEqual("Done", data.message);
+            Assert.AreEqual("", data.rtApprover);
+            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager);
+            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser);
+            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            var args = (WorkgroupAccount) WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0]; 
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, args.Id);
+            Assert.AreEqual(7, args.Workgroup.Id);
+            Assert.IsNull(args.Approver);
+            Assert.AreEqual("FirstName4 LastName4 (4)", args.AccountManager.FullNameAndId);
+            Assert.AreEqual("FirstName6 LastName6 (6)", args.Purchaser.FullNameAndId);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateAccountReturnsExpectedValue4()
+        {
+            #region Arrange
+            new FakeUsers(10, UserRepository);
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
+                workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
+                workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(7, 1, "DO_NOT_UPDATE", "CLEAR_ALL", "DO_NOT_UPDATE")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(true, data.success);
+            Assert.AreEqual("Done", data.message);
+            Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover);
+            Assert.AreEqual("", data.rtAccountManager);
+            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser);
+            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, args.Id);
+            Assert.AreEqual(7, args.Workgroup.Id);
+            Assert.AreEqual("FirstName2 LastName2 (2)", args.Approver.FullNameAndId);
+            Assert.IsNull(args.AccountManager);
+            Assert.AreEqual("FirstName6 LastName6 (6)", args.Purchaser.FullNameAndId);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateAccountReturnsExpectedValue5()
+        {
+            #region Arrange
+            new FakeUsers(10, UserRepository);
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
+                workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
+                workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(7, 1, "DO_NOT_UPDATE", "DO_NOT_UPDATE", "CLEAR_ALL")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(true, data.success);
+            Assert.AreEqual("Done", data.message);
+            Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover);
+            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager);
+            Assert.AreEqual("", data.rtPurchaser);
+            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, args.Id);
+            Assert.AreEqual(7, args.Workgroup.Id);
+            Assert.AreEqual("FirstName2 LastName2 (2)", args.Approver.FullNameAndId);
+            Assert.AreEqual("FirstName4 LastName4 (4)", args.AccountManager.FullNameAndId);
+            Assert.IsNull(args.Purchaser);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateAccountReturnsExpectedValue6()
+        {
+            #region Arrange
+            new FakeUsers(10, UserRepository);
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
+                workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
+                workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(7, 1, "CLEAR_ALL", "CLEAR_ALL", "CLEAR_ALL")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(true, data.success);
+            Assert.AreEqual("Done", data.message);
+            Assert.AreEqual("", data.rtApprover);
+            Assert.AreEqual("", data.rtAccountManager);
+            Assert.AreEqual("", data.rtPurchaser);
+            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, args.Id);
+            Assert.AreEqual(7, args.Workgroup.Id);
+            Assert.IsNull(args.Approver);
+            Assert.IsNull(args.AccountManager);
+            Assert.IsNull(args.Purchaser);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateAccountReturnsExpectedValue7()
+        {
+            #region Arrange
+            new FakeUsers(10, UserRepository);
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
+                workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
+                workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(7, 1, "3", "DO_NOT_UPDATE", "DO_NOT_UPDATE")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(true, data.success);
+            Assert.AreEqual("Done", data.message);
+            Assert.AreEqual("FirstName3 LastName3 (3)", data.rtApprover);
+            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager);
+            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser);
+            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, args.Id);
+            Assert.AreEqual(7, args.Workgroup.Id);
+            Assert.AreEqual("FirstName3 LastName3 (3)", args.Approver.FullNameAndId);
+            Assert.AreEqual("FirstName4 LastName4 (4)", args.AccountManager.FullNameAndId);
+            Assert.AreEqual("FirstName6 LastName6 (6)", args.Purchaser.FullNameAndId);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateAccountReturnsExpectedValue8()
+        {
+            #region Arrange
+            new FakeUsers(10, UserRepository);
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
+                workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
+                workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(7, 1, "3", "5", "7")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(true, data.success);
+            Assert.AreEqual("Done", data.message);
+            Assert.AreEqual("FirstName3 LastName3 (3)", data.rtApprover);
+            Assert.AreEqual("FirstName5 LastName5 (5)", data.rtAccountManager);
+            Assert.AreEqual("FirstName7 LastName7 (7)", data.rtPurchaser);
+            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, args.Id);
+            Assert.AreEqual(7, args.Workgroup.Id);
+            Assert.AreEqual("FirstName3 LastName3 (3)", args.Approver.FullNameAndId);
+            Assert.AreEqual("FirstName5 LastName5 (5)", args.AccountManager.FullNameAndId);
+            Assert.AreEqual("FirstName7 LastName7 (7)", args.Purchaser.FullNameAndId);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestUpdateAccountReturnsExpectedValue9()
+        {
+            #region Arrange
+            new FakeUsers(10, UserRepository);
+            var workgroupsAccounts = new List<WorkgroupAccount>();
+            for (int i = 0; i < 3; i++)
+            {
+                workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
+                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
+                workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
+                workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
+            }
+            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
+            #endregion Arrange
+
+            #region Act
+            var result = Controller.UpdateAccount(7, 1, "3", "5", "999")
+                .AssertResultIs<JsonNetResult>();
+            #endregion Act
+
+            #region Assert
+            dynamic data = result.Data;
+            Assert.AreEqual(false, data.success);
+            Assert.AreEqual("Error", data.message);
+            Assert.AreEqual(string.Empty, data.rtApprover);
+            Assert.AreEqual(string.Empty, data.rtAccountManager);
+            Assert.AreEqual(string.Empty, data.rtPurchaser);
+            #endregion Assert
+        }
+        #endregion UpdateAccount Tests
+
     }
 }

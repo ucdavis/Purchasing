@@ -121,44 +121,6 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
-        ///// <summary>
-        ///// Actions #2
-        ///// </summary>
-        ///// <returns></returns>
-        //public ActionResult Create()
-        //{
-        //    var user = _userRepository.Queryable.Where(x => x.Id == CurrentUser.Identity.Name).Single();
-
-        //    var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory);
-
-        //    return View(model);
-        //}
-
-        ///// <summary>
-        ///// Actions #3
-        ///// </summary>
-        ///// <param name="workgroup"></param>
-        ///// <param name="selectedOrganizations"></param>
-        ///// <returns></returns>
-        //[HttpPost]
-        //public ActionResult Create(Workgroup workgroup, string[] selectedOrganizations)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        var model = WorkgroupModifyModel.Create(GetCurrentUser(), _queryRepositoryFactory);
-        //        model.Workgroup = workgroup;
-
-        //        return View(model);
-        //    }
-
-        //    var createdWorkgroup = _workgroupService.CreateWorkgroup(workgroup, selectedOrganizations);
-
-        //    Message = string.Format("{0} workgroup was created",
-        //                            createdWorkgroup.Name);
-
-        //    return this.RedirectToAction(a => a.Index(false));
-        //}
-
         /// <summary>
         /// Actions #4
         /// </summary>
@@ -1980,7 +1942,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// 
+        /// #45
         /// </summary>
         /// <param name="id">Workgroup id</param>
         /// <param name="workgroupAccountId"></param>
@@ -2009,13 +1971,12 @@ namespace Purchasing.Web.Controllers
                         if (workgroupAccount.Approver != null)
                         {
                             workgroupAccount.Approver = null;
-                            somethingChanged = true;
-                            //TODO: Return result here                            
+                            somethingChanged = true;                           
                         }
                         break;
                     default:
                         if (workgroupAccount.Approver == null || workgroupAccount.Approver.Id != approver)
-                        {
+                        {                                     
                             var user = _userRepository.Queryable.Single(a => a.Id == approver);
                             workgroupAccount.Approver = user;
                             somethingChanged = true;
@@ -2031,8 +1992,7 @@ namespace Purchasing.Web.Controllers
                         if (workgroupAccount.AccountManager != null)
                         {
                             workgroupAccount.AccountManager = null;
-                            somethingChanged = true;
-                            //TODO: Return result here                            
+                            somethingChanged = true;                          
                         }
                         break;
                     default:
@@ -2052,8 +2012,7 @@ namespace Purchasing.Web.Controllers
                         if (workgroupAccount.Purchaser != null)
                         {
                             workgroupAccount.Purchaser = null;
-                            somethingChanged = true;
-                            //TODO: Return result here                            
+                            somethingChanged = true;                           
                         }
                         break;
                     default:

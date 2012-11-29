@@ -191,7 +191,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(44, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(45, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -839,6 +839,27 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
+
+        /// <summary>
+        /// (45)
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodUpdateAccountContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("UpdateAccount");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
         #endregion Workgroup Account Methods
 
         #region Workgroup Vendor Methods
