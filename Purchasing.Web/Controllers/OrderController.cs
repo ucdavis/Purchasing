@@ -120,19 +120,13 @@ namespace Purchasing.Web.Controllers
             //    return this.RedirectToAction(a => a.Review(id));
             //}
             var model = OrderReRoutePurchaserModel.Create(order);
-            var purchaserPeepsIds =
-                   _queryRepository.OrderPeepRepository.Queryable.Where(
-                       b =>
-                       b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
-                       b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Select(c => c.UserId).Distinct().ToList();
+            //var purchaserPeepsIds =
+            //       _queryRepository.OrderPeepRepository.Queryable.Where(
+            //           b =>
+            //           b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
+            //           b.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser).Select(c => c.UserId).Distinct().ToList();
 
-            var purchaserWorkgroupPeepeIds =
-                order.Workgroup.Permissions.Where(a => a.Role.Id == Role.Codes.Purchaser).Select(b => b.User.Id).Union(purchaserPeepsIds).Distinct().ToList();
-
- 
-            model.PurchaserPeeps =
-                _repositoryFactory.UserRepository.Queryable.Where(a => purchaserWorkgroupPeepeIds.Contains(a.Id)).OrderBy(
-                    b => b.LastName).ToList();
+            model.PurchaserPeeps = order.Workgroup.Permissions.Where(a => a.Role.Id == Role.Codes.Purchaser).Select(b => b.User).Distinct().OrderBy(c => c.LastName).ToList();
             model.Order = order;
             return View(model);
             
@@ -160,9 +154,9 @@ namespace Purchasing.Web.Controllers
             //    return this.RedirectToAction(a => a.Review(id));
             //}
             var purchaser = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == purchaserId);
-            var peepCheck = _queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId);
+            //var peepCheck = _queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId);
             var purchaserCheck = order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.Purchaser && a.User == purchaser);
-            Check.Require(peepCheck || purchaserCheck); // Check that the purchaser assigned is either in the peeps view or in the workgroup as a purchaser.
+            Check.Require(purchaserCheck); // Check that the purchaser assigned is either in the peeps view or in the workgroup as a purchaser.
             
             var approval = order.Approvals.Single(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser);
             _orderService.ReRouteSingleApprovalForExistingOrder(approval, purchaser, (order.StatusCode.Id == OrderStatusCode.Codes.Purchaser));
@@ -1163,11 +1157,15 @@ namespace Purchasing.Web.Controllers
             try
             {
                 var order = _repositoryFactory.OrderRepository.Queryable.Single(a=> a.Id==id);
-               peeps =
-                    _queryRepository.OrderPeepRepository.Queryable.Where(
-                        b =>
-                        b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
-                        b.OrderStatusCodeId == orderStatusCodeId).Select(c=> c.Fullname).Distinct().ToList();
+               //peeps =
+               //     _queryRepository.OrderPeepRepository.Queryable.Where(
+               //         b =>
+               //         b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
+               //         b.OrderStatusCodeId == orderStatusCodeId).Select(c=> c.Fullname).Distinct().ToList();
+
+                //Get all normal and full featured users at this level
+                peeps = order.Workgroup.Permissions.Where(a => a.Role.Id == orderStatusCodeId && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(b => b.User).Distinct().Select(c => c.FullName).ToList();
+
             }
             catch (Exception)
             {
