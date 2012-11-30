@@ -428,7 +428,7 @@ namespace Purchasing.Web.Services
             }
 
             // save the roles into the cache
-            var expiration = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day);
+            // var expiration = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day);
             context.Session.Add(cacheId, roles);
 
             return roles;
