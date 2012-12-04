@@ -140,6 +140,7 @@
     <None Include="SchemaCompares\Azure.scmp" />
     <None Include="SchemaCompares\Terry.scmp" />
     <None Include="SchemaCompares\TrainingTerry.scmp" />
+    <None Include="SchemaCompares\TerryPrePurchasingAFS.scmp" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="PurchasingTP.AzureDb.refactorlog" />
