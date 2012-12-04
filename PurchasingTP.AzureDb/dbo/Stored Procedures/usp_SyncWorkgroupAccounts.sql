@@ -41,4 +41,6 @@ end
 close @cursor
 deallocate @cursor
 
+insert into JobLogs (name) values ('sync workgroup accounts')
+
 RETURN 0

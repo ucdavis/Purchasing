@@ -109,8 +109,8 @@ AS
 		insert into vOrganizationDescendants(OrgId, Name, ImmediateParentId, RollupParentId, IsActive)
 		select OrgId, Name, ImmediateParentId, RollupParentId, IsActive from @tmp
 
+		insert into JobLogs (name, comments) values ('process org descendants', 'updated ' + @newCount + ' records')
+
 	end
 	
-
-
 RETURN 0
