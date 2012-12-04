@@ -1287,12 +1287,14 @@ namespace Purchasing.Web.Helpers
 
             using (var conn = dbService.GetConnection())
             {
-                foreach (var table in tables)
-                {
-                    conn.Execute("delete from " + table);
-                }
+
                 try
                 {
+                    foreach (var table in tables)
+                    {
+                        conn.Execute("delete from " + table);
+                    }
+
                     conn.Execute(@"insert into Users ([Id],[FirstName], [LastName], [Email], [IsActive]) VALUES (@id,@firstname, @lastname, @email, @isactive)",
                      new[]
                         {
@@ -1309,8 +1311,12 @@ namespace Purchasing.Web.Helpers
                 }
                 catch (Exception)
                 {
-                    
-                    
+
+
+                }
+                finally
+                {
+                    conn.Close();
                 }
             }
         }
