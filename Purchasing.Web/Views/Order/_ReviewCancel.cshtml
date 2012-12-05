@@ -35,3 +35,39 @@
     </section>
     
 }
+
+@if (Model.CanCancelCompletedOrder)
+{
+    <section class="ui-corner-all display-form">
+        <header class="ui-corner-top ui-widget-header">Cancel Completed Order</header>
+        <div class="section-text">
+            <p>You can cancel this completed order entering a Comment (required) and clicking "Cancel Order."</p>    
+        </div>
+
+        <div class="section-contents">
+
+            @using (Html.BeginForm("CancelCompletedOrder", "Order", FormMethod.Post, new { id = "cancel-form" }))
+            {
+                @Html.Hidden("id", Model.Order.Id)
+                @Html.AntiForgeryToken()
+
+                <ul>
+                    <li>
+                        <div class="display-label"><span class="required">*</span> Comment:</div>
+                        <div class="display-details">
+                            <textarea name="comment" required class="required"></textarea>
+                            <span data-valmsg-for="comment" data-valmsg-replace="true"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="display-label">&nbsp;</div>
+                        <div class="display-details">
+                            <input type="submit" id="cancel-order" class="button" value="Cancel Order"/>
+                        </div>
+                    </li>
+                </ul>
+            }
+        </div>
+    </section>
+    
+}
