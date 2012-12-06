@@ -109,6 +109,7 @@
                 AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True',
+                CanCancelCompletedOrder: '@Model.CanCancelCompletedOrder' === 'True',
                 CanComplete: '@Model.IsPurchaser' === 'True',
                 IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
                 IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True',
