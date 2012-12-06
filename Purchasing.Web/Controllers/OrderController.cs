@@ -572,7 +572,15 @@ namespace Purchasing.Web.Controllers
             
             if (!string.IsNullOrWhiteSpace(comment))
             {
-                order.AddComment(new OrderComment {Text = comment, User = GetCurrentUser()});
+                if (action == "Deny")
+                {
+                    order.AddComment(new OrderComment { Text = string.Format("Denied: {0}", comment), User = GetCurrentUser() });
+                }
+                else
+                {
+                    order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
+                }
+                
             }
 
             if (action == "Approve")
@@ -644,7 +652,7 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Review", new {id});
             }
 
-            order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
+            order.AddComment(new OrderComment { Text = string.Format("Canceled: {0}", comment), User = GetCurrentUser() });
 
             _orderService.Cancel(order, comment);
 
@@ -674,7 +682,7 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Review", new { id });
             }
 
-            order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
+            order.AddComment(new OrderComment { Text = string.Format("Canceled: {0}", comment), User = GetCurrentUser() });
 
             _orderService.Cancel(order, comment);
 
