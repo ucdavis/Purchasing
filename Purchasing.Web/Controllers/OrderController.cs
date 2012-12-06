@@ -441,6 +441,10 @@ namespace Purchasing.Web.Controllers
                     x.User.Id == CurrentUser.Identity.Name);
 
             if (model.Complete){   //complete orders can't ever be edited or cancelled so just return now
+                if (model.Order.StatusCode.Id == OrderStatusCode.Codes.Complete && model.Order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.Purchaser && a.User.Id == CurrentUser.Identity.Name))
+                {
+                    model.CanCancelCompletedOrder = true;
+                }
                 return View(model);
             }
 
@@ -568,7 +572,15 @@ namespace Purchasing.Web.Controllers
             
             if (!string.IsNullOrWhiteSpace(comment))
             {
-                order.AddComment(new OrderComment {Text = comment, User = GetCurrentUser()});
+                if (action == "Deny")
+                {
+                    order.AddComment(new OrderComment { Text = string.Format("Denied: {0}", comment), User = GetCurrentUser() });
+                }
+                else
+                {
+                    order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
+                }
+                
             }
 
             if (action == "Approve")
@@ -640,7 +652,37 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Review", new {id});
             }
 
-            order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
+            order.AddComment(new OrderComment { Text = string.Format("Canceled: {0}", comment), User = GetCurrentUser() });
+
+            _orderService.Cancel(order, comment);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = Resources.OrderCancelled_Success;
+
+            return RedirectToAction("Review", "Order", new { id });
+        }
+
+        [HttpPost]
+        public ActionResult CancelCompletedOrder(int id, string comment)
+        {
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+
+            Check.Require(order != null);
+
+            if(!order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.Purchaser && a.User.Id == CurrentUser.Identity.Name))
+            {
+                ErrorMessage = Resources.CancelOrder_NoAccess;
+                return RedirectToAction("Review", new { id });
+            }
+
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                ErrorMessage = Resources.CancelOrder_CommentRequired;
+                return RedirectToAction("Review", new { id });
+            }
+
+            order.AddComment(new OrderComment { Text = string.Format("Canceled: {0}", comment), User = GetCurrentUser() });
 
             _orderService.Cancel(order, comment);
 

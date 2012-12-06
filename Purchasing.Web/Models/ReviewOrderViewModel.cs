@@ -16,6 +16,7 @@ namespace Purchasing.Web.Models
 
         public bool CanEditOrder { get; set; }
         public bool CanCancelOrder { get; set; }
+        public bool CanCancelCompletedOrder { get; set; }
         public bool IsApprover { get; set; }
         public bool IsPurchaser { get; set; }
         public bool IsRequesterInWorkgroup { get; set; }

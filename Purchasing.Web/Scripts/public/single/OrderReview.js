@@ -28,6 +28,10 @@
             attachCancelEvents();
         }
 
+        if (options.CanCancelCompletedOrder) {
+            attachCancelCompletedOrderEvents();
+        }
+        
         if (options.IsKfsOrder) {
             purchasing.loadKfsData();
         }
@@ -520,6 +524,16 @@
             var valid = $(this).validate().form();
 
             if (valid && !confirm("Are you sure you want to cancel this order?")) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    function attachCancelCompletedOrderEvents() {
+        $("#cancel-completed-order-form").submit(function (e) {
+            var valid = $(this).validate().form();
+
+            if (valid && !confirm("Are you sure you want to cancel this order? This action cannot be undone.")) {
                 e.preventDefault();
             }
         });
