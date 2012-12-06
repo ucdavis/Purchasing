@@ -46,7 +46,7 @@
 
         <div class="section-contents">
 
-            @using (Html.BeginForm("CancelCompletedOrder", "Order", FormMethod.Post, new { id = "cancel-form" }))
+            @using (Html.BeginForm("CancelCompletedOrder", "Order", FormMethod.Post, new { id = "cancel-completed-order-form" }))
             {
                 @Html.Hidden("id", Model.Order.Id)
                 @Html.AntiForgeryToken()
@@ -62,7 +62,7 @@
                     <li>
                         <div class="display-label">&nbsp;</div>
                         <div class="display-details">
-                            <input type="submit" id="cancel-order" class="button" value="Cancel Order" onclick="return confirm('Are you sure? This cannot be undone.')"/>
+                            <input type="submit" id="cancel-completed-order" class="button" value="Cancel Order"/>
                         </div>
                     </li>
                 </ul>
