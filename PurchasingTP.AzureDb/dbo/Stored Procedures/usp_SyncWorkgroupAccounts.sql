@@ -1,6 +1,8 @@
 ﻿CREATE PROCEDURE [dbo].[usp_SyncWorkgroupAccounts]
 AS
 
+insert into JobLogs (name, comments) values ('sync workgroup accounts', 'start')
+
 declare @cursor cursor, @id int
 
 set @cursor = cursor for
@@ -41,6 +43,6 @@ end
 close @cursor
 deallocate @cursor
 
-insert into JobLogs (name) values ('sync workgroup accounts')
+insert into JobLogs (name, comments) values ('sync workgroup accounts', 'complete')
 
 RETURN 0

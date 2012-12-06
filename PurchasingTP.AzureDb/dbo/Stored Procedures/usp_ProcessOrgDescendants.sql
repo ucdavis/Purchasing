@@ -13,6 +13,8 @@ AS
 	--truncate table vorganizationdescendants
 	--DBCC CHECKIDENT(vorganizationdescendants, reseed, 1)
 
+	insert into JobLogs (name, comments) values ('process org descendants', 'start')
+
 	declare @cursor cursor, @top varchar(10)
 	declare @descendants table (orgid varchar(10), name varchar(max), immediateparent varchar(10), isactive bit)
 
@@ -109,7 +111,7 @@ AS
 		insert into vOrganizationDescendants(OrgId, Name, ImmediateParentId, RollupParentId, IsActive)
 		select OrgId, Name, ImmediateParentId, RollupParentId, IsActive from @tmp
 
-		insert into JobLogs (name, comments) values ('process org descendants', 'updated ' + @newCount + ' records')
+		insert into JobLogs (name, comments) values ('process org descendants', 'updated ' + cast(@newCount as varchar(5)) + ' records')
 
 	end
 	
