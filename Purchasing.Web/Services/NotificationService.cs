@@ -67,6 +67,7 @@ namespace Purchasing.Web.Services
             _orderStatusCodeRepository = orderStatusCodeRepository;
             _userIdentity = userIdentity;
             _serverLink = serverLink;
+            //_serverLink = "prepurchasing.ucdavis.edu";
             _queryRepositoryFactory = queryRepositoryFactory;
             _repositoryFactory = repositoryFactory;
         }
@@ -582,7 +583,7 @@ namespace Purchasing.Web.Services
 
         private string GenerateLink(string address, string orderRequestNumber)
         {
-            return string.Format("<a href=\"{0}{1}\">{1}</a>", address, orderRequestNumber);
+            return string.Format("<a href=\"{0}{1}\">{1}</a>", "http://prepurchasing.ucdavis.edu/Order/Lookup/", orderRequestNumber);
         }
 
         private List<Workgroup> FindAdminWorkgroups(Order order)
