@@ -87,7 +87,7 @@ namespace Purchasing.Web.Services
                 message.Append("</ul>");
 
                 var sgMessage = SendGrid.GenerateInstance();
-                sgMessage.From = new MailAddress(SendGridFrom, "OPP No Reply");
+                sgMessage.From = new MailAddress(SendGridFrom, "UCD PrePurchasing No Reply");
 
                 sgMessage.Subject = pendingForUser.Count == 1
                                         ? string.Format("PrePurchasing Notification for Order #{0}",
