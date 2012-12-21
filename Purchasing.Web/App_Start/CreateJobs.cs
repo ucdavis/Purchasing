@@ -34,8 +34,11 @@ namespace Purchasing.Web.App_Start
         {
             var connectionString = WebConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
 
+            var sendGridUser = WebConfigurationManager.AppSettings["SendGridUserName"];
+            var sendGridPassword = WebConfigurationManager.AppSettings["SendGridPassword"];
+
             // create job
-            var jobDetails = JobBuilder.Create<NightlySyncJobs>().UsingJobData("connectionString", connectionString).Build();
+            var jobDetails = JobBuilder.Create<NightlySyncJobs>().UsingJobData("connectionString", connectionString).UsingJobData("sendGridUser", sendGridUser).UsingJobData("sendGridPassword", sendGridPassword).Build();
 
             // create trigger
             var nightly =
