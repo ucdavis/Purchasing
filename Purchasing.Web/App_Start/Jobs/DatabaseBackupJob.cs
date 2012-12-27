@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using Microsoft.Practices.ServiceLocation;
 using Purchasing.Core.Domain;
 using Purchasing.WS;
 using Quartz;
+using SendGridMail;
+using SendGridMail.Transport;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.App_Start.Jobs
 {
@@ -27,55 +31,56 @@ namespace Purchasing.Web.App_Start.Jobs
             var storageKey = context.MergedJobDataMap["storageKey"] as string;
             var blobContainer = context.MergedJobDataMap["blobContainer"] as string;
 
+            var masterDbConnectionString = context.MergedJobDataMap["masterDbConnectionString"] as string;
+            var tmpDbConnectionString = context.MergedJobDataMap["tmpDbConnectionString"] as string;
+
+            var sendGridUserName = context.MergedJobDataMap["sendGridUser"] as string;
+            var sendGridPassword = context.MergedJobDataMap["sendGridPassword"] as string;
+
             // initialize the service
-            var azureService = new AzureStorageService(serverName, username, password, storageAccountName, storageKey, blobContainer);
+            var azureService = new AzureStorageService(serverName, username, password, storageAccountName, storageKey, blobContainer, masterDbConnectionString, tmpDbConnectionString);
 
-            var flag = false;
-
-            // check for an "outstanding" job
-            var bl = _backupLogRespoitory.Queryable.Where(a => !a.Completed).OrderByDescending(a => a.DateTimeCreated).FirstOrDefault();
-            if (bl != null)
+            try
             {
-                // check the status of the job
-                var result = azureService.GetStatus(bl.RequestId);
-
-                if (result == "Completed")
+                // check for an outstanding job
+                var bl = _backupLogRespoitory.Queryable.Where(a => !a.Completed).OrderByDescending(a => a.DateTimeCreated).FirstOrDefault();
+                if (bl != null)
                 {
-                    bl.Completed = true;
-                    _backupLogRespoitory.EnsurePersistent(bl);
-                }
-                else
-                {
-                    // job still running, skip this time around
-                    flag = true;
-                }
-
-            }
-
-            if (!flag)
-            {
-                string filename;
-
-                // record the request
-                var requestId = azureService.Backup("PrePurchasing", out filename);
-                var backupLog = new BackupLog() { RequestId = requestId, Filename = filename};
-                _backupLogRespoitory.EnsurePersistent(backupLog);    
-
-                // perform database cleanup
-                var deleted = azureService.BlobCleanup();
-
-                foreach (var blobName in deleted)
-                {
-                    var blob = _backupLogRespoitory.Queryable.FirstOrDefault(a => a.Filename == blobName);
-                    if (blob != null)
+                    var status = azureService.GetStatus(bl.RequestId);
+                    if (status == "Completed")
                     {
-                        blob.Deleted = true;
-                        blob.DateTimeDeleted = DateTime.Now;
-                        _backupLogRespoitory.EnsurePersistent(blob);
-                    }
+                        // make the commands for backup
+                        string filename;
+                        var reqId = azureService.BackupDataSync("PrePurchasing", out filename);
 
+                        // save a record of this backup job
+                        var backupLog = new BackupLog() {RequestId = reqId, Filename = filename};
+                        _backupLogRespoitory.EnsurePersistent(backupLog);
+
+                        // clean up the blob
+                        azureService.BlobCleanup();
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                SendSingleEmail("anlai@ucdavis.edu", "PrePurchasing - Error Backup Job", ex.Message, sendGridUserName, sendGridPassword);
+            }
+        }
+
+        private void SendSingleEmail(string email, string subject, string body, string sendGridUserName, string sendGridPassword)
+        {
+            Check.Require(!string.IsNullOrWhiteSpace(sendGridUserName));
+            Check.Require(!string.IsNullOrWhiteSpace(sendGridPassword));
+
+            var sgMessage = SendGrid.GenerateInstance();
+            sgMessage.From = new MailAddress("opp-noreply@ucdavis.edu", "OPP No Reply");
+            sgMessage.Subject = subject;
+            sgMessage.AddTo(email);
+            sgMessage.Html = body;
+
+            var transport = SMTP.GenerateInstance(new NetworkCredential(sendGridUserName, sendGridPassword));
+            transport.Deliver(sgMessage);
         }
     }
 }
