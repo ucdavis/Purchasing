@@ -37,7 +37,7 @@ namespace Purchasing.Web.App_Start.Jobs
             {
                 try
                 {
-                    conn.Execute("usp_ProcessOrgDescendants", commandType: CommandType.StoredProcedure);
+                    conn.Execute("usp_ProcessOrgDescendants", commandType: CommandType.StoredProcedure, commandTimeout: 300);
                 }
                 catch (Exception ex)
                 {
@@ -46,7 +46,7 @@ namespace Purchasing.Web.App_Start.Jobs
 
                 try
                 {
-                    conn.Execute("usp_SyncWorkgroupAccounts", commandType: CommandType.StoredProcedure);
+                    conn.Execute("usp_SyncWorkgroupAccounts", commandType: CommandType.StoredProcedure, commandTimeout:300);
                 }
                 catch (Exception ex)
                 {
