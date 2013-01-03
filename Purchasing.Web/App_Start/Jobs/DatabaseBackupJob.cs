@@ -37,7 +37,6 @@ namespace Purchasing.Web.App_Start.Jobs
             // initialize the service
             var azureService = new AzureStorageService(serverName, username, password, storageAccountName, storageKey, blobContainer);
 
-
             try
             {
                 // make the commands for backup
