@@ -31,36 +31,25 @@ namespace Purchasing.Web.App_Start.Jobs
             var storageKey = context.MergedJobDataMap["storageKey"] as string;
             var blobContainer = context.MergedJobDataMap["blobContainer"] as string;
 
-            var masterDbConnectionString = context.MergedJobDataMap["masterDbConnectionString"] as string;
-            var tmpDbConnectionString = context.MergedJobDataMap["tmpDbConnectionString"] as string;
-
             var sendGridUserName = context.MergedJobDataMap["sendGridUser"] as string;
             var sendGridPassword = context.MergedJobDataMap["sendGridPassword"] as string;
 
             // initialize the service
-            var azureService = new AzureStorageService(serverName, username, password, storageAccountName, storageKey, blobContainer, masterDbConnectionString, tmpDbConnectionString);
+            var azureService = new AzureStorageService(serverName, username, password, storageAccountName, storageKey, blobContainer);
+
 
             try
             {
-                // check for an outstanding job
-                var bl = _backupLogRespoitory.Queryable.Where(a => !a.Completed).OrderByDescending(a => a.DateTimeCreated).FirstOrDefault();
-                if (bl != null)
-                {
-                    var status = azureService.GetStatus(bl.RequestId);
-                    if (status == "Completed")
-                    {
-                        // make the commands for backup
-                        string filename;
-                        var reqId = azureService.BackupDataSync("PrePurchasing", out filename);
+                // make the commands for backup
+                string filename;
+                var reqId = azureService.BackupDataSync("PrePurchasing", out filename);
 
-                        // save a record of this backup job
-                        var backupLog = new BackupLog() {RequestId = reqId, Filename = filename};
-                        _backupLogRespoitory.EnsurePersistent(backupLog);
+                // save a record of this backup job
+                var backupLog = new BackupLog() {RequestId = reqId, Filename = filename};
+                _backupLogRespoitory.EnsurePersistent(backupLog);
 
-                        // clean up the blob
-                        azureService.BlobCleanup();
-                    }
-                }
+                // clean up the blob
+                azureService.BlobCleanup();
             }
             catch (Exception ex)
             {

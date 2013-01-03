@@ -24,14 +24,12 @@ namespace Purchasing.WS
         private readonly string _storageKey;
         private readonly string _storageContainer;
 
-        private readonly string _masterDbConnectionString;
-        private readonly string _tmpDbConnectionString;
-
         private readonly int _cleanupThreshold;
 
         private const string ServiceUrl = @"https://by1prod-dacsvc.azure.com/DACWebService.svc/{0}";    // west coast data center
         private const string StatusParameters = @"?servername={0}&username={1}&password={2}&reqId={3}";
         private const string CloudStorageconnectionString = @"DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}";
+        private const string ConnString = @"Server=tcp:{0};Database={1};User ID={2};Password={3};Trusted_Connection=False;";
 
         /// <summary>
         /// 
@@ -42,11 +40,9 @@ namespace Purchasing.WS
         /// <param name="storageAccountName"></param>
         /// <param name="storageKey"></param>
         /// <param name="storageContainer"> </param>
-        /// <param name="masterDbConnectionString"></param>
-        /// <param name="tmpDbConnectionString"></param>
         /// <param name="storageUrl">Overrides using the standard domain of blob.core.windows.net, based on storage account name</param>
         /// <param name="cleanupThreshold"># of days to before clearing out old backups</param>
-        public AzureStorageService(string serverName, string sqlUsername, string sqlPassword, string storageAccountName, string storageKey, string storageContainer, string masterDbConnectionString, string tmpDbConnectionString, string storageUrl = null, int cleanupThreshold = -4)
+        public AzureStorageService(string serverName, string sqlUsername, string sqlPassword, string storageAccountName, string storageKey, string storageContainer, string storageUrl = null, int cleanupThreshold = -4)
         {
             _serverName = serverName;
             _sqlUsername = sqlUsername;
@@ -54,9 +50,6 @@ namespace Purchasing.WS
             _storageAccountName = storageAccountName;
             _storageKey = storageKey;
             _storageContainer = storageContainer;
-
-            _masterDbConnectionString = masterDbConnectionString;
-            _tmpDbConnectionString = tmpDbConnectionString;
 
             _storageUrl = storageUrl;
             _cleanupThreshold = cleanupThreshold < 0 ? cleanupThreshold : (cleanupThreshold * -1);
@@ -73,10 +66,10 @@ namespace Purchasing.WS
         }
 
         /// <summary>
-        /// Execute the database backup
+        /// Execute the srcDatabase backup
         /// </summary>
-        /// <param name="database">Name of database to backup</param>
-        /// <param name="tables">List of tables for selective backup, null if backup entire database</param>
+        /// <param name="database">Name of srcDatabase to backup</param>
+        /// <param name="tables">List of tables for selective backup, null if backup entire srcDatabase</param>
         /// <param name="filename">Generated filename for blob storage</param>
         /// <returns></returns>
         public string Backup(string database, List<string> tables, out string filename)
@@ -132,21 +125,27 @@ namespace Purchasing.WS
         }
 
         /// <summary>
-        /// Backup a database that has datasync enabled
+        /// Backup a srcDatabase that has datasync enabled
         /// </summary>
         /// <param name="database"></param>
         /// <param name="filename"></param>
         /// <returns></returns>
         public string BackupDataSync(string database, out string filename)
         {
+            var srcDatabase = database;
+            var tmpDatabase = database + "Backup";
+
+            var masterDbConnectionString = string.Format(ConnString, _serverName, "master", _sqlUsername, _sqlPassword);
+            var tmpDbConnectionString = string.Format(ConnString, _serverName, tmpDatabase, _sqlUsername, _sqlPassword);
+
             // make a copy that we can alter
-            CreateCopy(database);
+            CreateCopy(srcDatabase, tmpDatabase, masterDbConnectionString);
 
             // remove the datasync tables/triggers/sprocs
-            RemoveDataSync();
+            RemoveDataSync(tmpDbConnectionString);
 
             // export the copy to blob storage
-            var reqId = Backup(string.Format("{0}Backup", database), null, out filename);
+            var reqId = Backup(tmpDatabase, null, out filename);
 
             // keep checking until the export is complete
             do
@@ -168,26 +167,30 @@ namespace Purchasing.WS
 
             } while (true);
 
-            // drop the temporary database
-            CleanupTmp(database);
+            // drop the temporary srcDatabase
+            CleanupTmp(tmpDatabase, masterDbConnectionString);
 
-            return reqId;
+            //return reqId;
+            filename = string.Empty;
+            return string.Empty;
         }
 
         /// <summary>
-        /// makes a copy of the database
+        /// makes a copy of the srcDatabase
         /// </summary>
-        /// <param name="database"></param>
-        private void CreateCopy(string database)
+        /// <param name="srcDatabase"></param>
+        /// <param name="tmpDatabase"></param>
+        /// <param name="masterDbConnectionString"></param>
+        private void CreateCopy(string srcDatabase, string tmpDatabase, string masterDbConnectionString)
         {
-            using (var connection = new SqlConnection(_masterDbConnectionString))
+            using (var connection = new SqlConnection(masterDbConnectionString))
             {
                 connection.Open();
 
                 // start the copy job
                 var cmd1 = new SqlCommand();
                 cmd1.Connection = connection;
-                cmd1.CommandText = string.Format("CREATE DATABASE {0}Backup AS COPY OF {0};", database);
+                cmd1.CommandText = string.Format("CREATE DATABASE {0} AS COPY OF {1};", tmpDatabase, srcDatabase);
                 cmd1.ExecuteNonQuery();
 
                 connection.Close();
@@ -201,19 +204,21 @@ namespace Purchasing.WS
                 // wait 30 seconds
                 Thread.Sleep(30000);
 
-                using (var connection = new SqlConnection(_masterDbConnectionString))
+                using (var connection = new SqlConnection(masterDbConnectionString))
                 {
                     connection.Open();
 
                     var cmd = new SqlCommand();
                     cmd.Connection = connection;
-                    cmd.CommandText = string.Format("SELECT state_desc FROM sys.databases WHERE name = '{0}Backup'", database);
+                    cmd.CommandText = string.Format("SELECT state_desc FROM sys.databases WHERE name = '{0}'", tmpDatabase);
 
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
                         status = reader["state_desc"].ToString();
+#if DEBUG
                         Console.WriteLine("{0} as of {1}", status, DateTime.Now);
+#endif
                     }
                     reader.Close();
 
@@ -221,18 +226,19 @@ namespace Purchasing.WS
                 }
             } while (status != "ONLINE");
         }
+
         /// <summary>
         /// Removes all the necessary tables/sprocs/triggers that are related to DataSync
         /// </summary>
         /// <remarks>
-        /// Removing these allows the database to be restored and minimizes a little of the spaced needed for backups.
+        /// Removing these allows the srcDatabase to be restored and minimizes a little of the spaced needed for backups.
         /// The triggers are the only necessary part, as they prevent restoration from blob storage.
         /// </remarks>
-        /// <param name="database"></param>
-        private void RemoveDataSync()
+        /// <param name="tmpDbConnectionString"></param>
+        private void RemoveDataSync(string tmpDbConnectionString)
         {
             // drop the triggers
-            using (var connection = new SqlConnection(_tmpDbConnectionString))
+            using (var connection = new SqlConnection(tmpDbConnectionString))
             {
                 var triggers = new List<string>();
                 var procedures = new List<string>();
@@ -366,28 +372,35 @@ namespace Purchasing.WS
                 connection.Close();
             }
         }
+
         /// <summary>
-        /// Remove the temporary database
+        /// Remove the temporary srcDatabase
         /// </summary>
         /// <param name="database"></param>
-        public void CleanupTmp(string database)
+        /// <param name="tmpDatabase"></param>
+        /// <param name="masterDbConnectionString"></param>
+        private void CleanupTmp(string tmpDatabase, string masterDbConnectionString)
         {
-            using (var connection = new SqlConnection(_masterDbConnectionString))
+            // just ensure we don't drop the primary db in any way
+            if (tmpDatabase.EndsWith("Backup"))
             {
-                connection.Open();
+                using (var connection = new SqlConnection(masterDbConnectionString))
+                {
+                    connection.Open();
 
-                // start the copy job
-                var cmd1 = new SqlCommand();
-                cmd1.Connection = connection;
-                cmd1.CommandText = string.Format("DROP DATABASE {0}Backup;", database);
-                cmd1.ExecuteNonQuery();
+                    // start the copy job
+                    var cmd1 = new SqlCommand();
+                    cmd1.Connection = connection;
+                    cmd1.CommandText = string.Format("DROP DATABASE {0};", tmpDatabase);
+                    cmd1.ExecuteNonQuery();
 
-                connection.Close();
+                    connection.Close();
+                }    
             }
         }
 
         /// <summary>
-        /// Get status of database backup job
+        /// Get status of srcDatabase backup job
         /// </summary>
         /// <param name="requestId"></param>
         /// <returns></returns>
