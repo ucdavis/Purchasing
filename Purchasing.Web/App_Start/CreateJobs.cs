@@ -129,7 +129,13 @@ namespace Purchasing.Web.App_Start
             var storageKey = WebConfigurationManager.AppSettings["AzureStorageKey"];
             var blobContainer = WebConfigurationManager.AppSettings["AzureBlobContainer"];
 
-            var jobDetails = JobBuilder.Create<DatabaseBackupJob>().UsingJobData("storageAccountName", storageAccountName).UsingJobData("serverName", serverName).UsingJobData("username", username).UsingJobData("password", password).UsingJobData("storageKey", storageKey).UsingJobData("blobContainer", blobContainer).Build();
+            var masterDbConnectionString = WebConfigurationManager.ConnectionStrings["masterDb"].ConnectionString;
+            var tmpDbConnectionString = WebConfigurationManager.ConnectionStrings["tmpDb"].ConnectionString;
+
+            var sendGridUser = WebConfigurationManager.AppSettings["SendGridUserName"];
+            var sendGridPassword = WebConfigurationManager.AppSettings["SendGridPassword"];
+
+            var jobDetails = JobBuilder.Create<DatabaseBackupJob>().UsingJobData("storageAccountName", storageAccountName).UsingJobData("serverName", serverName).UsingJobData("username", username).UsingJobData("password", password).UsingJobData("storageKey", storageKey).UsingJobData("blobContainer", blobContainer).UsingJobData("masterDbConnectionString", masterDbConnectionString).UsingJobData("tmpDbConnectionString", tmpDbConnectionString).UsingJobData("sendGridUser", sendGridUser).UsingJobData("sendGridPassword", sendGridPassword).Build();
 
             var nightly = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(1, 0)).StartNow().Build();
             var sched = StdSchedulerFactory.GetDefaultScheduler();
