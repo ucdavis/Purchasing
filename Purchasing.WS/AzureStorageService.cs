@@ -170,9 +170,7 @@ namespace Purchasing.WS
             // drop the temporary srcDatabase
             CleanupTmp(tmpDatabase, masterDbConnectionString);
 
-            //return reqId;
-            filename = string.Empty;
-            return string.Empty;
+            return reqId;
         }
 
         /// <summary>
