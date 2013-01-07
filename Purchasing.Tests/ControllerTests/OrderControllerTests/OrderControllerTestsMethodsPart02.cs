@@ -2036,7 +2036,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
             var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
-            Assert.AreEqual(7.25m, args.EstimatedTax); //Default
+            Assert.AreEqual(7.5m, args.EstimatedTax); //Default
             Assert.AreEqual(0, args.ShippingAmount); //Couldn't parse. Default used
             Assert.AreEqual(0, args.FreightAmount); //Couldn't parse. Default used
             #endregion Assert
