@@ -78,7 +78,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Approver review.", order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Approver review.", order.EmailQueues[0].Text);
             #endregion Assert		
         }
 
@@ -146,13 +146,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Approver review.", order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Approver review.", order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
 
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Account Manager) for review from Homer Simpson.", order.EmailQueues[1].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Account Manager) for review from Homer Simpson.", order.EmailQueues[1].Text);
             Assert.AreEqual("flanders", order.EmailQueues[1].User.Id);
 
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Account Manager) for review from Homer Simpson.", order.EmailQueues[2].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Account Manager) for review from Homer Simpson.", order.EmailQueues[2].Text);
             Assert.AreEqual("AccMan".ToLower(), order.EmailQueues[2].User.Id);
             #endregion Assert
         }
@@ -230,10 +230,10 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Approver review.", order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Approver review.", order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
 
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Account Manager) for review from Homer Simpson.", order.EmailQueues[1].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Account Manager) for review from Homer Simpson.", order.EmailQueues[1].Text);
             Assert.AreEqual("flanders", order.EmailQueues[1].User.Id);
 
             //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Account Manager) for review from Homer Simpson.", "#testOrg-FT1P9YR"), order.EmailQueues[2].Text);
@@ -318,7 +318,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
 
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Approver review.", order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Approver review.", order.EmailQueues[0].Text);
             Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
 
             //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Account Manager) for review from Homer Simpson.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
