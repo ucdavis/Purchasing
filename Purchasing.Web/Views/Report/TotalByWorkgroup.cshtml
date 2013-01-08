@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Purchasing.Web.Controllers.ReportController.OrderTotals>
+
+
+@{
+    ViewBag.Title = "Total By Workgroup";
+    ViewBag.SingleColumn = false;
+    ViewBag.GetMethod = "Index";
+    ViewBag.LoadTableTools = true;
+    ViewBag.LoadFixedHeaders = true;
+    
+    Bundles.Reference("scripts/public/single/TableTools.js");
+    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
+    Bundles.Reference("scripts/public/single/RearrangeDataTable.js");
+    Bundles.Reference("scripts/public/single/FixedHeader.js");
+
+}
+
+<table class="datatable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Workgroup
+            </th>
+            <th>
+                Primary Org
+            </th>
+            <th>
+                Initiated Orders
+            </th>
+            <th>
+                Pending Orders
+            </th>
+            <th>
+                Completed Orders
+            </th>
+            <th>
+                Canceled Orders
+            </th>
+            <th>
+                Denied Orders
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ var odd = false; }
+        @foreach(var item in Model)
+        {
+            <tr class="@(odd ? "odd" : "even")">
+                <td></td>
+                <td>
+                    @item.WorkgroupName
+                </td>
+                <td>
+                    @item.PrimaryOrg
+                </td>
+                <td>
+                    @item.InitiatedOrders
+                </td>
+                <td>
+                    @item.PendingOrders
+                </td>
+                <td>
+                    @item.CompletedOrders
+                </td>
+                <td>
+                    @item.CanceledOrders
+                </td>
+                <td>
+                    @item.DeniedOrders
+                </td>
+                <td></td>
+            </tr>
+            odd = !odd;
+        }
+    </tbody>
+</table>
+
+
+
+

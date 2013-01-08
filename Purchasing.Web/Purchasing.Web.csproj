@@ -1019,6 +1019,7 @@
     <Content Include="Views\System\Backups.cshtml" />
     <Content Include="Views\System\Emails.cshtml" />
     <Content Include="Views\Workgroup\UpdateMultipleAccounts.cshtml" />
+    <Content Include="Views\Report\TotalByWorkgroup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
