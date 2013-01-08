@@ -44,7 +44,7 @@ namespace Purchasing.Web.App_Start.Jobs
                 var reqId = azureService.BackupDataSync("PrePurchasing", out filename);
 
                 // save a record of this backup job
-                var backupLog = new BackupLog() {RequestId = reqId, Filename = filename};
+                var backupLog = new BackupLog() {RequestId = reqId, Filename = filename, DateTimeCreated = DateTime.Now};
                 _backupLogRespoitory.EnsurePersistent(backupLog);
 
                 // clean up the blob
