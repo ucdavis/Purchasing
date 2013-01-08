@@ -4,7 +4,6 @@
 @{
     ViewBag.Title = "Total By Workgroup";
     ViewBag.SingleColumn = false;
-    ViewBag.GetMethod = "Index";
     ViewBag.LoadTableTools = true;
     ViewBag.LoadFixedHeaders = true;
     
@@ -16,37 +15,37 @@
 }
 
 <div class="">
-<div class="dt-table-filter-header display-form">
-    <!--<header class="ui-widget-header ui-corner-top"></header>-->
-    <div class="section-contents">
+    <div class="dt-table-filter-header display-form">
+        <!--<header class="ui-widget-header ui-corner-top"></header>-->
+        <div class="section-contents">
 
-    @using (Html.BeginForm("TotalByWorkgroup", "Report", FormMethod.Get))
-    {
-        <ul>
+            @using (Html.BeginForm("TotalByWorkgroup", "Report", FormMethod.Get))
+            {
+                <ul>
  
-            <li class="datepicker">
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.StartDate)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.StartDate)
-                </div>
-            </li>
-            <li class="datepicker">
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.EndDate)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.EndDate)
-                </div>
-            </li>
-            <li class="apply">
-                <input class="button" type="submit" value="Apply" />
-            </li>
-            </ul>
-    }
-</div>
-</div>
+                    <li class="datepicker">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.StartDate)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.StartDate)
+                        </div>
+                    </li>
+                    <li class="datepicker">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.EndDate)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.EndDate)
+                        </div>
+                    </li>
+                    <li class="apply">
+                        <input class="button" type="submit" value="Apply" />
+                    </li>
+                </ul>
+            }
+        </div>
+    </div>
 
 </div>
 
