@@ -379,7 +379,7 @@
 
             self.shipping = ko.observable('$0.00');
             self.freight = ko.observable('$0.00');
-            self.tax = ko.observable('7.25%');
+            self.tax = ko.observable('7.50%');
 
             //Account info
             self.account = ko.observable();
