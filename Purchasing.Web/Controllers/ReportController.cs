@@ -79,13 +79,14 @@ namespace Purchasing.Web.Controllers
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByWorkgroup(DateTime? startDate, DateTime? endDate)
         {
-            if (startDate == null)
+            var viewModel = TotalByWorkgroupViewModel.Create(startDate, endDate);
+
+            if (startDate == null || endDate == null)
             {
-                startDate = DateTime.Now.AddMonths(-1);
-            }
-            if (endDate == null)
-            {
-                endDate = DateTime.Now;
+                Message = "Select a start date and an end date then click apply to view report.";
+                
+
+                return View(viewModel);
             }
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true);
             var workgroupCounts = new List<OrderTotals>();
@@ -105,7 +106,7 @@ namespace Purchasing.Web.Controllers
                     workgroupCounts.Add(orderTotal);
                 }
             }
-            var viewModel = TotalByWorkgroupViewModel.Create(startDate.Value, endDate.Value);
+
             viewModel.WorkgroupCounts = workgroupCounts.OrderBy(a => a.WorkgroupName);
 
             return View(viewModel);
@@ -127,10 +128,10 @@ namespace Purchasing.Web.Controllers
     public class TotalByWorkgroupViewModel
     {
         public IEnumerable<OrderTotals> WorkgroupCounts { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
-        public static TotalByWorkgroupViewModel Create(DateTime startDate, DateTime endDate)
+        public static TotalByWorkgroupViewModel Create(DateTime? startDate, DateTime? endDate)
         {
             var viewModel = new TotalByWorkgroupViewModel { StartDate = startDate, EndDate = endDate};
             viewModel.WorkgroupCounts = new List<OrderTotals>();
