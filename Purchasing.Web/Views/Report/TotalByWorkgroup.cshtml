@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Purchasing.Web.Controllers.ReportController.OrderTotals>
+﻿@model Purchasing.Web.Controllers.TotalByWorkgroupViewModel
 
 
 @{
@@ -14,6 +14,41 @@
     Bundles.Reference("scripts/public/single/FixedHeader.js");
 
 }
+
+<div class="">
+<div class="dt-table-filter-header display-form">
+    <!--<header class="ui-widget-header ui-corner-top"></header>-->
+    <div class="section-contents">
+
+    @using (Html.BeginForm("TotalByWorkgroup", "Report", FormMethod.Get))
+    {
+        <ul>
+ 
+            <li class="datepicker">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.StartDate)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.StartDate)
+                </div>
+            </li>
+            <li class="datepicker">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EndDate)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EndDate)
+                </div>
+            </li>
+            <li class="apply">
+                <input class="button" type="submit" value="Apply" />
+            </li>
+            </ul>
+    }
+</div>
+</div>
+
+</div>
 
 <table class="datatable">
     <thead>
@@ -45,7 +80,7 @@
     </thead>
     <tbody>
         @{ var odd = false; }
-        @foreach(var item in Model)
+        @foreach(var item in Model.WorkgroupCounts)
         {
             <tr class="@(odd ? "odd" : "even")">
                 <td></td>
