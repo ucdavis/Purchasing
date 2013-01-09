@@ -28,6 +28,7 @@ namespace Purchasing.Web.Models
         public int WorkgroupId { get; set; }
         public bool Administrative { get; set; }
         public string PrimaryOrg { get; set; }
+        public string Vendor { get; set; }
         public int InitiatedOrders { get; set; }
         public int DeniedOrders { get; set; }
         public int CanceledOrders { get; set; }

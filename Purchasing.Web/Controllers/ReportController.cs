@@ -208,6 +208,74 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [AuthorizeWorkgroupAccess]
+        public ActionResult TotalByVendor(DateTime? startDate, DateTime? endDate)
+        {
+            var viewModel = TotalByWorkgroupViewModel.Create(startDate, endDate, false);
+
+            if (startDate == null || endDate == null)
+            {
+                Message = "Select a start date and an end date then click apply to view report.";
+
+                return View(viewModel);
+            }
+
+            var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true);
+            var workgroupCounts = new List<OrderTotals>();
+            foreach (var workgroup in allWorkgroups)
+            {
+                if (workgroup.IsActive && !workgroup.Administrative)
+                {
+                    var orders = _repositoryFactory.OrderRepository.Queryable.Where(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
+
+                    foreach (var order in orders)
+                    {
+                        var orderTotal = workgroupCounts.FirstOrDefault(a => a.Vendor == order.VendorName);
+
+                        if (orderTotal == null)
+                        {
+                            orderTotal = new OrderTotals();
+                            orderTotal.Vendor = order.VendorName;
+                            orderTotal.InitiatedOrders = 0;
+                            orderTotal.DeniedOrders = 0;
+                            orderTotal.CanceledOrders = 0;
+                            orderTotal.CompletedOrders = 0;
+                            orderTotal.PendingOrders = 0;
+
+                            workgroupCounts.Add(orderTotal);
+                        }
+                        orderTotal.InitiatedOrders++;
+                        switch (order.StatusCode.Id)
+                        {
+                            case OrderStatusCode.Codes.Denied:
+                                orderTotal.DeniedOrders++;
+                                break;
+                            case OrderStatusCode.Codes.Cancelled:
+                                orderTotal.CanceledOrders++;
+                                break;
+                            case OrderStatusCode.Codes.Complete:
+                            case OrderStatusCode.Codes.CompleteNotUploadedKfs:
+                                orderTotal.CompletedOrders++;
+                                break;
+                            default:
+                                orderTotal.PendingOrders++;
+                                break;
+                        }
+                    }
+                }
+            }
+
+            viewModel.WorkgroupCounts = workgroupCounts.OrderBy(a => a.Vendor);
+
+            var columnPreferences =
+                _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
+                new ColumnPreferences(CurrentUser.Identity.Name);
+            ViewBag.DataTablesPageSize = columnPreferences.DisplayRows;
+
+            return View(viewModel);
+        }
+
     }
 
 }
