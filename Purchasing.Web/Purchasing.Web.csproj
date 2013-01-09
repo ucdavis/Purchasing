@@ -384,6 +384,7 @@
     <Compile Include="Services\ISearchService.cs" />
     <Compile Include="Services\EmailNotificationSender.cs" />
     <Compile Include="Utility\WorkgroupPermissionActions.cs" />
+    <Content Include="app_offline2.html" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="App_Readme\NPOI\Ionic_Utils_Zip_license.txt" />
     <Content Include="App_Readme\NPOI\License.txt" />
