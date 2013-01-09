@@ -359,6 +359,7 @@
     <Compile Include="Models\ReportPermissionsViewModel.cs" />
     <Compile Include="Models\ReportWorkloadViewModel.cs" />
     <Compile Include="Models\ReviewOrderViewModel.cs" />
+    <Compile Include="Models\TotalByWorkgroupViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
     <Compile Include="Models\WorkgroupAccountModel.cs" />
@@ -1020,6 +1021,9 @@
     <Content Include="Views\System\Backups.cshtml" />
     <Content Include="Views\System\Emails.cshtml" />
     <Content Include="Views\Workgroup\UpdateMultipleAccounts.cshtml" />
+    <Content Include="Views\Report\TotalByWorkgroup.cshtml" />
+    <Content Include="Views\Report\TotalByPrimaryOrg.cshtml" />
+    <Content Include="Views\Report\TotalByVendor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
