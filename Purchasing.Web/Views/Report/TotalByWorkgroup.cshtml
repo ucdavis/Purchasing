@@ -1,4 +1,4 @@
-﻿@model Purchasing.Web.Controllers.TotalByWorkgroupViewModel
+﻿@model TotalByWorkgroupViewModel
 
 
 @{
@@ -39,6 +39,14 @@
                             @Html.EditorFor(model => model.EndDate)
                         </div>
                     </li>
+                    <li>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.ShowAdmin)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.ShowAdmin)
+                        </div>
+                    </li>
                     <li class="apply">
                         <input class="button" type="submit" value="Apply" />
                     </li>
@@ -56,9 +64,12 @@
             <th>
                 Workgroup
             </th>
-            <th>
-                Administrative
-            </th>
+            @if (Model.ShowAdmin)
+            {
+                <th>
+                    Administrative
+                </th>
+            }
             <th>
                 Primary Org
             </th>
@@ -89,9 +100,12 @@
                 <td>
                     @item.WorkgroupName
                 </td>
-                <td>
-                    @item.Administrative
-                </td>
+                @if (Model.ShowAdmin)
+                {
+                    <td>
+                        @item.Administrative
+                    </td>
+                }
                 <td>
                     @item.PrimaryOrg
                 </td>

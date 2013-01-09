@@ -77,9 +77,9 @@ namespace Purchasing.Web.Controllers
 
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
-        public ActionResult TotalByWorkgroup(DateTime? startDate, DateTime? endDate)
+        public ActionResult TotalByWorkgroup(DateTime? startDate, DateTime? endDate, bool showAdmin)
         {
-            var viewModel = TotalByWorkgroupViewModel.Create(startDate, endDate);
+            var viewModel = TotalByWorkgroupViewModel.Create(startDate, endDate, showAdmin);
 
             if (startDate == null || endDate == null)
             {
@@ -108,74 +108,49 @@ namespace Purchasing.Web.Controllers
                     workgroupCounts.Add(orderTotal);
                 }
             }
-
-            foreach (var workgroup in allWorkgroups)
+            if (showAdmin)
             {
-                if (workgroup.IsActive && workgroup.Administrative)
+                foreach (var workgroup in allWorkgroups)
                 {
-                    var orderTotal = new OrderTotals();
-                    orderTotal.WorkgroupName = workgroup.Name;
-                    orderTotal.WorkgroupId = workgroup.Id;
-                    orderTotal.Administrative = true;
-                    orderTotal.PrimaryOrg = workgroup.PrimaryOrganization.Name;
-
-                    orderTotal.InitiatedOrders = 0;
-                    orderTotal.DeniedOrders = 0;
-                    orderTotal.CanceledOrders = 0;
-                    orderTotal.CompletedOrders = 0;
-                    orderTotal.PendingOrders = 0;
-                    var childWorkgroupIds = _workgroupService.GetChildWorkgroups(workgroup.Id);
-
-                    foreach (var childWorkgroupId in childWorkgroupIds) //NOTE these child workgroup Id's don't include ones that "do not inherit permissions"
+                    if (workgroup.IsActive && workgroup.Administrative)
                     {
-                        int id = childWorkgroupId;
-                        var childOrderTotal = workgroupCounts.FirstOrDefault(a => a.WorkgroupId == id);
-                        if (childOrderTotal != null)
+                        var orderTotal = new OrderTotals();
+                        orderTotal.WorkgroupName = workgroup.Name;
+                        orderTotal.WorkgroupId = workgroup.Id;
+                        orderTotal.Administrative = true;
+                        orderTotal.PrimaryOrg = workgroup.PrimaryOrganization.Name;
+
+                        orderTotal.InitiatedOrders = 0;
+                        orderTotal.DeniedOrders = 0;
+                        orderTotal.CanceledOrders = 0;
+                        orderTotal.CompletedOrders = 0;
+                        orderTotal.PendingOrders = 0;
+                        var childWorkgroupIds = _workgroupService.GetChildWorkgroups(workgroup.Id);
+
+                        foreach (var childWorkgroupId in childWorkgroupIds)
+                            //NOTE these child workgroup Id's don't include ones that "do not inherit permissions"
                         {
-                            orderTotal.InitiatedOrders += childOrderTotal.InitiatedOrders;
-                            orderTotal.DeniedOrders += childOrderTotal.DeniedOrders;
-                            orderTotal.CanceledOrders += childOrderTotal.CanceledOrders;
-                            orderTotal.CompletedOrders += childOrderTotal.CompletedOrders;
-                            orderTotal.PendingOrders += childOrderTotal.PendingOrders;
+                            int id = childWorkgroupId;
+                            var childOrderTotal = workgroupCounts.FirstOrDefault(a => a.WorkgroupId == id);
+                            if (childOrderTotal != null)
+                            {
+                                orderTotal.InitiatedOrders += childOrderTotal.InitiatedOrders;
+                                orderTotal.DeniedOrders += childOrderTotal.DeniedOrders;
+                                orderTotal.CanceledOrders += childOrderTotal.CanceledOrders;
+                                orderTotal.CompletedOrders += childOrderTotal.CompletedOrders;
+                                orderTotal.PendingOrders += childOrderTotal.PendingOrders;
+                            }
                         }
+                        workgroupCounts.Add(orderTotal);
                     }
-                    workgroupCounts.Add(orderTotal);
                 }
             }
-
             viewModel.WorkgroupCounts = workgroupCounts.OrderBy(a => a.WorkgroupName);
+            
 
             return View(viewModel);
         }
 
     }
 
-    public class OrderTotals
-    {
-        public string WorkgroupName { get; set; }
-        public int WorkgroupId { get; set; }
-        public bool Administrative { get; set; }
-        public string PrimaryOrg { get; set; }
-        public int InitiatedOrders { get; set; }
-        public int DeniedOrders { get; set; }
-        public int CanceledOrders { get; set; }
-        public int CompletedOrders { get; set; }
-        public int PendingOrders { get; set; }
-    }
-
-    public class TotalByWorkgroupViewModel
-    {
-        public IEnumerable<OrderTotals> WorkgroupCounts { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-
-        public static TotalByWorkgroupViewModel Create(DateTime? startDate, DateTime? endDate)
-        {
-            var viewModel = new TotalByWorkgroupViewModel { StartDate = startDate, EndDate = endDate};
-            viewModel.WorkgroupCounts = new List<OrderTotals>();
-
-            return viewModel;
-        }
-
-    }
 }

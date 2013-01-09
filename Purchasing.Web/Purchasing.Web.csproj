@@ -359,6 +359,7 @@
     <Compile Include="Models\ReportPermissionsViewModel.cs" />
     <Compile Include="Models\ReportWorkloadViewModel.cs" />
     <Compile Include="Models\ReviewOrderViewModel.cs" />
+    <Compile Include="Models\TotalByWorkgroupViewModel.cs" />
     <Compile Include="Models\WorgroupPeopleCreateModel.cs" />
     <Compile Include="Models\WorgroupPeopleListModel.cs" />
     <Compile Include="Models\WorkgroupAccountModel.cs" />
