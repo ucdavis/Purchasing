@@ -132,7 +132,8 @@ namespace Purchasing.Web.Controllers
 
                 return View(viewModel);
             }
-            var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true);
+            var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
+            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups);
             var workgroupCounts = new List<OrderTotals>();
             foreach (var workgroup in allWorkgroups)
             {
@@ -143,11 +144,11 @@ namespace Purchasing.Web.Controllers
                     orderTotal.WorkgroupId = workgroup.Id;
                     orderTotal.Administrative = false;
                     orderTotal.PrimaryOrg = workgroup.PrimaryOrganization.Name;
-                    orderTotal.InitiatedOrders = _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
-                    orderTotal.DeniedOrders = _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusCode.Id == OrderStatusCode.Codes.Denied);
-                    orderTotal.CanceledOrders = _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusCode.Id == OrderStatusCode.Codes.Cancelled);
-                    orderTotal.CompletedOrders = _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusCode.Id == OrderStatusCode.Codes.Complete || a.StatusCode.Id == OrderStatusCode.Codes.CompleteNotUploadedKfs));
-                    orderTotal.PendingOrders = _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusCode.Id == OrderStatusCode.Codes.Approver || a.StatusCode.Id == OrderStatusCode.Codes.AccountManager || a.StatusCode.Id == OrderStatusCode.Codes.Purchaser || a.StatusCode.Id == OrderStatusCode.Codes.Requester || a.StatusCode.Id == OrderStatusCode.Codes.ConditionalApprover));
+                    orderTotal.InitiatedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
+                    orderTotal.DeniedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Denied);
+                    orderTotal.CanceledOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Cancelled);
+                    orderTotal.CompletedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusId == OrderStatusCode.Codes.Complete || a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
+                    orderTotal.PendingOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusId == OrderStatusCode.Codes.Approver || a.StatusId == OrderStatusCode.Codes.AccountManager || a.StatusId == OrderStatusCode.Codes.Purchaser || a.StatusId == OrderStatusCode.Codes.Requester || a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
 
                     workgroupCounts.Add(orderTotal);
                 }
@@ -195,6 +196,7 @@ namespace Purchasing.Web.Controllers
             var columnPreferences =
                 _repositoryFactory.ColumnPreferencesRepository.GetNullableById(CurrentUser.Identity.Name) ??
                 new ColumnPreferences(CurrentUser.Identity.Name);
+
             ViewBag.DataTablesPageSize = columnPreferences.DisplayRows;
 
             return View(viewModel);
