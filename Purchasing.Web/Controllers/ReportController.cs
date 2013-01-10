@@ -81,44 +81,6 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
-        private List<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups)
-        {
-            var workgroupIds = workgroups.Select(x => x.Id).Distinct().ToArray();
-
-            var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
-
-            //Search for all orders within the given workgroups
-            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
-            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
-
-            //Need to return all matching orders
-            var docs = searcher.Search(query, int.MaxValue).ScoreDocs;
-            var orderHistory = new List<OrderHistory>();
-
-            foreach (var scoredoc in docs)
-            {
-                var doc = searcher.Doc(scoredoc.doc);
-
-                var history = new OrderHistory();
-
-                foreach (var prop in history.GetType().GetProperties())
-                {
-                    if (!string.Equals(prop.Name, "id", StringComparison.OrdinalIgnoreCase))
-                    {
-                        prop.SetValue(history, Convert.ChangeType(doc.Get(prop.Name.ToLower()), prop.PropertyType), null);
-                    }
-                }
-
-                orderHistory.Add(history);
-            }
-
-            analyzer.Close();
-            searcher.Close();
-            searcher.Dispose();
-
-            return orderHistory;
-        }
-
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByWorkgroup(DateTime? startDate, DateTime? endDate, bool showAdmin)
@@ -132,7 +94,14 @@ namespace Purchasing.Web.Controllers
 
                 return View(viewModel);
             }
+            
+            //Grab all workgroups for this user as well as related primary orgs
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
+            var workgroupIds = allWorkgroups.Select(x => x.Id).ToArray();
+            var workgroupsWithPrimaryOrgs = _repositoryFactory.WorkgroupRepository.Queryable.Where(x => workgroupIds.Contains(x.Id))
+                              .Select(x => new { Workgroup = x, Primary = x.PrimaryOrganization }).ToList();
+            
+            //Get every order that matches these workgroups
             var matchingOrders = GetOrdersByWorkgroups(allWorkgroups);
             var workgroupCounts = new List<OrderTotals>();
             foreach (var workgroup in allWorkgroups)
@@ -143,7 +112,7 @@ namespace Purchasing.Web.Controllers
                     orderTotal.WorkgroupName = workgroup.Name;
                     orderTotal.WorkgroupId = workgroup.Id;
                     orderTotal.Administrative = false;
-                    orderTotal.PrimaryOrg = workgroup.PrimaryOrganization.Name;
+                    orderTotal.PrimaryOrg = workgroupsWithPrimaryOrgs.Single(x => x.Workgroup.Id == workgroup.Id).Primary.Name;  //workgroup.PrimaryOrganization.Name;
                     orderTotal.InitiatedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
                     orderTotal.DeniedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Denied);
                     orderTotal.CanceledOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Cancelled);
@@ -322,6 +291,42 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
-    }
+        private List<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups)
+        {
+            var workgroupIds = workgroups.Select(x => x.Id).Distinct().ToArray();
 
+            var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
+
+            //Search for all orders within the given workgroups
+            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
+            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
+
+            //Need to return all matching orders
+            var docs = searcher.Search(query, int.MaxValue).ScoreDocs;
+            var orderHistory = new List<OrderHistory>();
+
+            foreach (var scoredoc in docs)
+            {
+                var doc = searcher.Doc(scoredoc.doc);
+
+                var history = new OrderHistory();
+
+                foreach (var prop in history.GetType().GetProperties())
+                {
+                    if (!string.Equals(prop.Name, "id", StringComparison.OrdinalIgnoreCase))
+                    {
+                        prop.SetValue(history, Convert.ChangeType(doc.Get(prop.Name.ToLower()), prop.PropertyType), null);
+                    }
+                }
+
+                orderHistory.Add(history);
+            }
+
+            analyzer.Close();
+            searcher.Close();
+            searcher.Dispose();
+
+            return orderHistory;
+        }
+    }
 }
