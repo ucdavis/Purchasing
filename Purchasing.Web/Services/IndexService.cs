@@ -231,7 +231,7 @@ namespace Purchasing.Web.Services
                     if (!string.IsNullOrWhiteSpace(datecreatedkey))
                     {
                         var value = DateTime.Parse(entityDictionary[datecreatedkey].ToString());
-                        doc.Add(new NumericField("datecreatedticks").SetLongValue(value.Ticks));
+                        doc.Add(new NumericField("datecreatedticks", Field.Store.NO, true).SetLongValue(value.Ticks));
                     }
 
                     //Now add each searchable property to the store & index. id/orderid are already removed from entityDictionary
