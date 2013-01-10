@@ -102,7 +102,7 @@ namespace Purchasing.Web.Controllers
                               .Select(x => new { Workgroup = x, Primary = x.PrimaryOrganization }).ToList();
             
             //Get every order that matches these workgroups
-            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups);
+            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
             var workgroupCounts = new List<OrderTotals>();
             foreach (var workgroup in allWorkgroups)
             {
@@ -113,11 +113,11 @@ namespace Purchasing.Web.Controllers
                     orderTotal.WorkgroupId = workgroup.Id;
                     orderTotal.Administrative = false;
                     orderTotal.PrimaryOrg = workgroupsWithPrimaryOrgs.Single(x => x.Workgroup.Id == workgroup.Id).Primary.Name;
-                    orderTotal.InitiatedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
-                    orderTotal.DeniedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Denied);
-                    orderTotal.CanceledOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Cancelled);
-                    orderTotal.CompletedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusId == OrderStatusCode.Codes.Complete || a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
-                    orderTotal.PendingOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusId == OrderStatusCode.Codes.Approver || a.StatusId == OrderStatusCode.Codes.AccountManager || a.StatusId == OrderStatusCode.Codes.Purchaser || a.StatusId == OrderStatusCode.Codes.Requester || a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
+                    orderTotal.InitiatedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id);
+                    orderTotal.DeniedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Denied);
+                    orderTotal.CanceledOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Cancelled);
+                    orderTotal.CompletedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && (a.StatusId == OrderStatusCode.Codes.Complete || a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
+                    orderTotal.PendingOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && (a.StatusId == OrderStatusCode.Codes.Approver || a.StatusId == OrderStatusCode.Codes.AccountManager || a.StatusId == OrderStatusCode.Codes.Purchaser || a.StatusId == OrderStatusCode.Codes.Requester || a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
 
                     workgroupCounts.Add(orderTotal);
                 }
@@ -191,7 +191,7 @@ namespace Purchasing.Web.Controllers
                               .Select(x => new { Workgroup = x, Primary = x.PrimaryOrganization }).ToList();
 
             //Get every order that matches these workgroups
-            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups);
+            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
             var workgroupCounts = new List<OrderTotals>();
 
             foreach (var workgroup in allWorkgroups)
@@ -212,11 +212,11 @@ namespace Purchasing.Web.Controllers
                         workgroupCounts.Add(orderTotal);
                     }
                     
-                    orderTotal.InitiatedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
-                    orderTotal.DeniedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Denied);
-                    orderTotal.CanceledOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Cancelled);
-                    orderTotal.CompletedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusId == OrderStatusCode.Codes.Complete || a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
-                    orderTotal.PendingOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusId == OrderStatusCode.Codes.Approver || a.StatusId == OrderStatusCode.Codes.AccountManager || a.StatusId == OrderStatusCode.Codes.Purchaser || a.StatusId == OrderStatusCode.Codes.Requester || a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
+                    orderTotal.InitiatedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id);
+                    orderTotal.DeniedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Denied);
+                    orderTotal.CanceledOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Cancelled);
+                    orderTotal.CompletedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && (a.StatusId == OrderStatusCode.Codes.Complete || a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
+                    orderTotal.PendingOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && (a.StatusId == OrderStatusCode.Codes.Approver || a.StatusId == OrderStatusCode.Codes.AccountManager || a.StatusId == OrderStatusCode.Codes.Purchaser || a.StatusId == OrderStatusCode.Codes.Requester || a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
                     
                 }
             }
@@ -248,14 +248,14 @@ namespace Purchasing.Web.Controllers
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
             
             //Get every order that matches these workgroups
-            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups);
+            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
             var workgroupCounts = new List<OrderTotals>();
 
             foreach (var workgroup in allWorkgroups)
             {
                 if (workgroup.IsActive && !workgroup.Administrative)
                 {
-                    var orders = matchingOrders.AsQueryable().Where(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
+                    var orders = matchingOrders.AsQueryable().Where(a => a.WorkgroupId == workgroup.Id);
 
                     foreach (var order in orders)
                     {
@@ -304,18 +304,26 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
-        private List<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups)
+        /// <summary>
+        /// Gets all orders for a list of workgroups within the given date range.
+        /// </summary>
+        /// <param name="workgroups">List of workgroups</param>
+        /// <param name="createdAfter">Return orders created after this date</param>
+        /// <param name="createdBefore">Return orders creatred before the END of the given date (we will AddDays(+1))/</param>
+        /// <returns></returns>
+        private List<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore)
         {
             var workgroupIds = workgroups.Select(x => x.Id).Distinct().ToArray();
 
             var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
-
-            //Search for all orders within the given workgroups
+            
+            //Search for all orders within the given workgroups, created in the range desired
             var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
             Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
+            var filter = NumericRangeFilter.NewLongRange("datecreatedticks", createdAfter.Ticks, createdBefore.AddDays(1).Ticks, true, true);
 
             //Need to return all matching orders
-            var docs = searcher.Search(query, int.MaxValue).ScoreDocs;
+            var docs = searcher.Search(query, filter, int.MaxValue).ScoreDocs;
             var orderHistory = new List<OrderHistory>();
 
             foreach (var scoredoc in docs)
