@@ -112,7 +112,7 @@ namespace Purchasing.Web.Controllers
                     orderTotal.WorkgroupName = workgroup.Name;
                     orderTotal.WorkgroupId = workgroup.Id;
                     orderTotal.Administrative = false;
-                    orderTotal.PrimaryOrg = workgroupsWithPrimaryOrgs.Single(x => x.Workgroup.Id == workgroup.Id).Primary.Name;  //workgroup.PrimaryOrganization.Name;
+                    orderTotal.PrimaryOrg = workgroupsWithPrimaryOrgs.Single(x => x.Workgroup.Id == workgroup.Id).Primary.Name;
                     orderTotal.InitiatedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
                     orderTotal.DeniedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Denied);
                     orderTotal.CanceledOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Cancelled);
@@ -184,8 +184,16 @@ namespace Purchasing.Web.Controllers
                 return View(viewModel);
             }
 
-            var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true);
+            //Grab all workgroups for this user as well as related primary orgs
+            var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
+            var workgroupIds = allWorkgroups.Select(x => x.Id).ToArray();
+            var workgroupsWithPrimaryOrgs = _repositoryFactory.WorkgroupRepository.Queryable.Where(x => workgroupIds.Contains(x.Id))
+                              .Select(x => new { Workgroup = x, Primary = x.PrimaryOrganization }).ToList();
+
+            //Get every order that matches these workgroups
+            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups);
             var workgroupCounts = new List<OrderTotals>();
+
             foreach (var workgroup in allWorkgroups)
             {
                 if (workgroup.IsActive && !workgroup.Administrative)
@@ -194,7 +202,7 @@ namespace Purchasing.Web.Controllers
                     if (orderTotal == null)
                     {
                         orderTotal = new OrderTotals();
-                        orderTotal.PrimaryOrg = workgroup.PrimaryOrganization.Name;
+                        orderTotal.PrimaryOrg = workgroupsWithPrimaryOrgs.Single(x => x.Workgroup.Id == workgroup.Id).Primary.Name;
                         orderTotal.InitiatedOrders = 0;
                         orderTotal.DeniedOrders = 0;
                         orderTotal.CanceledOrders = 0;
@@ -204,11 +212,11 @@ namespace Purchasing.Web.Controllers
                         workgroupCounts.Add(orderTotal);
                     }
                     
-                    orderTotal.InitiatedOrders += _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
-                    orderTotal.DeniedOrders += _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusCode.Id == OrderStatusCode.Codes.Denied);
-                    orderTotal.CanceledOrders += _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusCode.Id == OrderStatusCode.Codes.Cancelled);
-                    orderTotal.CompletedOrders += _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusCode.Id == OrderStatusCode.Codes.Complete || a.StatusCode.Id == OrderStatusCode.Codes.CompleteNotUploadedKfs));
-                    orderTotal.PendingOrders += _repositoryFactory.OrderRepository.Queryable.Count(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusCode.Id == OrderStatusCode.Codes.Approver || a.StatusCode.Id == OrderStatusCode.Codes.AccountManager || a.StatusCode.Id == OrderStatusCode.Codes.Purchaser || a.StatusCode.Id == OrderStatusCode.Codes.Requester || a.StatusCode.Id == OrderStatusCode.Codes.ConditionalApprover));
+                    orderTotal.InitiatedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
+                    orderTotal.DeniedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Denied);
+                    orderTotal.CanceledOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && a.StatusId == OrderStatusCode.Codes.Cancelled);
+                    orderTotal.CompletedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusId == OrderStatusCode.Codes.Complete || a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
+                    orderTotal.PendingOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value && (a.StatusId == OrderStatusCode.Codes.Approver || a.StatusId == OrderStatusCode.Codes.AccountManager || a.StatusId == OrderStatusCode.Codes.Purchaser || a.StatusId == OrderStatusCode.Codes.Requester || a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
                     
                 }
             }
@@ -236,22 +244,27 @@ namespace Purchasing.Web.Controllers
                 return View(viewModel);
             }
 
-            var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true);
+            //Grab all workgroups for this user
+            var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
+            
+            //Get every order that matches these workgroups
+            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups);
             var workgroupCounts = new List<OrderTotals>();
+
             foreach (var workgroup in allWorkgroups)
             {
                 if (workgroup.IsActive && !workgroup.Administrative)
                 {
-                    var orders = _repositoryFactory.OrderRepository.Queryable.Where(a => a.Workgroup == workgroup && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
+                    var orders = matchingOrders.AsQueryable().Where(a => a.WorkgroupId == workgroup.Id && a.DateCreated >= startDate.Value && a.DateCreated <= endDate.Value);
 
                     foreach (var order in orders)
                     {
-                        var orderTotal = workgroupCounts.FirstOrDefault(a => a.Vendor == order.VendorName);
+                        var orderTotal = workgroupCounts.FirstOrDefault(a => a.Vendor == order.Vendor);
 
                         if (orderTotal == null)
                         {
                             orderTotal = new OrderTotals();
-                            orderTotal.Vendor = order.VendorName;
+                            orderTotal.Vendor = order.Vendor;
                             orderTotal.InitiatedOrders = 0;
                             orderTotal.DeniedOrders = 0;
                             orderTotal.CanceledOrders = 0;
@@ -261,7 +274,7 @@ namespace Purchasing.Web.Controllers
                             workgroupCounts.Add(orderTotal);
                         }
                         orderTotal.InitiatedOrders++;
-                        switch (order.StatusCode.Id)
+                        switch (order.StatusId)
                         {
                             case OrderStatusCode.Codes.Denied:
                                 orderTotal.DeniedOrders++;
