@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.QueryParsers;
+using Lucene.Net.Search;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
@@ -21,14 +25,16 @@ namespace Purchasing.Web.Controllers
         private readonly IReportRepositoryFactory _reportRepositoryFactory;
         private readonly IReportService _reportService;
         private readonly IWorkgroupService _workgroupService;
+        private readonly IIndexService _indexService;
 
-        public ReportController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IReportRepositoryFactory reportRepositoryFactory, IReportService reportService, IWorkgroupService workgroupService)
+        public ReportController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IReportRepositoryFactory reportRepositoryFactory, IReportService reportService, IWorkgroupService workgroupService, IIndexService indexService)
         {
             _repositoryFactory = repositoryFactory;
             _queryRepositoryFactory = queryRepositoryFactory;
             _reportRepositoryFactory = reportRepositoryFactory;
             _reportService = reportService;
             _workgroupService = workgroupService;
+            _indexService = indexService;
         }
 
         [AuthorizeReadOrEditOrder]
@@ -73,6 +79,44 @@ namespace Purchasing.Web.Controllers
             var viewModel = ReportPermissionsViewModel.Create(_repositoryFactory, _workgroupService);
 
             return View(viewModel);
+        }
+
+        private List<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups)
+        {
+            var workgroupIds = workgroups.Select(x => x.Id).Distinct().ToArray();
+
+            var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
+
+            //Search for all orders within the given workgroups
+            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
+            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
+
+            //Need to return all matching orders
+            var docs = searcher.Search(query, int.MaxValue).ScoreDocs;
+            var orderHistory = new List<OrderHistory>();
+
+            foreach (var scoredoc in docs)
+            {
+                var doc = searcher.Doc(scoredoc.doc);
+
+                var history = new OrderHistory();
+
+                foreach (var prop in history.GetType().GetProperties())
+                {
+                    if (!string.Equals(prop.Name, "id", StringComparison.OrdinalIgnoreCase))
+                    {
+                        prop.SetValue(history, Convert.ChangeType(doc.Get(prop.Name.ToLower()), prop.PropertyType), null);
+                    }
+                }
+
+                orderHistory.Add(history);
+            }
+
+            analyzer.Close();
+            searcher.Close();
+            searcher.Dispose();
+
+            return orderHistory;
         }
 
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]

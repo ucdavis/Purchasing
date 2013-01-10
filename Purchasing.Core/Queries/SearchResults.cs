@@ -6,7 +6,7 @@ namespace Purchasing.Core.Queries
     {
         public class OrderResult
         {
-            public static readonly string[] SearchableFields = { "requestnumber", "justification", "shipto", "shiptoemail", "ponumber" };
+            public static readonly string[] SearchableFields = { "requestnumber", "justification", "shipto", "shiptoemail", "ponumber", "datecreated", "workgroupid" };
 
             public int Id { get; set; }
             public DateTime DateCreated { get; set; }
