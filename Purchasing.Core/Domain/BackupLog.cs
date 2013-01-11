@@ -21,7 +21,7 @@ namespace Purchasing.Core.Domain
         public virtual string Filename { get; set; }
 
         public virtual bool Deleted { get; set; }
-        public virtual DateTime DateTimeDeleted { get; set; }
+        public virtual DateTime? DateTimeDeleted { get; set; }
     }
 
     public class BackupLogMap : ClassMap<BackupLog>
