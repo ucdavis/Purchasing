@@ -226,6 +226,14 @@ namespace Purchasing.Web.Services
                         doc.Add(new Field("searchid", value.Substring(value.IndexOf('-') + 1), Field.Store.NO, Field.Index.ANALYZED));
                     }
 
+                    //If we have a datecreated, create a ticks version and store that for filtering
+                    var datecreatedkey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("datecreated", x, StringComparison.OrdinalIgnoreCase));
+                    if (!string.IsNullOrWhiteSpace(datecreatedkey))
+                    {
+                        var value = DateTime.Parse(entityDictionary[datecreatedkey].ToString());
+                        doc.Add(new NumericField("datecreatedticks", Field.Store.NO, true).SetLongValue(value.Ticks));
+                    }
+
                     //Now add each searchable property to the store & index. id/orderid are already removed from entityDictionary
                     foreach (var field in entityDictionary.Where(x => x.Key != orderIdKey && x.Key != idKey))
                     {
