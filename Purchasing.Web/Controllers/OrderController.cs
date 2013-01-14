@@ -796,7 +796,7 @@ namespace Purchasing.Web.Controllers
                         Id = x.Id,
                         Notes = x.Notes,
                         Price = x.UnitPrice.ToString(),
-                        Quantity = x.Quantity.ToString(),
+                        Quantity = string.Format("{0:0.###}", x.Quantity),
                         Units = x.Unit,
                         Url = x.Url
                     })
