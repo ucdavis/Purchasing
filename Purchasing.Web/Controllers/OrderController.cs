@@ -796,7 +796,7 @@ namespace Purchasing.Web.Controllers
                         Id = x.Id,
                         Notes = x.Notes,
                         Price = x.UnitPrice.ToString(),
-                        Quantity = x.Quantity.ToString(),
+                        Quantity = string.Format("{0:0.###}", x.Quantity),
                         Units = x.Unit,
                         Url = x.Url
                     })
@@ -1090,18 +1090,18 @@ namespace Purchasing.Web.Controllers
                         _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
                         lastUpdatedBy = history.User.FullName;
                     }
-                    receivedQuantityReturned = string.Format("{0:0.000}", lineItem.QuantityReceived);
+                    receivedQuantityReturned = string.Format("{0:0.###}", lineItem.QuantityReceived);
                     success = true;
                     message = "Updated";
                     var diff = lineItem.Quantity - lineItem.QuantityReceived;
                     if (diff > 0)
                     {
-                        unaccounted = string.Format("({0})", string.Format("{0:0.000}", diff));
+                        unaccounted = string.Format("({0})", string.Format("{0:0.###}", diff));
                         showRed = true;
                     }
                     else
                     {
-                        unaccounted = string.Format("{0}", string.Format("{0:0.000}", (diff*-1)));
+                        unaccounted = string.Format("{0}", string.Format("{0:0.###}", (diff*-1)));
                         showRed = false;
                     }
 
