@@ -10,6 +10,8 @@
     Bundles.Reference("scripts/public/single/fileuploader.js");
     Bundles.Reference("scripts/public/single/OrderReview.js");
     Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
+    Bundles.Reference("scripts/public/single/SausageCustom.js");
+    Bundles.Reference("scripts/public/single/jquery.stickyfloat.js");
 }
 
 @section SubNav
@@ -144,6 +146,8 @@
 <div id="forgery-token">
     @Html.AntiForgeryToken()
 </div>
+
+<nav class="orders-nav" style="left: -200px;"></nav>
 
 @Html.Partial("_ReviewMessage")
 

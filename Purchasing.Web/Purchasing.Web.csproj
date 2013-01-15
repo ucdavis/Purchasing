@@ -643,6 +643,7 @@
     <Content Include="Scripts\public\common\jquery.qtip.js" />
     <Content Include="Scripts\public\head\prefixfree.js" />
     <Content Include="Scripts\public\order\jquery.stickyfloat.js" />
+    <Content Include="Scripts\public\single\jquery.stickyfloat.js" />
     <Content Include="Scripts\public\single\Landing.js" />
     <Content Include="Scripts\public\single\jquery.tablednd_0_5.js" />
     <Content Include="Css\jquery.tzCheckbox\background.png" />
@@ -724,6 +725,7 @@
     <Content Include="Scripts\public\order\OrderLocalStorage.js" />
     <Content Include="Scripts\public\single\fileuploader.js" />
     <Content Include="Scripts\public\single\RearrangeDataTable.js" />
+    <Content Include="Scripts\public\single\SausageCustom.js" />
     <Content Include="Scripts\public\single\TableTools.js" />
     <Content Include="Scripts\public\single\ZeroClipboard.js" />
     <Content Include="Scripts\qunit.js" />
