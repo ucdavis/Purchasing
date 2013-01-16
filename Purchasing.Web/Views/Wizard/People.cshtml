@@ -26,12 +26,17 @@
 		case 6:
 			//On Purchaser
 			ViewBag.Previous = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "PR" });
-			ViewBag.Next = Url.Action("AddAccounts", "Wizard", new { id = Model.Workgroup.Id });
+            ViewBag.Next = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "RV" });
 			break;
+        case 7:
+            //On Reviewer
+            ViewBag.Previous = Url.Action("AddPeople", "Wizard", new { id = Model.Workgroup.Id, roleFilter = "RV" });
+            ViewBag.Next = Url.Action("AddAccounts", "Wizard", new { id = Model.Workgroup.Id });
+            break;
 	}
     ViewBag.IsAdministrative = Model.Workgroup.Administrative;
     ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
-    if(ViewBag.IsAdministrative && (int)ViewBag.StepNumber == 6)
+    if(ViewBag.IsAdministrative && (int)ViewBag.StepNumber == 7)
     {
         ViewBag.LastStep = true;
     }
@@ -61,6 +66,10 @@
             case 6:
                 //On Purchaser
                 helpText = "<strong>Purchasers</strong> are user who completes order and files order with vendor or campus purchasing. Typically admin staff or shared service unit purchasing personnel.</br>";
+                break;
+            case 7:
+                //On Reviewer
+                helpText = "<strong>Reviewers</strong> are user who can view any order in the workgroup.</br>";
                 break;
         }
         helpText = helpText + "</br>You must add at least one requestor, approver, account manager, and purchaser for the workgroup to be fully functional.</br>" +
