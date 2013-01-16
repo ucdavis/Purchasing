@@ -4,7 +4,7 @@
 @{
     ViewBag.Title = Model.Workgroup.Name;
     ViewBag.StepName = "Add Account(s)";
-    ViewBag.Previous = Url.Action("People", "Wizard", new { id= Model.Workgroup.Id, roleFilter="PR"});
+    ViewBag.Previous = Url.Action("People", "Wizard", new { id= Model.Workgroup.Id, roleFilter="RV"});
     ViewBag.Skip = Url.Action("Accounts", "Wizard", new {id = Model.Workgroup.Id});
     ViewBag.IsAdministrative = Model.Workgroup.Administrative;
     ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
