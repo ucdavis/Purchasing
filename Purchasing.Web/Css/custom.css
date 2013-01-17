@@ -369,6 +369,7 @@ body .ui-tooltip-default .ui-tooltip-content { background-color: #FFF; border:2p
     line-height: 0.5em;
 }
 
+/* FireFox needs this to indent properly. Chrome was already working correctly. */
 optgroup option {
     margin-left: 1em;
 }
