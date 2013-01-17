@@ -52,7 +52,7 @@ namespace Purchasing.Web.Services
         private const string UpdateInKualiMessage = "Order request {0} for {1} has been updated in Kuali to {2}.";
         private const string ChangeMessage = "Order request {0} for {1} has been changed by {2}.";
         private const string SubmissionMessage = "Order request {0} for {1} has been submitted.";
-        private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}.";
+        private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}{4}.";
         private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
         private const string ReceiveMessage = "Order request {0} for {1} has {2} item(s) received.";
         private const string RerouteMessage = "Order request {0} for {1} has been rerouted to you.";
@@ -224,7 +224,12 @@ namespace Purchasing.Web.Services
 
                     if (IsMailRequested(preference, apf.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, apf.StatusCode.Name, currentUser.FullName), peep);
+                        var extraInfo = string.Empty;
+                        //if (preference.ShowAccountInEmail)
+                        //{
+                        extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
+                        //}
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, apf.StatusCode.Name, currentUser.FullName, extraInfo), peep);
                         AddToQueue(queues, emailQueue);
                     }
                 }
@@ -254,7 +259,12 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.User);
+                    var extraInfo = string.Empty;
+                    //if (preference.ShowAccountInEmail)
+                    //{
+                    extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
+                    //}
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.User);
                     AddToQueue(queues, emailQueue);
                 }
 
@@ -262,7 +272,12 @@ namespace Purchasing.Web.Services
                 {
                     if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
+                        var extraInfo = string.Empty;
+                        //if (preference.ShowAccountInEmail)
+                        //{
+                        extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
+                        //}
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.SecondaryUser);
                         AddToQueue(queues, emailQueue);
                     }
                 }
