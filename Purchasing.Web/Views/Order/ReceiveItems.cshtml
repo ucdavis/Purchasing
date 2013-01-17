@@ -225,16 +225,16 @@
         var diff = total - received;
         if (diff > 0)
         {
-            rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.000}", diff));
+            rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", diff));
         }
         else
         {
-            rtValue = string.Format("{0} class='unaccounted green bold'>{1}</td>", rtValue, string.Format("{0:0.000}", diff * -1));
+            rtValue = string.Format("{0} class='unaccounted green bold'>{1}</td>", rtValue, string.Format("{0:0.###}", diff * -1));
         }
     }
     else
     {
-        rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.000}", total));
+        rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", total));
     }
     @Html.Raw(rtValue)
 }
@@ -294,13 +294,13 @@
                         <td class="lineitem">@count</td>               
                         <td class="receiveLineItemCell">
                             <input class="receiveLineItem showTip" data-id="@item.Id" title="Number of Units received for this line item. Amount will be added to the current number of received items." />
-                            <div class="receiveQuantity">@item.QuantityReceived</div>
+                            <div class="receiveQuantity">@string.Format("{0:0.###}", item.QuantityReceived)</div>
                             <span class="quantity-loader" style="display: none;">
                                 <img src='@Url.Image("ajax-loader.gif")'/>
                             </span>
                             <span class="quantity-update-message"></span>
                         </td>
-                        <td>@item.Quantity</td>
+                        <td>@string.Format("{0:0.###}", item.Quantity)</td>
                         @UnaccountedAmount(item.Quantity, item.QuantityReceived)
                         <td>@item.Unit</td>
                         <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>

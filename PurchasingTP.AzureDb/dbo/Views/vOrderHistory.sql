@@ -43,7 +43,7 @@ from orders o
 	inner join ( 
 		select orderid, STUFF(
 			(
-				select ', ' + convert(varchar(10), a.quantity) + ' [' + a.Unit + '] ' + a.[description]
+				select ', ' + convert(varchar(10), convert(float, a.quantity)) + ' [' + a.Unit + '] ' + a.[description]
 				from lineitems a
 				where a.orderid = lineitems.orderid
 				order by a.[description]
