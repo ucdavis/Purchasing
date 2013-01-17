@@ -546,6 +546,10 @@ namespace Purchasing.Web.Services
             {
                 order.KfsDocType = "DPO";
             }
+            if (order.KfsDocType == "PR2")
+            {
+                order.KfsDocType = "PR";
+            }
 
             //Mark complete the final approval
             var purchaserApproval = order.Approvals.Single(x => !x.Completed);
