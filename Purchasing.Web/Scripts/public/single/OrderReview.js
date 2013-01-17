@@ -31,7 +31,7 @@
         if (options.CanCancelCompletedOrder) {
             attachCancelCompletedOrderEvents();
         }
-        
+
         if (options.IsKfsOrder) {
             purchasing.loadKfsData();
         }
@@ -40,8 +40,13 @@
             attachReferenceNumberEvents();
             attachPoNumberEvents();
         }
+        attachNav();
     };
 
+    function attachNav() {
+        $(window).sausage({ page: '.showInNav' });
+        $('.orders-nav').stickyfloat({ duration: 400 });
+    }
 
     function attachReferenceNumberEvents() {
         $("#modify-reference-number-dialog").dialog({
@@ -122,7 +127,7 @@
     purchasing.loadKfsData = function () {
         $.getJSON(options.KfsStatusUrl, function (result) {
             console.log(result);
-            if(result === null) {
+            if (result === null) {
                 $("#kfs-loading").show();
                 $("#kfs-data").hide();
                 $("#kfs-loading-status").html("A problem was encountered accessing the Campus Financial Information Service. Please try again later.");
@@ -335,7 +340,7 @@
             },
             debug: true
         });
-        
+
 
         (function ($) {
             $.widget("ui.combobox", {
@@ -375,27 +380,27 @@
                                         };
                                 }));
                             },
-//                            select: function (event, ui) {
-//                                ui.item.option.selected = true;
-//                                self._trigger("selected", event, {
-//                                    item: ui.item.option
-//                                });
-//                                var fileContainer = $(this).parent().parent();
-//                                var categeoryText = $(this).val();
-//                                var attachmentGuid = fileContainer.find("#combobox").data("id");
-//                                var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
+                            //                            select: function (event, ui) {
+                            //                                ui.item.option.selected = true;
+                            //                                self._trigger("selected", event, {
+                            //                                    item: ui.item.option
+                            //                                });
+                            //                                var fileContainer = $(this).parent().parent();
+                            //                                var categeoryText = $(this).val();
+                            //                                var attachmentGuid = fileContainer.find("#combobox").data("id");
+                            //                                var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
 
-//                                categoryMessage.html("Updating...");
+                            //                                categoryMessage.html("Updating...");
 
-//                                $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
-//                                    if (result) {
-//                                        categoryMessage.html(result.message);
-//                                    } else {
-//                                        alert("There was a problem updating the Attachment's Category");
-//                                    }
+                            //                                $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+                            //                                    if (result) {
+                            //                                        categoryMessage.html(result.message);
+                            //                                    } else {
+                            //                                        alert("There was a problem updating the Attachment's Category");
+                            //                                    }
 
-//                                });
-//                            },
+                            //                                });
+                            //                            },
                             change: function (event, ui) {
                                 if (!ui.item) {
                                     var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex($(this).val()) + "$", "i"),
