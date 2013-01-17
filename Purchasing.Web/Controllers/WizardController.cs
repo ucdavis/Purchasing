@@ -263,7 +263,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Step #3, #4, #5, #6
+        /// Step #3, #4, #5, #6, #7
         /// Test #7
         /// </summary>
         /// <returns></returns>
@@ -295,9 +295,17 @@ namespace Purchasing.Web.Controllers
             Check.Require(viewModel.Roles.Single(a => a.Level == 2).Id == "AP"); //Used for navigation in _StatusBar.cshtml
             Check.Require(viewModel.Roles.Single(a => a.Level == 3).Id == "AM"); //Used for navigation in _StatusBar.cshtml
             Check.Require(viewModel.Roles.Single(a => a.Level == 4).Id == "PR"); //Used for navigation in _StatusBar.cshtml
+            Check.Require(viewModel.Roles.Single(a => a.Level == 0).Id == "RV"); //Used for navigation in _StatusBar.cshtml
 
             ViewBag.rolefilter = roleFilter;
-            ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1);
+            if (viewModel.Role.Level == 0)
+            {
+                ViewBag.StepNumber = 3 + (5 - 1); // Ugliness because a reviewer is level zero
+            }
+            else
+            {
+                ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1);
+            }
 
             return View(viewModel);
         }
@@ -366,7 +374,14 @@ namespace Purchasing.Web.Controllers
                 {
                     viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => !a.IsAdmin && a.Id == roleFilter);
                 }
-                ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1);
+                if (viewModel.Role.Level == 0)
+                {
+                    ViewBag.StepNumber = 3 + (5 - 1); // Ugliness because a reviewer is level zero
+                }
+                else
+                {
+                    ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1);
+                }
                 return View(viewModel);
             }
 
@@ -435,7 +450,14 @@ namespace Purchasing.Web.Controllers
                 {
                     viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => !a.IsAdmin && a.Id == roleFilter);
                 }
-                ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1);
+                if (viewModel.Role.Level == 0)
+                {
+                    ViewBag.StepNumber = 3 + (5 - 1); // Ugliness because a reviewer is level zero
+                }
+                else
+                {
+                    ViewBag.StepNumber = 3 + (viewModel.Role.Level - 1);
+                }
                 return View(viewModel);
             }
 
@@ -446,7 +468,7 @@ namespace Purchasing.Web.Controllers
 
 
         /// <summary>
-        /// Step 3, 4, 5, 6
+        /// Step 3, 4, 5, 6, 7
         /// </summary>
         /// <param name="id"></param>
         /// <param name="roleFilter"></param>
@@ -466,13 +488,21 @@ namespace Purchasing.Web.Controllers
             var viewModel = WorgroupPeopleListModel.Create(_workgroupPermissionRepository, _roleRepository, workgroup, roleFilter);
             viewModel.CurrentRole = _roleRepository.Queryable.SingleOrDefault(a => !a.IsAdmin && a.Id == roleFilter);
             ViewBag.rolefilter = roleFilter;
-            ViewBag.StepNumber = 3 + (viewModel.CurrentRole.Level - 1);
+            if (viewModel.CurrentRole.Level == 0)
+            {
+                ViewBag.StepNumber = 3 + (5 - 1); // Ugliness because a reviewer is level zero
+            }
+            else
+            {
+                ViewBag.StepNumber = 3 + (viewModel.CurrentRole.Level - 1);
+            }
+            
             return View(viewModel);
         }
 
 
         /// <summary>
-        /// Step 7
+        /// Step 8
         /// </summary>
         /// <returns></returns>
         public ActionResult AddAccounts(int id)
@@ -482,7 +512,7 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup must be created before proceeding";
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
-            ViewBag.StepNumber = 7;
+            ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -505,7 +535,7 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult AddAccounts(int id, WorkgroupAccount workgroupAccount, string account_search)
         {
-            ViewBag.StepNumber = 7;
+            ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -566,7 +596,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Accounts(int id)
         {
-            ViewBag.StepNumber = 7;
+            ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -585,12 +615,12 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Step 8
+        /// Step 9
         /// </summary>
         /// <returns></returns>
         public ActionResult AddKfsVendor(int id)
         {
-            ViewBag.StepNumber = 8;
+            ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -609,7 +639,7 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult AddKfsVendor(int id, WorkgroupVendor workgroupVendor)
         {
-            ViewBag.StepNumber = 8;
+            ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -688,7 +718,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult AddNewVendor(int id)
         {
-            ViewBag.StepNumber = 8;
+            ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -707,7 +737,7 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult AddNewVendor(int id, WorkgroupVendor workgroupVendor, bool skipAddress)
         {
-            ViewBag.StepNumber = 8;
+            ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -760,7 +790,7 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup must be created before proceeding";
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
-            ViewBag.StepNumber = 8;
+            ViewBag.StepNumber = 9;
 
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
@@ -781,7 +811,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Step 9
+        /// Step 10
         /// </summary>
         /// <returns></returns>
         public ActionResult AddAddresses(int id)
@@ -791,7 +821,7 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup must be created before proceeding";
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
-            ViewBag.StepNumber = 9;
+            ViewBag.StepNumber = 10;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -811,7 +841,7 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult AddAddresses(int id, WorkgroupAddress workgroupAddress)
         {
-            ViewBag.StepNumber = 9;
+            ViewBag.StepNumber = 10;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -864,7 +894,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult Addresses(int id)
         {
-            ViewBag.StepNumber = 9;
+            ViewBag.StepNumber = 10;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -880,7 +910,7 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Step 10
+        /// Step 11
         /// </summary>
         /// <returns></returns>
         public ActionResult AddConditionalApproval(int id)
@@ -890,7 +920,7 @@ namespace Purchasing.Web.Controllers
                 Message = "Workgroup must be created before proceeding";
                 return this.RedirectToAction(a => a.CreateWorkgroup());
             }
-            ViewBag.StepNumber = 10;
+            ViewBag.StepNumber = 11;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
@@ -911,7 +941,7 @@ namespace Purchasing.Web.Controllers
         [HttpPost]
         public ActionResult AddConditionalApproval(int id, ConditionalApproval conditionalApproval, string primaryApproverParm, string secondaryApproverParm)
         {
-            ViewBag.StepNumber = 10;
+            ViewBag.StepNumber = 11;
             // TODO Check that primary and secondary approvers are in db, add if not. Double check against ConditionalApprover controller
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
@@ -1000,7 +1030,7 @@ namespace Purchasing.Web.Controllers
 
         public ActionResult ConditionalApprovals(int id)
         {
-            ViewBag.StepNumber = 10;
+            ViewBag.StepNumber = 11;
             if(id == 0)
             {
                 Message = "Workgroup must be created before proceeding";
@@ -1028,12 +1058,12 @@ namespace Purchasing.Web.Controllers
         }
 
         /// <summary>
-        /// Step 11
+        /// Step 12
         /// </summary>
         /// <returns></returns>
         public ActionResult Details(int id)
         {
-            ViewBag.StepNumber = 9;
+            ViewBag.StepNumber = 12;
             var workgroup = _workgroupRepository.GetNullableById(id);
             if(workgroup == null)
             {
