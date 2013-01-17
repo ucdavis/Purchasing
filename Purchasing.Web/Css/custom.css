@@ -302,7 +302,7 @@ table.order-split-totals td:last-child {font-weight: bold;}
 /* ------------------------ */ 
 #statusbar {margin:0 auto; width:80%;text-align: center;}
 #statusbar h1 {text-align:center; margin:0 0 10px 0;}
-#statusbar li {width:9%; display:inline-block; padding:2px 0px; margin:0; background-color:#aac9e1; height:5px;}
+#statusbar li {width:8%; display:inline-block; padding:2px 0px; margin:0; background-color:#aac9e1; height:5px;}
 #statusbar li:first-child {border-radius: 5px 0px 0px 5px; -moz-border-radius: 5px 0px 0px 5px; -webkit-border-radius: 5px 0px 0px 5px; }
 #statusbar li:last-child {border-radius: 0px 5px 5px 0px; -moz-border-radius: 0px 5px 5px 0px; -webkit-border-radius: 0px 5px 5px 0px;}
 #statusbar li.active {background-color:#97C404;}
@@ -367,4 +367,9 @@ body .ui-tooltip-default .ui-tooltip-content { background-color: #FFF; border:2p
     font-size: 1.6em;
     font-weight: bold;
     line-height: 0.5em;
+}
+
+/* FireFox needs this to indent properly. Chrome was already working correctly. */
+optgroup option {
+    margin-left: 1em;
 }

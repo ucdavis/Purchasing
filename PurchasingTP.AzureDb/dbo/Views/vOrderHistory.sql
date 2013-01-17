@@ -3,7 +3,7 @@ AS
 select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, w.id workgroupid, w.name workgroupname
 	, case 
-		when o.WorkgroupVendorId is null then '--Unspecified--'
+		when o.WorkgroupVendorId is null then '-- Unspecified --'
 		when o.WorkgroupVendorId is not null and wv.line1 = 'N/A' and url is null then wv.name + '(No Adddress)' 
 		when o.WorkgroupVendorId is not null and wv.line1 = 'N/A' and url is not null then wv.name + '('+wv.url+')' 
 		else wv.name + ' (' + wv.Line1 + ', ' + wv.City + ', ' + wv.State + ', ' +wv.Zip +  ', ' + isnull(wv.CountryCode, '') + ')'
@@ -43,7 +43,7 @@ from orders o
 	inner join ( 
 		select orderid, STUFF(
 			(
-				select ', ' + convert(varchar(10), a.quantity) + ' [' + a.Unit + '] ' + a.[description]
+				select ', ' + convert(varchar(10), convert(float, a.quantity)) + ' [' + a.Unit + '] ' + a.[description]
 				from lineitems a
 				where a.orderid = lineitems.orderid
 				order by a.[description]

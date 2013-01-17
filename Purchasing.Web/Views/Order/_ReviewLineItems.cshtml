@@ -2,7 +2,7 @@
 
 <section id="line-items" class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header">Line Items </header>
+    <header class="ui-corner-top ui-widget-header showInNav">Line Items </header>
    
     <div class="section-contents">
         <div class="col1">&nbsp;</div><div class="col2">
@@ -33,7 +33,7 @@
                 
                     <tr class="row-item @(odd ? "row-odd" : "row-even") @(!hasLinesplits && !hasMoreInfo ? "row-bottom" : string.Empty)">
                         <td class="lineitem">@count</td>
-                        <td>@line.Quantity</td>
+                        <td>@string.Format("{0:0.###}", line.Quantity)</td>
                         <td>@line.Unit</td>
                         <td>@(string.IsNullOrWhiteSpace(line.CatalogNumber) ? "n/a" : line.CatalogNumber)</td>
                         <td>@line.Description</td>

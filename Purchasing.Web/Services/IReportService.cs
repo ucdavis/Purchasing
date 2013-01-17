@@ -242,7 +242,7 @@ namespace Purchasing.Web.Services
             foreach (var li in order.LineItems)
             {
                 table.AddCell(InitializeCell(count++.ToString(), _font));
-                table.AddCell(InitializeCell(li.Quantity.ToString(), _font));
+                table.AddCell(InitializeCell(string.Format("{0:0.###}", li.Quantity), _font));
                 table.AddCell(InitializeCell(li.Unit, _font));
                 table.AddCell(InitializeCell(li.CatalogNumber, _font));
                 table.AddCell(InitializeCell(li.Description, _font));

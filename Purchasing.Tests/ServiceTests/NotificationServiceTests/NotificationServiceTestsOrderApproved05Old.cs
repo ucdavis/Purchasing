@@ -35,28 +35,28 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
             Assert.IsTrue(order.EmailQueues[0].Pending);
             Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Amy Wong at Complete review.", order.EmailQueues[0].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Amy Wong at Complete review.", order.EmailQueues[0].Text);
 
             Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[1].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueues[1].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[1].NotificationType);
             Assert.IsTrue(order.EmailQueues[1].Pending);
             Assert.IsNull(order.EmailQueues[1].Status);
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Amy Wong at Complete review.", order.EmailQueues[1].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Amy Wong at Complete review.", order.EmailQueues[1].Text);
 
             Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[2].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueues[2].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[2].NotificationType);
             Assert.IsTrue(order.EmailQueues[2].Pending);
             Assert.IsNull(order.EmailQueues[2].Status);
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Amy Wong at Complete review.", order.EmailQueues[2].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Amy Wong at Complete review.", order.EmailQueues[2].Text);
 
             Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[3].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueues[3].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[3].NotificationType);
             Assert.IsTrue(order.EmailQueues[3].Pending);
             Assert.IsNull(order.EmailQueues[3].Status);
-            Assert.AreEqual("Order request <a href=\"FakeHosttestOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Amy Wong at Complete review.", order.EmailQueues[3].Text);
+            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Amy Wong at Complete review.", order.EmailQueues[3].Text);
             #endregion Assert
         }
 

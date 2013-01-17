@@ -3,7 +3,7 @@
 @if (Model.CanEditOrder)
 {
     <section class="ui-corner-all display-form">
-        <header class="ui-corner-top ui-widget-header">Review Decision</header>
+        <header class="ui-corner-top ui-widget-header showInNav">Review Decision</header>
         <div class="section-text">
             @if (Model.CanSubmitOrder)
             {
@@ -41,11 +41,19 @@
                                 @this.Select("orderType").Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("KFS")
                                 <select id="kfsDocType" name="kfsdoctype">
                                     <option value="">-- Select A Document Type --</option>
-                                    <option value="PR">PR (Purchase Request)</option>
-                                    <option value="DPO">DPO (Departmental Purchase Order)</option>
-                                    <option value="DRO">DRO (Departmental Repair Order)</option>
-                                    <option value="CO">CO (Change Order)</option>
-                                    <option value="DC">DC (Direct Charge)</option>
+                                    <optgroup label="PR (Purchase Request)">                                    
+                                        <option value="PR">PR</option>
+                                        <option value="PR2">PR without DaFIS document</option>
+                                    </optgroup>
+                                    <optgroup label="DPO (Departmental Purchase Order)">
+                                        <option value="DPO">DPO</option>
+                                        <option value="DPO2">DPO without DaFIS document</option>
+                                    </optgroup>
+                                    <optgroup label="Other types without a DaFIS Doc">
+                                        <option value="DRO">DRO (Departmental Repair Order)</option>
+                                        <option value="CO">CO (Change Order)</option>
+                                        <option value="DC">DC (Direct Charge)</option>
+                                    </optgroup>
                                 </select>
                                 <input type="submit" id="complete-order" name="action" class="button" value="Complete" disabled="disabled"/>
                             </div>

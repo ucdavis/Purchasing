@@ -10,6 +10,8 @@
     Bundles.Reference("scripts/public/single/fileuploader.js");
     Bundles.Reference("scripts/public/single/OrderReview.js");
     Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
+    Bundles.Reference("scripts/public/single/SausageCustom.js");
+    Bundles.Reference("scripts/public/single/jquery.stickyfloat.js");
 }
 
 @section SubNav
@@ -109,6 +111,7 @@
                 AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
                 CanEdit: '@Model.CanEditOrder' === 'True',
                 CanCancel: '@Model.CanCancelOrder' === 'True',
+                CanCancelCompletedOrder: '@Model.CanCancelCompletedOrder' === 'True',
                 CanComplete: '@Model.IsPurchaser' === 'True',
                 IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
                 IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True',
@@ -144,6 +147,8 @@
     @Html.AntiForgeryToken()
 </div>
 
+<nav class="orders-nav" style="left: -200px;"></nav>
+
 @Html.Partial("_ReviewMessage")
 
 @Html.Partial("_ReviewOrderDetails")
@@ -161,11 +166,11 @@
 
 @Html.Partial("_ReviewCustomFields")
 
-@Html.Partial("_ReviewApprovals")
-
 @Html.Partial("_ReviewNotes")
 
 @Html.Partial("_ReviewAttachments")
+
+@Html.Partial("_ReviewApprovals")
 
 @Html.Partial("_ReviewHistory")
 

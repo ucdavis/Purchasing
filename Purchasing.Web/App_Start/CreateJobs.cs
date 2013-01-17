@@ -34,8 +34,11 @@ namespace Purchasing.Web.App_Start
         {
             var connectionString = WebConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
 
+            var sendGridUser = WebConfigurationManager.AppSettings["SendGridUserName"];
+            var sendGridPassword = WebConfigurationManager.AppSettings["SendGridPassword"];
+
             // create job
-            var jobDetails = JobBuilder.Create<NightlySyncJobs>().UsingJobData("connectionString", connectionString).Build();
+            var jobDetails = JobBuilder.Create<NightlySyncJobs>().UsingJobData("connectionString", connectionString).UsingJobData("sendGridUser", sendGridUser).UsingJobData("sendGridPassword", sendGridPassword).Build();
 
             // create trigger
             var nightly =
@@ -126,7 +129,10 @@ namespace Purchasing.Web.App_Start
             var storageKey = WebConfigurationManager.AppSettings["AzureStorageKey"];
             var blobContainer = WebConfigurationManager.AppSettings["AzureBlobContainer"];
 
-            var jobDetails = JobBuilder.Create<DatabaseBackupJob>().UsingJobData("storageAccountName", storageAccountName).UsingJobData("serverName", serverName).UsingJobData("username", username).UsingJobData("password", password).UsingJobData("storageKey", storageKey).UsingJobData("blobContainer", blobContainer).Build();
+            var sendGridUser = WebConfigurationManager.AppSettings["SendGridUserName"];
+            var sendGridPassword = WebConfigurationManager.AppSettings["SendGridPassword"];
+
+            var jobDetails = JobBuilder.Create<DatabaseBackupJob>().UsingJobData("storageAccountName", storageAccountName).UsingJobData("serverName", serverName).UsingJobData("username", username).UsingJobData("password", password).UsingJobData("storageKey", storageKey).UsingJobData("blobContainer", blobContainer).UsingJobData("sendGridUser", sendGridUser).UsingJobData("sendGridPassword", sendGridPassword).Build();
 
             var nightly = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(1, 0)).StartNow().Build();
             var sched = StdSchedulerFactory.GetDefaultScheduler();

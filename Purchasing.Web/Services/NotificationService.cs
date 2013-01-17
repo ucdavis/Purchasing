@@ -56,8 +56,8 @@ namespace Purchasing.Web.Services
         private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
         private const string ReceiveMessage = "Order request {0} for {1} has {2} item(s) received.";
         private const string RerouteMessage = "Order request {0} for {1} has been rerouted to you.";
-        private const string AddAttachmentMessage = "Order request {0} has a new attachment added by {1}";
-        private const string AddNoteMessage = "Order request {0} has a new note added by {1}";
+        private const string AddAttachmentMessage = "Order request {0} for {1} has a new attachment added by {2}";
+        private const string AddNoteMessage = "Order request {0} for {1} has a new note added by {2}";
 
         public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity, IServerLink serverLink, IQueryRepositoryFactory queryRepositoryFactory, IRepositoryFactory repositoryFactory )
         {
@@ -67,6 +67,7 @@ namespace Purchasing.Web.Services
             _orderStatusCodeRepository = orderStatusCodeRepository;
             _userIdentity = userIdentity;
             _serverLink = serverLink;
+            //_serverLink = "prepurchasing.ucdavis.edu";
             _queryRepositoryFactory = queryRepositoryFactory;
             _repositoryFactory = repositoryFactory;
         }
@@ -311,7 +312,7 @@ namespace Purchasing.Web.Services
 
                 if (preference.AddAttachment)
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddAttachmentMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), actor.FullName), ot);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddAttachmentMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), ot);
                     order.AddEmailQueue(emailQueue);
                 }
             }
@@ -326,7 +327,7 @@ namespace Purchasing.Web.Services
 
                 if (preference.AddNote)
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddNoteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), actor.FullName),  ot);
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddNoteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), ot);
                     order.AddEmailQueue(emailQueue);
                 }
             }
@@ -582,7 +583,7 @@ namespace Purchasing.Web.Services
 
         private string GenerateLink(string address, string orderRequestNumber)
         {
-            return string.Format("<a href=\"{0}{1}\">{1}</a>", address, orderRequestNumber);
+            return string.Format("<a href=\"{0}{1}\">{1}</a>", "http://prepurchasing.ucdavis.edu/Order/Lookup/", orderRequestNumber);
         }
 
         private List<Workgroup> FindAdminWorkgroups(Order order)

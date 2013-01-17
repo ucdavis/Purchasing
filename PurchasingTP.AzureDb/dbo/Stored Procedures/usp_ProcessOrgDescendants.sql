@@ -13,6 +13,8 @@ AS
 	--truncate table vorganizationdescendants
 	--DBCC CHECKIDENT(vorganizationdescendants, reseed, 1)
 
+	insert into JobLogs (name, comments) values ('process org descendants', 'start')
+
 	declare @cursor cursor, @top varchar(10)
 	declare @descendants table (orgid varchar(10), name varchar(max), immediateparent varchar(10), isactive bit)
 
@@ -72,6 +74,8 @@ AS
 	close @cursor
 	deallocate @cursor
 
+	insert into JobLogs (name, comments) values ('process org descendants', 'determined org descendants')
+
 	-- insert all the orgs that don't have anything report to it
 	--insert into vOrganizationDescendants(OrgId, Name, ImmediateParentId, RollupParentId, IsActive)
 	--select id, Name, ParentId, id, 1 from vorganizations where id not in (
@@ -81,6 +85,8 @@ AS
 	select id, Name, ParentId, id, 1 from vorganizations where id not in (
 		select distinct parentid from vorganizations where parentid is not null
 	)
+
+	insert into JobLogs (name, comments) values ('process org descendants', 'determined top level orgs')
 
 	-- compare the tmp results to existing results, cannot be more than 10% below existing data
 	declare @existingCount int, @newCount int, @message nvarchar(500)
@@ -100,6 +106,8 @@ AS
 		insert into ELMAH_Error (Application, Host, Type, Source, Message, [User], StatusCode, AllXml, TimeUtc)
 		values ('Org Descendants', '', '', '', @message, ' ', -1, '', getutcdate())
 
+		insert into JobLogs (name, comments) values ('process org descendants', 'failed, check elmah_error table')
+
 	end
 	else
 	begin
@@ -109,8 +117,8 @@ AS
 		insert into vOrganizationDescendants(OrgId, Name, ImmediateParentId, RollupParentId, IsActive)
 		select OrgId, Name, ImmediateParentId, RollupParentId, IsActive from @tmp
 
+		insert into JobLogs (name, comments) values ('process org descendants', 'updated ' + cast(@newCount as varchar(5)) + ' records')
+
 	end
 	
-
-
 RETURN 0

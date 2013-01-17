@@ -134,6 +134,7 @@
     <Build Include="dbo\Stored Procedures\usp_SyncWorkgroupAccounts.sql" />
     <Build Include="dbo\Stored Procedures\usp_ProcessOrgDescendants.sql" />
     <Build Include="dbo\Tables\BackupLogs.sql" />
+    <Build Include="dbo\Tables\JobLogs.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />

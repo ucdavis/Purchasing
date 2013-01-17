@@ -441,6 +441,10 @@ namespace Purchasing.Web.Controllers
                     x.User.Id == CurrentUser.Identity.Name);
 
             if (model.Complete){   //complete orders can't ever be edited or cancelled so just return now
+                if (model.Order.StatusCode.Id == OrderStatusCode.Codes.Complete && model.Order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.Purchaser && a.User.Id == CurrentUser.Identity.Name))
+                {
+                    model.CanCancelCompletedOrder = true;
+                }
                 return View(model);
             }
 
@@ -568,7 +572,15 @@ namespace Purchasing.Web.Controllers
             
             if (!string.IsNullOrWhiteSpace(comment))
             {
-                order.AddComment(new OrderComment {Text = comment, User = GetCurrentUser()});
+                if (action == "Deny")
+                {
+                    order.AddComment(new OrderComment { Text = string.Format("Denied: {0}", comment), User = GetCurrentUser() });
+                }
+                else
+                {
+                    order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
+                }
+                
             }
 
             if (action == "Approve")
@@ -640,7 +652,37 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Review", new {id});
             }
 
-            order.AddComment(new OrderComment { Text = comment, User = GetCurrentUser() });
+            order.AddComment(new OrderComment { Text = string.Format("Canceled: {0}", comment), User = GetCurrentUser() });
+
+            _orderService.Cancel(order, comment);
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = Resources.OrderCancelled_Success;
+
+            return RedirectToAction("Review", "Order", new { id });
+        }
+
+        [HttpPost]
+        public ActionResult CancelCompletedOrder(int id, string comment)
+        {
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+
+            Check.Require(order != null);
+
+            if(!order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.Purchaser && a.User.Id == CurrentUser.Identity.Name))
+            {
+                ErrorMessage = Resources.CancelOrder_NoAccess;
+                return RedirectToAction("Review", new { id });
+            }
+
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                ErrorMessage = Resources.CancelOrder_CommentRequired;
+                return RedirectToAction("Review", new { id });
+            }
+
+            order.AddComment(new OrderComment { Text = string.Format("Canceled: {0}", comment), User = GetCurrentUser() });
 
             _orderService.Cancel(order, comment);
 
@@ -754,7 +796,7 @@ namespace Purchasing.Web.Controllers
                         Id = x.Id,
                         Notes = x.Notes,
                         Price = x.UnitPrice.ToString(),
-                        Quantity = x.Quantity.ToString(),
+                        Quantity = string.Format("{0:0.###}", x.Quantity),
                         Units = x.Unit,
                         Url = x.Url
                     })
@@ -1048,18 +1090,18 @@ namespace Purchasing.Web.Controllers
                         _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
                         lastUpdatedBy = history.User.FullName;
                     }
-                    receivedQuantityReturned = string.Format("{0:0.000}", lineItem.QuantityReceived);
+                    receivedQuantityReturned = string.Format("{0:0.###}", lineItem.QuantityReceived);
                     success = true;
                     message = "Updated";
                     var diff = lineItem.Quantity - lineItem.QuantityReceived;
                     if (diff > 0)
                     {
-                        unaccounted = string.Format("({0})", string.Format("{0:0.000}", diff));
+                        unaccounted = string.Format("({0})", string.Format("{0:0.###}", diff));
                         showRed = true;
                     }
                     else
                     {
-                        unaccounted = string.Format("{0}", string.Format("{0:0.000}", (diff*-1)));
+                        unaccounted = string.Format("{0}", string.Format("{0:0.###}", (diff*-1)));
                         showRed = false;
                     }
 
