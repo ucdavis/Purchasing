@@ -33,6 +33,7 @@
     steps.Add(new KeyValuePair<string, string>("Add Approvers", Url.Action("AddPeople", "Wizard", new { id = Model, roleFilter = "AP" })));
     steps.Add(new KeyValuePair<string, string>("Add Account Managers", Url.Action("AddPeople", "Wizard", new { id = Model, roleFilter = "AM" })));
     steps.Add(new KeyValuePair<string, string>("Add Purchasers", Url.Action("AddPeople", "Wizard", new { id = Model, roleFilter = "PR" })));
+    steps.Add(new KeyValuePair<string, string>("Add Reviewers", Url.Action("AddPeople", "Wizard", new { id = Model, roleFilter = "RV" })));
     if(!ViewBag.IsAdministrative)
     {
         if(!ViewBag.IsAccountSync)
@@ -59,7 +60,7 @@
             }
             else
             {
-                if(ViewBag.IsAccountSync && stepNum >= 7)
+                if(ViewBag.IsAccountSync && stepNum >= 8)
                 {
                     filteredStepNum = stepNum - 1;
                 }
