@@ -368,3 +368,7 @@ body .ui-tooltip-default .ui-tooltip-content { background-color: #FFF; border:2p
     font-weight: bold;
     line-height: 0.5em;
 }
+
+optgroup option {
+    margin-left: 1em;
+}
