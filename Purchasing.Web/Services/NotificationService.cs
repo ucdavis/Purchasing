@@ -225,10 +225,10 @@ namespace Purchasing.Web.Services
                     if (IsMailRequested(preference, apf.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
                         var extraInfo = string.Empty;
-                        //if (preference.ShowAccountInEmail)
-                        //{
-                        extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
-                        //}
+                        if (preference.ShowAccountInEmail && apf.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
+                        {
+                            extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
+                        }
                         var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, apf.StatusCode.Name, currentUser.FullName, extraInfo), peep);
                         AddToQueue(queues, emailQueue);
                     }
@@ -260,10 +260,10 @@ namespace Purchasing.Web.Services
                 if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                 {
                     var extraInfo = string.Empty;
-                    //if (preference.ShowAccountInEmail)
-                    //{
-                    extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
-                    //}
+                    if (preference.ShowAccountInEmail && ap.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
+                    {
+                        extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
+                    }
                     var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.User);
                     AddToQueue(queues, emailQueue);
                 }
@@ -273,10 +273,10 @@ namespace Purchasing.Web.Services
                     if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
                         var extraInfo = string.Empty;
-                        //if (preference.ShowAccountInEmail)
-                        //{
-                        extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
-                        //}
+                        if (preference.ShowAccountInEmail && ap.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
+                        {
+                            extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
+                        }
                         var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.SecondaryUser);
                         AddToQueue(queues, emailQueue);
                     }

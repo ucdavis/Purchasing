@@ -29,6 +29,7 @@
     [NotificationType]                    VARCHAR (50) NOT NULL,
     [AddAttachment] BIT NOT NULL DEFAULT 1, 
     [AddNote] BIT NOT NULL DEFAULT 1, 
+    [ShowAccountInEmail] BIT NOT NULL DEFAULT ((0)), 
     CONSTRAINT [PK_EmailPreferences] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
