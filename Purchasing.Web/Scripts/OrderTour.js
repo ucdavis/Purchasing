@@ -21,6 +21,7 @@
     function resetPage() { //just going to reset the line/split/account info, can update to reset all data if needed
         $("#item-modification-button").trigger("click", { automate: true }); //if we have an edit lock, unlock it
         purchasing.resetFinancials();
+        $(".unit").chosen();
         //scrollTo(0, 0); //reset at the top of the page
     }
 
@@ -74,11 +75,12 @@
         });
 
         guiders.createGuider({
-            attachTo: "select[name='items[0].units']",
+            attachTo: "#units_0_chzn",
+            actualSelect: "select[name='items[0].units']",
             buttons: [closeButton, { name: "Next"}],
             description: "Select a unit: the default is 'Each'. In our case we are going to select 'Dozen'",
             onShow: function (guider) {
-                $(guider.attachTo).val("DZ");
+                $(guider.actualSelect).val("DZ").trigger("liszt:updated"); ;
             },
             id: "lineitem-unit",
             next: "lineitem-description",
@@ -274,6 +276,7 @@
                 lineItems[0].price(20.25);
                 lineItems[1].quantity(3);
                 lineItems[1].unit("DZ");
+                $(".unit").trigger("liszt:updated");
                 lineItems[1].desc("apples");
                 lineItems[1].price(5);
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
@@ -587,6 +590,7 @@
                 lineItems[0].price(20.25);
                 lineItems[1].quantity(3);
                 lineItems[1].unit("DZ");
+                $(".unit").trigger("liszt:updated");
                 lineItems[1].desc("apples");
                 lineItems[1].price(5);
             },
@@ -1025,6 +1029,7 @@
                 lineItems[0].price(20.25);
                 lineItems[1].quantity(3);
                 lineItems[1].unit("DZ");
+                $(".unit").trigger("liszt:updated");
                 lineItems[1].desc("apples");
                 lineItems[1].price(5);
             },
