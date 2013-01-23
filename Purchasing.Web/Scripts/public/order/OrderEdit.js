@@ -66,6 +66,8 @@
                 }
 
                 model.items.push(lineItem);
+                var id = "#units_" + index;
+                $(id).chosen();                
             });
 
             //Lines are in, now add Order splits if needed
@@ -143,6 +145,7 @@
 
         purchasing.updateNav(); //Update navigation now that we inserted a new section
 
+
         $("#item-modification-button").click(function (e, data) {
             e.preventDefault();
 
@@ -158,12 +161,14 @@
 
     function disableLineItemAndSplitModification() {
         $(":input", lineItemAndSplitSections).attr("disabled", "disabled");
+        $(".unit", lineItemAndSplitSections).attr("disabled", true).trigger("liszt:updated");
         $("a.button, a.biggify", lineItemAndSplitSections).hide();
         purchasing.OrderModel.adjustRouting("False");
     }
 
     function enableLineItemAndSplitModification() {
         $(":input", lineItemAndSplitSections).removeAttr("disabled");
+        $(".unit", lineItemAndSplitSections).attr("disabled", false).trigger("liszt:updated");
         $("a.button, a.biggify", lineItemAndSplitSections).show();
         $("#item-modification-section").hide();
 
