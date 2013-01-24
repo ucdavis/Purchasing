@@ -6,5 +6,6 @@
     [RoleId] CHAR(2) NULL, 
     [Action] CHAR(1) NOT NULL, 
     [Message] VARCHAR(250) NULL, 
-    [ActionDate] DATETIME NOT NULL
+    [ActionDate] DATETIME NOT NULL, 
+    [SyncKeyUpdate] BIT NOT NULL DEFAULT ((0))
 )

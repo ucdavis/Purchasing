@@ -18,10 +18,11 @@ namespace Purchasing.Core.Domain
         public virtual User User { get; set; }
         public virtual Role Role { get; set; }
         [Required]
-        public virtual Actions Action { get; set; }
+        public virtual string Action { get; set; }
         [StringLength(250)]
         public virtual string Message { get; set; }
         public virtual DateTime ActionDate { get; set; }
+        public virtual bool SyncKeyUpdate { get; set; }
 
         public class Actions
         {            
@@ -42,6 +43,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Action);
             Map(x => x.Message);
             Map(x => x.ActionDate);
+            Map(x => x.SyncKeyUpdate);
 
             References(x => x.WorkGroup);
             References(x => x.User);

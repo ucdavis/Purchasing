@@ -1840,6 +1840,34 @@ namespace Purchasing.Web.Controllers
             return View(model);
 
         }
+
+        public ActionResult ManageSyncPermissions(int id, DateTime? filter, bool defaultFilter = false)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(a => a.Index(false));
+            }
+
+            if (defaultFilter)
+            {
+                filter = DateTime.Now.AddDays(-5).Date;
+            }
+
+            var model = ManageSyncPermissionsViewModel.Create(workgroup, filter);
+            
+
+            model.SyncLog = Repository.OfType<WorkgroupSyncLog>().Queryable.Where(a => a.WorkGroup == workgroup && !a.SyncKeyUpdate).ToFuture();
+            if (filter.HasValue)
+            {
+                model.SyncLog = model.SyncLog.Where(a => a.ActionDate >= filter.Value);
+            }
+            model.SyncKeyUpdateHistory = Repository.OfType<WorkgroupSyncLog>().Queryable.Where(a => a.WorkGroup == workgroup && a.SyncKeyUpdate).ToList();
+
+            return View(model);
+        }
         
         #region Ajax Helpers
 
@@ -2044,6 +2072,22 @@ namespace Purchasing.Web.Controllers
 
         }
         #endregion
+    }
+
+    public class ManageSyncPermissionsViewModel
+    {
+        public Workgroup Workgroup { get; set; }
+
+        public IEnumerable<WorkgroupSyncLog> SyncKeyUpdateHistory { get; set; }
+        public IEnumerable<WorkgroupSyncLog> SyncLog { get; set; }
+        public DateTime? Filter { get; set; }
+
+        public static ManageSyncPermissionsViewModel Create(Workgroup workgroup, DateTime? filter)
+        {
+            var viewModel = new ManageSyncPermissionsViewModel {Workgroup = workgroup, Filter = filter};
+
+            return viewModel;
+        }
     }
 
 
