@@ -132,6 +132,7 @@
     <Compile Include="Domain\HistoryReceivedLineItem.cs" />
     <Compile Include="Domain\OrderRequestSave.cs" />
     <Compile Include="Domain\ServiceMessage.cs" />
+    <Compile Include="Domain\WorkgroupSyncLog.cs" />
     <Compile Include="Helpers\ApprovalEqualityComparer.cs" />
     <Compile Include="Domain\Attachment.cs" />
     <Compile Include="Domain\Audit.cs" />

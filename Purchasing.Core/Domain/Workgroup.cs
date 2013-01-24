@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
@@ -29,6 +30,8 @@ namespace Purchasing.Core.Domain
         [Required]
         [StringLength(50)]
         public virtual string Name { get; set; }
+
+        public virtual Guid? SyncKey { get; set; }
 
         [Display(Name="Is Administrative")]
         public virtual bool Administrative { get; set; }
@@ -120,6 +123,9 @@ namespace Purchasing.Core.Domain
         public WorkgroupMap()
         {
             Id(x => x.Id);
+
+            Map(x => x.SyncKey);
+            
 
             Map(x => x.Name);
             Map(x => x.IsActive);

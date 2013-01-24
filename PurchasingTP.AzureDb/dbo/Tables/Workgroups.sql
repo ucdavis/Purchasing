@@ -12,6 +12,7 @@
     [NotificationEmailList]     VARCHAR (100) NULL,
     [RequireApproval] BIT NOT NULL DEFAULT ((0)), 
     [DoNotInheritPermissions] BIT NOT NULL DEFAULT ((0)), 
+    [SyncKey] UNIQUEIDENTIFIER NULL, 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
