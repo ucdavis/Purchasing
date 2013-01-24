@@ -1,6 +1,6 @@
-﻿CREATE TABLE [dbo].[WorkgroupSyncLog]
+﻿CREATE TABLE [dbo].[WorkgroupSyncLogs]
 (
-	[Id] INT NOT NULL PRIMARY KEY, 
+	[Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY, 
     [WorkgroupId] INT NOT NULL, 
     [UserId] VARCHAR(10) NOT NULL, 
     [RoleId] CHAR(2) NULL, 

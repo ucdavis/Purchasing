@@ -14,9 +14,22 @@
 <section class="display-form ui-corner-all box-shadow">
 
     <header class="ui-corner-top ui-widget-header">Sync Key Information</header>
-
     <div class="section-contents">
-    
+        <ul>
+            <li>
+                @Html.ActionLink("Generate New", "SyncKey", new { id = @Model.Workgroup.Id, syncAction = "New" }, new { @class = "button" })
+                @if (Model.Workgroup.SyncKey != null)
+                {                    
+                    @Html.ActionLink("Remove", "SyncKey", new { id = @Model.Workgroup.Id, syncAction = "Remove" }, new { @class = "button" })
+                }
+                <div class="editor-label">
+                    @Html.Label("Current Sync Key")
+                </div>
+                <div class="editor-field">
+                    @Html.DisplayFor(model => model.Workgroup.SyncKey)
+                </div>
+            </li>
+        </ul>
     </div>
 </section>
 

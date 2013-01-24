@@ -28,8 +28,8 @@ namespace Purchasing.Core.Domain
         {            
             public const string Add = "A";
             public const string Delete = "D";
-            public const string Create = "C";
-            public const string Updated = "U";
+            public const string New = "N";
+            public const string Removed = "R";
         }
 
     }
