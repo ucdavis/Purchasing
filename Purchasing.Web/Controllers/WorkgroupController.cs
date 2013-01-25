@@ -1869,11 +1869,8 @@ namespace Purchasing.Web.Controllers
             return View(model);
         }
 
-        public JsonNetResult SyncKey(int id, string syncAction)
+        public ActionResult SyncKey(int id, string syncAction)
         {
-            var success = false;
-            var newSyncKey = string.Empty;
-
             try
             {
                 var workgroup = _workgroupRepository.Queryable.Single(a => a.Id == id);
@@ -1883,7 +1880,7 @@ namespace Purchasing.Web.Controllers
                     oldKey = workgroup.SyncKey.ToString();
                 }
                 var workgroupLog = new WorkgroupSyncLog();
-                workgroupLog.User = GetCurrentUser();
+                workgroupLog.NameAndId = GetCurrentUser().FullNameAndIdLastFirst;
                 workgroupLog.SyncKeyUpdate = true;
                 workgroupLog.WorkGroup = workgroup;
                 switch (syncAction)
@@ -1904,15 +1901,14 @@ namespace Purchasing.Web.Controllers
                 }
                 _workgroupRepository.EnsurePersistent(workgroup);
                 Repository.OfType<WorkgroupSyncLog>().EnsurePersistent(workgroupLog);
-                success = true;
-                newSyncKey = workgroup.SyncKey.ToString();
+                Message = workgroupLog.Message;
             }
             catch (Exception ex)
             {
-                success = false;
-                return new JsonNetResult(success, newSyncKey);
+                return this.RedirectToAction<ErrorController>(a =>a.Index());
             }
-            return new JsonNetResult(success, newSyncKey);
+            
+            return this.RedirectToAction(a => a.ManageSyncPermissions(id, null, false));
         }
         
         #region Ajax Helpers

@@ -2,7 +2,7 @@
 (
 	[Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY, 
     [WorkgroupId] INT NOT NULL, 
-    [UserId] VARCHAR(10) NOT NULL, 
+    [NameAndId] VARCHAR(250) NOT NULL, 
     [RoleId] CHAR(2) NULL, 
     [Action] CHAR(1) NOT NULL, 
     [Message] VARCHAR(250) NULL, 

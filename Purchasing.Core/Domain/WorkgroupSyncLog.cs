@@ -15,7 +15,8 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual Workgroup WorkGroup { get; set; }
         [Required]
-        public virtual User User { get; set; }
+        [StringLength(250)]
+        public virtual string NameAndId { get; set; }
         public virtual Role Role { get; set; }
         [Required]
         public virtual string Action { get; set; }
@@ -44,9 +45,9 @@ namespace Purchasing.Core.Domain
             Map(x => x.Message);
             Map(x => x.ActionDate);
             Map(x => x.SyncKeyUpdate);
+            Map(x => x.NameAndId);
 
-            References(x => x.WorkGroup);
-            References(x => x.User);
+            References(x => x.WorkGroup);          
             References(x => x.Role);
         }
     }

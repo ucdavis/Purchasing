@@ -7,8 +7,12 @@
 }
 
 
-
-
+@section SubNav
+{
+    <ul class="navigation">
+        <li><a href="@Url.Action("Details", new {id=Model.Workgroup.Id})" class="ui-button button ui-state-default">Back to Workgroup</a></li>
+    </ul>
+}
 
 
 <section class="display-form ui-corner-all box-shadow">
@@ -30,6 +34,45 @@
                 </div>
             </li>
         </ul>
+        
+        <table class='dt-table nofirsticon'>
+            <thead>
+                <tr>
+						
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Date
+                    </th>			
+                    <th>
+                        Action
+                    </th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @{ var odd = false; }
+                @foreach (var item in Model.SyncKeyUpdateHistory)
+                {
+                    <tr class="@(odd ? "odd" : "even")">
+			
+                        <td>
+                            @item.NameAndId
+                        </td>
+                        <td>
+                            @item.ActionDate
+                        </td>
+                        <td>
+                            @item.Message
+                        </td>
+		
+                    </tr>
+                    odd = !odd;
+                }
+            </tbody>
+        </table>
     </div>
 </section>
 
