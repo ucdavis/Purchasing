@@ -40,6 +40,13 @@
                     @Html.ValidationMessageFor(model => model.AccountManagerOrderArrive)
                 </div>
             </li>
+            <li>
+                <div class="editor-label">@Html.LabelFor(model => model.ShowAccountInEmail)</div>
+                <div class="editor-field showTip" title="When the order is at the Account Manager level, check this if you want account numbers included in the email for that order.">
+                    @Html.EditorFor(model => model.ShowAccountInEmail)
+                    @Html.ValidationMessageFor(model => model.ShowAccountInEmail)
+                </div>
+            </li>
         </ul>
 
     </div>
