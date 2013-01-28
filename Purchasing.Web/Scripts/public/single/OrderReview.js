@@ -46,6 +46,7 @@
     function attachNav() {
         $(window).sausage({ page: '.showInNav' });
         $('.orders-nav').stickyfloat({ duration: 400 });
+
     }
 
     function attachReferenceNumberEvents() {
