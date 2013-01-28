@@ -1281,6 +1281,60 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion AccountManagerOrderArrive Tests
 
+        #region ShowAccountInEmail Tests
+
+        /// <summary>
+        /// Tests the ShowAccountInEmail is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowAccountInEmailIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.ShowAccountInEmail = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.ShowAccountInEmail);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowAccountInEmail is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowAccountInEmailIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.ShowAccountInEmail = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.ShowAccountInEmail);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ShowAccountInEmail Tests
+
+    
+
 
         #region AccountManagerOrderCompleted Tests
 
@@ -1878,6 +1932,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsTrue(record.AccountManagerKualiApproved);
             Assert.IsTrue(record.AccountManagerOrderCompleted);
             Assert.IsTrue(record.AccountManagerOrderArrive);
+            Assert.IsFalse(record.ShowAccountInEmail);
 
             Assert.IsTrue(record.PurchaserKualiApproved);
             Assert.IsTrue(record.PurchaserOrderCompleted);
@@ -2025,6 +2080,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("RequesterReceived", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Item Received\")]"
+            }));
+            expectedFields.Add(new NameAndType("ShowAccountInEmail", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Accounts in Email\")]"
             }));
             #endregion Arrange
 
