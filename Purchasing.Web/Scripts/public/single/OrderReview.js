@@ -45,7 +45,7 @@
 
     function attachNav() {
         $(window).sausage({ page: '.showInNav' });
-        $('.orders-nav').addClass('orders-nav-review');
+        $('.orders-nav').addClass('orders-nav-review'); 
         $('.orders-nav').stickyfloat({ duration: 400 });
 
     }
