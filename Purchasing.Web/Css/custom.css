@@ -374,7 +374,3 @@ optgroup option {
     margin-left: 1em;
 }
 
-@media screen and (max-width: 1415px) 
-{
-    .orders-nav-review { display: none;}
-}
