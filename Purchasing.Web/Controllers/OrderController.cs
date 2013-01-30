@@ -664,13 +664,13 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult FdpComplete(int id, bool? fdpCompleted)
+        public ActionResult FpdComplete(int id, bool? fpdCompleted)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
             Check.Require(order != null);
 
-            order.FpdCompleted = fdpCompleted.HasValue && fdpCompleted.Value;
+            order.FpdCompleted = fpdCompleted.HasValue && fpdCompleted.Value;
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 

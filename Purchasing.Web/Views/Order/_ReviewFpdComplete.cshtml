@@ -5,28 +5,28 @@
     <section class="ui-corner-all display-form">
         <header class="ui-corner-top ui-widget-header showInNav">FDP Completed Status </header>
         <div class="section-text">
-            <p>You can cancel this order at any time by entering a Comment (required) and clicking "Cancel Order."</p>    
+            <p>This is used for matching up P Card purchases with the DaFIS/KFS FPD documents</p>    
         </div>
 
         <div class="section-contents">
 
-            @using (Html.BeginForm("FdpComplete", "Order", FormMethod.Post))
+            @using (Html.BeginForm("FpdComplete", "Order", FormMethod.Post))
             {
                 @Html.Hidden("id", Model.Order.Id)
                 @Html.AntiForgeryToken()
 
                 <ul>
                     <li>
-                        <div class="display-label"> FDP Completed</div>
+                        <div class="display-label"> FPD Completed</div>
                         <div class="display-details">
                             
-                            <input id="checkbox" name="fdpCompleted" type="checkbox" value="true" @(Model.Order.FpdCompleted ? "checked='checked'" : "") />
+                            <input id="checkbox" name="fpdCompleted" type="checkbox" value="true" @(Model.Order.FpdCompleted ? "checked='checked'" : "") />
                         </div>
                     </li>
                     <li>
                         <div class="display-label">&nbsp;</div>
                         <div class="display-details">
-                            <input type="submit" id="fdp-complete-order" class="button" value="Update FDP Completed"/>
+                            <input type="submit" id="fpd-complete-order" class="button" value="Update FPD Completed"/>
                         </div>
                     </li>
                 </ul>

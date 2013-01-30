@@ -40,6 +40,7 @@ namespace Purchasing.Core.Queries
         public virtual string Approver { get; set; }
         public virtual string AccountManager { get; set; }
         public virtual string Purchaser { get; set; }
+        public virtual string FpdCompleted { get; set; }
     }
 
     public class OrderHistoryMap : ClassMap<OrderHistory>
@@ -87,6 +88,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.Approver);
             Map(x => x.AccountManager);
             Map(x => x.Purchaser);
+            Map(x => x.FpdCompleted);
         }
     }
 }
