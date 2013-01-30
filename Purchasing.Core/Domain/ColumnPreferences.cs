@@ -100,7 +100,7 @@ namespace Purchasing.Core.Domain
         //public virtual bool ShowLastYouActedOnDate { get; set; }
         [Display(Name = "Show Shipping Cost")]
         public virtual bool ShowShippingCost { get; set; }
-        [Display(Name = "Show FDP Completed")]
+        [Display(Name = "Show FPD Completed")]
         public virtual bool ShowFpdCompleted { get; set; }
 
     }
