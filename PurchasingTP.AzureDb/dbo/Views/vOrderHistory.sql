@@ -31,6 +31,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, case when oreceived.received = 1 then 'Yes' else 'No' end Received
 	, ot.id ordertypeid, ot.name ordertype
 	, approvers.approver, AccountManagers.AccountManager, Purchasers.Purchaser
+	, case when o.FpdCompleted = 1 then 'Yes'else 'No' end FpdCompleted
 from orders o
 	inner join workgroups w on o.WorkgroupId = w.id
 	left outer join WorkgroupVendors wv on o.WorkgroupVendorId = wv.id

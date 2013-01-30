@@ -21,9 +21,23 @@ namespace Purchasing.Web.Models
         public bool IsPurchaser { get; set; }
         public bool IsRequesterInWorkgroup { get; set; }
         public bool IsAccountManager { get; set; }
+        
         public HashSet<string> UserRoles { get; set; }
 
         public bool HasAssociatedAccounts { get; set; }
+
+        public bool CanEditFdpCompleted
+        {
+            get
+            {
+                if (Order.StatusCode.IsComplete && Order.OrderType.Id.Trim() == "PC")
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
 
         public bool CanReceiveItems
         {

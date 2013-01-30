@@ -1902,6 +1902,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowReferenceNumber Tests
 
+        #region ShowFpdCompleted Tests
+
+        /// <summary>
+        /// Tests the ShowFpdCompleted is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowFpdCompletedIsFalseSaves()
+        {
+            #region Arrange
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowFpdCompleted = false;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(columnPreferences.ShowFpdCompleted);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowFpdCompleted is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowFpdCompletedIsTrueSaves()
+        {
+            #region Arrange
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowFpdCompleted = true;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(columnPreferences.ShowFpdCompleted);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ShowFpdCompleted Tests
 
 
 
@@ -2016,6 +2067,10 @@ namespace Purchasing.Tests.RepositoryTests
             //                                                             {
             //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Attachments\")]"
             //                                                             }));
+            expectedFields.Add(new NameAndType("ShowFpdCompleted", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show FPD Completed\")]"
+                                                                         }));
             expectedFields.Add(new NameAndType("ShowHasSplits", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Has Splits\")]"
