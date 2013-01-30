@@ -1859,12 +1859,13 @@ namespace Purchasing.Web.Controllers
             var model = ManageSyncPermissionsViewModel.Create(workgroup, filter);
             
 
-            model.SyncLog = Repository.OfType<WorkgroupSyncLog>().Queryable.Where(a => a.WorkGroup == workgroup && !a.SyncKeyUpdate).ToFuture();
+            var syncLog = Repository.OfType<WorkgroupSyncLog>().Queryable.Where(a => a.WorkGroup == workgroup && !a.SyncKeyUpdate);
             if (filter.HasValue)
             {
-                model.SyncLog = model.SyncLog.Where(a => a.ActionDate >= filter.Value);
+                syncLog = syncLog.Where(a => a.ActionDate >= filter.Value);
             }
-            model.SyncKeyUpdateHistory = Repository.OfType<WorkgroupSyncLog>().Queryable.Where(a => a.WorkGroup == workgroup && a.SyncKeyUpdate).ToList();
+            model.SyncLog = syncLog.OrderByDescending(x => x.ActionDate).ToList();
+            model.SyncKeyUpdateHistory = Repository.OfType<WorkgroupSyncLog>().Queryable.Where(a => a.WorkGroup == workgroup && a.SyncKeyUpdate).OrderByDescending(x => x.ActionDate).ToList();
 
             return View(model);
         }
@@ -1908,7 +1909,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a =>a.Index());
             }
             
-            return this.RedirectToAction(a => a.ManageSyncPermissions(id, null, false));
+            return this.RedirectToAction(a => a.ManageSyncPermissions(id, null, true));
         }
         
         #region Ajax Helpers
@@ -2120,8 +2121,8 @@ namespace Purchasing.Web.Controllers
     {
         public Workgroup Workgroup { get; set; }
 
-        public IEnumerable<WorkgroupSyncLog> SyncKeyUpdateHistory { get; set; }
-        public IEnumerable<WorkgroupSyncLog> SyncLog { get; set; }
+        public IList<WorkgroupSyncLog> SyncKeyUpdateHistory { get; set; }
+        public IList<WorkgroupSyncLog> SyncLog { get; set; }
         public DateTime? Filter { get; set; }
 
         public static ManageSyncPermissionsViewModel Create(Workgroup workgroup, DateTime? filter)

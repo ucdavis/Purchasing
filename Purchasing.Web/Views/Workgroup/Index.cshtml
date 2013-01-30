@@ -84,6 +84,8 @@
                     </a>
                     <a href='@Url.Action("Edit", new {id = item.Id})' class="ui-icon ui-icon-pencil" title="Edit workgroup">
                     </a>
+                    <a href='@Url.Action("ManageSyncPermissions", new { id = item.Id, defaultFilter = true})' class="ui-icon ui-icon-unlocked" title="Manage Sync Permissions">
+                    </a>
                 </td>
                 <td>
                     @Html.ActionLink(item.Name, "Details", "Workgroup", new {id = item.Id}, new {})

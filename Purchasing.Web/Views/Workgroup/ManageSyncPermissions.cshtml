@@ -2,7 +2,7 @@
 
 
 @{
-    ViewBag.Title = "Manage Sync Permissions";
+    ViewBag.Title = "Manage Sync Permissions (" + Model.Workgroup.Name + ")";
 
 }
 
@@ -10,7 +10,7 @@
 @section SubNav
 {
     <ul class="navigation">
-        <li><a href="@Url.Action("Details", new {id=Model.Workgroup.Id})" class="ui-button button ui-state-default">Back to Workgroup</a></li>
+        <li>@Html.ActionLink("Back to List", "Index", null, new { @class = "button" })</li>
     </ul>
 }
 
@@ -62,7 +62,7 @@
                             @item.NameAndId
                         </td>
                         <td>
-                            @item.ActionDate
+                           @item.ActionDate
                         </td>
                         <td>
                             @item.Message
@@ -81,6 +81,68 @@
     <header class="ui-corner-top ui-widget-header">Sync Log</header>
 
     <div class="section-contents">
-    
+        
+        <div class="dt-table-filter-header display-form">
+            <header class="ui-widget-header ui-corner-top">Filter Roles</header>
+            <div class="section-contents">
+                @using (Html.BeginForm("ManageSyncPermissions", "Workgroup", FormMethod.Get))
+                {
+                    @*@Html.AntiForgeryToken();*@
+                    <ul>        
+                        <li class="datepicker">
+                            <div class="editor-label" >
+                                @Html.Label("Show After")
+                            </div>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.Filter)
+                            </div>
+                        </li>
+
+                        <li style="text-align:left; padding-left:20px;">
+                            <label>&nbsp;</label>
+                            <input class="button" type="submit" value="Apply" />
+                        </li>
+                    </ul>
+                }
+                <table class='dt-table nofirsticon'>
+                    <thead>
+                        <tr>
+						
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Date
+                            </th>			
+                            <th>
+                                Action
+                            </th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ odd = false; }
+                        @foreach (var item in Model.SyncLog)
+                        {
+                            <tr class="@(odd ? "odd" : "even")">
+			
+                                <td>
+                                    @item.NameAndId
+                                </td>
+                                <td>
+                                    @item.ActionDate
+                                </td>
+                                <td>
+                                    @item.Message
+                                </td>
+		
+                            </tr>
+                            odd = !odd;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>    
     </div>
 </section>
