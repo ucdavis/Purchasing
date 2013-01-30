@@ -100,6 +100,8 @@ namespace Purchasing.Core.Domain
         //public virtual bool ShowLastYouActedOnDate { get; set; }
         [Display(Name = "Show Shipping Cost")]
         public virtual bool ShowShippingCost { get; set; }
+        [Display(Name = "Show FDP Completed")]
+        public virtual bool ShowFpdCompleted { get; set; }
 
     }
 
@@ -143,6 +145,7 @@ namespace Purchasing.Core.Domain
             //Map(x => x.ShowHasAttachments);
             //Map(x => x.ShowNumberOfLines);
             Map(x => x.ShowShippingCost);
+            Map(x => x.ShowFpdCompleted);
         }
     }
 }

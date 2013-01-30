@@ -664,6 +664,22 @@ namespace Purchasing.Web.Controllers
         }
 
         [HttpPost]
+        public ActionResult FdpComplete(int id, bool? fdpCompleted)
+        {
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+
+            Check.Require(order != null);
+
+            order.FpdCompleted = fdpCompleted.HasValue && fdpCompleted.Value;
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            Message = Resources.OrderFdp_Updated;
+
+            return RedirectToAction("Review", "Order", new { id });
+        }
+
+        [HttpPost]
         public ActionResult CancelCompletedOrder(int id, string comment)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
