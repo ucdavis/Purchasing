@@ -10,6 +10,7 @@ namespace Purchasing.Core.Domain
         public WorkgroupSyncLog()
         {
             ActionDate = DateTime.Now;
+            SyncKeyUpdate = false;
         }
 
         [Required]

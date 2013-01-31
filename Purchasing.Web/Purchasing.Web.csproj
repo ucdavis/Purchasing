@@ -306,7 +306,7 @@
     <Compile Include="Attributes\AuthorizeWorkgroupAccessAttribute.cs" />
     <Compile Include="Attributes\AuthenticateListView.cs" />
     <Compile Include="Attributes\AuthorizeWorkgroupRoleAttribute.cs" />
-    <Compile Include="Attributes\IpFilter.cs" />
+    <Compile Include="Attributes\FilterIPAttribute.cs" />
     <Compile Include="Attributes\VersionAttribute.cs" />
     <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="CassetteConfiguration.cs" />
@@ -321,6 +321,7 @@
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
     <Compile Include="Controllers\HistoryAjaxController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
+    <Compile Include="Controllers\WorkgroupPermissionsController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\ListSyncController.cs" />
