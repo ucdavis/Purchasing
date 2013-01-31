@@ -11,6 +11,7 @@ using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
+using UCDArch.Web.Attributes;
 
 namespace Purchasing.Web.Controllers
 {
@@ -38,7 +39,9 @@ namespace Purchasing.Web.Controllers
             _workgroupService = workgroupService;
         }
 
-        [FilterIP(AllowedIPs = "169.237.124.237")] //JCS -- My IP. So I can test
+        //[FilterIP(AllowedIPs = "169.237.124.237")] //JCS -- My IP. So I can test
+        [HttpPost]
+        [BypassAntiForgeryToken]
         public JsonNetResult Update(Guid id, Permission[] permissions)
         {
             var result = "Failure";
@@ -105,7 +108,7 @@ namespace Purchasing.Web.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 result = "Failure";
                 return new JsonNetResult(new { result });
@@ -154,6 +157,12 @@ namespace Purchasing.Web.Controllers
             }
 
             return true;
+        }
+
+        [Authorize(Roles = Role.Codes.Admin)]
+        public ActionResult Test()
+        {
+            return View();
         }
 
     }

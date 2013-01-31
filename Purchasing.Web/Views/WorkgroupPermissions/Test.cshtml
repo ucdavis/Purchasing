@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Test";
+
+}
+
+<h2>Test</h2>
+
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#test").click(function () {
+            var url = '@Url.Action("Update")';
+            debugger;
+            var perm = {};
+            perm.UserId = "jsylvest";
+            perm.Action = "Add";
+            perm.RoleId = "AP";
+            $.post(url, { id: "022cd8a0-8237-4d0d-b7be-a92fa3d6499a", permissions: [perm] }, function (result) {
+                if (result) {
+                    alert(result.result);
+                } else {
+                    alert("There was a problem updating");
+                }
+            });
+        });
+    });
+</script>
+    
+    
+    <a id="test" href="#" class="button showTip" title="Test.">Test</a>
