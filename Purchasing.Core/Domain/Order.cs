@@ -98,6 +98,8 @@ namespace Purchasing.Core.Domain
 
         public virtual IList<CustomFieldAnswer> CustomFieldAnswers { get; set; }
 
+        public virtual bool FpdCompleted { get; set; }
+
 
         private IList<ControlledSubstanceInformation> ControlledSubstances { get; set; }
 
@@ -519,6 +521,7 @@ namespace Purchasing.Core.Domain
             References(x => x.CreatedBy).Column("CreatedBy");
 
             Map(x => x.CompletionReason).Length(int.MaxValue);
+            Map(x => x.FpdCompleted);
 
             HasMany(x => x.Attachments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();

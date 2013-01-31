@@ -403,6 +403,29 @@
             }
         }
     }
+
+    if (Model.ColumnPreferences.ShowFpdCompleted)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>FPD Completed</th>");
+        }
+        else
+        {
+            if (item.FpdCompleted == "Yes")
+            {
+                result.Append("<td class='green'>FpdComplete</td>");
+            }
+            else if (item.OrderTypeId.Trim() == "PC")
+            {
+                result.Append("<td class='red'>FpdPending</td>");
+            }
+            else
+            {
+                result.Append("<td >NA</td>");
+            }
+        }
+    }
    
     @Html.Raw(result.ToString())
    

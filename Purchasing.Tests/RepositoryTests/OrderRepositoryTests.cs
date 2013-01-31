@@ -2127,6 +2127,60 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion HasControlledSubstance Tests
 
+        #region FpdCompleted Tests
+
+        /// <summary>
+        /// Tests the FpdCompleted is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFpdCompletedIsFalseSaves()
+        {
+            #region Arrange
+            Order order = GetValid(9);
+            order.FpdCompleted = false;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.FpdCompleted);
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the FpdCompleted is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestFpdCompletedIsTrueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.FpdCompleted = true;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(order.FpdCompleted);
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        #endregion FpdCompleted Tests
+
+
+
         #region IList Tests
         #region Attachments Tests
 
@@ -7136,6 +7190,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("EmailQueues", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.EmailQueue]", new List<string>()));
             expectedFields.Add(new NameAndType("EstimatedTax", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("FpdCompleted", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("FreightAmount", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("GrandTotalFromDb", "System.Decimal", new List<string>()));       
             expectedFields.Add(new NameAndType("HasControlledSubstance", "System.Boolean", new List<string>()));
