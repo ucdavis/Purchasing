@@ -10,7 +10,7 @@
                 @foreach (var tracking in Model.OrderTracking.OrderBy(a => a.DateCreated).ThenBy(t=>t.StatusCode.Level))
                 {
                     <tr>
-                        <td>@tracking.DateCreated.ToString("d")</td>
+                        <td>@tracking.DateCreated</td>
                         <td>@tracking.Description</td>
                         <td>@tracking.StatusCode.Name</td>
                         <td>@tracking.User.FullName</td>
