@@ -12,12 +12,9 @@
         $("#test").click(function () {
             var url = '@Url.Action("Update")';
             debugger;
-            var perm = {};
-            perm.UserId = "jsylvest";
-            perm.Action = "Add";
-            perm.RoleId = "AP";
+            var perm = [{ UserId: "xxxxxx", Action: "A", RoleId: "AP" }, { UserId: "xxxxxx", Action: "A", RoleId: "Ax"}];
 
-            var data = { id: "022cd8a0-8237-4d0d-b7be-a92fa3d6499a", permissions: [perm] };
+            var data = { id: "022cd8a0-8237-4d0d-b7be-a92fa3d6499a", permissions: perm };
 
             $.ajax({
                 url: url,

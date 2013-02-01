@@ -27,8 +27,8 @@ namespace Purchasing.Web.Controllers
             Role.Codes.Reviewer, Role.Codes.Requester, Role.Codes.Approver,
             Role.Codes.AccountManager, Role.Codes.Purchaser
         };
-        private const string AddAction = "Add";
-        private const string RemoveAction = "Remove";
+        private const string AddAction = "A";
+        private const string RemoveAction = "D";
         private readonly string[] _validActions = new[]{AddAction, RemoveAction};
 
 
@@ -125,8 +125,8 @@ namespace Purchasing.Web.Controllers
                 wsl = new WorkgroupSyncLog();
                 wsl.WorkGroup = workgroup;
                 wsl.NameAndId = permission.UserId;
-                wsl.Action = permission.Action;
-                wsl.Message = "Invalid Role";
+                wsl.Action = "E";
+                wsl.Message = string.Format("Invalid Role: {0}", permission.RoleId);
                 Repository.OfType<WorkgroupSyncLog>().EnsurePersistent(wsl);
 
                 return false;
@@ -137,8 +137,8 @@ namespace Purchasing.Web.Controllers
                 wsl = new WorkgroupSyncLog();
                 wsl.WorkGroup = workgroup;
                 wsl.NameAndId = permission.UserId;
-                wsl.Action = permission.Action;
-                wsl.Message = "Invalid Action";
+                wsl.Action = "E";
+                wsl.Message = string.Format("Invalid Action: {0}", permission.Action);
                 Repository.OfType<WorkgroupSyncLog>().EnsurePersistent(wsl);
 
                 return false;
@@ -149,7 +149,7 @@ namespace Purchasing.Web.Controllers
                 wsl = new WorkgroupSyncLog();
                 wsl.WorkGroup = workgroup;
                 wsl.NameAndId = permission.UserId;
-                wsl.Action = permission.Action;
+                wsl.Action = "E";
                 wsl.Message = "Invalid Role for Admin Workgroup";
                 Repository.OfType<WorkgroupSyncLog>().EnsurePersistent(wsl);
 
