@@ -39,18 +39,22 @@ namespace Purchasing.Web.Controllers
             _workgroupService = workgroupService;
         }
 
-        //[FilterIP(AllowedIPs = "169.237.124.237")] //JCS -- My IP. So I can test
+        [FilterIP(AllowedIPs = "169.237.124.237;127.0.0.1")] //JCS -- My IP. So I can test
         [HttpPost]
         [BypassAntiForgeryToken]
         public JsonNetResult Update(Guid id, Permission[] permissions)
         {
             var result = "Failure";
+            var added = 0;
+            var deleted = 0;
+            var failed = 0;
+            var alreadyDeleted = 0;
+            var alreadyAdded = 0;
+
             try
             {
                 var wsl = new WorkgroupSyncLog();
-                int successCount = 0;
-                int failCount = 0;
-                int duplicateCount = 0;
+
 
                 var workgroup = _repositoryFactory.WorkgroupRepository.Queryable.Single(a => a.SyncKey == id);
                 result = "Success";
@@ -81,17 +85,22 @@ namespace Purchasing.Web.Controllers
                             .SingleOrDefault(a =>a.Workgroup == workgroup && a.User == user && a.Role.Id == permission.RoleId && !a.IsAdmin);
                         if(workgroupPermission == null)
                         {
-                            //permission not found, we really don't care. Could happen easily if someone manually removed it.
+                            alreadyDeleted++;
                         }
                         else
                         {
                             _repositoryFactory.WorkgroupPermissionRepository.Remove(workgroupPermission);
+                            deleted++;
                         }
                     }
                     if(permission.Action == AddAction)
                     {
                         var role = _repositoryFactory.RoleRepository.Queryable.Single(a => a.Id == permission.RoleId);
                         var notAddedKvp = new List<KeyValuePair<string, string>>();
+
+                        int successCount = 0;
+                        int failCount = 0;
+                        int duplicateCount = 0;
 
                         successCount = _workgroupService.TryToAddPeople(workgroup.Id, role, workgroup, successCount, permission.UserId, ref failCount, ref duplicateCount, notAddedKvp);
                         if (successCount == 0 && failCount == 1 && duplicateCount == 0)
@@ -103,17 +112,21 @@ namespace Purchasing.Web.Controllers
                             wsl.Action = permission.Action;
                             wsl.Message = "User not found (LDAP)";
                             Repository.OfType<WorkgroupSyncLog>().EnsurePersistent(wsl);
+                            failed++;
                             continue;
                         }
+                        added += successCount;
+                        alreadyAdded += duplicateCount;
+
                     }
                 }
             }
             catch (Exception ex)
             {
                 result = "Failure";
-                return new JsonNetResult(new { result });
+                return new JsonNetResult(new { result, added, deleted, alreadyAdded, alreadyDeleted, failed });
             }
-            return new JsonNetResult(new {result});
+            return new JsonNetResult(new { result, added, deleted, alreadyAdded, alreadyDeleted, failed });
         }
 
 
