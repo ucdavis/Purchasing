@@ -210,7 +210,7 @@ namespace Purchasing.Web.Services
             if (wrkgrp)
             {
 
-                var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == level && !a.IsAdmin || (a.IsAdmin && a.IsFullFeatured && a.Role.Level == level)).Select(a => a.User);
+                var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == level && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(a => a.User);
 
                 var apf = future.First(a => a.User == null);
 
