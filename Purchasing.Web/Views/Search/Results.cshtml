@@ -78,6 +78,10 @@
                     {
                         <p>PO Number: <em>@order.PoNumber</em></p>
                     }
+                    @if (order.ReferenceNumber != null && order.ReferenceNumber.ToLower() == Model.Query.ToLower())
+                    {
+                        <p>Ref Number: <em>@order.ReferenceNumber</em></p>
+                    }
                 </li>
             }
         </ul>

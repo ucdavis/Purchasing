@@ -479,8 +479,7 @@ namespace Purchasing.Core.Domain
             var regex = new Regex(@"P\d{8}");
             var validKfsOrder = OrderType.Id == OrderType.Types.KfsDocument
                 && !string.IsNullOrEmpty(ReferenceNumber)
-                && regex.IsMatch(ReferenceNumber)
-                ;
+                && regex.IsMatch(ReferenceNumber);
 
             return validKfsOrder;
         }
