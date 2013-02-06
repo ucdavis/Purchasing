@@ -26,6 +26,8 @@ namespace Purchasing.Core.Domain
 
         public virtual Split Split { get; set; }
 
+        public virtual bool IsExternal { get; set; }
+
         public static List<Approval> FilterUnique(List<Approval> source)
         {
             return source.Distinct(new ApprovalEqualityComparer()).ToList();
@@ -39,6 +41,7 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id);
 
             Map(x => x.Completed);
+            Map(x => x.IsExternal);
 
             References(x => x.User);
             References(x => x.SecondaryUser).Column("SecondaryUserId");
