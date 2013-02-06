@@ -11,7 +11,7 @@
     $(function () {
         $("#test").click(function () {
             var url = '@Url.Action("Update")';
-            var perm = [{ UserId: "jsylvest", Action: "D", RoleId: "AP" }, { UserId: "anlai", Action: "D", RoleId: "AP"},{ UserId: "jsylvest", Action: "A", RoleId: "AP" }, { UserId: "anlai", Action: "A", RoleId: "AP"}];
+            var perm = [{ UserId: "jsylvest", Action: "D", RoleId: "AP" }, { UserId: "jsylvest", Action: "D", RoleId: "AM" }, { UserId: "jsylvest", Action: "D", RoleId: "PR" }, { UserId: "anlai", Action: "D", RoleId: "AP" }, { UserId: "jsylvest", Action: "A", RoleId: "AP" }, { UserId: "anlai", Action: "A", RoleId: "AP" }, { UserId: "jsylvest", Action: "A", RoleId: "AM" }, { UserId: "jsylvest", Action: "A", RoleId: "PR"}];
 
             var data = { id: "022cd8a0-8237-4d0d-b7be-a92fa3d6499a", permissions: perm };
 

@@ -89,6 +89,8 @@ namespace Purchasing.Web.Controllers
                         }
                         else
                         {
+                            _workgroupService.RemoveUserFromAccounts(workgroupPermission);
+                            _workgroupService.RemoveUserFromPendingApprovals(workgroupPermission); // TODO: Check for pending/open orders for this person. Set order to workgroup.
                             _repositoryFactory.WorkgroupPermissionRepository.Remove(workgroupPermission);
                             deleted++;
                         }
