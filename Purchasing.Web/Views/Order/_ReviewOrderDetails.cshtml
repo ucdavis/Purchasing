@@ -21,10 +21,10 @@
                     var shipping = @Model.Order.ShippingType.Name;
                     if (shipping != null && shipping.Length > 13)
                     {
-                        shipping = shipping.Substring(0, 13) + "...";
+                        shipping = string.Format("<abbr title='{0}'>{1}</abbr>", Model.Order.ShippingType.Name, shipping.Substring(0, 13) + "...");
                     }
                 }
-                <li><span>Shipping:</span><strong>@shipping <span style="@(Model.Order.AllowBackorder ? "color: green" : "color: red")">@(Model.Order.AllowBackorder ? "(Allow Backorder)"  : "(No Backorder)")</span></strong></li>
+                <li><span>Shipping:</span><strong> @Html.Raw(shipping) <span style="@(Model.Order.AllowBackorder ? "color: green" : "color: red")">@(Model.Order.AllowBackorder ? "(Allow Backorder)"  : "(No Backorder)")</span></strong></li>
                 
                 @if (Model.Order.StatusCode.IsComplete)
                 {
