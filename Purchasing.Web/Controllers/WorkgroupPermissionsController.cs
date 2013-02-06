@@ -89,10 +89,24 @@ namespace Purchasing.Web.Controllers
                         }
                         else
                         {
+                            _workgroupService.RemoveFromCache(workgroupPermission);
+
+                            var relatedPermissionsToDelete =
+                                _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(
+                                    a =>
+                                    a.ParentWorkgroup == workgroup && a.User == workgroupPermission.User &&
+                                    a.Role == workgroupPermission.Role).ToList();
+
                             _workgroupService.RemoveUserFromAccounts(workgroupPermission);
                             _workgroupService.RemoveUserFromPendingApprovals(workgroupPermission); // TODO: Check for pending/open orders for this person. Set order to workgroup.
                             _repositoryFactory.WorkgroupPermissionRepository.Remove(workgroupPermission);
                             deleted++;
+
+                            foreach (var relatedWgp in relatedPermissionsToDelete)
+                            {
+                                _workgroupService.RemoveFromCache(relatedWgp);
+                                _repositoryFactory.WorkgroupPermissionRepository.Remove(relatedWgp);
+                            }
                         }
                     }
                     if(permission.Action == AddAction)
