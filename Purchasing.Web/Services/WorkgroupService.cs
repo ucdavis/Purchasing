@@ -502,7 +502,7 @@ namespace Purchasing.Web.Services
         }
 
         /// <summary>
-        /// When a 
+        /// When a user is removed from a workgroup, remove them from any pending approvals (note, this does not apply to external approvals)
         /// </summary>
         /// <param name="workgroupPermission"></param>
         public void RemoveUserFromPendingApprovals(WorkgroupPermission workgroupPermission)
@@ -518,7 +518,7 @@ namespace Purchasing.Web.Services
 
             var user = workgroupPermission.User;
             var workgroup = workgroupPermission.Workgroup;
-            var approvals = _repositoryFactory.ApprovalRepository.Queryable.Where(a => !a.Completed && a.User == user && a.Order.Workgroup == workgroup && a.StatusCode.Id == workgroupPermission.Role.Id);
+            var approvals = _repositoryFactory.ApprovalRepository.Queryable.Where(a => !a.Completed && a.User == user && a.Order.Workgroup == workgroup && a.StatusCode.Id == workgroupPermission.Role.Id && !a.IsExternal);
             foreach (var approval in approvals)
             {
                 approval.User = null;
