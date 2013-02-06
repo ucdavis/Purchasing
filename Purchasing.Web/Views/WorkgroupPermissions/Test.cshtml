@@ -21,9 +21,14 @@
                 dataType: 'json',
                 data: JSON.stringify(data),
                 contentType: 'application/json; charset=utf-8',
-                success: function (data) {
+                success: function (result) {
                     if (result) {
                         alert(result.result);
+                        alert("Added: " + result.added);
+                        alert("Deleted: " + result.deleted);
+                        alert("Already Added: " + result.alreadyAdded);
+                        alert("Already Deleted: " + result.alreadyDeleted);
+                        alert("Failed: " + result.failed);
                     } else {
                         alert("There was a problem updating");
                     }
