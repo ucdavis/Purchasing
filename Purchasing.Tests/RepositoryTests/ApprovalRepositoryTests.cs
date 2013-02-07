@@ -582,6 +582,60 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion Split Tests
 
+        #region IsExternal Tests
+
+        /// <summary>
+        /// Tests the IsExternal is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsExternalIsFalseSaves()
+        {
+            #region Arrange
+            Approval approval = GetValid(9);
+            approval.IsExternal = false;
+            #endregion Arrange
+
+            #region Act
+            ApprovalRepository.DbContext.BeginTransaction();
+            ApprovalRepository.EnsurePersistent(approval);
+            ApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(approval.IsExternal);
+            Assert.IsFalse(approval.IsTransient());
+            Assert.IsTrue(approval.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsExternal is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsExternalIsTrueSaves()
+        {
+            #region Arrange
+            var approval = GetValid(9);
+            approval.IsExternal = true;
+            #endregion Arrange
+
+            #region Act
+            ApprovalRepository.DbContext.BeginTransaction();
+            ApprovalRepository.EnsurePersistent(approval);
+            ApprovalRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(approval.IsExternal);
+            Assert.IsFalse(approval.IsTransient());
+            Assert.IsTrue(approval.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsExternal Tests
+
+
+
 
         #region Reflection of Database.
 
@@ -600,6 +654,7 @@ namespace Purchasing.Tests.RepositoryTests
                                                                              "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                                                                              "[System.Xml.Serialization.XmlIgnoreAttribute()]"
                                                                          }));
+            expectedFields.Add(new NameAndType("IsExternal", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Order", "Purchasing.Core.Domain.Order", new List<string>
                                                                          { 
                                                                              "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
