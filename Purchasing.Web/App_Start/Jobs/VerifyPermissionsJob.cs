@@ -58,17 +58,18 @@ namespace Purchasing.Web.App_Start.Jobs
                 if (totalExtra > 0 || totalMissing > 0)
                 {
                     //Send message that there is a problem
-                    SendSingleEmail("jsylvestre@ucdavis.edu", "PrePurchasing Permissions Error", string.Format("Missing Child Permission count: {0}<br />Extra Child Permission count: {1}", totalMissing, totalExtra), sendGridUserName, sendGridPassword);
+                    SendSingleEmail("opp-tech@ucdavis.edu", "PrePurchasing Permissions Error", string.Format("Missing Child Permission count: {0}<br />Extra Child Permission count: {1}", totalMissing, totalExtra), sendGridUserName, sendGridPassword);
+                    
                 }
                 else
                 {
                     //Send message AOK
-                    SendSingleEmail("jsylvestre@ucdavis.edu", "PrePurchasing Permissions Ok", string.Format("Missing Child Permission count: {0}<br />Extra Child Permission count: {1}", totalMissing, totalExtra), sendGridUserName, sendGridPassword);
+                    //SendSingleEmail("jsylvestre@ucdavis.edu", "PrePurchasing Permissions Ok", string.Format("Missing Child Permission count: {0}<br />Extra Child Permission count: {1}", totalMissing, totalExtra), sendGridUserName, sendGridPassword);
                 }
             }
             catch (Exception ex)
             {
-                SendSingleEmail("jsylvestre@ucdavis.edu", "PrePurchasing Permissions Exception", string.Format("Exception occurred: {0}", ex.Message), sendGridUserName, sendGridPassword);
+                SendSingleEmail("opp-tech@ucdavis.edu", "PrePurchasing Permissions Exception", string.Format("Exception occurred: {0}", ex.Message), sendGridUserName, sendGridPassword);
                 throw;
             }
         }
