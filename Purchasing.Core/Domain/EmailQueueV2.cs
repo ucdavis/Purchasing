@@ -95,7 +95,7 @@ namespace Purchasing.Core.Domain
         {
             Id(x => x.Id);
 
-            Table("EmailQueue");
+            Table("EmailQueueV2");
 
             References(x => x.User);
             Map(x => x.Email);            

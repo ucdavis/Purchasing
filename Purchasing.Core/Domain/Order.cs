@@ -532,6 +532,7 @@ namespace Purchasing.Core.Domain
             HasMany(x => x.KfsDocuments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.OrderComments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.EmailQueues).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
+            HasMany(x => x.EmailQueuesV2).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.CustomFieldAnswers).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
 
             //Private mapping accessor
