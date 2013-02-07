@@ -22,33 +22,9 @@ namespace Purchasing.Web.App_Start
             CreateOrderIndexesJob(indexRoot);
             CreateLookupIndexsJob(indexRoot);
 
-            CreateNightlySyncJobs();
             CreateEmailJob();
 
-            CreateDatabaseBackupJob();
-
             CreateVerifyPermissionsJob(); // If the org descendants changes, it is possible the inherited workgroup permissions will change. This checks that and emails me. -JCS
-        }
-
-        private static void CreateNightlySyncJobs()
-        {
-            var connectionString = WebConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
-
-            var sendGridUser = WebConfigurationManager.AppSettings["SendGridUserName"];
-            var sendGridPassword = WebConfigurationManager.AppSettings["SendGridPassword"];
-
-            // create job
-            var jobDetails = JobBuilder.Create<NightlySyncJobs>().UsingJobData("connectionString", connectionString).UsingJobData("sendGridUser", sendGridUser).UsingJobData("sendGridPassword", sendGridPassword).Build();
-
-            // create trigger
-            var nightly =
-                TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(
-                    CronScheduleBuilder.DailyAtHourAndMinute(4, 0)).StartNow().Build();
-
-            // get reference to scheduler (remote or local) and schedule job
-            var sched = StdSchedulerFactory.GetDefaultScheduler();
-            sched.ScheduleJob(jobDetails, nightly);
-            sched.Start();
         }
 
         private static void CreateLookupIndexsJob(string indexRoot)
@@ -118,26 +94,6 @@ namespace Purchasing.Web.App_Start
                 sched.ScheduleJob(dailyjob, dailyTrigger);
                 sched.Start();
             }
-        }
-
-        private static void CreateDatabaseBackupJob()
-        {
-            var storageAccountName = WebConfigurationManager.AppSettings["AzureStorageAccountName"];
-            var serverName = WebConfigurationManager.AppSettings["AzureServerName"];
-            var username = WebConfigurationManager.AppSettings["AzureUserName"];
-            var password = WebConfigurationManager.AppSettings["AzurePassword"];
-            var storageKey = WebConfigurationManager.AppSettings["AzureStorageKey"];
-            var blobContainer = WebConfigurationManager.AppSettings["AzureBlobContainer"];
-
-            var sendGridUser = WebConfigurationManager.AppSettings["SendGridUserName"];
-            var sendGridPassword = WebConfigurationManager.AppSettings["SendGridPassword"];
-
-            var jobDetails = JobBuilder.Create<DatabaseBackupJob>().UsingJobData("storageAccountName", storageAccountName).UsingJobData("serverName", serverName).UsingJobData("username", username).UsingJobData("password", password).UsingJobData("storageKey", storageKey).UsingJobData("blobContainer", blobContainer).UsingJobData("sendGridUser", sendGridUser).UsingJobData("sendGridPassword", sendGridPassword).Build();
-
-            var nightly = TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(1, 0)).StartNow().Build();
-            var sched = StdSchedulerFactory.GetDefaultScheduler();
-            sched.ScheduleJob(jobDetails, nightly);
-            sched.Start();
         }
 
         private static void CreateVerifyPermissionsJob()

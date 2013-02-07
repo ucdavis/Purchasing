@@ -293,9 +293,7 @@
     <Compile Include="App_Start\CreateJobs.cs" />
     <Compile Include="App_Start\Jobs\CreateLookupIndexsJob.cs" />
     <Compile Include="App_Start\Jobs\CreateOrderIndexsJob.cs" />
-    <Compile Include="App_Start\Jobs\DatabaseBackupJob.cs" />
     <Compile Include="App_Start\Jobs\EmailJob.cs" />
-    <Compile Include="App_Start\Jobs\NightlySyncJobs.cs" />
     <Compile Include="App_Start\Jobs\VerifyPermissionsJob.cs" />
     <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
