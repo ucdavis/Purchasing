@@ -42,17 +42,25 @@ namespace Purchasing.Web.Services
         {
             // always trigger per event emails
             ProcessEmails(EmailPreferences.NotificationTypes.PerEvent);
+            ProcessEmailsV2(EmailPreferences.NotificationTypes.PerEvent);
         }
 
         public void SendDailyWeeklyNotifications()
         {
             ProcessEmails(EmailPreferences.NotificationTypes.Daily);
+            ProcessEmailsV2(EmailPreferences.NotificationTypes.Daily);
 
             // send weekly summaries
             if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
             {
                 ProcessEmails(EmailPreferences.NotificationTypes.Weekly);
+                ProcessEmailsV2(EmailPreferences.NotificationTypes.Weekly);
             }
+        }
+
+        private void ProcessEmailsV2(EmailPreferences.NotificationTypes notificationType)
+        {
+            return;
         }
 
         private void ProcessEmails(EmailPreferences.NotificationTypes notificationType)
