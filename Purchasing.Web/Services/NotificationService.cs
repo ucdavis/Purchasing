@@ -28,7 +28,7 @@ namespace Purchasing.Web.Services
         void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity);
 
         void OrderAddAttachment(Order order, User actor);
-        void OrderAddNote(Order order, User actor);
+        void OrderAddNote(Order order, User actor, string comment);
 
 
     }
@@ -74,7 +74,7 @@ namespace Purchasing.Web.Services
 
         public void OrderApproved(Order order, Approval approval)
         {
-            var queues = new List<EmailQueue>();
+            var queues = new List<EmailQueueV2>();
 
             // go through all the tracking history
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level < approval.StatusCode.Level).Select(a => new {User = a.User, StatusCode = a.StatusCode}).Distinct())
@@ -85,8 +85,9 @@ namespace Purchasing.Web.Services
                 if (IsMailRequested(preference, appr.StatusCode, approval.StatusCode, EventCode.Approval))
                 {
                     var currentUser = _userRepository.GetNullableById(_userIdentity.Current);
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ApprovalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, currentUser.FullName, approval.StatusCode.Name), user);                   
-                    AddToQueue(queues, emailQueue);
+                    //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ApprovalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, currentUser.FullName, approval.StatusCode.Name), user);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Approved", string.Format("By {0} at {1} review.", currentUser.FullName, approval.StatusCode.Name), user);
+                    AddToQueue(queues, emailQueue2);
                 }
 
             }
@@ -106,16 +107,17 @@ namespace Purchasing.Web.Services
 
         public void OrderDenied(Order order, User user, string comment)
         {
-            var queues = new List<EmailQueue>();
+            var queues = new List<EmailQueueV2>();
 
             foreach (var appr in order.OrderTrackings.Select(a => new { User = a.User, StatusCode = a.StatusCode }).Distinct())
             {
                 var target = appr.User;
                 var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
-                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.StatusCode.Name, comment), target);
+                //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.StatusCode.Name, comment), target);
+                var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Cancelled", string.Format("By {0} at {1} review with the following comment \"{2}\".", user.FullName, order.StatusCode, comment), target);
                 //order.AddEmailQueue(emailQueue);
-                AddToQueue(queues, emailQueue);
+                AddToQueue(queues, emailQueue2);
             }
 
             AddQueuesToOrder(order, queues);
@@ -132,8 +134,9 @@ namespace Purchasing.Web.Services
 
             if(preference.RequesterOrderSubmission)
             {
-                var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(SubmissionMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name), user);
-                order.AddEmailQueue(emailQueue);
+                //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(SubmissionMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name), user);
+                var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Submitted", null, user);
+                order.AddEmailQueue(emailQueue2);
             }
 
             // add the approvers/account managers that are "next" to see if they want the "arrival" email
@@ -145,7 +148,7 @@ namespace Purchasing.Web.Services
 
         public void OrderCompleted(Order order, User user)
         {
-            var queues = new List<EmailQueue>();
+            var queues = new List<EmailQueueV2>();
 
             foreach (var approval in order.OrderTrackings.Select(a => new { a.User, a.StatusCode }).Distinct())
             {
@@ -153,8 +156,9 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Approval))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CompleteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.OrderType.Name), approval.User);
-                    AddToQueue(queues, emailQueue);
+                    //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CompleteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.OrderType.Name), approval.User);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Completed", string.Format("By {0} as a {1}.", user.FullName, order.OrderType.Name), approval.User);
+                    AddToQueue(queues, emailQueue2);
                 }
             }
 
@@ -168,15 +172,16 @@ namespace Purchasing.Web.Services
 
         public void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity)
         {
-            var queues = new List<EmailQueue>();
+            var queues = new List<EmailQueueV2>();
 
             // get the order's purchaser
             // var purchasers = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).ToList();
 
             if (!string.IsNullOrEmpty(order.Workgroup.NotificationEmailList))
             {
-                var emailQueue = new EmailQueue(order, EmailPreferences.NotificationTypes.PerEvent, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), actor, order.Workgroup.NotificationEmailList);
-                AddToQueue(queues, emailQueue);
+                //var emailQueue = new EmailQueue(order, EmailPreferences.NotificationTypes.PerEvent, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), actor, order.Workgroup.NotificationEmailList);
+                var emailQueue2 = new EmailQueueV2(order, EmailPreferences.NotificationTypes.PerEvent, "Received", string.Format("{0} item(s) by {1}.", quantity, actor), null, order.Workgroup.NotificationEmailList);
+                AddToQueue(queues, emailQueue2);
             }
             
             foreach (var approval in order.OrderTrackings.Select(a => new { a.User, a.StatusCode }).Distinct())
@@ -185,8 +190,9 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Received, order.OrderType))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), approval.User);
-                    AddToQueue(queues, emailQueue);
+                    //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), approval.User);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Received", string.Format("{0} item(s) by {1}.", quantity, actor), approval.User);
+                    AddToQueue(queues, emailQueue2);
                 }
             }
 
@@ -204,7 +210,7 @@ namespace Purchasing.Web.Services
             // get the current user
             var currentUser = _userRepository.GetNullableById(_userIdentity.Current);
 
-            var queues = new List<EmailQueue>();
+            var queues = new List<EmailQueueV2>();
 
             // there is at least one that is workgroup permissions
             if (wrkgrp)
@@ -225,8 +231,9 @@ namespace Purchasing.Web.Services
                         {
                             extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
                         }
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, apf.StatusCode.Name, currentUser.FullName, extraInfo), peep);
-                        AddToQueue(queues, emailQueue);
+                        //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, apf.StatusCode.Name, currentUser.FullName, extraInfo), peep);
+                        var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Arrived", string.Format("At your level ({0}) for review from {1}{2}.", apf.StatusCode.Name, currentUser.FullName, extraInfo), peep);
+                        AddToQueue(queues, emailQueue2);
                     }
                 }
 
@@ -244,7 +251,7 @@ namespace Purchasing.Web.Services
             AddQueuesToOrder(order, queues);
         }
 
-        private void ProcessApprovalsEmailQueue(Order order, Approval approval, List<EmailQueue> queues, User currentUser, IEnumerable<Approval> aps, bool assigned = false)
+        private void ProcessApprovalsEmailQueue(Order order, Approval approval, List<EmailQueueV2> queues, User currentUser, IEnumerable<Approval> aps, bool assigned = false)
         {
             foreach (var ap in aps)
             {
@@ -260,8 +267,18 @@ namespace Purchasing.Web.Services
                     {
                         extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
                     }
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.User);
-                    AddToQueue(queues, emailQueue);
+                    //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.User);
+                    if (!assigned)
+                    {
+                        var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Arrived", string.Format("At your level ({0}) for review from {1}{2}.", ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.User);
+                        AddToQueue(queues, emailQueue2);
+                    }
+                    else
+                    {
+                        var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Rerouted", string.Format("To you at your level ({0}) for review from {1}{2}.", ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.User);
+                        AddToQueue(queues, emailQueue2);
+                    }
+
                 }
 
                 if (ap.SecondaryUser != null)
@@ -273,8 +290,17 @@ namespace Purchasing.Web.Services
                         {
                             extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
                         }
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.SecondaryUser);
-                        AddToQueue(queues, emailQueue);
+                        //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.SecondaryUser);
+                        if (!assigned)
+                        {
+                            var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Arrived", string.Format("At your level ({0}) for review from {1}{2}.", ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.User);
+                            AddToQueue(queues, emailQueue2);
+                        }
+                        else
+                        {
+                            var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Rerouted", string.Format("To you at your level ({0}) for review from {1}{2}.", ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.SecondaryUser);
+                            AddToQueue(queues, emailQueue2);
+                        }
                     }
                 }
             }
@@ -282,7 +308,7 @@ namespace Purchasing.Web.Services
 
         public void OrderEdited(Order order, User actor)
         {
-            var queues = new List<EmailQueue>();
+            var queues = new List<EmailQueueV2>();
 
             // go through all the tracking history
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level <= order.StatusCode.Level).Select(a => new { User = a.User, StatusCode = a.StatusCode }).Distinct())
@@ -292,9 +318,10 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, appr.StatusCode, order.StatusCode, EventCode.Update))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ChangeMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), user);
+                    //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ChangeMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), user);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Changed", string.Format("By {0}.", actor.FullName), user);
                     //order.AddEmailQueue(emailQueue);
-                    AddToQueue(queues, emailQueue);
+                    AddToQueue(queues, emailQueue2);
                 }
 
             }
@@ -310,8 +337,9 @@ namespace Purchasing.Web.Services
 
             if (preference != null) { notificationType = preference.NotificationType; }
 
-            var emailQueue = new EmailQueue(order, notificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName, order.StatusCode.Name, cancelReason), user);
-            order.AddEmailQueue(emailQueue);
+            //var emailQueue = new EmailQueue(order, notificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName, order.StatusCode.Name, cancelReason), user);
+            var emailQueue2 = new EmailQueueV2(order, notificationType, "Cancelled", string.Format("By {0} at {1} review with the comment  \"{2}\".", actor.FullName, order.StatusCode.Name, cancelReason), user);
+            order.AddEmailQueue(emailQueue2);
         }
 
         public void OrderAddAttachment(Order order, User actor)
@@ -323,23 +351,32 @@ namespace Purchasing.Web.Services
 
                 if (preference.AddAttachment)
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddAttachmentMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), ot);
-                    order.AddEmailQueue(emailQueue);
+                    //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddAttachmentMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), ot);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Attachment Added", string.Format("By {0}.", actor.FullName), ot);
+                    order.AddEmailQueue(emailQueue2);
                 }
             }
         }
 
-        public void OrderAddNote(Order order, User actor)
+        public void OrderAddNote(Order order, User actor, string comment)
         {
             var users = order.OrderTrackings.Select(a => a.User).Distinct().ToList();
+            var shortComment = comment ?? string.Empty;
+            if (comment != null && comment.Length > 100)
+            {
+                shortComment = comment.Substring(0, 100) + "...";
+            }
+
+
             foreach (var ot in users)
             {
                 var preference = _emailPreferenceRepository.GetNullableById(ot.Id) ?? new EmailPreferences(ot.Id);
 
                 if (preference.AddNote)
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddNoteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), ot);
-                    order.AddEmailQueue(emailQueue);
+                    //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddNoteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), ot);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Note Added", string.Format("By {0} with the note \"{1}\".", actor.FullName, shortComment), ot);
+                    order.AddEmailQueue(emailQueue2);
                 }
             }
         }
@@ -574,7 +611,7 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="emailQueues"></param>
         /// <param name="emailQueue"></param>
-        private void AddToQueue(List<EmailQueue> emailQueues, EmailQueue emailQueue)
+        private void AddToQueue(List<EmailQueueV2> emailQueues, EmailQueueV2 emailQueue)
         {
             if (!emailQueues.Any(a => a.User == emailQueue.User)) emailQueues.Add(emailQueue);
         }
@@ -584,7 +621,7 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order"></param>
         /// <param name="emailQueues"></param>
-        private void AddQueuesToOrder(Order order, List<EmailQueue> emailQueues )
+        private void AddQueuesToOrder(Order order, List<EmailQueueV2> emailQueues )
         {
             foreach (var eq in emailQueues)
             {

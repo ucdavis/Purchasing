@@ -20,7 +20,7 @@ namespace Purchasing.Web.Services
         void OrderReRoutedToPurchaser(Order order, string routedTo);
 
         void OrderAddAttachment(Order order);
-        void OrderAddNote(Order order);
+        void OrderAddNote(Order order, string comment);
     }
 
     public class EventService : IEventService
@@ -247,10 +247,10 @@ namespace Purchasing.Web.Services
             _notificationService.OrderAddAttachment(order, user);
         }
 
-        public void OrderAddNote(Order order)
+        public void OrderAddNote(Order order, string comment)
         {
             var user = _userRepository.GetById(_userIdentity.Current);
-            _notificationService.OrderAddNote(order, user);
+            _notificationService.OrderAddNote(order, user, comment);
         }
     }
 }

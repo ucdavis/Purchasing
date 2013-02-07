@@ -27,6 +27,7 @@ namespace Purchasing.Core.Domain
             OrderComments = new List<OrderComment>();
             ControlledSubstances = new List<ControlledSubstanceInformation>();
             EmailQueues = new List<EmailQueue>();
+            EmailQueuesV2 = new List<EmailQueueV2>();
             CustomFieldAnswers = new List<CustomFieldAnswer>();
 
             DateCreated = DateTime.Now;
@@ -95,6 +96,7 @@ namespace Purchasing.Core.Domain
         public virtual IList<KfsDocument> KfsDocuments { get; set; }
         public virtual IList<OrderComment> OrderComments { get; set; }
         public virtual IList<EmailQueue> EmailQueues { get; set; }
+        public virtual IList<EmailQueueV2> EmailQueuesV2 { get; set; }
 
         public virtual IList<CustomFieldAnswer> CustomFieldAnswers { get; set; }
 
@@ -272,10 +274,10 @@ namespace Purchasing.Core.Domain
             Attachments.Add(attachment);
         }
 
-        public virtual void AddEmailQueue(EmailQueue emailQueue)
+        public virtual void AddEmailQueue(EmailQueueV2 emailQueue)
         {
             emailQueue.Order = this;
-            EmailQueues.Add(emailQueue);
+            EmailQueuesV2.Add(emailQueue);
         }
 
         public virtual void AddComment(OrderComment orderComment)
