@@ -131,42 +131,43 @@ namespace Purchasing.Web.Services
             _emailQueueV2Repository.DbContext.BeginTransaction();            
             var orders = pendingForUser.Select(a => a.Order).Distinct().ToList();
 
-            var message = new StringBuilder("<ul>");
+            var message = new StringBuilder();
             foreach (var order in orders)
             {
-                message.Append("<li>");
-                message.Append("<div>");
-                message.Append(string.Format("Order Request {0}", GenerateLink(order.RequestNumber)));
-
-                message.Append("<ul>");
-                message.Append(string.Format("<li><strong>Created By:</strong>{0}</li>", order.CreatedBy.FullName));
-                message.Append(string.Format("<li><strong>Status:</strong>{0}</li>", order.StatusCode.Name));
-                message.Append(string.Format("<li><strong>Vendor:</strong>{0}</li>", order.VendorName));
-                message.Append("</ul>");
-
+                message.Append("<p>");
                 message.Append("<table>");
+                message.Append("<tbody>");
+                message.Append(string.Format("<tr><td style=\"width: 100px;\">Order Request</td><td>{0}</td></tr>", GenerateLink(order.RequestNumber)));
+                message.Append(string.Format("<tr><td style=\"width: 100px;\"><strong>Created By:</strong></td><td>{0}</td></tr>", order.CreatedBy.FullName));
+                message.Append(string.Format("<tr><td style=\"width: 100px;\"><strong>Status:</strong></td><td>{0}</td></tr>", order.StatusCode.Name));
+                message.Append(string.Format("<tr><td style=\"width: 100px;\"><strong>Vendor:</strong></td><td>{0}</td></tr>", order.VendorName));
+
+
+                message.Append("</tbody>");
+                message.Append("</table>");
+
+
+                message.Append("<table border=\"1\">");
                 message.Append("<tbody>");
 
                 foreach (var emailQueue in pendingForUser.Where(a => a.Order == order).OrderByDescending(b => b.DateTimeCreated))
                 {
                     message.Append("<tr>");
-                    message.Append(string.Format("<td>{0}</td>", emailQueue.DateTimeCreated));
-                    message.Append(string.Format("<td>{0}</td>", emailQueue.Action));
-                    message.Append(string.Format("<td>{0}</td>", emailQueue.Details));
+                    message.Append(string.Format("<td style=\"padding-left: 7px; border-left-width: 0px; margin-left: 0px; width: 160px;\">{0}</td>", emailQueue.DateTimeCreated));
+                    message.Append(string.Format("<td style=\"width: 137px;\">{0}</td>", emailQueue.Action));
+                    message.Append(string.Format("<td >{0}</td>", emailQueue.Details));
                     message.Append("</tr>");
 
-                    emailQueue.Pending = false;
+                    //emailQueue.Pending = false;
                     emailQueue.DateTimeSent = DateTime.Now;
                     _emailQueueV2Repository.EnsurePersistent(emailQueue);
                 }
 
                 message.Append("</tbody>");
                 message.Append("</table>");
-
-                message.Append("</div>");
-                message.Append("</li>");
+                message.Append("<hr>");
+                message.Append("</p></br>");
             }
-            message.Append("</ul>");
 
             var sgMessage = SendGrid.GenerateInstance();
             sgMessage.From = new MailAddress(SendGridFrom, "UCD PrePurchasing No Reply");
