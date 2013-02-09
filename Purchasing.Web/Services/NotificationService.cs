@@ -115,7 +115,7 @@ namespace Purchasing.Web.Services
                 var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
                 //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.StatusCode.Name, comment), target);
-                var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Cancelled", string.Format("By {0} at {1} review with the following comment \"{2}\".", user.FullName, order.StatusCode, comment), target);
+                var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Denied", string.Format("By {0} with the following comment \"{1}\".", user.FullName, comment), target);
                 //order.AddEmailQueue(emailQueue);
                 AddToQueue(queues, emailQueue2);
             }
