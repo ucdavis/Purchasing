@@ -342,6 +342,16 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
+        public static EmailQueueV2 EmailQueueV2(int? counter)
+        {
+            var rtValue = new EmailQueueV2();
+            rtValue.Action = "Text" + counter.Extra();
+            rtValue.Order = new Order();
+            rtValue.NotificationType = Purchasing.Core.Domain.EmailPreferences.NotificationTypes.PerEvent;
+
+            return rtValue;
+        }
+
         public static KfsDocument KfsDocument(int? counter)
         {
             var rtValue = new KfsDocument();
