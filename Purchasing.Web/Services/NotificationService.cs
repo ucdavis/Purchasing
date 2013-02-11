@@ -21,7 +21,7 @@ namespace Purchasing.Web.Services
         void OrderApproved(Order order, Approval approval);
         void OrderCreated(Order order);
         void OrderEdited(Order order, User actor);
-        void OrderCancelled(Order order, User actor, string cancelReason);
+        void OrderCancelled(Order order, User actor, string cancelReason, OrderStatusCode previousStatus);
         void OrderDenied(Order order, User user, string comment, OrderStatusCode previousStatus);
         void OrderCompleted(Order order, User user);
         void OrderReRouted(Order order, int level, bool assigned = false);
@@ -329,7 +329,7 @@ namespace Purchasing.Web.Services
             AddQueuesToOrder(order, queues);
         }
 
-        public void OrderCancelled(Order order, User actor, string cancelReason)
+        public void OrderCancelled(Order order, User actor, string cancelReason, OrderStatusCode previousStatus)
         {
             var user = order.CreatedBy;
             var preference = _emailPreferenceRepository.GetNullableById(user.Id);
@@ -338,7 +338,7 @@ namespace Purchasing.Web.Services
             if (preference != null) { notificationType = preference.NotificationType; }
 
             //var emailQueue = new EmailQueue(order, notificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName, order.StatusCode.Name, cancelReason), user);
-            var emailQueue2 = new EmailQueueV2(order, notificationType, "Cancelled", string.Format("By {0} at {1} review with the comment  \"{2}\".", actor.FullName, order.StatusCode.Name, cancelReason), user);
+            var emailQueue2 = new EmailQueueV2(order, notificationType, "Cancelled", string.Format("By {0} at {1} review with the comment  \"{2}\".", actor.FullName, previousStatus.Name, cancelReason), user);
             order.AddEmailQueue(emailQueue2);
         }
 
