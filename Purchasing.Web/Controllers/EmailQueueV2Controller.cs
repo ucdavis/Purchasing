@@ -93,7 +93,7 @@ namespace Purchasing.Web.Controllers
                 foreach (var emailQueue in pendingForUser.Where(a => a.Order == order).OrderByDescending(b => b.DateTimeCreated))
                 {
                     message.Append("<tr>");
-                    message.Append(string.Format("<td style=\"padding-left: 7px; border-left-width: 0px; margin-left: 0px; width: 170px;\">{0}</td>", emailQueue.DateTimeCreated));
+                    message.Append(string.Format("<td style=\"padding-left: 7px; border-left-width: 0px; margin-left: 0px; width: 180px;\">{0}</td>", emailQueue.DateTimeCreated));
                     message.Append(string.Format("<td style=\"width: 137px;\">{0}</td>", emailQueue.Action));
                     message.Append(string.Format("<td >{0}</td>", emailQueue.Details));
                     message.Append("</tr>");
