@@ -112,7 +112,7 @@ namespace Purchasing.WS
                     li.catelogNumber = SetForDafis(line.CatalogNumber, 15);
                     li.unitOfMeasureCode = line.Unit;
                     li.description = SetForDafis(line.Description, 400);
-                    li.commodityCode = line.Commodity != null ? line.Commodity.Id : string.Empty;
+                    li.commodityCode = line.Commodity != null ? line.Commodity.Id.ToUpper() : string.Empty;
                     li.unitPrice = line.UnitPrice.ToString();
                     li.quantity = line.Quantity.ToString();
                     li.itemTypeCode = ItemTypeCode;
