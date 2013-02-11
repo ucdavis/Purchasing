@@ -319,7 +319,7 @@ namespace Purchasing.Web.Services
                 if (IsMailRequested(preference, appr.StatusCode, order.StatusCode, EventCode.Update))
                 {
                     //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ChangeMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), user);
-                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Changed", string.Format("By {0}.", actor.FullName), user);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Changed", string.Format("By {0} at {1} review.", actor.FullName, order.StatusCode.Name), user);
                     //order.AddEmailQueue(emailQueue);
                     AddToQueue(queues, emailQueue2);
                 }
