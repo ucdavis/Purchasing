@@ -150,7 +150,6 @@ namespace Purchasing.Web.Services
                 message.Append(string.Format("<tr><td style=\"width: 100px;\"><strong>Vendor:</strong></td><td>{0}</td></tr>", order.VendorName));
 
 
-
                 message.Append("</tbody>");
                 message.Append("</table>");
 
@@ -161,7 +160,7 @@ namespace Purchasing.Web.Services
                 foreach (var emailQueue in pendingForUser.Where(a => a.Order == order).OrderByDescending(b => b.DateTimeCreated))
                 {
                     message.Append("<tr>");
-                    message.Append(string.Format("<td style=\"padding-left: 7px; border-left-width: 0px; margin-left: 0px; width: 160px;\">{0}</td>", emailQueue.DateTimeCreated));
+                    message.Append(string.Format("<td style=\"padding-left: 7px; border-left-width: 0px; margin-left: 0px; width: 170px;\">{0}</td>", emailQueue.DateTimeCreated));
                     message.Append(string.Format("<td style=\"width: 137px;\">{0}</td>", emailQueue.Action));
                     message.Append(string.Format("<td >{0}</td>", emailQueue.Details));
                     message.Append("</tr>");
