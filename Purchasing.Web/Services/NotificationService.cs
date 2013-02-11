@@ -180,7 +180,7 @@ namespace Purchasing.Web.Services
             if (!string.IsNullOrEmpty(order.Workgroup.NotificationEmailList))
             {
                 //var emailQueue = new EmailQueue(order, EmailPreferences.NotificationTypes.PerEvent, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), actor, order.Workgroup.NotificationEmailList);
-                var emailQueue2 = new EmailQueueV2(order, EmailPreferences.NotificationTypes.PerEvent, "Received", string.Format("{0} item(s) by {1}.", quantity, actor), null, order.Workgroup.NotificationEmailList);
+                var emailQueue2 = new EmailQueueV2(order, EmailPreferences.NotificationTypes.PerEvent, "Received", string.Format("{0} item(s) by {1}.", quantity, actor.FullName), null, order.Workgroup.NotificationEmailList);
                 AddToQueue(queues, emailQueue2);
             }
             
@@ -191,7 +191,7 @@ namespace Purchasing.Web.Services
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Received, order.OrderType))
                 {
                     //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), approval.User);
-                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Received", string.Format("{0} item(s) by {1}.", quantity, actor), approval.User);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Received", string.Format("{0} item(s) by {1}.", quantity, actor.FullName), approval.User);
                     AddToQueue(queues, emailQueue2);
                 }
             }
