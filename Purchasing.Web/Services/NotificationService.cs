@@ -47,17 +47,17 @@ namespace Purchasing.Web.Services
         private enum EventCode { Approval, Update, Cancelled, Arrival, Complete, Received }//, KualiUpdate }
 
         /* strings to be used in the messages */
-        private const string ApprovalMessage = "Order request {0} for {1} has been approved by {2} at {3} review.";
-        private const string CancellationMessage = "Order request {0} for {1} has been cancelled by {2} at {3} review with the following comment \"{4}\".";
-        private const string UpdateInKualiMessage = "Order request {0} for {1} has been updated in Kuali to {2}.";
-        private const string ChangeMessage = "Order request {0} for {1} has been changed by {2}.";
-        private const string SubmissionMessage = "Order request {0} for {1} has been submitted.";
-        private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}{4}.";
-        private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
-        private const string ReceiveMessage = "Order request {0} for {1} has {2} item(s) received.";
-        private const string RerouteMessage = "Order request {0} for {1} has been rerouted to you.";
-        private const string AddAttachmentMessage = "Order request {0} for {1} has a new attachment added by {2}";
-        private const string AddNoteMessage = "Order request {0} for {1} has a new note added by {2}";
+        //private const string ApprovalMessage = "Order request {0} for {1} has been approved by {2} at {3} review.";
+        //private const string CancellationMessage = "Order request {0} for {1} has been cancelled by {2} at {3} review with the following comment \"{4}\".";
+        //private const string UpdateInKualiMessage = "Order request {0} for {1} has been updated in Kuali to {2}.";
+        //private const string ChangeMessage = "Order request {0} for {1} has been changed by {2}.";
+        //private const string SubmissionMessage = "Order request {0} for {1} has been submitted.";
+        //private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}{4}.";
+        //private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
+        //private const string ReceiveMessage = "Order request {0} for {1} has {2} item(s) received.";
+        //private const string RerouteMessage = "Order request {0} for {1} has been rerouted to you.";
+        //private const string AddAttachmentMessage = "Order request {0} for {1} has a new attachment added by {2}";
+        //private const string AddNoteMessage = "Order request {0} for {1} has a new note added by {2}";
 
         public NotificationService(IRepositoryWithTypedId<EmailQueue, Guid> emailRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferenceRepository, IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<OrderStatusCode, string> orderStatusCodeRepository, IUserIdentity userIdentity, IServerLink serverLink, IQueryRepositoryFactory queryRepositoryFactory, IRepositoryFactory repositoryFactory )
         {
@@ -293,7 +293,7 @@ namespace Purchasing.Web.Services
                         //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.SecondaryUser);
                         if (!assigned)
                         {
-                            var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Arrived", string.Format("At your level ({0}) for review from {1}{2}.", ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.User);
+                            var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Arrived", string.Format("At your level ({0}) for review from {1}{2}.", ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.SecondaryUser);
                             AddToQueue(queues, emailQueue2);
                         }
                         else
