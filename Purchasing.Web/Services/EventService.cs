@@ -13,7 +13,7 @@ namespace Purchasing.Web.Services
         void OrderAutoApprovalAdded(Order order, Approval approval);
         void OrderReRouted(Order order);
         void OrderEdited(Order order);
-        void OrderDenied(Order order, string comment);
+        void OrderDenied(Order order, string comment, OrderStatusCode previousStatus);
         void OrderCancelled(Order order, string comment);
         void OrderCompleted(Order order);
         void OrderReceived(Order order, LineItem lineItem, decimal quantity);
@@ -115,7 +115,7 @@ namespace Purchasing.Web.Services
             _notificationService.OrderApproved(order, approval);
         }
 
-        public void OrderDenied(Order order, string comment)
+        public void OrderDenied(Order order, string comment, OrderStatusCode previousStatus)
         {
             var user = _userRepository.GetById(_userIdentity.Current);
             
@@ -128,7 +128,7 @@ namespace Purchasing.Web.Services
 
             order.AddTracking(trackingEvent);
 
-            _notificationService.OrderDenied(order, user, comment);
+            _notificationService.OrderDenied(order, user, comment, previousStatus);
         }
 
         public void OrderCancelled(Order order, string comment)

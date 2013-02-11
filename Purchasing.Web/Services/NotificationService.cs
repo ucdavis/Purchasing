@@ -22,7 +22,7 @@ namespace Purchasing.Web.Services
         void OrderCreated(Order order);
         void OrderEdited(Order order, User actor);
         void OrderCancelled(Order order, User actor, string cancelReason);
-        void OrderDenied(Order order, User user, string comment);
+        void OrderDenied(Order order, User user, string comment, OrderStatusCode previousStatus);
         void OrderCompleted(Order order, User user);
         void OrderReRouted(Order order, int level, bool assigned = false);
         void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity);
@@ -105,7 +105,7 @@ namespace Purchasing.Web.Services
 
         }
 
-        public void OrderDenied(Order order, User user, string comment)
+        public void OrderDenied(Order order, User user, string comment, OrderStatusCode previousStatus)
         {
             var queues = new List<EmailQueueV2>();
 
@@ -115,7 +115,7 @@ namespace Purchasing.Web.Services
                 var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
 
                 //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.StatusCode.Name, comment), target);
-                var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Denied", string.Format("By {0} with the following comment \"{1}\".", user.FullName, comment), target);
+                var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Denied", string.Format("By {0} at {1} review with the following comment \"{2}\".", user.FullName, previousStatus.Name, comment), target);
                 //order.AddEmailQueue(emailQueue);
                 AddToQueue(queues, emailQueue2);
             }
