@@ -16,12 +16,14 @@ using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Controllers
 {
+    /*
+
     /// <summary>
     /// This is just for testing sending emails.
     /// </summary>
     [Authorize(Roles = Role.Codes.Admin)]
     public class EmailQueueV2Controller : ApplicationController
-    {
+    {      
 	    private readonly IRepository<EmailQueueV2> _emailQueueV2Repository;
 
         public EmailQueueV2Controller(IRepository<EmailQueueV2> emailQueueV2Repository)
@@ -159,4 +161,5 @@ namespace Purchasing.Web.Controllers
 			return viewModel;
 		}
 	}
+     */
 }
