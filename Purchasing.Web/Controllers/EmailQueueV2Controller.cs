@@ -67,12 +67,19 @@ namespace Purchasing.Web.Controllers
             var message = new StringBuilder();
             foreach (var order in orders)
             {
+                var extraStyle1 = string.Empty;
+                var extraStyle2 = string.Empty;
+                if (order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
+                {
+                    extraStyle1 = "<span style=\"color: Red;\">";
+                    extraStyle2 = "</span>";
+                }
                 message.Append("<p>");
                 message.Append("<table>");
                 message.Append("<tbody>");
                 message.Append(string.Format("<tr><td style=\"width: 100px;\">Order Request</td><td>{0}</td></tr>", GenerateLink(order.RequestNumber)));
                 message.Append(string.Format("<tr><td style=\"width: 100px;\"><strong>Created By:</strong></td><td>{0}</td></tr>", order.CreatedBy.FullName));
-                message.Append(string.Format("<tr><td style=\"width: 100px;\"><strong>Status:</strong></td><td>{0}</td></tr>", order.StatusCode.Name));
+                message.Append(string.Format("<tr><td style=\"width: 100px;\"><strong>Status:</strong></td><td>{0}{1}{2}</td></tr>", extraStyle1, order.StatusCode.Name, extraStyle2));
                 message.Append(string.Format("<tr><td style=\"width: 100px;\"><strong>Vendor:</strong></td><td>{0}</td></tr>", order.VendorName));
 
 
