@@ -34,7 +34,7 @@ namespace Purchasing.Web.Controllers
         public ActionResult Index()
         {
             var viewModel = EmailQueueV2ViewModel.Create();
-            viewModel.EmailQueueV2List = _emailQueueV2Repository.Queryable.Where(a => a.User == GetCurrentUser() && a.Pending).ToList();
+            viewModel.EmailQueueV2List = _emailQueueV2Repository.Queryable.Where(a => (a.User == GetCurrentUser() || a.User == null) && a.Pending).ToList();
             viewModel.Orders = viewModel.EmailQueueV2List.Select(a => a.Order).Distinct().ToList();
 
             try
