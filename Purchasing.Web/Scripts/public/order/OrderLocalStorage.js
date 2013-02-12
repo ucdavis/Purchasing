@@ -365,7 +365,7 @@
                         purchasing.clearAutosaveData();
                         window.location = result.redirect;
                     } else {
-                        alert("An error has occured, please try again.");
+                        alert("An error has occurred, please try again.");
                     }
                 }
             );
