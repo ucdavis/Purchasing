@@ -98,6 +98,8 @@ namespace Purchasing.Core.Domain
 
         public virtual IList<CustomFieldAnswer> CustomFieldAnswers { get; set; }
 
+        public virtual bool FpdCompleted { get; set; }
+
 
         private IList<ControlledSubstanceInformation> ControlledSubstances { get; set; }
 
@@ -477,8 +479,7 @@ namespace Purchasing.Core.Domain
             var regex = new Regex(@"P\d{8}");
             var validKfsOrder = OrderType.Id == OrderType.Types.KfsDocument
                 && !string.IsNullOrEmpty(ReferenceNumber)
-                && regex.IsMatch(ReferenceNumber)
-                ;
+                && regex.IsMatch(ReferenceNumber);
 
             return validKfsOrder;
         }
@@ -519,6 +520,7 @@ namespace Purchasing.Core.Domain
             References(x => x.CreatedBy).Column("CreatedBy");
 
             Map(x => x.CompletionReason).Length(int.MaxValue);
+            Map(x => x.FpdCompleted);
 
             HasMany(x => x.Attachments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();

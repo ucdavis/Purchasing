@@ -297,9 +297,7 @@
     <Compile Include="App_Start\CreateJobs.cs" />
     <Compile Include="App_Start\Jobs\CreateLookupIndexsJob.cs" />
     <Compile Include="App_Start\Jobs\CreateOrderIndexsJob.cs" />
-    <Compile Include="App_Start\Jobs\DatabaseBackupJob.cs" />
     <Compile Include="App_Start\Jobs\EmailJob.cs" />
-    <Compile Include="App_Start\Jobs\NightlySyncJobs.cs" />
     <Compile Include="App_Start\Jobs\VerifyPermissionsJob.cs" />
     <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
@@ -1040,6 +1038,7 @@
     <Content Include="Views\Report\TotalByWorkgroup.cshtml" />
     <Content Include="Views\Report\TotalByPrimaryOrg.cshtml" />
     <Content Include="Views\Report\TotalByVendor.cshtml" />
+    <Content Include="Views\Order\_ReviewFpdComplete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -42,6 +42,7 @@ namespace Purchasing.Web.Services
                         RequestNumber = doc.Get("requestnumber"),
                         DateCreated = DateTime.Parse(doc.Get("datecreated")),
                         PoNumber = doc.Get("ponumber"),
+                        ReferenceNumber = doc.Get("referencenumber"),
                         Approver = doc.Get("approver"),
                         AccountManager = doc.Get("accountmanager"),
                         Purchaser = doc.Get("purchaser")

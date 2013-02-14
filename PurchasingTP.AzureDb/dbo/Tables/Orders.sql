@@ -26,6 +26,7 @@
     [RequestNumber]           VARCHAR (20)  NOT NULL,
     [KfsDocType]              CHAR (3)      NULL,
     [PoNumber]                VARCHAR (50)  NULL,
+    [FpdCompleted] BIT NOT NULL DEFAULT ((0)), 
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
     CONSTRAINT [FK_Orders_OrderTypes] FOREIGN KEY ([OrderTypeId]) REFERENCES [dbo].[OrderTypes] ([Id]),

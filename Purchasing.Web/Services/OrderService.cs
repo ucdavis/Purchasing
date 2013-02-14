@@ -654,7 +654,8 @@ namespace Purchasing.Web.Services
                                             Completed = false,
                                             User = approvalInfo.AcctManager,
                                             StatusCode =
-                                                _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.AccountManager)
+                                                _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.AccountManager),
+                                                IsExternal = approvalInfo.IsExternal
                                         },
                                     new Approval
                                         {

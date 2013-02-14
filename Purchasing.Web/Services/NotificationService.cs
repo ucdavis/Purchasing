@@ -52,7 +52,7 @@ namespace Purchasing.Web.Services
         private const string UpdateInKualiMessage = "Order request {0} for {1} has been updated in Kuali to {2}.";
         private const string ChangeMessage = "Order request {0} for {1} has been changed by {2}.";
         private const string SubmissionMessage = "Order request {0} for {1} has been submitted.";
-        private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}.";
+        private const string ArrivalMessage = "Order request {0} for {1} has arrived at your level ({2}) for review from {3}{4}.";
         private const string CompleteMessage = "Order request {0} for {1} has been completed by {2}.  Order will be completed as a {3}.";
         private const string ReceiveMessage = "Order request {0} for {1} has {2} item(s) received.";
         private const string RerouteMessage = "Order request {0} for {1} has been rerouted to you.";
@@ -209,12 +209,8 @@ namespace Purchasing.Web.Services
             // there is at least one that is workgroup permissions
             if (wrkgrp)
             {
-                var workgroups = FindAdminWorkgroups(order);
 
-                // get the workgroup and all the people at the level
-                //var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == level).Select(a => a.User);
-
-                var peeps = workgroups.SelectMany(a => a.Permissions).Where(a => a.Role.Level == level && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(a => a.User);
+                var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == level && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(a => a.User);
 
                 var apf = future.First(a => a.User == null);
 
@@ -224,7 +220,12 @@ namespace Purchasing.Web.Services
 
                     if (IsMailRequested(preference, apf.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, apf.StatusCode.Name, currentUser.FullName), peep);
+                        var extraInfo = string.Empty;
+                        if (preference.ShowAccountInEmail && apf.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
+                        {
+                            extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
+                        }
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ArrivalMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, apf.StatusCode.Name, currentUser.FullName, extraInfo), peep);
                         AddToQueue(queues, emailQueue);
                     }
                 }
@@ -254,7 +255,12 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                 {
-                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.User);
+                    var extraInfo = string.Empty;
+                    if (preference.ShowAccountInEmail && ap.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
+                    {
+                        extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
+                    }
+                    var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.User);
                     AddToQueue(queues, emailQueue);
                 }
 
@@ -262,7 +268,12 @@ namespace Purchasing.Web.Services
                 {
                     if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
-                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName), ap.SecondaryUser);
+                        var extraInfo = string.Empty;
+                        if (preference.ShowAccountInEmail && ap.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
+                        {
+                            extraInfo = string.Format(" with accounts {0}", order.AccountNumbers);
+                        }
+                        var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(!assigned ? ArrivalMessage : RerouteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, ap.StatusCode.Name, currentUser.FullName, extraInfo), ap.SecondaryUser);
                         AddToQueue(queues, emailQueue);
                     }
                 }
@@ -584,35 +595,6 @@ namespace Purchasing.Web.Services
         private string GenerateLink(string address, string orderRequestNumber)
         {
             return string.Format("<a href=\"{0}{1}\">{1}</a>", "http://prepurchasing.ucdavis.edu/Order/Lookup/", orderRequestNumber);
-        }
-
-        private List<Workgroup> FindAdminWorkgroups(Order order)
-        {
-            var workgroups = new List<Workgroup>();
-
-            // find the rollup parents
-            var rollupDepts = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => a.WorkgroupId == order.Workgroup.Id).Select(a => a.RollupParentId).ToList();
-
-            // get the proper workgroups for the rollup departments
-            // needs to look at more than just hte primary org
-            //var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => rollupDepts.Contains(a.PrimaryOrganization.Id) && a.Administrative && a.IsFullFeatured).ToList();
-            //workgroups.AddRange(wrkgrps);
-
-            foreach (var deptId in rollupDepts)
-            {
-                var dept = _repositoryFactory.OrganizationRepository.GetNullableById(deptId);
-
-                if (dept != null)
-                {
-                    var wrkgrps = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.Organizations.Contains(dept) && a.Administrative && a.IsFullFeatured).ToList();
-                    workgroups.AddRange(wrkgrps);
-                }
-                
-            }
-
-            workgroups.Add(order.Workgroup);
-
-            return workgroups.Distinct().ToList();
         }
     }
 }

@@ -254,6 +254,16 @@
                 
                 <li>
                     <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowFpdCompleted) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowFpdCompleted)
+                        @Html.ValidationMessageFor(model => model.ShowFpdCompleted)
+                    </div>
+                </li>
+                
+                <li>
+                    <div class="editor-label">
                         @Html.LabelFor(model => model.ShowHasSplits) 
                     </div>
                     <div class="editor-field">

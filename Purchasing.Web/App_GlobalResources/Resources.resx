@@ -228,4 +228,7 @@
   <data name="ApprovalAction_Fail" xml:space="preserve">
     <value>{0} action by {1} was not successful</value>
   </data>
+  <data name="OrderFdp_Updated" xml:space="preserve">
+    <value>FDP Completed updated</value>
+  </data>
 </root>

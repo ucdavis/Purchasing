@@ -31,6 +31,8 @@ namespace Purchasing.Core.Domain
             AccountManagerKualiApproved = true;
             AccountManagerOrderCompleted = true;
             AccountManagerOrderArrive = true;
+            ShowAccountInEmail = false;
+
 
             PurchaserKualiApproved = true;
             PurchaserOrderCompleted = true;
@@ -123,6 +125,9 @@ namespace Purchasing.Core.Domain
         [Display(Name="Order Arrived")]
         public virtual bool AccountManagerOrderArrive { get; set; }
 
+        [Display(Name = "Show Accounts in Email")]
+        public virtual bool ShowAccountInEmail { get; set; }
+
         #endregion Account Manager Settings
 
         #region Purchaser Settings
@@ -191,6 +196,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.AccountManagerOrderCompleted);
             Map(x => x.AccountManagerPurchaserProcessed);
             Map(x => x.AccountManagerOrderArrive);
+            Map(x => x.ShowAccountInEmail);
 
             Map(x => x.PurchaserKualiApproved);
             Map(x => x.PurchaserOrderCompleted);

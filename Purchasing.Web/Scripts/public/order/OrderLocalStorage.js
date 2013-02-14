@@ -140,6 +140,9 @@
                 }
 
                 model.items.push(lineItem);
+                //Attach chosen to units drop down
+                var id = "#units_" + index;
+                $(id).chosen();   
             });
 
             //Lines are in, now add Order splits if needed
@@ -362,7 +365,7 @@
                         purchasing.clearAutosaveData();
                         window.location = result.redirect;
                     } else {
-                        alert("An error has occured, please try again.");
+                        alert("An error has occurred, please try again.");
                     }
                 }
             );

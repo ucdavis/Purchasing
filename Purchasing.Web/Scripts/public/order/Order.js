@@ -49,6 +49,7 @@
         attachShippingWarnings();
         attachTour();
         attachNav();
+        attachChosen();
     };
 
     function extendKnockout() {
@@ -422,7 +423,9 @@
             };
 
             self.addLine = function () {
+                var id = "#units_" + self.items().length;
                 self.items.push(new purchasing.LineItem(self.items().length, self));
+                $(id).chosen();
             };
 
             self.resetOrderRouting = function () {
@@ -896,6 +899,10 @@
         });
     }
 
+    function attachChosen() {
+        $(".unit").chosen();
+    }
+
     function attachNav() {
         $(window).sausage({ page: '.ui-widget-header:visible' });
         $('.orders-nav').stickyfloat({ duration: 400 });
@@ -979,27 +986,27 @@
                                             option: this
                                         };
                                 }));
-                                },
-//                            select: function (event, ui) {
-//                                ui.item.option.selected = true;
-//                                self._trigger("selected", event, {
-//                                    item: ui.item.option
-//                                });
-//                                var fileContainer = $(this).parent().parent();
-//                                var categeoryText = $(this).val();
-//                                var attachmentGuid = fileContainer.find("#combobox").data("id");
-//                                var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
+                            },
+                            //                            select: function (event, ui) {
+                            //                                ui.item.option.selected = true;
+                            //                                self._trigger("selected", event, {
+                            //                                    item: ui.item.option
+                            //                                });
+                            //                                var fileContainer = $(this).parent().parent();
+                            //                                var categeoryText = $(this).val();
+                            //                                var attachmentGuid = fileContainer.find("#combobox").data("id");
+                            //                                var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
 
-//                                categoryMessage.html("Updating...");
-//                                $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
-//                                    if (result) {
-//                                        categoryMessage.html(result.message);
-//                                    } else {
-//                                        alert("There was a problem updating the Attachment's Category");
-//                                    }
+                            //                                categoryMessage.html("Updating...");
+                            //                                $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
+                            //                                    if (result) {
+                            //                                        categoryMessage.html(result.message);
+                            //                                    } else {
+                            //                                        alert("There was a problem updating the Attachment's Category");
+                            //                                    }
 
-//                                });
-//                            },
+                            //                                });
+                            //                            },
                             change: function (event, ui) {
                                 if (!ui.item) {
                                     var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex($(this).val()) + "$", "i"),

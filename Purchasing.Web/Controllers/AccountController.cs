@@ -27,6 +27,7 @@ namespace Purchasing.Web.Controllers
             TempData["URL"] = returnUrl;
 
             return View();
+
         }
 
         public ActionResult LogOut()
