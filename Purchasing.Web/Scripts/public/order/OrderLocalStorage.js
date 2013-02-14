@@ -49,6 +49,10 @@
             purchasing.clearAutosaveData(); //On submit, clear the saved temp data
         });
 
+        $("#order-cancel").click(function () {
+            purchasing.clearAutosaveData(); // They hit cancel on the order, so lets clear it out
+        });
+
         function loadExistingForm() {
             if (window.location.toString().indexOf("?loadform=true") !== -1) {
                 purchasing.loadOrderForm();
@@ -142,7 +146,7 @@
                 model.items.push(lineItem);
                 //Attach chosen to units drop down
                 var id = "#units_" + index;
-                $(id).chosen();   
+                $(id).chosen();
             });
 
             //Lines are in, now add Order splits if needed
