@@ -591,6 +591,10 @@
 
                 if (validLines.length === 0) {
                     alert(options.Messages.LineItemRequired);
+                    var scrollTo = $("#line-items-section");
+                    $('html, body').animate({
+                        scrollTop: scrollTo.offset().top
+                    }, 500);
                     return false;
                 }
 
@@ -613,6 +617,10 @@
                         else {
                             alert(options.Messages.AccountOrManagerRequired);
                         }
+                        var scrollTo = $("#order-account-section");
+                        $('html, body').animate({
+                            scrollTop: scrollTo.offset().top
+                        }, 500);
                         return false;
                     }
                 }
@@ -630,11 +638,19 @@
 
                     if (invalidSplits.length) {
                         alert(options.Messages.OrderSplitWithNoAccount);
+                        var scrollTo = $("#order-split-section");
+                        $('html, body').animate({
+                            scrollTop: scrollTo.offset().top
+                        }, 500);
                         return false;
                     }
 
                     if (splitUnaccounted !== 0) {
                         alert(options.Messages.TotalAmountRequired);
+                        var scrollTo = $("#order-split-section");
+                        $('html, body').animate({
+                            scrollTop: scrollTo.offset().top
+                        }, 500);
                         return false;
                     }
                 }
@@ -657,11 +673,19 @@
 
                     if (invalidLineSplits.length !== 0) {
                         alert(options.Messages.LineSplitNoAccount);
+                        var scrollTo = $("#line-items-section");
+                        $('html, body').animate({
+                            scrollTop: scrollTo.offset().top
+                        }, 500);
                         return false;
                     }
 
                     if (linesWithNonMatchingAmounts.length !== 0) {
                         alert(options.Messages.LineSplitTotalAmountRequired);
+                        var scrollTo = $("#line-items-section");
+                        $('html, body').animate({
+                            scrollTop: scrollTo.offset().top
+                        }, 500);
                         return false;
                     }
                 }
