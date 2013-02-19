@@ -18,11 +18,11 @@
 
 GO
 CREATE NONCLUSTERED INDEX [EmailQueueV2_UserId_IDX]
-    ON [dbo].[EmailQueue]([UserId] ASC);
+    ON [dbo].[EmailQueueV2]([UserId] ASC);
 
 
 GO
 CREATE NONCLUSTERED INDEX [EmailQueueV2_OrderId_IDX]
-    ON [dbo].[EmailQueue]([OrderId] ASC);
+    ON [dbo].[EmailQueueV2]([OrderId] ASC);
 
 
