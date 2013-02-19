@@ -502,9 +502,10 @@ namespace Purchasing.Web.Services
         /// </summary>
         public void Deny(Order order, string comment)
         {
+            var previousStatus = order.StatusCode;
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Denied);
 
-            _eventService.OrderDenied(order, comment);
+            _eventService.OrderDenied(order, comment, previousStatus);
         }
 
         /// <summary>
@@ -512,9 +513,10 @@ namespace Purchasing.Web.Services
         /// </summary>
         public void Cancel(Order order, string comment)
         {
+            var previousStatus = order.StatusCode;
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Cancelled);
 
-            _eventService.OrderCancelled(order, comment);
+            _eventService.OrderCancelled(order, comment, previousStatus);
         }
 
         /// <summary>

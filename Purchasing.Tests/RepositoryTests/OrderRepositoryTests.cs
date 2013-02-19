@@ -4454,7 +4454,7 @@ namespace Purchasing.Tests.RepositoryTests
             const int addedCount = 3;
             for (int i = 0; i < addedCount; i++)
             {
-                record.AddEmailQueue(CreateValidEntities.EmailQueue(i+1));
+                record.AddEmailQueue(CreateValidEntities.EmailQueueV2(i+1));
             }
             #endregion Arrange
 
@@ -4466,7 +4466,7 @@ namespace Purchasing.Tests.RepositoryTests
 
             #region Assert
             Assert.IsNotNull(record.EmailQueues);
-            Assert.AreEqual(addedCount, record.EmailQueues.Count);
+            Assert.AreEqual(addedCount, record.EmailQueuesV2.Count);
             Assert.IsFalse(record.IsTransient());
             Assert.IsTrue(record.IsValid());
             #endregion Assert
@@ -4539,13 +4539,13 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestOrderCascadesSaveToEmailQueue()
         {
             #region Arrange
-            var emailQueueRepository = new RepositoryWithTypedId<EmailQueue, Guid>();
+            var emailQueueRepository = new RepositoryWithTypedId<EmailQueueV2, Guid>();
             var count = emailQueueRepository.Queryable.Count();
             Order record = GetValid(9);
             const int addedCount = 3;
             for (int i = 0; i < addedCount; i++)
             {
-                record.AddEmailQueue(CreateValidEntities.EmailQueue(i + 1));
+                record.AddEmailQueue(CreateValidEntities.EmailQueueV2(i + 1));
             }
 
             OrderRepository.DbContext.BeginTransaction();
@@ -4561,7 +4561,7 @@ namespace Purchasing.Tests.RepositoryTests
 
             #region Assert
             Assert.IsNotNull(record);
-            Assert.AreEqual(addedCount, record.EmailQueues.Count);
+            Assert.AreEqual(addedCount, record.EmailQueuesV2.Count);
             Assert.AreEqual(count + addedCount, emailQueueRepository.Queryable.Count());
             #endregion Assert
         }
@@ -4571,26 +4571,26 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestOrderCascadesUpdateToEmailQueue1()
         {
             #region Arrange
-            var emailQueueRepository = new RepositoryWithTypedId<EmailQueue, Guid>();
+            var emailQueueRepository = new RepositoryWithTypedId<EmailQueueV2, Guid>();
             var count = emailQueueRepository.Queryable.Count();
             Order record = GetValid(9);
             const int addedCount = 3;
             for (int i = 0; i < addedCount; i++)
             {
-                record.AddEmailQueue(CreateValidEntities.EmailQueue(i + 1));
+                record.AddEmailQueue(CreateValidEntities.EmailQueueV2(i + 1));
             }
 
             OrderRepository.DbContext.BeginTransaction();
             OrderRepository.EnsurePersistent(record);
             OrderRepository.DbContext.CommitTransaction();
             var saveId = record.Id;
-            var saveRelatedId = record.EmailQueues[1].Id;
+            var saveRelatedId = record.EmailQueuesV2[1].Id;
             NHibernateSessionManager.Instance.GetSession().Evict(record);
             #endregion Arrange
 
             #region Act
             record = OrderRepository.GetNullableById(saveId);
-            record.EmailQueues[1].Text = "Updated";
+            record.EmailQueuesV2[1].Action = "Updated";
             OrderRepository.DbContext.BeginTransaction();
             OrderRepository.EnsurePersistent(record);
             OrderRepository.DbContext.CommitTransaction();
@@ -4601,7 +4601,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.AreEqual(count + addedCount, emailQueueRepository.Queryable.Count());
             var relatedRecord = emailQueueRepository.GetNullableById(saveRelatedId);
             Assert.IsNotNull(relatedRecord);
-            Assert.AreEqual("Updated", relatedRecord.Text);
+            Assert.AreEqual("Updated", relatedRecord.Action);
             #endregion Assert
         }
 
@@ -7189,6 +7189,7 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
             }));
             expectedFields.Add(new NameAndType("EmailQueues", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.EmailQueue]", new List<string>()));
+            expectedFields.Add(new NameAndType("EmailQueuesV2", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.EmailQueueV2]", new List<string>()));
             expectedFields.Add(new NameAndType("EstimatedTax", "System.Decimal", new List<string>()));
             expectedFields.Add(new NameAndType("FpdCompleted", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("FreightAmount", "System.Decimal", new List<string>()));

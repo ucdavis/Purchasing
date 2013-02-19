@@ -1,0 +1,41 @@
+﻿@model Purchasing.Web.Controllers.EmailQueueV2ViewModel
+
+
+@{
+    ViewBag.Title = "Index";
+
+}
+
+<h2>Index</h2>
+
+<ul>
+@foreach (var order in Model.Orders.OrderBy(a => a.DateNeeded))
+{
+    <li>
+        <div>
+            @Html.Raw(string.Format("Order Request <a href=\"{0}{1}\">{1}</a>", "http://prepurchasing.ucdavis.edu/Order/Lookup/", order.OrderRequestNumber()))   
+        <ul>
+            <li><strong>Created by:</strong> @order.CreatedBy.FullName</li>
+            <li><strong>Status:</strong> @order.StatusCode.Name</li>
+            <li><strong>Vendor:</strong> @order.VendorName</li>
+            <li>
+                <table border="1">
+                    <tbody>
+                        @foreach (var emailQueue in Model.EmailQueueV2List.Where(a => a.Order == order).OrderByDescending(b => b.DateTimeCreated))
+                        { 
+                            <tr>
+                                <td style="padding-left: 7px; border-left-width: 0px; margin-left: 0px; width: 150px;">@emailQueue.DateTimeCreated</td>
+                                <td style="width: 137px;">@emailQueue.Action</td>
+                                <td>@emailQueue.Details</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+        </div>
+    </li>
+}
+</ul>
+
+

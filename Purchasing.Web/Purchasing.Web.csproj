@@ -317,6 +317,7 @@
     <Compile Include="Controllers\ConditionalApprovalController.cs" />
     <Compile Include="Controllers\AutoApprovalController.cs" />
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
+    <Compile Include="Controllers\EmailQueueV2Controller.cs" />
     <Compile Include="Controllers\HistoryAjaxController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
@@ -1024,6 +1025,7 @@
     <Content Include="Views\Report\TotalByPrimaryOrg.cshtml" />
     <Content Include="Views\Report\TotalByVendor.cshtml" />
     <Content Include="Views\Order\_ReviewFpdComplete.cshtml" />
+    <Content Include="Views\EmailQueueV2\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

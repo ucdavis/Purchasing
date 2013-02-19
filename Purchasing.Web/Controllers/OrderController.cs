@@ -749,7 +749,7 @@ namespace Purchasing.Web.Controllers
             var orderComment = new OrderComment() {Text = comment, User = GetCurrentUser()};
             order.AddComment(orderComment);
 
-            _eventService.OrderAddNote(order);
+            _eventService.OrderAddNote(order, comment);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
