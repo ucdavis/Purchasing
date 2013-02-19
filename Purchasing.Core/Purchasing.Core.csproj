@@ -128,6 +128,7 @@
     <Compile Include="Domain\BackupLog.cs" />
     <Compile Include="Domain\BugTracking.cs" />
     <Compile Include="Domain\Building.cs" />
+    <Compile Include="Domain\EmailQueueV2.cs" />
     <Compile Include="Domain\DepartmentalAdminRequest.cs" />
     <Compile Include="Domain\HistoryReceivedLineItem.cs" />
     <Compile Include="Domain\OrderRequestSave.cs" />

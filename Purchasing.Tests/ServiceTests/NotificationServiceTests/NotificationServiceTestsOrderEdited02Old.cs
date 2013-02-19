@@ -30,13 +30,14 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(1, order.EmailQueues.Count);
-            Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[0].DateTimeCreated.Date);
-            Assert.IsNull(order.EmailQueues[0].DateTimeSent);
-            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
-            Assert.IsTrue(order.EmailQueues[0].Pending);
-            Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been changed by Homer Simpson.", order.EmailQueues[0].Text);
+            Assert.AreEqual(1, order.EmailQueuesV2.Count);
+            Assert.AreEqual(DateTime.Now.Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
+            Assert.IsNull(order.EmailQueuesV2[0].DateTimeSent);
+            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[0].NotificationType);
+            Assert.IsTrue(order.EmailQueuesV2[0].Pending);
+            Assert.IsNull(order.EmailQueuesV2[0].Status);
+            Assert.AreEqual("Changed", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual("By Homer Simpson at Account Manager review.", order.EmailQueuesV2[0].Details);
             #endregion Assert
         }
 
