@@ -91,7 +91,6 @@ namespace Purchasing.Web.Services
             }
             #endregion Normal Email Notification, user will never be null
 
-            return;
         }
 
         private void ProcessEmails(EmailPreferences.NotificationTypes notificationType)
@@ -181,7 +180,7 @@ namespace Purchasing.Web.Services
 
             sgMessage.Subject = orders.Count == 1
                         ? string.Format("PrePurchasing Notification for Order #{0}",
-                                        pendingForUser.Single().Order.RequestNumber)
+                                        orders.Single().RequestNumber)
                         : "PrePurchasing Notifications";
            
             sgMessage.AddTo(email);
