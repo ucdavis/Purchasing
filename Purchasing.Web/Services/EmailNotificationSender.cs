@@ -179,7 +179,7 @@ namespace Purchasing.Web.Services
             var sgMessage = SendGrid.GenerateInstance();
             sgMessage.From = new MailAddress(SendGridFrom, "UCD PrePurchasing No Reply");
 
-            sgMessage.Subject = pendingForUser.Count == 1
+            sgMessage.Subject = orders.Count == 1
                         ? string.Format("PrePurchasing Notification for Order #{0}",
                                         pendingForUser.Single().Order.RequestNumber)
                         : "PrePurchasing Notifications";
