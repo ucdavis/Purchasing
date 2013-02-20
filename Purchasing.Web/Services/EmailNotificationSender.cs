@@ -131,6 +131,7 @@ namespace Purchasing.Web.Services
             var orders = pendingForUser.Select(a => a.Order).Distinct().ToList();
 
             var message = new StringBuilder();
+            message.Append(string.Format("<p>{0}</p>", "Here is your summary for the PrePurchasing system."));
             foreach (var order in orders)
             {
                 var extraStyle1 = string.Empty;
@@ -174,6 +175,8 @@ namespace Purchasing.Web.Services
                 message.Append("<hr>");
                 message.Append("</p></br>");
             }
+
+            message.Append(string.Format("<p><em>{0} </em><em><a href=\"{1}\">{2}</a>&nbsp;</em></p>", "You can change your email preferences at any time by", "http://prepurchasing.ucdavis.edu/User/Profile", "updating your profile on the PrePurchasing site"));
 
             var sgMessage = SendGrid.GenerateInstance();
             sgMessage.From = new MailAddress(SendGridFrom, "UCD PrePurchasing No Reply");
