@@ -165,7 +165,7 @@ namespace Purchasing.Web.Services
                     message.Append(string.Format("<td >{0}</td>", emailQueue.Details));
                     message.Append("</tr>");
 
-                    //emailQueue.Pending = false;
+                    emailQueue.Pending = false;
                     emailQueue.DateTimeSent = DateTime.Now;
                     _emailQueueV2Repository.EnsurePersistent(emailQueue);
                 }
