@@ -1279,7 +1279,7 @@ namespace Purchasing.Web.Helpers
             var tables = new[]
                              {
                                  "Approvals", "Splits", "ConditionalApproval", "AutoApprovals",
-                                 "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation", "EmailQueue",
+                                 "LineItems", "OrderTracking", "Attachments", "ControlledSubstanceInformation", "EmailQueue", "EmailQueueV2",
                                  "CustomFieldAnswers", "CustomFields", "OrderComments", "Orders",
                                  "WorkgroupPermissions", "WorkgroupAccounts", "WorkgroupsXOrganizations", "WorkgroupVendors", 
                                  "WorkgroupAddresses", "Workgroups", "Permissions", "UsersXOrganizations", "EmailPreferences", "OrderRequestSaves", "Users"
