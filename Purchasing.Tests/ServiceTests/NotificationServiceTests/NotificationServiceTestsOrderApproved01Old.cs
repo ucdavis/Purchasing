@@ -33,13 +33,14 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert           
-            Assert.AreEqual(1, order.EmailQueues.Count);
-            Assert.AreEqual(DateTime.Now.Date, order.EmailQueues[0].DateTimeCreated.Date);
-            Assert.IsNull(order.EmailQueues[0].DateTimeSent);
-            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
-            Assert.IsTrue(order.EmailQueues[0].Pending);
-            Assert.IsNull(order.EmailQueues[0].Status);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been approved by Homer Simpson at Approver review.", order.EmailQueues[0].Text);
+            Assert.AreEqual(1, order.EmailQueuesV2.Count);
+            Assert.AreEqual(DateTime.Now.Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
+            Assert.IsNull(order.EmailQueuesV2[0].DateTimeSent);
+            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[0].NotificationType);
+            Assert.IsTrue(order.EmailQueuesV2[0].Pending);
+            Assert.IsNull(order.EmailQueuesV2[0].Status);
+            Assert.AreEqual("Approved", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual("By Homer Simpson at Approver review.", order.EmailQueuesV2[0].Details);
             #endregion Assert		
         }
 
@@ -62,8 +63,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(1, order.EmailQueues.Count);
-            Assert.IsTrue(order.EmailQueues[0].User != null || !string.IsNullOrWhiteSpace(order.EmailQueues[0].Email));
+            Assert.AreEqual(1, order.EmailQueuesV2.Count);
+            Assert.IsTrue(order.EmailQueuesV2[0].User != null || !string.IsNullOrWhiteSpace(order.EmailQueuesV2[0].Email));
             #endregion Assert		
         }
 
@@ -93,8 +94,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(1, order.EmailQueues.Count);
-            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
+            Assert.AreEqual(1, order.EmailQueuesV2.Count);
+            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[0].NotificationType);
             #endregion Assert
         }
 
@@ -125,8 +126,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(1, order.EmailQueues.Count);
-            Assert.AreEqual(EmailPreferences.NotificationTypes.Daily, order.EmailQueues[0].NotificationType);
+            Assert.AreEqual(1, order.EmailQueuesV2.Count);
+            Assert.AreEqual(EmailPreferences.NotificationTypes.Daily, order.EmailQueuesV2[0].NotificationType);
             #endregion Assert
         }
 
@@ -157,8 +158,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(1, order.EmailQueues.Count);
-            Assert.AreEqual(EmailPreferences.NotificationTypes.Weekly, order.EmailQueues[0].NotificationType);
+            Assert.AreEqual(1, order.EmailQueuesV2.Count);
+            Assert.AreEqual(EmailPreferences.NotificationTypes.Weekly, order.EmailQueuesV2[0].NotificationType);
             #endregion Assert
         }
 
@@ -189,8 +190,8 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(1, order.EmailQueues.Count);
-            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueues[0].NotificationType);
+            Assert.AreEqual(1, order.EmailQueuesV2.Count);
+            Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[0].NotificationType);
             #endregion Assert
         }
 
@@ -218,7 +219,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, order.EmailQueues.Count);
+            Assert.AreEqual(0, order.EmailQueuesV2.Count);
             #endregion Assert
         }
 

@@ -139,11 +139,11 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Arrange
 
             #region Act
-            EventService.OrderDenied(order, "Some Comment");
+            EventService.OrderDenied(order, "Some Comment", order.StatusCode);
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasCalled(a => a.OrderDenied(order, UserRepository.Queryable.Single(b => b.Id == "2"), "Some Comment"));
+            NotificationService.AssertWasCalled(a => a.OrderDenied(order, UserRepository.Queryable.Single(b => b.Id == "2"), "Some Comment", order.StatusCode));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -172,11 +172,11 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Arrange
 
             #region Act
-            EventService.OrderCancelled(order, "Some Comment");
+            EventService.OrderCancelled(order, "Some Comment", order.StatusCode);
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasCalled(a => a.OrderCancelled(order, UserRepository.Queryable.Single(b => b.Id == "2"), "Some Comment"));
+            NotificationService.AssertWasCalled(a => a.OrderCancelled(order, UserRepository.Queryable.Single(b => b.Id == "2"), "Some Comment", order.StatusCode));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);

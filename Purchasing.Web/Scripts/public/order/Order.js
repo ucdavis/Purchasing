@@ -591,6 +591,7 @@
 
                 if (validLines.length === 0) {
                     alert(options.Messages.LineItemRequired);
+                    scrollTo($("#line-items-section"));
                     return false;
                 }
 
@@ -613,6 +614,7 @@
                         else {
                             alert(options.Messages.AccountOrManagerRequired);
                         }
+                        scrollTo($("#order-account-section"));
                         return false;
                     }
                 }
@@ -630,11 +632,13 @@
 
                     if (invalidSplits.length) {
                         alert(options.Messages.OrderSplitWithNoAccount);
+                        scrollTo($("#order-split-section"));
                         return false;
                     }
 
                     if (splitUnaccounted !== 0) {
                         alert(options.Messages.TotalAmountRequired);
+                        scrollTo($("#order-split-section"));
                         return false;
                     }
                 }
@@ -657,11 +661,13 @@
 
                     if (invalidLineSplits.length !== 0) {
                         alert(options.Messages.LineSplitNoAccount);
+                        scrollTo($("#line-items-section"));
                         return false;
                     }
 
                     if (linesWithNonMatchingAmounts.length !== 0) {
                         alert(options.Messages.LineSplitTotalAmountRequired);
+                        scrollTo($("#line-items-section"));
                         return false;
                     }
                 }
@@ -723,6 +729,14 @@
 
             e.preventDefault();
         });
+    }
+
+    //Private method
+
+    function scrollTo(id) {
+        $('html, body').animate({
+            scrollTop: id.offset().top
+        }, 500);
     }
 
     function attachTour() {

@@ -49,11 +49,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(2, order.EmailQueues.Count());
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
-            Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
+            Assert.AreEqual(2, order.EmailQueuesV2.Count());
+            Assert.AreEqual("Submitted", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual(null, order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("hsimpson", order.EmailQueuesV2[1].User.Id);
             #endregion Assert		
         }
 
@@ -90,13 +92,16 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(3, order.EmailQueues.Count());
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
-            Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("awong", order.EmailQueues[2].User.Id);
+            Assert.AreEqual(3, order.EmailQueuesV2.Count());
+            Assert.AreEqual("Submitted", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual(null, order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("hsimpson", order.EmailQueuesV2[1].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[2].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[2].Details);
+            Assert.AreEqual("awong", order.EmailQueuesV2[2].User.Id);
             #endregion Assert
         }
 
@@ -137,17 +142,22 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, order.EmailQueues.Count());
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
-            Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("awong", order.EmailQueues[2].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[3].Text);
-            Assert.AreEqual("zoidberg", order.EmailQueues[3].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[4].Text);
-            Assert.AreEqual("flanders", order.EmailQueues[4].User.Id);
+            Assert.AreEqual(5, order.EmailQueuesV2.Count());
+            Assert.AreEqual("Submitted", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual(null, order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("hsimpson", order.EmailQueuesV2[1].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[2].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[2].Details);
+            Assert.AreEqual("awong", order.EmailQueuesV2[2].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[3].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[3].Details);
+            Assert.AreEqual("zoidberg", order.EmailQueuesV2[3].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[4].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[4].Details);
+            Assert.AreEqual("flanders", order.EmailQueuesV2[4].User.Id);
             #endregion Assert
         }
 
@@ -186,11 +196,13 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(2, order.EmailQueues.Count());
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
-            Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("hsimpson", order.EmailQueues[1].User.Id);
+            Assert.AreEqual(2, order.EmailQueuesV2.Count());
+            Assert.AreEqual("Submitted", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual(null, order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("hsimpson", order.EmailQueuesV2[1].User.Id);
             #endregion Assert
         }
 
@@ -244,13 +256,16 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(3, order.EmailQueues.Count());
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
-            Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[1].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[2].User.Id);
+            Assert.AreEqual(3, order.EmailQueuesV2.Count());
+            Assert.AreEqual("Submitted", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual(null, order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueuesV2[1].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[2].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[2].Details);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueuesV2[2].User.Id);
             #endregion Assert
         }
 
@@ -310,18 +325,23 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, order.EmailQueues.Count());
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
-            Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[1].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[2].User.Id);
+            Assert.AreEqual(5, order.EmailQueuesV2.Count());
+            Assert.AreEqual("Submitted", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual(null, order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueuesV2[1].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[2].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[2].Details);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueuesV2[2].User.Id);
 
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[3].Text);
-            Assert.AreEqual("zoidberg", order.EmailQueues[3].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[4].Text);
-            Assert.AreEqual("flanders", order.EmailQueues[4].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[3].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[3].Details);
+            Assert.AreEqual("zoidberg", order.EmailQueuesV2[3].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[4].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[4].Details);
+            Assert.AreEqual("flanders", order.EmailQueuesV2[4].User.Id);
             #endregion Assert
         }
 
@@ -381,16 +401,20 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(4, order.EmailQueues.Count());
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has been submitted.", order.EmailQueues[0].Text);
-            Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[1].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[2].User.Id);
+            Assert.AreEqual(4, order.EmailQueuesV2.Count());
+            Assert.AreEqual("Submitted", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual(null, order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueuesV2[1].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[2].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[2].Details);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueuesV2[2].User.Id);
 
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[3].Text);
-            Assert.AreEqual("zoidberg", order.EmailQueues[3].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[3].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[3].Details);
+            Assert.AreEqual("zoidberg", order.EmailQueuesV2[3].User.Id);
             #endregion Assert
         }
 
@@ -456,16 +480,19 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(3, order.EmailQueues.Count());
-            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[0].Text);
-            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[1].User.Id);
+            Assert.AreEqual(3, order.EmailQueuesV2.Count());
+            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueuesV2[1].User.Id);
 
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("zoidberg", order.EmailQueues[2].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[2].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[2].Details);
+            Assert.AreEqual("zoidberg", order.EmailQueuesV2[2].User.Id);
             #endregion Assert
         }
 
@@ -536,16 +563,19 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(3, order.EmailQueues.Count());
-            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[0].Text);
-            Assert.AreEqual("Flarg".ToLower(), order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[1].User.Id);
+            Assert.AreEqual(3, order.EmailQueuesV2.Count());
+            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("Flarg".ToLower(), order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueuesV2[1].User.Id);
 
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[2].Text);
-            Assert.AreEqual("zoidberg", order.EmailQueues[2].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[2].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[2].Details);
+            Assert.AreEqual("zoidberg", order.EmailQueuesV2[2].User.Id);
             #endregion Assert
         }
 
@@ -618,16 +648,18 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(2, order.EmailQueues.Count());
-            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("Flarg", order.EmailQueues[0].User.Id);
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[0].Text);
-            Assert.AreEqual("Blarg".ToLower(), order.EmailQueues[0].User.Id);
+            Assert.AreEqual(2, order.EmailQueuesV2.Count());
+            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("Flarg", order.EmailQueuesV2[0].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[0].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[0].Details);
+            Assert.AreEqual("Blarg".ToLower(), order.EmailQueuesV2[0].User.Id);
 
-            Assert.AreEqual("Order request <a href=\"http://prepurchasing.ucdavis.edu/Order/Lookup/testOrg-FT1P9YR\">testOrg-FT1P9YR</a> for Unspecified Vendor has arrived at your level (Approver) for review from Bender Rodriguez.", order.EmailQueues[1].Text);
-            Assert.AreEqual("zoidberg", order.EmailQueues[1].User.Id);
+            Assert.AreEqual("Arrived", order.EmailQueuesV2[1].Action);
+            Assert.AreEqual("At your level (Approver) for review from Bender Rodriguez.", order.EmailQueuesV2[1].Details);
+            Assert.AreEqual("zoidberg", order.EmailQueuesV2[1].User.Id);
             #endregion Assert
         }
 
@@ -707,16 +739,16 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, order.EmailQueues.Count());
-            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("Flarg", order.EmailQueues[0].User.Id);
-            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("Blarg", order.EmailQueues[0].User.Id);
+            Assert.AreEqual(0, order.EmailQueuesV2.Count());
+            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("Flarg", order.EmailQueuesV2[0].User.Id);
+            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("Blarg", order.EmailQueuesV2[0].User.Id);
 
-            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
-            //Assert.AreEqual("zoidberg", order.EmailQueues[1].User.Id);
+            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[1].Text);
+            //Assert.AreEqual("zoidberg", order.EmailQueuesV2[1].User.Id);
             #endregion Assert
         }
 
@@ -812,17 +844,17 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, order.EmailQueues.Count());
+            Assert.AreEqual(0, order.EmailQueuesV2.Count());
             Assert.AreEqual(7, order.Approvals.Count());
-            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("bender", order.EmailQueues[0].User.Id);
-            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("Flarg", order.EmailQueues[0].User.Id);
-            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueues[0].Text);
-            //Assert.AreEqual("Blarg", order.EmailQueues[0].User.Id);
+            //Assert.AreEqual(string.Format("Order request {0} has been submitted.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("bender", order.EmailQueuesV2[0].User.Id);
+            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("Flarg", order.EmailQueuesV2[0].User.Id);
+            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[0].Text);
+            //Assert.AreEqual("Blarg", order.EmailQueuesV2[0].User.Id);
 
-            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueues[1].Text);
-            //Assert.AreEqual("zoidberg", order.EmailQueues[1].User.Id);
+            //Assert.AreEqual(string.Format("Order request {0} has arrived at your level (Approver) for review from Bender Rodriguez.", "#testOrg-FT1P9YR"), order.EmailQueuesV2[1].Text);
+            //Assert.AreEqual("zoidberg", order.EmailQueuesV2[1].User.Id);
             #endregion Assert
         }
     }

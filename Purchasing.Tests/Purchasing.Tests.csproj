@@ -257,6 +257,7 @@
     <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
     <Compile Include="RepositoryTests\ConditionalApprovalRepositoryTests.cs" />
     <Compile Include="RepositoryTests\ControlledSubstanceInformationRepositoryTests.cs" />
+    <Compile Include="RepositoryTests\EmailQueueV2RepositoryTests.cs" />
     <Compile Include="RepositoryTests\CustomFieldAnswerRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CustomFieldRepositoryTests.cs" />
     <Compile Include="RepositoryTests\DepartmentalAdminRequestRepositoryTests.cs" />
