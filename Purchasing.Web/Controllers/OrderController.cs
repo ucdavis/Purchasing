@@ -979,7 +979,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [AuthorizeReadOrEditOrder]
-        public ActionResult ReceiveItems(int id)
+        public ActionResult ReceiveItems(int id, bool payInvoice = false)
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
 
@@ -989,7 +989,7 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Review(id));
             }
 
-            var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository);
+            var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, payInvoice);
                         
 
             foreach (var lineItem in viewModel.LineItems.Where(a => a.Quantity == 0 && a.QuantityReceived == null))
