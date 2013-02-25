@@ -906,9 +906,9 @@ namespace Purchasing.Web.Controllers
         [BypassAntiForgeryToken] //required because upload is being done by plugin
         public ActionResult UploadFile(int? orderId)
         {
-
             var request = ControllerContext.HttpContext.Request;
             var qqFile = request["qqfile"];
+            Stream fileStream = request.InputStream;
 
             var attachment = new Attachment
             {
@@ -917,7 +917,7 @@ namespace Purchasing.Web.Controllers
                 FileName = qqFile,
                 ContentType = request.Headers["X-File-Type"]
             };
-
+            
             if (String.IsNullOrEmpty(qqFile)) // IE
             {
                 Check.Require(request.Files.Count > 0, Resources.FileUpload_NoFile);
@@ -927,6 +927,8 @@ namespace Purchasing.Web.Controllers
                     Path.GetExtension(file.FileName).ToLower();
 
                 attachment.ContentType = file.ContentType;
+
+                fileStream = file.InputStream; //IE uses request.Files[].InputStream instead of request.InputStream
             }
 
             if (string.IsNullOrWhiteSpace(attachment.ContentType))
@@ -934,9 +936,9 @@ namespace Purchasing.Web.Controllers
                 attachment.ContentType = "application/octet-stream";
             }
 
-            using (var binaryReader = new BinaryReader(request.InputStream))
+            using (var binaryReader = new BinaryReader(fileStream))
             {
-                attachment.Contents = binaryReader.ReadBytes((int)request.InputStream.Length);
+                attachment.Contents = binaryReader.ReadBytes((int)fileStream.Length);
             }
 
             if (orderId.HasValue) //Save directly to order if a value is passed & user has access, otherwise it needs to be assoc. by form
