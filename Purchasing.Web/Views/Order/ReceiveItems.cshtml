@@ -3,7 +3,7 @@
 
 
 @{
-    ViewBag.Title = "Receive Items";
+    ViewBag.Title = Model.PayInvoice ? "Pay Invoice For Items" : "Receive Items";
     ViewBag.HideEditDialogue = true;
 }
 
@@ -86,6 +86,7 @@
                     var loader = $("#" + lineItemId + " .quantity-loader");
                     var outstanding = $("#" + lineItemId + " .unaccounted");
                     var payInvoice = '@Model.PayInvoice';
+
 
                     $("#" + lineItemId + " .quantity-update-message").html("Updating...");
                     loader.show();
@@ -253,12 +254,15 @@
 
         @Html.Hidden("id", Model.OrderId)
         @Html.AntiForgeryToken()
+        @{
+            var headerName = Model.PayInvoice ? "Pay Qty" : "Receive Qty";
+        }
 
         <table class="no-icon-table">
             <thead>
                 <tr>
                     <th></th>
-                    <th>Receive Qty</th>
+                    <th>@headerName</th>
                     <th>Ordered Qty</th>
                     <th>Outstanding Qty</th>
                     <th>Unit</th>
