@@ -1058,7 +1058,7 @@ namespace Purchasing.Web.Controllers
                         history.OldReceivedQuantity = lineItem.QuantityPaid; //These don't matter because it is the note being updated.
                         history.NewReceivedQuantity = lineItem.QuantityPaid;
                         history.PayInvoice = payInvoice;
-                        if (lineItem.ReceivedNotes != saveNote)
+                        if (lineItem.PaidNotes != saveNote)
                         {
                             _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
                             lastUpdatedBy = history.User.FullName;

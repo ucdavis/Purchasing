@@ -77,6 +77,7 @@ namespace Purchasing.Web.Services
                         CatalogNumber = doc.Get("catalognumber"),
                         CommodityId = doc.Get("commodityid"),
                         ReceivedNotes = doc.Get("receivednotes"),
+                        PaidNotes = doc.Get("paidnotes"),
                         RequestNumber = doc.Get("requestnumber"),
                         Quantity = decimal.Parse(doc.Get("quantity")),
                         Unit = doc.Get("unit")
