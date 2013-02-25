@@ -1045,20 +1045,42 @@ namespace Purchasing.Web.Controllers
 
 
                 try
-                {
-                    var saveNote = lineItem.ReceivedNotes;
-                    lineItem.ReceivedNotes = note;
-                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
-                    var history = new HistoryReceivedLineItem();
-                    history.LineItem = lineItem;
-                    history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
-                    history.CommentsUpdated = true;
-                    history.OldReceivedQuantity = lineItem.QuantityReceived;
-                    history.NewReceivedQuantity = lineItem.QuantityReceived;
-                    if (lineItem.ReceivedNotes != saveNote)
+                {                    
+                    if (payInvoice)
                     {
-                        _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
-                        lastUpdatedBy = history.User.FullName;
+                        var saveNote = lineItem.PaidNotes;
+                        lineItem.PaidNotes = note;
+                        _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                        var history = new HistoryReceivedLineItem();
+                        history.LineItem = lineItem;
+                        history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
+                        history.CommentsUpdated = true;
+                        history.OldReceivedQuantity = lineItem.QuantityPaid; //These don't matter because it is the note being updated.
+                        history.NewReceivedQuantity = lineItem.QuantityPaid;
+                        history.PayInvoice = payInvoice;
+                        if (lineItem.ReceivedNotes != saveNote)
+                        {
+                            _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                            lastUpdatedBy = history.User.FullName;
+                        }
+                    }
+                    else
+                    {
+                        var saveNote = lineItem.ReceivedNotes;
+                        lineItem.ReceivedNotes = note;
+                        _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                        var history = new HistoryReceivedLineItem();
+                        history.LineItem = lineItem;
+                        history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
+                        history.CommentsUpdated = true;
+                        history.OldReceivedQuantity = lineItem.QuantityReceived;
+                        history.NewReceivedQuantity = lineItem.QuantityReceived;
+                        history.PayInvoice = payInvoice;
+                        if (lineItem.ReceivedNotes != saveNote)
+                        {
+                            _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                            lastUpdatedBy = history.User.FullName;
+                        }
                     }
                     message = "Updated";
                     success = true;
@@ -1104,11 +1126,18 @@ namespace Purchasing.Web.Controllers
                 {
                     var history = new HistoryReceivedLineItem();
                     history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
-                    history.OldReceivedQuantity = lineItem.QuantityReceived;
-                    history.NewReceivedQuantity = lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity : receivedQuantity;
+                    history.OldReceivedQuantity = payInvoice ? lineItem.QuantityPaid : lineItem.QuantityReceived;
+                    history.NewReceivedQuantity = payInvoice ? (lineItem.QuantityPaid != null ? lineItem.QuantityPaid + receivedQuantity : receivedQuantity) : (lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity : receivedQuantity);
                     history.LineItem = lineItem;
-
-                    lineItem.QuantityReceived =  lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity: receivedQuantity;
+                    history.PayInvoice = payInvoice;
+                    if (payInvoice)
+                    {
+                        lineItem.QuantityPaid = lineItem.QuantityPaid != null ? lineItem.QuantityPaid + receivedQuantity : receivedQuantity;
+                    }
+                    else
+                    {                     
+                        lineItem.QuantityReceived =  lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity: receivedQuantity;
+                    }
                     _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
                     if (history.NewReceivedQuantity != history.OldReceivedQuantity)
                     {
@@ -1118,7 +1147,7 @@ namespace Purchasing.Web.Controllers
                     receivedQuantityReturned = string.Format("{0:0.###}", lineItem.QuantityReceived);
                     success = true;
                     message = "Updated";
-                    var diff = lineItem.Quantity - lineItem.QuantityReceived;
+                    var diff = payInvoice ? (lineItem.Quantity - lineItem.QuantityPaid) : (lineItem.Quantity - lineItem.QuantityReceived);
                     if (diff > 0)
                     {
                         unaccounted = string.Format("({0})", string.Format("{0:0.###}", diff));
@@ -1129,8 +1158,14 @@ namespace Purchasing.Web.Controllers
                         unaccounted = string.Format("{0}", string.Format("{0:0.###}", (diff*-1)));
                         showRed = false;
                     }
-
-                    _eventService.OrderReceived(lineItem.Order, lineItem, receivedQuantity.Value);
+                    if (payInvoice)
+                    {
+                        _eventService.OrderPaid(lineItem.Order, lineItem, receivedQuantity.Value);
+                    }
+                    else
+                    {                     
+                        _eventService.OrderReceived(lineItem.Order, lineItem, receivedQuantity.Value);
+                    }
 
                     _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
                 }
@@ -1242,13 +1277,13 @@ namespace Purchasing.Web.Controllers
            return new JsonNetResult(new {success, peeps});
         }
 
-        public JsonNetResult GetReceiveHistory (int id, int lineItemId)
+        public JsonNetResult GetReceiveHistory(int id, int lineItemId, bool payInvoice)
         {
             var success = true;
             var history = new List<HistoryReceivedLineItem>();
             try
             {
-                history = _repositoryFactory.HistoryReceivedLineItemRepository.Queryable.Where(a => a.LineItem.Id == lineItemId).OrderBy(a => a.UpdateDate).ToList();
+                history = _repositoryFactory.HistoryReceivedLineItemRepository.Queryable.Where(a => a.LineItem.Id == lineItemId && a.PayInvoice == payInvoice).OrderBy(a => a.UpdateDate).ToList();
             }
             catch (Exception)
             {

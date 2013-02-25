@@ -128,9 +128,11 @@
                 var updateMessage = $("#notesLineId" + lineItemId + " .notes-update-message");
                 var loader = $("#notesLineId" + lineItemId + " .notes-loader");
 
+                var payInvoice = '@Model.PayInvoice';
+
                 loader.show();
                 updateMessage.html("Updating...");
-                $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, __RequestVerificationToken: antiforgery }, function (result) {
+                $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function (result) {
                     loader.hide();
                     if (result) {
                         if (result.success == true) {
@@ -163,10 +165,13 @@
                 var lineItemId = temp.data("id");
                 var url = '@Url.Action("GetReceiveHistory")';
                 var dialogList = $("#historyBody");
+
+                var payInvoice = '@Model.PayInvoice';
+
                 dialogList.empty();
                 $("#peepsDialog").dialog("open");
                 $("#peepsLoaderId").show();
-                $.getJSON(url, { id: orderId, lineItemId: lineItemId }, function (result) {
+                $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: payInvoice }, function (result) {
                     $("#peepsLoaderId").hide();
                     if (result == null || result.success == false) {
                         alert("There was a problem getting the list of users.");
@@ -294,11 +299,13 @@
                     {
                         by = null;
                     }
+                    var titleName = Model.PayInvoice ? "Number of Units paid for this line item. Amount will be added to the current number of paid items." : "Number of Units received for this line item. Amount will be added to the current number of received items.";
+                    var notes = Model.PayInvoice == true ? item.PaidNotes : item.ReceivedNotes;
                     
                     <tr id="@item.Id" class="@(odd ? "odd" : "even")">
                         <td class="lineitem">@count</td>               
                         <td class="receiveLineItemCell">
-                            <input class="receiveLineItem showTip" data-id="@item.Id" title="Number of Units received for this line item. Amount will be added to the current number of received items." />
+                            <input class="receiveLineItem showTip" data-id="@item.Id" title="@titleName" />
                             <div class="receiveQuantity">@string.Format("{0:0.###}", item.QuantityReceived)</div>
                             <span class="quantity-loader" style="display: none;">
                                 <img src='@Url.Image("ajax-loader.gif")'/>
@@ -330,7 +337,7 @@
                                 <tr>
                                     <td class="label">Notes:</td>
                                     <td>
-                                        <textarea class="receiveNotes showTip" data-id="@item.Id" title="<strong>Tip:</strong> Don't put things like serial numbers in here because this can be edited. <br/>Information like that should be added to the comments/notes of the review page." >@item.ReceivedNotes</textarea>
+                                        <textarea class="receiveNotes showTip" data-id="@item.Id" title="<strong>Tip:</strong> Don't put things like serial numbers in here because this can be edited. <br/>Information like that should be added to the comments/notes of the review page." >@notes</textarea>
                                     </td>
                                     <td>
                                         <span class="notes-loader" style="display: none;">

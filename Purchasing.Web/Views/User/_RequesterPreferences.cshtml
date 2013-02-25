@@ -74,9 +74,19 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.RequesterReceived)
                 </div>
-                <div class="editor-field showTip" title="All line items have been marked as received.">
+                <div class="editor-field showTip" title="Line items have been marked as received.">
                     @Html.EditorFor(model => model.RequesterReceived)
                     @Html.ValidationMessageFor(model => model.RequesterReceived)
+                </div>
+            </li>
+            
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.RequesterPaid)
+                </div>
+                <div class="editor-field showTip" title="Line items have been marked as paid.">
+                    @Html.EditorFor(model => model.RequesterPaid)
+                    @Html.ValidationMessageFor(model => model.RequesterPaid)
                 </div>
             </li>
 
