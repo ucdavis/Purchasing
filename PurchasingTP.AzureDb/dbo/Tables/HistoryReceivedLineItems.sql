@@ -6,6 +6,7 @@
     [NewReceivedQuantity] DECIMAL (18, 3) NULL,
     [UserId]              VARCHAR (10)    NOT NULL,
     [CommentsUpdated]     BIT             CONSTRAINT [DF_HistoryReceivedLineItems_CommentsUpdated] DEFAULT ((0)) NOT NULL,
+    [PayInvoice] BIT NOT NULL DEFAULT ((0)), 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

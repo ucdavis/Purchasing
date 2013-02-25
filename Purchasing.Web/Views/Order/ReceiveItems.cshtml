@@ -85,10 +85,11 @@
                     var url = '@Url.Action("ReceiveItems")';
                     var loader = $("#" + lineItemId + " .quantity-loader");
                     var outstanding = $("#" + lineItemId + " .unaccounted");
+                    var payInvoice = '@Model.PayInvoice';
 
                     $("#" + lineItemId + " .quantity-update-message").html("Updating...");
                     loader.show();
-                    $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, __RequestVerificationToken: antiforgery }, function (result) {
+                    $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function (result) {
                         loader.hide();
                         if (result) {
                             $("#" + lineItemId + " .receiveLineItem").val("");

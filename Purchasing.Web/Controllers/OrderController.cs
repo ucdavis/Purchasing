@@ -985,26 +985,35 @@ namespace Purchasing.Web.Controllers
 
             if(!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
-                Message = "Order must be complete before receiving line items.";
+                Message = string.Format("Order must be complete before {0} line items.", payInvoice == false ? "receiving":"paying for");
                 return this.RedirectToAction(a => a.Review(id));
             }
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, payInvoice);
-                        
 
-            foreach (var lineItem in viewModel.LineItems.Where(a => a.Quantity == 0 && a.QuantityReceived == null))
+            if (payInvoice)
             {
-                lineItem.QuantityReceived = 0;
-                _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                foreach (var lineItem in viewModel.LineItems.Where(a => a.Quantity == 0 && a.QuantityPaid == null))
+                {
+                    lineItem.QuantityPaid = 0;
+                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                }
             }
-
+            else
+            {                
+                foreach (var lineItem in viewModel.LineItems.Where(a => a.Quantity == 0 && a.QuantityReceived == null))
+                {
+                    lineItem.QuantityReceived = 0;
+                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                }
+            }
             return View(viewModel);
 
         }
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
-        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal? receivedQuantity, bool updateNote, string note)
+        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal? receivedQuantity, bool updateNote, string note, bool payInvoice)
         {
             var success = true;
             var message = "Succeeded";

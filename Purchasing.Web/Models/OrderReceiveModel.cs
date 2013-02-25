@@ -36,8 +36,7 @@ namespace Purchasing.Web.Models
             viewModel.ReviewOrderViewModel.Address = order.Address;
             foreach (var lineItem in viewModel.LineItems)
             {
-                var lastChangedBy =
-                    historyReceivedLineItemRepository.Queryable.Where(a => a.LineItem.Id == lineItem.Id).OrderByDescending(a => a.UpdateDate).FirstOrDefault();
+                var lastChangedBy = historyReceivedLineItemRepository.Queryable.Where(a => a.LineItem.Id == lineItem.Id && a.PayInvoice == payInvoice).OrderByDescending(a => a.UpdateDate).FirstOrDefault();
                 viewModel.LastChangedBy.Add(lineItem.Id,lastChangedBy);
 
             }
