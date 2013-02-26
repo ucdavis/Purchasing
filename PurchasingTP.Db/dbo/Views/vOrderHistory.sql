@@ -29,7 +29,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, lastaction.DateCreated LastActionDate
 	, lastaction.lastuser LastActionUser
 	, case when oreceived.received = 1 then 'Yes' else 'No' end Received
-	, case when oreceived.received = 1 then 'Yes' else 'No' end Paid /* TODO Replace this so it checks the Paid, not Received */
+	, case when oreceived.received = 1 then 'Yes' else 'No' end Paid
 	, ot.id ordertypeid, ot.name ordertype
 	, approvers.approver, AccountManagers.AccountManager, Purchasers.Purchaser
 from orders o
