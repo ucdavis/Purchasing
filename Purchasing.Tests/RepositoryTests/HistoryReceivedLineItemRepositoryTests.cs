@@ -606,6 +606,59 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion User Tests
 
+        #region PayInvoice Tests
+
+        /// <summary>
+        /// Tests the PayInvoice is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPayInvoiceIsFalseSaves()
+        {
+            #region Arrange
+            HistoryReceivedLineItem historyReceivedLineItem = GetValid(9);
+            historyReceivedLineItem.PayInvoice = false;
+            #endregion Arrange
+
+            #region Act
+            HistoryReceivedLineItemRepository.DbContext.BeginTransaction();
+            HistoryReceivedLineItemRepository.EnsurePersistent(historyReceivedLineItem);
+            HistoryReceivedLineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(historyReceivedLineItem.PayInvoice);
+            Assert.IsFalse(historyReceivedLineItem.IsTransient());
+            Assert.IsTrue(historyReceivedLineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PayInvoice is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPayInvoiceIsTrueSaves()
+        {
+            #region Arrange
+            var historyReceivedLineItem = GetValid(9);
+            historyReceivedLineItem.PayInvoice = true;
+            #endregion Arrange
+
+            #region Act
+            HistoryReceivedLineItemRepository.DbContext.BeginTransaction();
+            HistoryReceivedLineItemRepository.EnsurePersistent(historyReceivedLineItem);
+            HistoryReceivedLineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(historyReceivedLineItem.PayInvoice);
+            Assert.IsFalse(historyReceivedLineItem.IsTransient());
+            Assert.IsTrue(historyReceivedLineItem.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PayInvoice Tests
+
+
         #region Constructor
 
         [TestMethod]
@@ -647,7 +700,8 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("NewReceivedQuantity", "System.Nullable`1[System.Decimal]", new List<string>()));
-            expectedFields.Add(new NameAndType("OldReceivedQuantity", "System.Nullable`1[System.Decimal]", new List<string>()));            
+            expectedFields.Add(new NameAndType("OldReceivedQuantity", "System.Nullable`1[System.Decimal]", new List<string>()));
+            expectedFields.Add(new NameAndType("PayInvoice", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("UpdateDate", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("User", "Purchasing.Core.Domain.User", new List<string>
             {

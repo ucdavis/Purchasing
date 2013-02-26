@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Extensions;
 
@@ -1954,6 +1953,57 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowFpdCompleted Tests
 
+        #region ShowOrderPaid Tests
+
+        /// <summary>
+        /// Tests the ShowOrderPaid is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowOrderPaidIsFalseSaves()
+        {
+            #region Arrange
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowOrderPaid = false;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(columnPreferences.ShowOrderPaid);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowOrderPaid is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowOrderPaidIsTrueSaves()
+        {
+            #region Arrange
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowOrderPaid = true;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(columnPreferences.ShowOrderPaid);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ShowOrderPaid Tests
 
 
         #region Constructor Tests
@@ -2006,6 +2056,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsFalse(record.ShowPurchaser);
 
             Assert.IsFalse(record.ShowOrderReceived);
+            Assert.IsFalse(record.ShowOrderPaid);
 
             Assert.AreEqual(50, record.DisplayRows);
 
@@ -2111,6 +2162,10 @@ namespace Purchasing.Tests.RepositoryTests
             //                                                             {
             //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show People Pending Action\")]"
             //                                                             }));
+            expectedFields.Add(new NameAndType("ShowOrderPaid", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Order Paid\")]"
+                                                                         }));
             expectedFields.Add(new NameAndType("ShowOrderReceived", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Order Received\")]"

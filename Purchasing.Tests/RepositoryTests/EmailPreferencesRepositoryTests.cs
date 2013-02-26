@@ -1893,7 +1893,214 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         #endregion AddNote Tests
-       
+
+        #region RequesterPaid Tests
+
+        /// <summary>
+        /// Tests the RequesterPaid is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestRequesterPaidIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.RequesterPaid = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.RequesterPaid);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the RequesterPaid is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestRequesterPaidIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.RequesterPaid = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.RequesterPaid);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion RequesterPaid Tests
+
+        #region PurchaserKfsItemPaid Tests
+
+        /// <summary>
+        /// Tests the PurchaserKfsItemPaid is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserKfsItemPaidIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.PurchaserKfsItemPaid = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.PurchaserKfsItemPaid);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PurchaserKfsItemPaid is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserKfsItemPaidIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.PurchaserKfsItemPaid = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.PurchaserKfsItemPaid);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PurchaserKfsItemPaid Tests
+
+        #region PurchaserPCardItemPaid Tests
+
+        /// <summary>
+        /// Tests the PurchaserPCardItemPaid is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserPCardItemPaidIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.PurchaserPCardItemPaid = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.PurchaserPCardItemPaid);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PurchaserPCardItemPaid is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserPCardItemPaidIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.PurchaserPCardItemPaid = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.PurchaserPCardItemPaid);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PurchaserPCardItemPaid Tests
+
+        #region PurchaserCampusServicesItemPaid Tests
+
+        /// <summary>
+        /// Tests the PurchaserCampusServicesItemPaid is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserCampusServicesItemPaidIsFalseSaves()
+        {
+            #region Arrange
+            EmailPreferences emailPreferences = GetValid(9);
+            emailPreferences.PurchaserCampusServicesItemPaid = false;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(emailPreferences.PurchaserCampusServicesItemPaid);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PurchaserCampusServicesItemPaid is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPurchaserCampusServicesItemPaidIsTrueSaves()
+        {
+            #region Arrange
+            var emailPreferences = GetValid(9);
+            emailPreferences.PurchaserCampusServicesItemPaid = true;
+            #endregion Arrange
+
+            #region Act
+            EmailPreferencesRepository.DbContext.BeginTransaction();
+            EmailPreferencesRepository.EnsurePersistent(emailPreferences);
+            EmailPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(emailPreferences.PurchaserCampusServicesItemPaid);
+            Assert.IsFalse(emailPreferences.IsTransient());
+            Assert.IsTrue(emailPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion PurchaserCampusServicesItemPaid Tests
 
 
         #region Constructor Tests
@@ -2017,9 +2224,17 @@ namespace Purchasing.Tests.RepositoryTests
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
             expectedFields.Add(new NameAndType("NotificationType", "Purchasing.Core.Domain.EmailPreferences+NotificationTypes", new List<string>()));
+            expectedFields.Add(new NameAndType("PurchaserCampusServicesItemPaid", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Campus Services Item Paid\")]"
+            }));
             expectedFields.Add(new NameAndType("PurchaserCampusServicesItemReceived", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Campus Services Item Received\")]"
+            }));
+            expectedFields.Add(new NameAndType("PurchaserKfsItemPaid", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"KFS Item Paid\")]"
             }));
             expectedFields.Add(new NameAndType("PurchaserKfsItemReceived", "System.Boolean", new List<string>
             {
@@ -2036,6 +2251,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("PurchaserOrderCompleted", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Request Completed\")]"
+            }));
+            expectedFields.Add(new NameAndType("PurchaserPCardItemPaid", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"P Card Item Paid\")]"
             }));
             expectedFields.Add(new NameAndType("PurchaserPCardItemReceived", "System.Boolean", new List<string>
             {
@@ -2068,6 +2287,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("RequesterOrderSubmission", "System.Boolean", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Order Submitted\")]"
+            }));
+            expectedFields.Add(new NameAndType("RequesterPaid", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Item Paid\")]"
             }));
             expectedFields.Add(new NameAndType("RequesterPurchaserAction", "System.Boolean", new List<string>
             {

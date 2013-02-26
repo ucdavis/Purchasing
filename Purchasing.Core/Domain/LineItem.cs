@@ -14,8 +14,11 @@ namespace Purchasing.Core.Domain
 
         public virtual decimal Quantity { get; set; }
         public virtual decimal? QuantityReceived { get; set; }
+        public virtual decimal? QuantityPaid { get; set; }
         public virtual string ReceivedNotes { get; set; }
+        public virtual string PaidNotes { get; set; }
         public virtual bool Received { get; set; } // calculated in db
+        public virtual bool Paid { get; set; } // calculated in db
 
         [StringLength(50)]
         public virtual string CatalogNumber { get; set; } //Note: truncated to 15 for dafis
@@ -61,8 +64,11 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.Quantity);
             Map(x => x.QuantityReceived);
+            Map(x => x.QuantityPaid);
             Map(x => x.ReceivedNotes).Length(int.MaxValue);
+            Map(x => x.PaidNotes).Length(int.MaxValue);
             Map(x => x.Received).ReadOnly();
+            Map(x => x.Paid).ReadOnly();
             Map(x => x.CatalogNumber);
             Map(x => x.Description).Length(int.MaxValue);
             Map(x => x.Unit);

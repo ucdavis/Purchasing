@@ -29,6 +29,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, lastaction.DateCreated LastActionDate
 	, lastaction.lastuser LastActionUser
 	, case when oreceived.received = 1 then 'Yes' else 'No' end Received
+	, case when opaid.paid = 1 then 'Yes' else 'No' end Paid /* TODO Replace this so it checks the Paid, not Received */
 	, ot.id ordertypeid, ot.name ordertype
 	, approvers.approver, AccountManagers.AccountManager, Purchasers.Purchaser
 	, case when o.FpdCompleted = 1 then 'Yes'else 'No' end FpdCompleted
@@ -129,6 +130,15 @@ from orders o
 			where orderid = any ( select orderid from LineItems where Received = 0) 
 		) ireceived on rorders.id = ireceived.liorderid
 	) oreceived on o.id = oreceived.orderid
+	left outer join (
+		select rorders.id orderid, case when ipaid.paid is null then 1 else 0 end paid
+		from orders rorders
+		left outer join (	
+			select distinct LineItems.orderid liorderid, 0 paid
+			from LineItems
+			where orderid = any ( select orderid from LineItems where Paid = 0) 
+		) ipaid on rorders.id = ipaid.liorderid
+	) opaid on o.id = opaid.orderid
 	inner join (
 		select max(oot.id) otid, oot.orderid, oot.DateCreated, users.FirstName + ' ' + users.LastName lastuser
 		from ordertracking oot
