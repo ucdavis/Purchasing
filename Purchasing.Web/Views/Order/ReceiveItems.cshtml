@@ -293,7 +293,8 @@
                 {
                     count++;
                     notesLineId = "notesLineId" + item.Id;
-                    displayNotes = string.IsNullOrWhiteSpace(item.ReceivedNotes) ? "display: none;" : string.Empty;               
+
+                    displayNotes = (Model.PayInvoice && string.IsNullOrWhiteSpace(item.PaidNotes)) || (Model.PayInvoice == false && string.IsNullOrWhiteSpace(item.ReceivedNotes)) ? "display: none;" : string.Empty;               
 
                     if (!Model.LastChangedBy.TryGetValue(item.Id, out by))
                     {
@@ -301,6 +302,7 @@
                     }
                     var titleName = Model.PayInvoice ? "Number of Units paid for this line item. Amount will be added to the current number of paid items." : "Number of Units received for this line item. Amount will be added to the current number of received items.";
                     var notes = Model.PayInvoice == true ? item.PaidNotes : item.ReceivedNotes;
+                    var toggleTittle = Model.PayInvoice ? "Show/Hide Pay Invoice Comments" : "Show/Hide Received Comments";
                     
                     <tr id="@item.Id" class="@(odd ? "odd" : "even")">
                         <td class="lineitem">@count</td>               
@@ -326,7 +328,7 @@
                         <td class="update-date">@(by != null ? by.UpdateDate.ToString("MM/dd/yyyy") : string.Empty)</td>
                         <td>
                             <span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;">
-                                <a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Received Comments"></a>
+                                <a class=" ui-icon ui-icon-comment showTip" title="@toggleTittle"></a>
                             </span>
                         </td>
                     </tr>
