@@ -90,13 +90,13 @@ namespace Purchasing.Web.Services
         /// </summary>
         void HandleSavedForm(Order order, Guid formSaveId);
 
-        IndexedList<OrderHistory> GetIndexedListofOrders(string received, bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
+        IndexedList<OrderHistory> GetIndexedListofOrders(string received, string paid,bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
 
         /// <summary>
         /// Returns a list of orders that the current user has administrative access to
         /// </summary>
         /// <returns></returns>
-        IndexedList<OrderHistory> GetAdministrativeIndexedListofOrders(string received, bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
+        IndexedList<OrderHistory> GetAdministrativeIndexedListofOrders(string received, string paid, bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
 
     }
 
@@ -809,7 +809,7 @@ namespace Purchasing.Web.Services
             return ordersQuery;
         }
 
-        public IndexedList<OrderHistory> GetIndexedListofOrders(string received, bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
+        public IndexedList<OrderHistory> GetIndexedListofOrders(string received, string paid,bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
             // get orderids accessible by user
             var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && !a.IsAdmin);
@@ -824,7 +824,7 @@ namespace Purchasing.Web.Services
             var ordersQuery = ordersIndexQuery.Results.AsQueryable();
             
             // filter for selected status
-            ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode, received);
+            ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode, received, paid);
 
             // filter for selected dates            
             ordersQuery = GetOrdersByDate(ordersQuery, startDate, endDate, startLastActionDate, endLastActionDate);
@@ -862,7 +862,7 @@ namespace Purchasing.Web.Services
             return ordersQuery;
         }
 
-        public IndexedList<OrderHistory> GetAdministrativeIndexedListofOrders(string received, bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
+        public IndexedList<OrderHistory> GetAdministrativeIndexedListofOrders(string received, string paid,bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
             // get orderids accessible by user
             var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && a.IsAdmin);
@@ -877,7 +877,7 @@ namespace Purchasing.Web.Services
             var ordersQuery = ordersIndexQuery.Results.AsQueryable();
 
             // filter for selected status
-            ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode, received);
+            ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode, received, paid);
 
             // filter for selected dates            
             ordersQuery = GetOrdersByDate(ordersQuery, startDate, endDate, startLastActionDate, endLastActionDate);
@@ -1069,8 +1069,9 @@ namespace Purchasing.Web.Services
         /// <param name="isComplete"></param>
         /// <param name="orderStatusCode"></param>
         /// <param name="received">yes or no or null </param>
+        /// <param name="paid">yes or no or null </param>
         /// <returns></returns>
-        private IQueryable<OrderHistory> GetOrdersByStatus(IQueryable<OrderHistory> orders, bool isComplete = false, string orderStatusCode = null, string received = null)
+        private IQueryable<OrderHistory> GetOrdersByStatus(IQueryable<OrderHistory> orders, bool isComplete = false, string orderStatusCode = null, string received = null, string paid = null)
         {
             if (orderStatusCode != null)
             {
@@ -1081,6 +1082,14 @@ namespace Purchasing.Web.Services
                 else if (received != null && received.ToLower() == "no")
                 {
                     orders = orders.Where(o => o.StatusId == OrderStatusCode.Codes.Complete && o.Received == "No");
+                }
+                else if (paid != null && paid.ToLower() == "yes")
+                {
+                    orders = orders.Where(o => o.StatusId == OrderStatusCode.Codes.Complete && o.Paid == "Yes");
+                }
+                else if (paid != null && paid.ToLower() == "no")
+                {
+                    orders = orders.Where(o => o.StatusId == OrderStatusCode.Codes.Complete && o.Paid == "No");
                 }
                 else
                 {

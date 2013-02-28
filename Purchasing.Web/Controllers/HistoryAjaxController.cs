@@ -45,10 +45,10 @@ namespace Purchasing.Web.Controllers
         public JsonNetResult RecentlyCompleted()
         {
             var deniedThisMonth =
-                _orderService.GetIndexedListofOrders(null,false, false, OrderStatusCode.Codes.Denied, null, null, true,
+                _orderService.GetIndexedListofOrders(null, null,false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                               new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Results.Count();
             var completedThisMonth =
-                _orderService.GetIndexedListofOrders(null,true, false, OrderStatusCode.Codes.Complete, null, null, true,
+                _orderService.GetIndexedListofOrders(null, null,true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                   new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Results.Count();
 
             return new JsonNetResult(new { deniedThisMonth, completedThisMonth });
