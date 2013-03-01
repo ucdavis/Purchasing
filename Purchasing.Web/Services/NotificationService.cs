@@ -26,6 +26,7 @@ namespace Purchasing.Web.Services
         void OrderCompleted(Order order, User user);
         void OrderReRouted(Order order, int level, bool assigned = false);
         void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity);
+        void OrderPaid(Order order, LineItem lineItem, User actor, decimal quantity);
 
         void OrderAddAttachment(Order order, User actor);
         void OrderAddNote(Order order, User actor, string comment);
@@ -44,7 +45,7 @@ namespace Purchasing.Web.Services
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IRepositoryFactory _repositoryFactory;
 
-        private enum EventCode { Approval, Update, Cancelled, Arrival, Complete, Received }//, KualiUpdate }
+        private enum EventCode { Approval, Update, Cancelled, Arrival, Complete, Received, Paid }//, KualiUpdate }
 
         /* strings to be used in the messages */
         //private const string ApprovalMessage = "Order request {0} for {1} has been approved by {2} at {3} review.";
@@ -192,6 +193,30 @@ namespace Purchasing.Web.Services
                 {
                     //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), approval.User);
                     var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Received", string.Format("{0} item(s) by {1}.", quantity, actor.FullName), approval.User);
+                    AddToQueue(queues, emailQueue2);
+                }
+            }
+
+            AddQueuesToOrder(order, queues);
+        }
+
+        public void OrderPaid(Order order, LineItem lineItem, User actor, decimal quantity)
+        {
+            var queues = new List<EmailQueueV2>();
+
+            if (!string.IsNullOrEmpty(order.Workgroup.NotificationEmailList))
+            {                
+                var emailQueue2 = new EmailQueueV2(order, EmailPreferences.NotificationTypes.PerEvent, "Paid", string.Format("{0} item(s) by {1}.", quantity, actor.FullName), null, order.Workgroup.NotificationEmailList);
+                AddToQueue(queues, emailQueue2);
+            }
+
+            foreach (var approval in order.OrderTrackings.Select(a => new { a.User, a.StatusCode }).Distinct())
+            {
+                var preference = _emailPreferenceRepository.GetNullableById(approval.User.Id) ?? new EmailPreferences(approval.User.Id);
+
+                if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Paid, order.OrderType))
+                {                    
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Paid", string.Format("{0} item(s) by {1}.", quantity, actor.FullName), approval.User);
                     AddToQueue(queues, emailQueue2);
                 }
             }
@@ -454,6 +479,8 @@ namespace Purchasing.Web.Services
 
                         case EventCode.Received: 
                             return preference.RequesterReceived;
+                        case EventCode.Paid:
+                            return preference.RequesterPaid;
                     }
 
 
@@ -502,6 +529,8 @@ namespace Purchasing.Web.Services
 
                         // no received status for approver
                         case EventCode.Received:
+                            return false;
+                        case EventCode.Paid:
                             return false;
 
                         default: return false;
@@ -552,6 +581,8 @@ namespace Purchasing.Web.Services
                         // account manager doesn't have any emails fror received.
                         case EventCode.Received:
                             return false;
+                        case EventCode.Paid:
+                            return false;
 
                         default: return false;
                     }
@@ -594,6 +625,15 @@ namespace Purchasing.Web.Services
                                 case "KFS": return preference.PurchaserKfsItemReceived;
                                 case "PC": return preference.PurchaserPCardItemReceived;
                                 case "CS": return preference.PurchaserCampusServicesItemReceived;
+                                default: return false;
+                            }
+                        case EventCode.Paid:
+
+                            switch (orderType.Id)
+                            {
+                                case "KFS": return preference.PurchaserKfsItemPaid;
+                                case "PC": return preference.PurchaserPCardItemPaid;
+                                case "CS": return preference.PurchaserCampusServicesItemPaid;
                                 default: return false;
                             }
 

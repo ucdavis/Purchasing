@@ -11,7 +11,10 @@
     [OrderId]          INT             NOT NULL,
     [CommodityId]      VARCHAR (9)     NULL,
     [Received]         AS              (case when ([Quantity]-[QuantityReceived])<=(0) then CONVERT([bit],(1),(0)) else CONVERT([bit],(0),(0)) end) PERSISTED,
+	[Paid]             AS              (case when ([Quantity]-[QuantityPaid])<=(0) then CONVERT([bit],(1),(0)) else CONVERT([bit],(0),(0)) end) PERSISTED,
     [ReceivedNotes]    VARCHAR (MAX)   NULL,
+	[QuantityPaid] DECIMAL(18, 3) NULL, 
+    [PaidNotes] VARCHAR(MAX) NULL, 
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_LineItems_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id])
 );

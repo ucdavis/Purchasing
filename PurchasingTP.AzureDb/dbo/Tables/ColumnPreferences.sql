@@ -28,6 +28,7 @@
     [ShowShippingCost]        BIT          DEFAULT ((0)) NOT NULL,
     [ShowReferenceNumber]     BIT          DEFAULT ((1)) NOT NULL,
     [ShowFpdCompleted] BIT NOT NULL DEFAULT ((0)), 
+    [ShowOrderPaid] BIT NOT NULL DEFAULT ((0)), 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

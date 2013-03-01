@@ -34,7 +34,7 @@ namespace Purchasing.Web.Models
         {
             if (orderStatusCodes == null)
             {
-                OrderStatusCodes = new List<Tuple<string, string>> { new Tuple<string, string>("All", "All"), new Tuple<string, string>("Received", "Received"), new Tuple<string, string>("UnReceived", "UnReceived") };
+                OrderStatusCodes = new List<Tuple<string, string>> { new Tuple<string, string>("All", "All"), new Tuple<string, string>("Received", "Received"), new Tuple<string, string>("UnReceived", "UnReceived"), new Tuple<string, string>("Paid", "Paid"), new Tuple<string, string>("UnPaid", "UnPaid") };
                 OrderStatusCodes.AddRange(statusCodeRepository.Queryable
                     .Where(a => a.ShowInFilterList)
                     .OrderBy(a => a.Level)

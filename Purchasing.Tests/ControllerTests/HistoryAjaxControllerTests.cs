@@ -241,10 +241,10 @@ namespace Purchasing.Tests.ControllerTests
             rtValue2.LastModified = DateTime.Now.Date.AddHours(7);
             rtValue2.Results = QueryRepositoryFactory.OrderHistoryRepository.Queryable.Take(3).ToList();
 
-            OrderService.Expect(a => a.GetIndexedListofOrders(null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
+            OrderService.Expect(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                                        new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null))
                                                        .Return(rtValue1);
-            OrderService.Expect(a => a.GetIndexedListofOrders(null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
+            OrderService.Expect(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                                        new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null))
                                                        .Return(rtValue2);
             #endregion Arrange
@@ -258,9 +258,9 @@ namespace Purchasing.Tests.ControllerTests
             dynamic data = results.Data;
             Assert.AreEqual(5, data.deniedThisMonth);
             Assert.AreEqual(3, data.completedThisMonth);
-            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                                        new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null));
-            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
+            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                                        new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null));
             #endregion Assert
         }

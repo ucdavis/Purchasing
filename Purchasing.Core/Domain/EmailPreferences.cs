@@ -74,6 +74,9 @@ namespace Purchasing.Core.Domain
         [Display(Name="Item Received")]
         public virtual bool RequesterReceived { get; set; }
 
+        [Display(Name = "Item Paid")]
+        public virtual bool RequesterPaid { get; set; }
+
         [Display(Name="Kuali Updates Request")]
         public virtual bool RequesterKualiProcessed { get; set; }      
   
@@ -150,6 +153,15 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Campus Services Item Received")]
         public virtual bool PurchaserCampusServicesItemReceived { get; set; }
 
+        [Display(Name = "KFS Item Paid")]
+        public virtual bool PurchaserKfsItemPaid { get; set; }
+
+        [Display(Name = "P Card Item Paid")]
+        public virtual bool PurchaserPCardItemPaid { get; set; }
+
+        [Display(Name = "Campus Services Item Paid")]
+        public virtual bool PurchaserCampusServicesItemPaid { get; set; }
+
         #endregion Purchaser Settings
 
         #region Role Inspecific
@@ -184,6 +196,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.RequesterPurchaserChanged);
             Map(x => x.RequesterKualiProcessed); 
             Map(x => x.RequesterKualiApproved);
+            Map(x => x.RequesterReceived);
+            Map(x => x.RequesterPaid);
 
             Map(x => x.ApproverAccountManagerApproved);
             Map(x => x.ApproverAccountManagerDenied);
@@ -204,6 +218,10 @@ namespace Purchasing.Core.Domain
             Map(x => x.PurchaserKfsItemReceived);
             Map(x => x.PurchaserPCardItemReceived);
             Map(x => x.PurchaserCampusServicesItemReceived);
+
+            Map(x => x.PurchaserKfsItemPaid);
+            Map(x => x.PurchaserPCardItemPaid);
+            Map(x => x.PurchaserCampusServicesItemPaid);
 
             Map(x => x.NotificationType).CustomType<NHibernate.Type.EnumStringType<EmailPreferences.NotificationTypes>>().Not.Nullable();
 
