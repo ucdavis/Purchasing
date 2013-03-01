@@ -14,6 +14,7 @@ namespace Purchasing.Core.Domain
         {
             UpdateDate = DateTime.Now;
             CommentsUpdated = false;
+            PayInvoice = false;
         }
         [Required]
         public virtual LineItem LineItem { get; set; }
@@ -23,6 +24,8 @@ namespace Purchasing.Core.Domain
         public virtual bool CommentsUpdated { get; set; }
         [Required]
         public virtual User User { get; set; }
+
+        public virtual bool PayInvoice { get; set; }
         
     }
 
@@ -36,6 +39,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.OldReceivedQuantity);
             Map(x => x.NewReceivedQuantity);
             Map(x => x.CommentsUpdated);
+            Map(x => x.PayInvoice);
 
             References(x => x.User).Column("UserId");
             References(x => x.LineItem).Column("LineItemId");

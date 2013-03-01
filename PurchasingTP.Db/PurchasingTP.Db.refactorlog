@@ -49,4 +49,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="AddAttachment" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="1105234f-e5f7-4c9f-9e60-282c86941c5c" ChangeDateTime="02/20/2013 21:26:14">
+    <Property Name="ElementName" Value="[dbo].[LineItems].[QuantityPaidNotes]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LineItems]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PaidNotes" />
+  </Operation>
 </Operations>

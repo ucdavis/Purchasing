@@ -77,7 +77,22 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
 
-            var ordersIndexed = _orderService.GetIndexedListofOrders(received, isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
+            string paid = null;
+            if (selectedOrderStatus == "Paid" || selectedOrderStatus == "UnPaid")
+            {
+                if (selectedOrderStatus == "Paid")
+                {
+                    paid = "yes";
+                }
+                else if (selectedOrderStatus == "UnPaid")
+                {
+                    paid = "no";
+                }
+                selectedOrderStatus = OrderStatusCode.Codes.Complete;
+                isComplete = true;
+            }
+
+            var ordersIndexed = _orderService.GetIndexedListofOrders(received, paid, isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
             ViewBag.IndexLastModified = ordersIndexed.LastModified;
 
             var orders = ordersIndexed.Results.AsQueryable();
@@ -149,7 +164,22 @@ namespace Purchasing.Web.Controllers
                 isComplete = true;
             }
 
-            var ordersIndexed = _orderService.GetAdministrativeIndexedListofOrders(received, isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
+            string paid = null;
+            if (selectedOrderStatus == "Paid" || selectedOrderStatus == "UnPaid")
+            {
+                if (selectedOrderStatus == "Paid")
+                {
+                    paid = "yes";
+                }
+                else if (selectedOrderStatus == "UnPaid")
+                {
+                    paid = "no";
+                }
+                selectedOrderStatus = OrderStatusCode.Codes.Complete;
+                isComplete = true;
+            }
+
+            var ordersIndexed = _orderService.GetAdministrativeIndexedListofOrders(received, paid, isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
             ViewBag.IndexLastModified = ordersIndexed.LastModified;
             
             var orders = ordersIndexed.Results.AsQueryable();

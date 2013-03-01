@@ -35,6 +35,7 @@ namespace Purchasing.Core.Queries
         public virtual DateTime LastActionDate { get; set; }
         public virtual string LastActionUser { get; set; }
         public virtual string Received { get; set; }
+        public virtual string Paid { get; set; }
         public virtual string OrderType { get; set; }
         public virtual decimal ShippingAmount { get; set; }
         public virtual string Approver { get; set; }
@@ -89,6 +90,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.AccountManager);
             Map(x => x.Purchaser);
             Map(x => x.FpdCompleted);
+            Map(x => x.Paid);
         }
     }
 }

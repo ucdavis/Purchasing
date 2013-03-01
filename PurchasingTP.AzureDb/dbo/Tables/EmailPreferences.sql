@@ -30,6 +30,10 @@
     [AddAttachment]                       BIT          DEFAULT ((1)) NOT NULL,
     [AddNote]                             BIT          DEFAULT ((1)) NOT NULL,
     [ShowAccountInEmail] BIT NOT NULL DEFAULT ((0)), 
+    [RequesterPaid] BIT NOT NULL DEFAULT ((0)), 
+    [PurchaserKfsItemPaid] BIT NOT NULL DEFAULT ((0)), 
+    [PurchaserPCardItemPaid] BIT NOT NULL DEFAULT ((0)), 
+    [PurchaserCampusServicesItemPaid] BIT NOT NULL DEFAULT ((0)), 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

@@ -9,6 +9,7 @@
         @if(Model.CanReceiveItems)
         {
             @Html.ActionLink("Receive Items", "ReceiveItems", new {id = Model.Order.Id}, new {@class = "button"})
+             @Html.ActionLink("Pay Invoice", "ReceiveItems", new { id = Model.Order.Id, payInvoice = true }, new { @class = "button" })
         }
         </div>
         <table>
@@ -59,7 +60,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var split in Model.Splits.Where(x=>x.LineItem == line))
+                                            @foreach (var split in Model.Splits.Where(x => x.LineItem == line))
                                             {  
                                                 <tr>
                                                     <td>@(string.IsNullOrWhiteSpace(split.Account) ? "n/a" : split.AccountDisplay)</td>

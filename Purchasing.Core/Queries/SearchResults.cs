@@ -26,7 +26,7 @@ namespace Purchasing.Core.Queries
         {
             public static readonly string[] SearchableFields = {
                                                                    "description", "url", "notes", "catalognumber",
-                                                                   "commodityid", "receivednotes"
+                                                                   "commodityid", "receivednotes", "paidnotes"
                                                                };
 
             public int Id { get; set; }
@@ -40,6 +40,7 @@ namespace Purchasing.Core.Queries
             public string Notes { get; set; }
             public string CommodityId { get; set; }
             public string ReceivedNotes { get; set; }
+            public string PaidNotes { get; set; }
         }
 
         public class CommentResult

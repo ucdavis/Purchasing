@@ -35,7 +35,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.PurchaserKfsItemReceived)
                 </div>
-                <div class="editor-field showTip" title="All line items have been marked as received for a KFS order.">
+                <div class="editor-field showTip" title="Line items have been marked as received for a KFS order.">
                     @Html.EditorFor(model => model.PurchaserKfsItemReceived)
                     @Html.ValidationMessageFor(model => model.PurchaserKfsItemReceived)
                 </div>
@@ -44,7 +44,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.PurchaserPCardItemReceived)
                 </div>
-                <div class="editor-field showTip" title="All line items have been marked as received for a P Card order.">
+                <div class="editor-field showTip" title="Line items have been marked as received for a P Card order.">
                     @Html.EditorFor(model => model.PurchaserPCardItemReceived)
                     @Html.ValidationMessageFor(model => model.PurchaserPCardItemReceived)
                 </div>
@@ -53,9 +53,37 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.PurchaserCampusServicesItemReceived)
                 </div>
-                <div class="editor-field showTip" title="All line items have been marked as received for a Campus Services order.">
+                <div class="editor-field showTip" title="Line items have been marked as received for a Campus Services order.">
                     @Html.EditorFor(model => model.PurchaserCampusServicesItemReceived)
                     @Html.ValidationMessageFor(model => model.PurchaserCampusServicesItemReceived)
+                </div>
+            </li>
+            
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PurchaserKfsItemPaid)
+                </div>
+                <div class="editor-field showTip" title="Line items have been marked as paid for a KFS order.">
+                    @Html.EditorFor(model => model.PurchaserKfsItemPaid)
+                    @Html.ValidationMessageFor(model => model.PurchaserKfsItemPaid)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PurchaserPCardItemPaid)
+                </div>
+                <div class="editor-field showTip" title="Line items have been marked as paid for a P Card order.">
+                    @Html.EditorFor(model => model.PurchaserPCardItemPaid)
+                    @Html.ValidationMessageFor(model => model.PurchaserPCardItemPaid)
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.PurchaserCampusServicesItemPaid)
+                </div>
+                <div class="editor-field showTip" title="Line items have been marked as paid for a Campus Services order.">
+                    @Html.EditorFor(model => model.PurchaserCampusServicesItemPaid)
+                    @Html.ValidationMessageFor(model => model.PurchaserCampusServicesItemPaid)
                 </div>
             </li>
         </ul>
