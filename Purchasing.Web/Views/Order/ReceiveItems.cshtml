@@ -308,14 +308,14 @@
                         <td class="lineitem">@count</td>               
                         <td class="receiveLineItemCell">
                             <input class="receiveLineItem showTip" data-id="@item.Id" title="@titleName" />
-                            <div class="receiveQuantity">@string.Format("{0:0.###}", item.QuantityReceived)</div>
+                            <div class="receiveQuantity">@string.Format("{0:0.###}", Model.PayInvoice ? item.QuantityPaid: item.QuantityReceived)</div>
                             <span class="quantity-loader" style="display: none;">
                                 <img src='@Url.Image("ajax-loader.gif")'/>
                             </span>
                             <span class="quantity-update-message"></span>
                         </td>
                         <td>@string.Format("{0:0.###}", item.Quantity)</td>
-                        @UnaccountedAmount(item.Quantity, item.QuantityReceived)
+                        @UnaccountedAmount(item.Quantity, Model.PayInvoice? item.QuantityPaid : item.QuantityReceived)
                         <td>@item.Unit</td>
                         <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
                         <td>@item.Description</td>
