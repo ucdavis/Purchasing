@@ -181,7 +181,7 @@
     <value>Are you sure you want to split this order across multiple accounts? [Description]</value>
   </data>
   <data name="Order_ConfirmSubmit" xml:space="preserve">
-    <value>Are you sure you want to submit this order?</value>
+    <value>Are you sure you want to save this order?</value>
   </data>
   <data name="Order_Error_AccountOrManagerRequired" xml:space="preserve">
     <value>You must choose either an account or an account manager to place this order as is</value>
