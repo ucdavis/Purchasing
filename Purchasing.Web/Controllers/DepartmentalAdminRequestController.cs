@@ -598,9 +598,10 @@ namespace Purchasing.Web.Controllers
         /// #10
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="overRide"> </param>
         /// <returns></returns>
         [Authorize(Roles = Role.Codes.Admin)]
-        public ActionResult TookTraining(string id)
+        public ActionResult TookTraining(string id, string overRide = "Default")
         {
             id = id.ToLower();
             var ldap = _directorySearchService.FindUser(id);
@@ -611,7 +612,19 @@ namespace Purchasing.Web.Controllers
             requestToSave.FirstName = ldap.FirstName;
             requestToSave.LastName = ldap.LastName;
             requestToSave.Email = ldap.EmailAddress;
-            requestToSave.AttendedTraining = true;
+            if(overRide == "Default")
+            {
+                requestToSave.AttendedTraining = true;
+            }
+            else if (overRide == "NoTraining")
+            {
+                requestToSave.AttendedTraining = false;
+            }
+            else if(overRide == "Nothing")
+            {
+                //Don't change it
+            }
+            
 
             ModelState.Clear();
             requestToSave.TransferValidationMessagesTo(ModelState);
