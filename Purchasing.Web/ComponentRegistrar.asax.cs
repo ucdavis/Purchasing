@@ -61,14 +61,14 @@ namespace Purchasing.Web
             container.Register(Component.For<IUservoiceService>().ImplementedBy<UservoiceService>().Named("uservoiceService"));
             container.Register(Component.For<IBugTrackingService>().ImplementedBy<BugTrackingService>().Named("bugTrackingService"));
 
-  
-            container.Register(Component.For<INotificationSender>().ImplementedBy<DevNotificationSender>().Named("notificationSender"));
-
-            //container.Register(
-            //    Component.For<INotificationSender>().ImplementedBy<EmailNotificationSender>().Named("notificationSender")
-            //        .OnCreate(service => service.SetAuthentication(ConfigurationManager.AppSettings["SendGridUserName"],
-            //                                                       ConfigurationManager.AppSettings["SendGridPassword"])));
-
+//#if DEBUG   
+//            container.Register(Component.For<INotificationSender>().ImplementedBy<DevNotificationSender>().Named("notificationSender"));
+//#else
+//            container.Register(
+//                Component.For<INotificationSender>().ImplementedBy<EmailNotificationSender>().Named("notificationSender")
+//                    .OnCreate(service => service.SetAuthentication(ConfigurationManager.AppSettings["SendGridUserName"],
+//                                                                   ConfigurationManager.AppSettings["SendGridPassword"])));
+//#endif
         }
 
         private static void AddGenericRepositoriesTo(IWindsorContainer container)

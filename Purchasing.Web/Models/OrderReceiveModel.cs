@@ -14,16 +14,18 @@ namespace Purchasing.Web.Models
         public IList<LineItem> LineItems { get; set; }
         public ReviewOrderViewModel ReviewOrderViewModel { get; set; }
         public Dictionary<int, HistoryReceivedLineItem> LastChangedBy { get; set; }
+        public bool PayInvoice { get; set; }
         
 
-        public static OrderReceiveModel Create(Order order, IRepository<HistoryReceivedLineItem> historyReceivedLineItemRepository)
+        public static OrderReceiveModel Create(Order order, IRepository<HistoryReceivedLineItem> historyReceivedLineItemRepository, bool payInvoice)
         {
             Check.Require(order != null);
             var viewModel = new OrderReceiveModel
             {
                 OrderId = order.Id,
                 LineItems = order.LineItems,
-                LastChangedBy = new Dictionary<int, HistoryReceivedLineItem>()
+                LastChangedBy = new Dictionary<int, HistoryReceivedLineItem>(),
+                PayInvoice = payInvoice
             };
             viewModel.ReviewOrderViewModel = new ReviewOrderViewModel();
             viewModel.ReviewOrderViewModel.Status = order.StatusCode.Name;
@@ -34,8 +36,7 @@ namespace Purchasing.Web.Models
             viewModel.ReviewOrderViewModel.Address = order.Address;
             foreach (var lineItem in viewModel.LineItems)
             {
-                var lastChangedBy =
-                    historyReceivedLineItemRepository.Queryable.Where(a => a.LineItem.Id == lineItem.Id).OrderByDescending(a => a.UpdateDate).FirstOrDefault();
+                var lastChangedBy = historyReceivedLineItemRepository.Queryable.Where(a => a.LineItem.Id == lineItem.Id && a.PayInvoice == payInvoice).OrderByDescending(a => a.UpdateDate).FirstOrDefault();
                 viewModel.LastChangedBy.Add(lineItem.Id,lastChangedBy);
 
             }

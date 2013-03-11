@@ -73,7 +73,7 @@ namespace Purchasing.Web.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                lineItems = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes] FROM vLineResults");
+                lineItems = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults");
             }
 
             CreateAnaylizedIndex(lineItems, Indexes.LineItems, SearchResults.LineResult.SearchableFields);

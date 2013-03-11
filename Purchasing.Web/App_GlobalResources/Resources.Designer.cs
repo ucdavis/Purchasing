@@ -241,7 +241,7 @@ namespace Purchasing.Web.App_GlobalResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to submit this order?.
+        ///   Looks up a localized string similar to Are you sure you want to save this order?.
         /// </summary>
         public static string Order_ConfirmSubmit {
             get {

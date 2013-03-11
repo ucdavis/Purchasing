@@ -18,14 +18,14 @@ namespace Purchasing.Web.Controllers
         private readonly IIndexService _indexService;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IRepositoryWithTypedId<EmailQueue, Guid> _emailQueueRepository;
-        private readonly INotificationSender _notificationSender;
+        //private readonly INotificationSender _notificationSender;
 
-        public SystemController(IIndexService indexService, IRepositoryFactory repositoryFactory, IRepositoryWithTypedId<EmailQueue, Guid> emailQueueRepository, INotificationSender notificationSender)
+        public SystemController(IIndexService indexService, IRepositoryFactory repositoryFactory, IRepositoryWithTypedId<EmailQueue, Guid> emailQueueRepository)//, INotificationSender notificationSender)
         {
             _indexService = indexService;
             _repositoryFactory = repositoryFactory;
             _emailQueueRepository = emailQueueRepository;
-            _notificationSender = notificationSender;
+            //_notificationSender = notificationSender;
         }
 
         public ActionResult Index()
@@ -103,20 +103,20 @@ namespace Purchasing.Web.Controllers
             return View(backupLogs);
         }
 
-        public ActionResult Emails()
-        {
-            ViewBag.PerEvent = _emailQueueRepository.Queryable.Count(x => x.Pending && x.NotificationType == EmailPreferences.NotificationTypes.PerEvent);
-            ViewBag.Daily = _emailQueueRepository.Queryable.Count(x => x.Pending && x.NotificationType == EmailPreferences.NotificationTypes.Daily);
-            ViewBag.Weekly = _emailQueueRepository.Queryable.Count(x => x.Pending && x.NotificationType == EmailPreferences.NotificationTypes.Weekly);
-            return View();
-        }
+        //public ActionResult Emails()
+        //{
+        //    ViewBag.PerEvent = _emailQueueRepository.Queryable.Count(x => x.Pending && x.NotificationType == EmailPreferences.NotificationTypes.PerEvent);
+        //    ViewBag.Daily = _emailQueueRepository.Queryable.Count(x => x.Pending && x.NotificationType == EmailPreferences.NotificationTypes.Daily);
+        //    ViewBag.Weekly = _emailQueueRepository.Queryable.Count(x => x.Pending && x.NotificationType == EmailPreferences.NotificationTypes.Weekly);
+        //    return View();
+        //}
 
-        [HttpPost]
-        public RedirectToRouteResult TriggerEmail()
-        {
-            _notificationSender.SendNotifications();
-            Message = "Emails Processed";
-            return RedirectToAction("Emails");
-        }
+        //[HttpPost]
+        //public RedirectToRouteResult TriggerEmail()
+        //{
+        //    //_notificationSender.SendNotifications();
+        //    Message = "Emails Processed";
+        //    return RedirectToAction("Emails");
+        //}
     }
 }

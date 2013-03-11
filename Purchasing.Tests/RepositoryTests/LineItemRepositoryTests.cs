@@ -1219,12 +1219,16 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Assert
         }
 
+        #endregion QuantityReceived Tests
+
+        #region QuantityPaid Tests
+
         [TestMethod]
-        public void TestLineItemWitQuantityReceivedSaves2()
+        public void TestLineItemWithNullQuantityPaidSaves()
         {
             #region Arrange
             var record = GetValid(9);
-            record.UnitPrice = 999999999.999m;
+            record.QuantityPaid = null;
             #endregion Arrange
 
             #region Act
@@ -1234,13 +1238,56 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(999999999.999m, record.UnitPrice);
+            Assert.AreEqual(null, record.QuantityPaid);
             Assert.IsFalse(record.IsTransient());
             Assert.IsTrue(record.IsValid());
             #endregion Assert
         }
-        #endregion UnitPrice Tests
-   
+
+        [TestMethod]
+        public void TestLineItemWithZeroQuantityPaidSaves()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.QuantityPaid = 0;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(record);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, record.QuantityPaid);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestLineItemWithQuantityPaidSaves1()
+        {
+            #region Arrange
+            var record = GetValid(9);
+            record.QuantityPaid = 0.001m;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(record);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0.001m, record.QuantityPaid);
+            Assert.IsFalse(record.IsTransient());
+            Assert.IsTrue(record.IsValid());
+            #endregion Assert
+        }
+
+        #endregion QuantityPaid Tests
+
         #region ReceivedNotes Tests
 
 
@@ -1365,6 +1412,130 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion ReceivedNotes Tests
 
+        #region PaidNotes Tests
+
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the ReceivedNotes with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPaidNotesWithNullValueSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.PaidNotes = null;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ReceivedNotes with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPaidNotesWithEmptyStringSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.PaidNotes = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ReceivedNotes with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPaidNotesWithOneSpaceSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.PaidNotes = " ";
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ReceivedNotes with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPaidNotesWithOneCharacterSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.PaidNotes = "x";
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ReceivedNotes with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPaidNotesWithLongValueSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.PaidNotes = "x".RepeatTimes(999);
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999, lineItem.PaidNotes.Length);
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion PaidNotes Tests
+
         #region Received Tests
 
         /// <summary>
@@ -1416,6 +1587,58 @@ namespace Purchasing.Tests.RepositoryTests
         }
 
         #endregion Received Tests
+
+        #region Paid Tests
+
+        /// <summary>
+        /// Tests the Paid is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPaidIsFalseSaves()
+        {
+            #region Arrange
+            LineItem lineItem = GetValid(9);
+            lineItem.Paid = false;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(lineItem.Paid);
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the Paid is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPaidIsTrueSaves()
+        {
+            #region Arrange
+            var lineItem = GetValid(9);
+            lineItem.Paid = true;
+            #endregion Arrange
+
+            #region Act
+            LineItemRepository.DbContext.BeginTransaction();
+            LineItemRepository.EnsurePersistent(lineItem);
+            LineItemRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(lineItem.Paid);
+            Assert.IsFalse(lineItem.IsTransient());
+            Assert.IsTrue(lineItem.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Paid Tests
 
         #region Splits Tests
         #region Valid Tests
@@ -1839,7 +2062,10 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("Paid", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("PaidNotes", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Quantity", "System.Decimal", new List<string>()));
+            expectedFields.Add(new NameAndType("QuantityPaid", "System.Nullable`1[System.Decimal]", new List<string>()));
             expectedFields.Add(new NameAndType("QuantityReceived", "System.Nullable`1[System.Decimal]", new List<string>()));
             expectedFields.Add(new NameAndType("Received", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("ReceivedNotes", "System.String", new List<string>()));
