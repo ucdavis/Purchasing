@@ -136,6 +136,8 @@
     <Build Include="dbo\Tables\BackupLogs.sql" />
     <Build Include="dbo\Tables\JobLogs.sql" />
     <Build Include="dbo\Tables\EmailQueueV2.sql" />
+    <Build Include="dbo\Views\vOpenAccess.sql" />
+    <Build Include="dbo\Views\vClosedAccess.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
