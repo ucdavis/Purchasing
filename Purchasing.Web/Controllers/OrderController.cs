@@ -371,18 +371,17 @@ namespace Purchasing.Web.Controllers
         //[AuthorizeReadOrEditOrder] //Doing access directly to avoid duplicate permissions check
         public ActionResult Review(int id)
         {
-            var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id);
-            
-            var model = orderQuery
-                .Select(x => new ReviewOrderViewModel
-                                 {
-                                     Order = x,
-                                     Complete = x.StatusCode.IsComplete,
-                                     Status = x.StatusCode.Name,
-                                     WorkgroupName = x.Workgroup.Name,
-                                     WorkgroupForceAccountApprover = x.Workgroup.ForceAccountApprover,
-                                     OrganizationName = x.Organization.Name,
-                                 }).Single();
+            var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id).Fetch(x=>x.StatusCode).Fetch(x=>x.Workgroup).Single();
+
+            var model = new ReviewOrderViewModel
+                {
+                    Order = orderQuery,
+                    Complete = orderQuery.StatusCode.IsComplete,
+                    Status = orderQuery.StatusCode.Name,
+                    WorkgroupName = orderQuery.Workgroup.Name,
+                    WorkgroupForceAccountApprover = orderQuery.Workgroup.ForceAccountApprover,
+                    OrganizationName = orderQuery.Organization.Name,
+                };
 
             const OrderAccessLevel requiredAccessLevel = OrderAccessLevel.Edit | OrderAccessLevel.Readonly;
             var roleAndAccessLevel = _securityService.GetAccessRoleAndLevel(model.Order);
@@ -392,8 +391,8 @@ namespace Purchasing.Web.Controllers
                 return new HttpUnauthorizedResult(Resources.Authorization_PermissionDenied);
             }
             
-            model.Vendor = orderQuery.Select(x => x.Vendor).Single();
-            model.Address = orderQuery.Select(x => x.Address).Single();
+            model.Vendor = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Vendor).Single();
+            model.Address = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Address).Single();
             model.LineItems =
                 _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToFuture();
             model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToFuture();

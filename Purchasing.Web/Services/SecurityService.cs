@@ -101,19 +101,6 @@ namespace Purchasing.Web.Services
         User GetUser(string kerb);
 
         RolesAndAccessLevel GetAccessRoleAndLevel(Order order);
-
-        /// <summary>
-        /// Checks only read access for orders.
-        /// </summary>
-        /// <param name="orderId"></param>
-        /// <returns></returns>
-        bool HasReadAccess(int orderId);
-        /// <summary>
-        /// Checks only edit access for oders.
-        /// </summary>
-        /// <param name="orderId"></param>
-        /// <returns></returns>
-        bool HasEditAccess(int orderId);
     }
 
     public class SecurityService :  ISecurityService
@@ -259,24 +246,52 @@ namespace Purchasing.Web.Services
             return _queryRepositoryFactory.WorkgroupRoleRepository.Queryable.Any(a => a.AccessUserId == _userIdentity.Current && a.RoleId == roleCode && a.WorkgroupId == workgroupId && a.IsAdmin);
         }
 
+        /// <summary>
+        /// Get access level in addition to role.  Note order should have status pre-fetched to avoid extra query
+        /// </summary>
+        /// <param name="order">order should have status pre-fetched to avoid extra query</param>
+        /// <returns></returns>
         public RolesAndAccessLevel GetAccessRoleAndLevel(Order order)
         {
             Check.Require(order != null, "order is required.");
 
-            var access = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current).ToList();
-
-            if (access.Any())
+            // closed orders can only have read access, never edit access.
+            if (order.StatusCode.IsComplete)
             {
-                var roles = new HashSet<string>(access.Select(x => x.AccessLevel));
-                
-                if (access.Any(x => x.EditAccess))
-                {
-                    return new RolesAndAccessLevel {OrderAccessLevel = OrderAccessLevel.Edit, Roles = roles};
-                }
+                //check if there are any access entries for this closed order 
+                var accessLevels =
+                    _queryRepositoryFactory.ClosedAccessRepository.Queryable.Where(
+                        a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current).Select(x=>x.AccessLevel).ToList();
 
-                if (access.Any(x => x.ReadAccess))
+                if (accessLevels.Any())
                 {
+                    var roles = new HashSet<string>(accessLevels);
+
                     return new RolesAndAccessLevel { OrderAccessLevel = OrderAccessLevel.Readonly, Roles = roles };
+                }
+            }
+            else
+            {
+                //else check the edit order access repo
+                var access =
+                    _queryRepositoryFactory.OpenAccessRepository.Queryable.Where(
+                        a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current)
+                                           .Select(x => new { x.EditAccess, x.ReadAccess, x.AccessLevel })
+                                           .ToList();
+
+                if (access.Any())
+                {
+                    var roles = new HashSet<string>(access.Select(x => x.AccessLevel));
+
+                    if (access.Any(x => x.EditAccess))
+                    {
+                        return new RolesAndAccessLevel { OrderAccessLevel = OrderAccessLevel.Edit, Roles = roles };
+                    }
+
+                    if (access.Any(x => x.ReadAccess))
+                    {
+                        return new RolesAndAccessLevel { OrderAccessLevel = OrderAccessLevel.Readonly, Roles = roles };
+                    }
                 }
             }
 
@@ -335,17 +350,7 @@ namespace Purchasing.Web.Services
 
             return GetAccessLevel(order.Id);
         }
-
-        public bool HasReadAccess(int orderId)
-        {
-            return _queryRepositoryFactory.ReadAccessRepository.Queryable.Any(a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current);
-        }
-
-        public bool HasEditAccess(int orderId)
-        {
-            return _queryRepositoryFactory.EditAccessRepository.Queryable.Any(a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current);
-        }
-
+        
         // ===================================================
         // User Functions
         // ===================================================
