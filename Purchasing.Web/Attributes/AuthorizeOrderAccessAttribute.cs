@@ -17,6 +17,13 @@ namespace Purchasing.Web.Attributes
             _securityService = ServiceLocator.Current.GetInstance<ISecurityService>();
         }
 
+        /// <summary>
+        /// Authorize that the user has the desired access to the given order
+        /// </summary>
+        /// <remarks>
+        /// First check access with vOpenAccess and then vClosedAccess if the user doesn't have access there
+        /// </remarks>
+        /// <param name="filterContext"></param>
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
             var orderId = int.Parse((string)filterContext.RouteData.Values["id"]);

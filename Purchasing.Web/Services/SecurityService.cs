@@ -85,13 +85,13 @@ namespace Purchasing.Web.Services
         /// </summary>
         /// <param name="order"></param>
         /// <returns></returns>
-        OrderAccessLevel GetAccessLevel(Order order, bool? closed = null);
+        OrderAccessLevel GetAccessLevel(Order order);
         /// <summary>
         /// Get the current user's access to the order
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        OrderAccessLevel GetAccessLevel(int orderId, bool? closed = null);
+        OrderAccessLevel GetAccessLevel(int orderId);
 
         /// <summary>
         /// Finds or creates a user object as necessary
@@ -286,45 +286,54 @@ namespace Purchasing.Web.Services
         // ===================================================
         // Order Access Functions
         // ===================================================
-        public OrderAccessLevel GetAccessLevel(int orderId, bool? closed = null)
+        public OrderAccessLevel GetAccessLevel(int orderId)
         {
+            //grab if the order is closed
+            var isClosed = _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == orderId).Select(x => x.StatusCode.IsComplete).Single();
+            
             // closed orders can only have read access, never edit access.
-            if (closed.HasValue && closed.Value)
+            if (isClosed)
             {
-                if (HasReadAccess(orderId))
-                {
-                    return OrderAccessLevel.Readonly;
-                }
+                //check if there are any access entries for this closed order 
+                var access =
+                    _queryRepositoryFactory.ClosedAccessRepository.Queryable.Any(
+                        a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current);
 
                 // if it's closed and you don't have read...i'm pretty sure there shouldn't be access
-                return OrderAccessLevel.None;
+                return access ? OrderAccessLevel.Readonly : OrderAccessLevel.None;
             }
-
-            var access = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current).ToList();
-
-            if (access.Any())
+            else
             {
-                if (access.Any(x => x.EditAccess))
+                //else check the edit order access repo
+                var access =
+                    _queryRepositoryFactory.OpenAccessRepository.Queryable.Where(
+                        a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current)
+                                           .Select(x => new {x.EditAccess, x.ReadAccess})
+                                           .ToList();
+                
+                if (access.Any())
                 {
-                    return OrderAccessLevel.Edit;
-                }
+                    if (access.Any(x => x.EditAccess))
+                    {
+                        return OrderAccessLevel.Edit;
+                    }
 
-                if (access.Any(x => x.ReadAccess))
-                {
-                    return OrderAccessLevel.Readonly;
+                    if (access.Any(x => x.ReadAccess))
+                    {
+                        return OrderAccessLevel.Readonly;
+                    }
                 }
             }
 
             // default no access
             return OrderAccessLevel.None;
-
         }
 
-        public OrderAccessLevel GetAccessLevel(Order order, bool? closed = null)
+        public OrderAccessLevel GetAccessLevel(Order order)
         {
             Check.Require(order != null, "order is required.");
 
-            return GetAccessLevel(order.Id, closed);
+            return GetAccessLevel(order.Id);
         }
 
         public bool HasReadAccess(int orderId)
