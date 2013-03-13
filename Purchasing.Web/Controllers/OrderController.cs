@@ -371,7 +371,12 @@ namespace Purchasing.Web.Controllers
         //[AuthorizeReadOrEditOrder] //Doing access directly to avoid duplicate permissions check
         public ActionResult Review(int id)
         {
-            var orderQuery = _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id).Fetch(x=>x.StatusCode).Fetch(x=>x.Workgroup).Single();
+            var orderQuery =
+                _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id)
+                                  .Fetch(x => x.StatusCode)
+                                  .Fetch(x => x.Workgroup)
+                                  .Fetch(x => x.Organization)
+                                  .Single();
 
             var model = new ReviewOrderViewModel
                 {
