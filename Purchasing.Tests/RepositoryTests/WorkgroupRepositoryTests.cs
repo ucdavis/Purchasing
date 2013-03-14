@@ -2998,7 +2998,41 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion DoNotInheritPermissions Tests
 
-        
+        #region NameAndAdmin Tests
+
+        [TestMethod]
+        public void TestNameAndAdminWhenAdmin()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Workgroup(9);
+            #endregion Arrange
+
+            #region Act
+            record.Administrative = true;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name9 (Admin)", record.NameAndAdmin);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestNameAndAdminWhenNotAdmin()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Workgroup(9);
+            #endregion Arrange
+
+            #region Act
+            record.Administrative = false;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name9", record.NameAndAdmin);
+            #endregion Assert
+        }
+
+        #endregion NameAndAdmin Tests
 
 
         #region Constructor Tests
@@ -3092,6 +3126,7 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
+            expectedFields.Add(new NameAndType("NameAndAdmin", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("NotificationEmailList", "System.String", new List<string>
             {
                  "[DataAnnotationsExtensions.EmailAttribute()]",                 
