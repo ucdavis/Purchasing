@@ -113,6 +113,11 @@ namespace Purchasing.Core.Domain
                 return cas.Distinct().ToList();
             }
         }
+
+        public virtual string NameAndAdmin
+        {
+            get { return string.Format("{0}{1}", Name, Administrative ? " (Admin)" : string.Empty); }
+        }
     }
 
     public class WorkgroupMap : ClassMap<Workgroup>

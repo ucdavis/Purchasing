@@ -25,16 +25,17 @@ namespace Purchasing.Web.Controllers
         private readonly IReportRepositoryFactory _reportRepositoryFactory;
         private readonly IReportService _reportService;
         private readonly IWorkgroupService _workgroupService;
-        private readonly IIndexService _indexService;
+        private readonly ISearchService _searchService;
 
-        public ReportController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IReportRepositoryFactory reportRepositoryFactory, IReportService reportService, IWorkgroupService workgroupService, IIndexService indexService)
+
+        public ReportController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IReportRepositoryFactory reportRepositoryFactory, IReportService reportService, IWorkgroupService workgroupService,  ISearchService searchService)
         {
             _repositoryFactory = repositoryFactory;
             _queryRepositoryFactory = queryRepositoryFactory;
             _reportRepositoryFactory = reportRepositoryFactory;
             _reportService = reportService;
             _workgroupService = workgroupService;
-            _indexService = indexService;
+            _searchService = searchService;
         }
 
         [AuthorizeReadOrEditOrder]
@@ -102,7 +103,7 @@ namespace Purchasing.Web.Controllers
                               .Select(x => new { Workgroup = x, Primary = x.PrimaryOrganization }).ToList();
             
             //Get every order that matches these workgroups
-            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
+            var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
             var workgroupCounts = new List<OrderTotals>();
             foreach (var workgroup in allWorkgroups)
             {
@@ -191,7 +192,7 @@ namespace Purchasing.Web.Controllers
                               .Select(x => new { Workgroup = x, Primary = x.PrimaryOrganization }).ToList();
 
             //Get every order that matches these workgroups
-            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
+            var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
             var workgroupCounts = new List<OrderTotals>();
 
             foreach (var workgroup in allWorkgroups)
@@ -248,7 +249,7 @@ namespace Purchasing.Web.Controllers
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
             
             //Get every order that matches these workgroups
-            var matchingOrders = GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
+            var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
             var workgroupCounts = new List<OrderTotals>();
 
             foreach (var workgroup in allWorkgroups)
@@ -304,50 +305,26 @@ namespace Purchasing.Web.Controllers
             return View(viewModel);
         }
 
-        /// <summary>
-        /// Gets all orders for a list of workgroups within the given date range.
-        /// </summary>
-        /// <param name="workgroups">List of workgroups</param>
-        /// <param name="createdAfter">Return orders created after this date</param>
-        /// <param name="createdBefore">Return orders creatred before the END of the given date (we will AddDays(+1))/</param>
-        /// <returns></returns>
-        private List<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore)
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [AuthorizeWorkgroupAccess]
+        public ActionResult ProcessingTime(int? workgroupId = null, DateTime? month = null)
         {
-            var workgroupIds = workgroups.Select(x => x.Id).Distinct().ToArray();
+            Workgroup workgroup = null;
 
-            var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
-            
-            //Search for all orders within the given workgroups, created in the range desired
-            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
-            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
-            var filter = NumericRangeFilter.NewLongRange("datecreatedticks", createdAfter.Ticks, createdBefore.AddDays(1).Ticks, true, true);
-
-            //Need to return all matching orders
-            var docs = searcher.Search(query, filter, int.MaxValue).ScoreDocs;
-            var orderHistory = new List<OrderHistory>();
-
-            foreach (var scoredoc in docs)
+            if (workgroupId.HasValue)
             {
-                var doc = searcher.Doc(scoredoc.doc);
-
-                var history = new OrderHistory();
-
-                foreach (var prop in history.GetType().GetProperties())
-                {
-                    if (!string.Equals(prop.Name, "id", StringComparison.OrdinalIgnoreCase))
-                    {
-                        prop.SetValue(history, Convert.ChangeType(doc.Get(prop.Name.ToLower()), prop.PropertyType), null);
-                    }
-                }
-
-                orderHistory.Add(history);
+                workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
             }
 
-            analyzer.Close();
-            searcher.Close();
-            searcher.Dispose();
+            var viewModel = ReportProcessingTimeViewModel.Create( _workgroupService, workgroup);
 
-            return orderHistory;
+            if (workgroupId.HasValue && month.HasValue)
+            {
+                viewModel.GenerateDisplayTable(_searchService,_repositoryFactory, _workgroupService,workgroupId.Value, month.Value);
+            }
+
+            return View(viewModel);
         }
+
     }
 }
