@@ -23,7 +23,7 @@ namespace Purchasing.Web.Models
                                 {
                                     Workgroups = workgroups,
                                     Workgroup = workgroup,
-                                    Columns = null
+                                    Columns = new List<ReportProcessingColumns>()
                                 };
 
             return viewModel;
