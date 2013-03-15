@@ -47,12 +47,15 @@
 	</ul>
 }
 
-
-
-<h3>Warning, this report may be slow</h3>
 <div class="">
     <div class="dt-table-filter-header display-form">
         <!--<header class="ui-widget-header ui-corner-top"></header>-->
+        <div class="section-text">
+            <p> Warning, this report may be slow. </p>
+            <p> Workgroups with (Admin) after them will get all orders in child workgroups. </p>
+            <p> Only completed orders that were created in the month selected will be displayed. </p>
+            <p> If there were multiple ReRoutes, only the last one will be used. </p>
+        </div>
         <div class="section-contents">
             @using (Html.BeginForm("ProcessingTime", "Report", FormMethod.Get))
             {
