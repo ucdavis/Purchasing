@@ -13,9 +13,10 @@ namespace Purchasing.Web.Models
         public IEnumerable<Workgroup> Workgroups;
         public Workgroup Workgroup { get; set; }
         public DateTime? Month { get; set; }
-        public List<ReportProcessingColumns> Columns { get; set; } 
+        public List<ReportProcessingColumns> Columns { get; set; }
+        public bool OnlyShowReRouted { get; set; }
 
-        public static ReportProcessingTimeViewModel Create(IWorkgroupService workgroupService, Workgroup workgroup)
+        public static ReportProcessingTimeViewModel Create(IWorkgroupService workgroupService, Workgroup workgroup, bool onlyShowReRouted)
         {
             var workgroups = workgroupService.LoadAdminWorkgroups();
 
@@ -23,6 +24,7 @@ namespace Purchasing.Web.Models
                                 {
                                     Workgroups = workgroups,
                                     Workgroup = workgroup,
+                                    OnlyShowReRouted = onlyShowReRouted,
                                     Columns = new List<ReportProcessingColumns>()
                                 };
 
@@ -75,6 +77,10 @@ namespace Purchasing.Web.Models
                     {
                         column.ReRoutTime = column.ReroutedToPurchaserDate.Value - column.ArrivedAtPurchaser.Value;
                     }
+                }
+                else if(OnlyShowReRouted)
+                {
+                    continue;
                 }
                 orderHistory = order.OrderTrackings.FirstOrDefault(a => a.StatusCode.IsComplete);
                 if (orderHistory != null)

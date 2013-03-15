@@ -76,8 +76,15 @@
                             @this.Select("WorkgroupId").Options(Model.Workgroups.OrderBy(x => x.Name), x => x.Id, x => x.NameAndAdmin).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--")  
                         </div>
                     </li>
-
-                    <li class="apply" style="margin-left: 240px;">
+                    <li style="margin-left: 240px;">
+                        <div class="editor-label">
+                            @Html.Label("Only Show ReRouted to Purchaser Orders")
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.OnlyShowReRouted)
+                        </div>
+                    </li>
+                    <li class="apply" >
                         <div class="editor-field" style="display:inline">
                             <input class="button" type="submit" value="Apply" />
                         </div>
@@ -89,10 +96,9 @@
 
 </div>
 
-<table class="datatable">
+<table class="datatable no-icon-table">
     <thead>
         <tr>
-            <th></th>
             <th>
                 Org
             </th>
@@ -110,7 +116,6 @@
             <th>Completed By Purchaser Name</th>
             <th>ReRoute Time</th>
             <th>Completion Time</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -118,7 +123,6 @@
         @foreach (var item in Model.Columns)
         {
             <tr class="@(odd ? "odd" : "even")">
-                <td></td>
                 <td>
                     @item.Organization
                 </td>
@@ -152,7 +156,6 @@
                 <td>
                     @item.CompletionTime
                 </td>
-                <td></td>
             </tr>
             odd = !odd;
         }

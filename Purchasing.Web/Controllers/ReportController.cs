@@ -307,7 +307,7 @@ namespace Purchasing.Web.Controllers
 
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
-        public ActionResult ProcessingTime(int? workgroupId = null, DateTime? month = null)
+        public ActionResult ProcessingTime(int? workgroupId = null, DateTime? month = null, bool? onlyShowReRouted = null)
         {
             Workgroup workgroup = null;
 
@@ -315,8 +315,11 @@ namespace Purchasing.Web.Controllers
             {
                 workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
             }
-
-            var viewModel = ReportProcessingTimeViewModel.Create( _workgroupService, workgroup);
+            if (onlyShowReRouted == null)
+            {
+                onlyShowReRouted = true;
+            }
+            var viewModel = ReportProcessingTimeViewModel.Create( _workgroupService, workgroup, onlyShowReRouted.Value);
 
             if (workgroupId.HasValue && month.HasValue)
             {
