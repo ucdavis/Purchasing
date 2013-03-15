@@ -48,15 +48,12 @@ namespace Purchasing.Web.Models
             Columns = new List<ReportProcessingColumns>();
             var workgroups = repositoryFactory.WorkgroupRepository.Queryable.Where(a => allChildWorkgroups.Contains(a.Id)).ToList();
             var matchingOrders = indexSearchService.GetOrdersByWorkgroups(workgroups, month, endMonth);
-            foreach (var matchingOrder in matchingOrders)
+            foreach (var matchingOrder in matchingOrders.Where(a => a.IsComplete && a.StatusId != OrderStatusCode.Codes.Denied && a.StatusId != OrderStatusCode.Codes.Cancelled))
             {
                 
                 var column = new ReportProcessingColumns();
                 var order = repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == matchingOrder.OrderId);
-                if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Denied || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled)
-                {
-                    continue; //Only report on completed orders?
-                }
+
                 column.Organization = order.Workgroup.PrimaryOrganization.Id;
                 column.Workgroup = order.Workgroup.Name;
                 column.OrderRequestNumber = order.RequestNumber;
