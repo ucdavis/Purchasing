@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Transform;
 using Purchasing.Core.Domain;
@@ -52,5 +53,7 @@ namespace Purchasing.Web.Services
         /// Searches buildings
         /// </summary>
         IList<IdAndName> SearchBuildings(string searchTerm);
+
+        IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore);
     }
 }

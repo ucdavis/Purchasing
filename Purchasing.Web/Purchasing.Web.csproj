@@ -349,6 +349,7 @@
     <Compile Include="Models\AccountSelectModel.cs" />
     <Compile Include="Models\AutoApprovalListModel.cs" />
     <Compile Include="Models\AutoApprovalViewModel.cs" />
+    <Compile Include="Models\ReportProcessingTimeViewModel.cs" />
     <Compile Include="Models\CustomFieldViewModel.cs" />
     <Compile Include="Models\FilteredOrderListModel.cs" />
     <Compile Include="Models\LandingPageViewModel.cs" />
@@ -1026,6 +1027,7 @@
     <Content Include="Views\Report\TotalByVendor.cshtml" />
     <Content Include="Views\Order\_ReviewFpdComplete.cshtml" />
     <Content Include="Views\EmailQueueV2\Index.cshtml" />
+    <Content Include="Views\Report\ProcessingTime.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

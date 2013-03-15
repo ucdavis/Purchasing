@@ -1,0 +1,165 @@
+﻿@model Purchasing.Web.Models.ReportProcessingTimeViewModel
+
+@{
+    ViewBag.Title = "Purchaser Processing Time Report";
+    ViewBag.SingleColumn = false;
+    ViewBag.LoadTableTools = true;
+    ViewBag.LoadFixedHeaders = true;
+
+    Bundles.Reference("scripts/public/single/TableTools.js");
+    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
+    Bundles.Reference("scripts/public/single/RearrangeDataTable.js");
+    Bundles.Reference("scripts/public/single/FixedHeader.js");
+}
+
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('.year-month').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: 'MM yy',
+                onClose: function (dateText, inst) {
+                    var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                    $(this).datepicker('setDate', new Date(year, month, 1));
+                }
+            });
+        });
+    </script>
+
+    <style type="text/css">
+        .ui-datepicker-calendar {
+            display: none;
+        }
+        .year-month {
+            min-width: 110px;
+        }
+    </style>
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index", null, new { @class = "button" })</li>
+	</ul>
+}
+
+<div class="">
+    <div class="dt-table-filter-header display-form">
+        <!--<header class="ui-widget-header ui-corner-top"></header>-->
+        <div class="section-text">
+            <p> Warning, this report may be slow. </p>
+            <p> Workgroups with (Admin) after them will get all orders in child workgroups. </p>
+            <p> Only completed orders that were created in the month selected will be displayed. </p>
+            <p> If there were multiple ReRoutes, only the last one will be used. </p>
+        </div>
+        <div class="section-contents">
+            @using (Html.BeginForm("ProcessingTime", "Report", FormMethod.Get))
+            {
+                <ul>
+                    <li class="datepicker">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.Month)
+                        </div>
+                        <div class="editor-field">
+                            @Html.TextBoxFor(model => model.Month, new { @class = "year-month" })
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                            @Html.Label("Workgroup")
+                        </div>
+                        <div class="editor-field">
+                            @this.Select("WorkgroupId").Options(Model.Workgroups.OrderBy(x => x.Name), x => x.Id, x => x.NameAndAdmin).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--")  
+                        </div>
+                    </li>
+                    <li style="margin-left: 240px;">
+                        <div class="editor-label">
+                            @Html.Label("Only Show ReRouted to Purchaser Orders")
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.OnlyShowReRouted)
+                        </div>
+                    </li>
+                    <li class="apply" >
+                        <div class="editor-field" style="display:inline">
+                            <input class="button" type="submit" value="Apply" />
+                        </div>
+                    </li>
+                </ul>
+            }
+        </div>
+    </div>
+
+</div>
+
+<table class="datatable no-icon-table">
+    <thead>
+        <tr>
+            <th>
+                Org
+            </th>
+            <th>
+                Workgroup
+            </th>
+            <th>
+                Request Number
+            </th>
+            <th>Arrived At Purchaser</th>
+            <th>Rerouted To Purchaser Date</th>
+            <th>Rerouted To Purchaser Name</th>
+            <th>ReRouted To Purchaser By</th>
+            <th>Completed By Purchaser Date</th>
+            <th>Completed By Purchaser Name</th>
+            <th>ReRoute Time</th>
+            <th>Completion Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ var odd = false; }
+        @foreach (var item in Model.Columns)
+        {
+            <tr class="@(odd ? "odd" : "even")">
+                <td>
+                    @item.Organization
+                </td>
+                <td>
+                    @item.Workgroup
+                </td>
+                <td>
+                    @Html.ActionLink(item.OrderRequestNumber, "Review", "Order", new {id = item.OrderId}, new {target = "_blank"})
+                </td>
+                <td>
+                    @item.ArrivedAtPurchaser
+                </td>
+                <td>
+                    @item.ReroutedToPurchaserDate
+                </td>
+                <td>
+                    @item.ReroutedToPurchaserName
+                </td>
+                <td>
+                    @item.ReRoutedToPurchaserBy
+                </td>
+                <td>
+                    @item.CompletedByPurchaserDate
+                </td>
+                <td>
+                    @item.CompletedByPurchaserName
+                </td>
+                <td>
+                    @item.ReRoutTime
+                </td>
+                <td>
+                    @item.CompletionTime
+                </td>
+            </tr>
+            odd = !odd;
+        }
+    </tbody>
+</table>
+
+
