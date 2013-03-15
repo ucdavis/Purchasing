@@ -51,7 +51,7 @@ namespace Purchasing.Web.Models
                 
                 var column = new ReportProcessingColumns();
                 var order = repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == matchingOrder.OrderId);
-                if (!order.StatusCode.IsComplete)
+                if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Denied || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled)
                 {
                     continue; //Only report on completed orders?
                 }
@@ -69,15 +69,26 @@ namespace Purchasing.Web.Models
                 if (orderHistory != null)
                 {
                     column.ReroutedToPurchaserDate = orderHistory.DateCreated;
-                    column.ReRoutedToPurchaserBy = orderHistory.User.FullName;
-                    var xx = 
+                    column.ReRoutedToPurchaserBy = orderHistory.User.FullName;    
                     column.ReroutedToPurchaserName = orderHistory.Description.Substring(22);
+                    if (column.ArrivedAtPurchaser != null)
+                    {
+                        column.ReRoutTime = column.ReroutedToPurchaserDate.Value - column.ArrivedAtPurchaser.Value;
+                    }
                 }
                 orderHistory = order.OrderTrackings.FirstOrDefault(a => a.StatusCode.IsComplete);
                 if (orderHistory != null)
                 {
                     column.CompletedByPurchaserDate = orderHistory.DateCreated;
                     column.CompletedByPurchaserName = orderHistory.User.FullName;
+                    if (column.ArrivedAtPurchaser != null && column.ReroutedToPurchaserDate != null)
+                    {
+                        column.CompletionTime = column.CompletedByPurchaserDate.Value - column.ReroutedToPurchaserDate.Value;
+                    }
+                    else if (column.ArrivedAtPurchaser != null && column.ReroutedToPurchaserDate == null)
+                    {
+                        column.CompletionTime = column.CompletedByPurchaserDate.Value - column.ArrivedAtPurchaser.Value;
+                    }
                 }
                 Columns.Add(column);
             }
@@ -104,6 +115,8 @@ namespace Purchasing.Web.Models
         public string ReRoutedToPurchaserBy { get; set; }
         public DateTime? CompletedByPurchaserDate { get; set; }
         public string CompletedByPurchaserName { get; set; }
+        public TimeSpan ReRoutTime { get; set; }
+        public TimeSpan CompletionTime { get; set; }
     }
 
 

@@ -86,66 +86,74 @@
 
 </div>
 
-    <table class="datatable">
-        <thead>
-            <tr>
-                <th></th>
-                <th>
-                    Org
-                </th>
-                <th>
-                    Workgroup
-                </th>
-                <th>
-                    Request Number
-                </th>
-                <th>Arrived At Purchaser</th>
-                <th>Rerouted To Purchaser Date</th>
-                <th>Rerouted To Purchaser Name</th>
-                <th>ReRouted To Purchaser By</th>
-                <th>Completed By Purchaser Date</th>
-                <th>Completed By Purchaser Name</th>
-                <th></th>
+<table class="datatable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Org
+            </th>
+            <th>
+                Workgroup
+            </th>
+            <th>
+                Request Number
+            </th>
+            <th>Arrived At Purchaser</th>
+            <th>Rerouted To Purchaser Date</th>
+            <th>Rerouted To Purchaser Name</th>
+            <th>ReRouted To Purchaser By</th>
+            <th>Completed By Purchaser Date</th>
+            <th>Completed By Purchaser Name</th>
+            <th>ReRoute Time</th>
+            <th>Completion Time</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ var odd = false; }
+        @foreach (var item in Model.Columns)
+        {
+            <tr class="@(odd ? "odd" : "even")">
+                <td></td>
+                <td>
+                    @item.Organization
+                </td>
+                <td>
+                    @item.Workgroup
+                </td>
+                <td>
+                    @Html.ActionLink(item.OrderRequestNumber, "Review", "Order", new {id = item.OrderId}, new {target = "_blank"})
+                </td>
+                <td>
+                    @item.ArrivedAtPurchaser
+                </td>
+                <td>
+                    @item.ReroutedToPurchaserDate
+                </td>
+                <td>
+                    @item.ReroutedToPurchaserName
+                </td>
+                <td>
+                    @item.ReRoutedToPurchaserBy
+                </td>
+                <td>
+                    @item.CompletedByPurchaserDate
+                </td>
+                <td>
+                    @item.CompletedByPurchaserName
+                </td>
+                <td>
+                    @item.ReRoutTime
+                </td>
+                <td>
+                    @item.CompletionTime
+                </td>
+                <td></td>
             </tr>
-        </thead>
-        <tbody>
-            @{ var odd = false; }
-            @foreach (var item in Model.Columns)
-            {
-                <tr class="@(odd ? "odd" : "even")">
-                    <td></td>
-                    <td>
-                        @item.Organization
-                    </td>
-                    <td>
-                        @item.Workgroup
-                    </td>
-                    <td>
-                        @Html.ActionLink(item.OrderRequestNumber, "Review", "Order", new {id = item.OrderId}, new {target = "_blank"})
-                    </td>
-                    <td>
-                        @item.ArrivedAtPurchaser
-                    </td>
-                    <td>
-                        @item.ReroutedToPurchaserDate
-                    </td>
-                    <td>
-                        @item.ReroutedToPurchaserName
-                    </td>
-                    <td>
-                        @item.ReRoutedToPurchaserBy
-                    </td>
-                    <td>
-                        @item.CompletedByPurchaserDate
-                    </td>
-                    <td>
-                        @item.CompletedByPurchaserName
-                    </td>
-                    <td></td>
-                </tr>
-                odd = !odd;
-            }
-        </tbody>
-    </table>
+            odd = !odd;
+        }
+    </tbody>
+</table>
 
 
