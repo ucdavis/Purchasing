@@ -13,7 +13,7 @@ CREATE VIEW [dbo].[vPendingOrders]
 select row_number() over (order by pending.orderid) id, *
 from 
 (
-		select top 5 orders.id orderid, requestnumber, orders.datecreated
+		select distinct orders.id orderid, requestnumber, orders.datecreated
 		, dateneeded, creator.firstname + ' ' + creator.lastname creator
 		, tracking.datecreated lastactiondate
 		, codes.name statusname
