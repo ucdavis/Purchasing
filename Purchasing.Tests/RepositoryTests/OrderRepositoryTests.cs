@@ -7095,7 +7095,184 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion Valid Tests
         #endregion PoNumber Tests
 
+        #region LineItemSummary Tests
 
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the LineItemSummary with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestLineItemSummaryWithNullValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.LineItemSummary = null;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the LineItemSummary with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestLineItemSummaryWithEmptyStringSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.LineItemSummary = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the LineItemSummary with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestLineItemSummaryWithOneSpaceSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.LineItemSummary = " ";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the LineItemSummary with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestLineItemSummaryWithOneCharacterSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.LineItemSummary = "x";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the LineItemSummary with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestLineItemSummaryWithLongValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.LineItemSummary = "x".RepeatTimes(999);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(999, order.LineItemSummary.Length);
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion LineItemSummary Tests
+
+        #region GenerateLineItemSummary Tests
+
+        [TestMethod]
+        public void TestGenerateLineItemSummary1()
+        {
+            #region Arrange
+            var record = GetValid(99);
+            #endregion Arrange
+
+            #region Act
+            record.LineItemSummary = record.GenerateLineItemSummary();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.LineItemSummary);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestGenerateLineItemSummary2()
+        {
+            #region Arrange
+            var record = GetValid(99);
+            record.LineItems = new List<LineItem>();
+            #endregion Arrange
+
+            #region Act
+            record.LineItemSummary = record.GenerateLineItemSummary();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("", record.LineItemSummary);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestGenerateLineItemSummary3()
+        {
+            #region Arrange
+            var record = GetValid(99);
+            record.LineItems = new List<LineItem>();
+            record.LineItems.Add(CreateValidEntities.LineItem(2));
+            record.LineItems.Add(CreateValidEntities.LineItem(4));
+            #endregion Arrange
+
+            #region Act
+            record.LineItemSummary = record.GenerateLineItemSummary();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("2 [Unit2] Description2, 4 [Unit4] Description4", record.LineItemSummary);
+            #endregion Assert
+        }
+
+        #endregion GenerateLineItemSummary Tests
 
         #region Constructor Tests
 
@@ -7212,6 +7389,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("KfsDocuments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.KfsDocument]", new List<string>()));
             expectedFields.Add(new NameAndType("LastCompletedApproval", "Purchasing.Core.Domain.Approval", new List<string>()));
             expectedFields.Add(new NameAndType("LineItems", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.LineItem]", new List<string>()));
+            expectedFields.Add(new NameAndType("LineItemSummary", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("OrderComments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.OrderComment]", new List<string>()));
             expectedFields.Add(new NameAndType("OrderReceived", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("OrderTrackings", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.OrderTracking]", new List<string>()));
