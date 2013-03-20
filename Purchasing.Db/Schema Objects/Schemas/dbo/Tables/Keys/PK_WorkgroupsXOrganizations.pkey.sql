@@ -1,3 +1,0 @@
-﻿ALTER TABLE [dbo].[WorkgroupsXOrganizations]
-    ADD CONSTRAINT [PK_WorkgroupsXOrganizations] PRIMARY KEY CLUSTERED ([WorkgroupId] ASC, [OrganizationId] ASC) WITH (ALLOW_PAGE_LOCKS = ON, ALLOW_ROW_LOCKS = ON, PAD_INDEX = OFF, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = OFF);
-
