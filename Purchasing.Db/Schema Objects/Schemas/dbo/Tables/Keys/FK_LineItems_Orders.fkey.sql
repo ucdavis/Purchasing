@@ -1,3 +1,0 @@
-﻿ALTER TABLE [dbo].[LineItems]
-    ADD CONSTRAINT [FK_LineItems_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
