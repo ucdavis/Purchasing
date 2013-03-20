@@ -26,7 +26,7 @@ from (
 			, wp.RoleId orderstatuscodeid
 		from workgrouppermissions wp
 			inner join orders o on o.WorkgroupId = wp.WorkgroupId
-			inner join workgroups w on wp.workgroupid = w.id and w.IsActive = 1
+			inner join workgroups w on wp.workgroupid = w.id
 		where wp.roleid = 'RV'
 		  and o.orderstatuscodeid in ('CN', 'CP', 'OC', 'OD')
 
