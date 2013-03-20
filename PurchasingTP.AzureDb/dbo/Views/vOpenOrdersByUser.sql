@@ -7,7 +7,7 @@ from (
 		, creator.firstname + ' ' + creator.lastname creator
 		, ordertracking.datecreated lastactiondate
 		, codes.name statusname
-		, orders.LineItemSummary
+		, orders.LineItemSummary as summary
 		, createdby accessuserid
 		, wv.name VendorName
 	from orders
