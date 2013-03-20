@@ -325,6 +325,12 @@ namespace Purchasing.Web.Controllers
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
             Check.Require(order != null);
 
+            if (order.Workgroup == null || !order.Workgroup.IsActive)
+            {
+                ErrorMessage = order.Workgroup == null ? "workgroup not found." : "workgroup not active.";
+                return this.RedirectToAction(a => a.SelectWorkgroup());
+            }
+
             var model = CreateOrderModifyModel(order.Workgroup);
             model.IsCopyOrder = true;
             model.Order = order;
