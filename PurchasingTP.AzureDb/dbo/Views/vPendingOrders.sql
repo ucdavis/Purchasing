@@ -37,8 +37,9 @@ from
 			from lineitems
 			group by orderid
 			) lineitemsummary on lineitemsummary.orderid = orders.id
-		inner join vOpenAccess access on access.OrderId = dbo.orders.id and isadmin = 0
+		inner join vOpenAccess access on access.OrderId = dbo.orders.id and isadmin = 0 and Edit = 1
 		left outer join approvals on approvals.OrderId = orders.id and (approvals.userid = access.accessuserid or approvals.SecondaryUserId = access.accessuserid)
+		left outer join orderstatuscodes acodes on acodes.id = approvals.OrderStatusCodeId and acodes.level = codes.level
 	where
 		tracking.datecreated in ( select max(itracking.datecreated)
 								  from ordertracking itracking
