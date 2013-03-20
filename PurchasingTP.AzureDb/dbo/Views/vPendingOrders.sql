@@ -13,7 +13,7 @@ CREATE VIEW [dbo].[vPendingOrders]
 select row_number() over (order by pending.orderid) id, *
 from 
 (
-	select distinct orders.id orderid, requestnumber, orders.datecreated
+		select distinct orders.id orderid, requestnumber, orders.datecreated
 		, dateneeded, creator.firstname + ' ' + creator.lastname creator
 		, tracking.datecreated lastactiondate
 		, codes.name statusname
@@ -37,9 +37,8 @@ from
 			from lineitems
 			group by orderid
 			) lineitemsummary on lineitemsummary.orderid = orders.id
-		inner join vEditAccess access on access.OrderId = dbo.orders.id and isadmin = 0
-		left outer join approvals on approvals.OrderId = orders.id and (approvals.userid = access.accessuserid or approvals.SecondaryUserId = access.accessuserid)
-		left outer join orderstatuscodes acodes on acodes.id = approvals.OrderStatusCodeId and acodes.level = codes.level
+		inner join vOpenAccess access on access.OrderId = dbo.orders.id and isadmin = 0 and Edit = 1
+		left outer join approvals on approvals.OrderId = orders.id and (approvals.userid = access.accessuserid or approvals.SecondaryUserId = access.accessuserid) and approvals.orderstatuscodeid = orders.orderstatuscodeid
 	where
 		tracking.datecreated in ( select max(itracking.datecreated)
 								  from ordertracking itracking

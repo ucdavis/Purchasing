@@ -19,6 +19,9 @@ namespace Purchasing.Core.Domain
         public virtual bool KfsStatus { get; set; }
         public virtual bool ShowInFilterList { get; set; }
 
+        /// <summary>
+        /// NOTE!!!! If Completed order status codes are ever added to the database, vClosedAccess.sql and vOpenAccess.SQL must be modified.
+        /// </summary>
         public static class Codes
         {
             public const string AccountManager = Role.Codes.AccountManager;

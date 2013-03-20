@@ -8,7 +8,9 @@ namespace Purchasing.Core
     {
         IRepository<Access> AccessRepository { get; set; }
         IRepository<EditAccess> EditAccessRepository { get; set; }
-        IRepository<ReadAccess> ReadAccessRepository { get; set; } 
+        IRepository<ReadAccess> ReadAccessRepository { get; set; }
+        IRepository<OpenAccess> OpenAccessRepository { get; set; }
+        IRepository<ClosedAccess> ClosedAccessRepository { get; set; } 
         IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
         //IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
         IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }
@@ -30,7 +32,9 @@ namespace Purchasing.Core
     {
         public IRepository<Access> AccessRepository { get; set; }
         public IRepository<EditAccess> EditAccessRepository { get; set; }
-        public IRepository<ReadAccess> ReadAccessRepository { get; set; } 
+        public IRepository<ReadAccess> ReadAccessRepository { get; set; }
+        public IRepository<OpenAccess> OpenAccessRepository { get; set; }
+        public IRepository<ClosedAccess> ClosedAccessRepository { get; set; }
         public IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
         //public IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
         public IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }

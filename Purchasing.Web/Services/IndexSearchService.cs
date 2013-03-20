@@ -4,6 +4,7 @@ using System.Linq;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
+using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Web.Utility;
 using Version = Lucene.Net.Util.Version;
@@ -203,6 +204,46 @@ namespace Purchasing.Web.Services
 
 
             
+        }
+
+
+        public IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore)
+        {
+            var workgroupIds = workgroups.Select(x => x.Id).Distinct().ToArray();
+
+            var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
+
+            //Search for all orders within the given workgroups, created in the range desired
+            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
+            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
+            var filter = NumericRangeFilter.NewLongRange("datecreatedticks", createdAfter.Ticks, createdBefore.AddDays(1).Ticks, true, true);
+
+            //Need to return all matching orders
+            var docs = searcher.Search(query, filter, int.MaxValue).ScoreDocs;
+            var orderHistory = new List<OrderHistory>();
+
+            foreach (var scoredoc in docs)
+            {
+                var doc = searcher.Doc(scoredoc.doc);
+
+                var history = new OrderHistory();
+
+                foreach (var prop in history.GetType().GetProperties())
+                {
+                    if (!string.Equals(prop.Name, "id", StringComparison.OrdinalIgnoreCase))
+                    {
+                        prop.SetValue(history, Convert.ChangeType(doc.Get(prop.Name.ToLower()), prop.PropertyType), null);
+                    }
+                }
+
+                orderHistory.Add(history);
+            }
+
+            analyzer.Close();
+            searcher.Close();
+            searcher.Dispose();
+
+            return orderHistory;
         }
 
         /// <summary>
