@@ -15,10 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1EFCD7
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Purchasing.Db", "Purchasing.Db\Purchasing.Db.sqlproj", "{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}"
-EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PurchasingTP.Db", "PurchasingTP.Db\PurchasingTP.Db.sqlproj", "{B9B9A871-E470-4B36-AD2D-492A4A808D3D}"
-EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PurchasingLookups.Db", "PurchasingLookups.Db\PurchasingLookups.Db.sqlproj", "{B0A38919-9556-4B41-A9EC-89EA4809685E}"
 EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "Purchasing.Web.Azure", "Purchasing.Web.Azure\Purchasing.Web.Azure.ccproj", "{78504968-F0E0-48BA-8BEE-8886E196E0C0}"
@@ -73,25 +69,6 @@ Global
 		{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}.ReleaseCAES|Any CPU.Build.0 = ReleaseCAES|Any CPU
 		{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}.Test|Any CPU.ActiveCfg = Test|Any CPU
 		{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}.Test|Any CPU.Build.0 = Test|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.Release|Any CPU.Build.0 = Release|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.ReleaseAzure|Any CPU.ActiveCfg = ReleaseAzure|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.ReleaseCAES|Any CPU.ActiveCfg = ReleaseCAES|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.ReleaseCAES|Any CPU.Build.0 = ReleaseCAES|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.ReleaseCAES|Any CPU.Deploy.0 = ReleaseCAES|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.Test|Any CPU.ActiveCfg = Test|Any CPU
-		{25C5FC6B-1345-42B3-8C40-C9E4E47C4257}.Test|Any CPU.Build.0 = Test|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.ReleaseAzure|Any CPU.ActiveCfg = ReleaseAzure|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.ReleaseCAES|Any CPU.ActiveCfg = Release|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.ReleaseCAES|Any CPU.Deploy.0 = Release|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9B9A871-E470-4B36-AD2D-492A4A808D3D}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{B0A38919-9556-4B41-A9EC-89EA4809685E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0A38919-9556-4B41-A9EC-89EA4809685E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0A38919-9556-4B41-A9EC-89EA4809685E}.Release|Any CPU.ActiveCfg = Release|Any CPU
