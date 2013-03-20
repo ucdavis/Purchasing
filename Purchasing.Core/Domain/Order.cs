@@ -197,8 +197,7 @@ namespace Purchasing.Core.Domain
                     lineSummary.Append(", ");
                 }
 
-                lineSummary.Append(string.Format("{0} [{1}] {2}", lineItem.Quantity, lineItem.Unit,
-                                                    lineItem.Description.Length > 100 ? lineItem.Description.Remove(100) : lineItem.Description));
+                lineSummary.Append(string.Format("{0} [{1}] {2}", lineItem.Quantity, lineItem.Unit, lineItem.Description));
             }
 
             return lineSummary.ToString();
