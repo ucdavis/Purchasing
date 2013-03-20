@@ -1467,6 +1467,7 @@ namespace Purchasing.Web.Controllers
                 }
 
                 order.TotalFromDb = order.Total();
+                order.LineItemSummary = order.GenerateLineItemSummary();
             }
         }
 

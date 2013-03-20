@@ -79,6 +79,9 @@ namespace Purchasing.Core.Domain
         public virtual decimal FreightAmount { get; set; }
         [Required]
         public virtual string Justification { get; set; }
+
+        public virtual string LineItemSummary { get; set; }
+
         [Required]
         public virtual OrderStatusCode StatusCode { get; set; }
         [Required]
@@ -496,6 +499,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.DeliverToEmail);
             Map(x => x.DeliverToPhone);
             Map(x => x.Justification).Length(int.MaxValue);
+            Map(x => x.LineItemSummary);
             Map(x => x.DateCreated);
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");
             Map(x => x.TotalFromDb).Column("Total");
