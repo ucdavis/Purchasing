@@ -184,7 +184,7 @@ namespace Purchasing.Core.Domain
         /// Summarizes first few line items, with elipse in more items.
         /// </summary>
         /// <returns></returns>
-        public virtual string LineItemSummary()
+        public virtual string GenerateLineItemSummary()
         {
             var lineSummary = new StringBuilder();
             int linecount = 0;
@@ -216,8 +216,7 @@ namespace Purchasing.Core.Domain
         {
             get { return LineItems != null && LineItems.Count > 0 && LineItems.All(a => a.Received); }
         }
-
-
+        
         /// <summary>
         /// Check if the order is split by line items
         /// </summary>
