@@ -187,28 +187,17 @@ namespace Purchasing.Core.Domain
         public virtual string GenerateLineItemSummary()
         {
             var lineSummary = new StringBuilder();
-            int linecount = 0;
             foreach (var lineItem in LineItems)
             {
-                if(linecount++==2)
+                if (lineSummary.Length > 0)
                 {
-                    break;
-                }
-                if(linecount==1)
-                {
-                    lineSummary.Append(string.Format("{0} [{1}] {2}", lineItem.Quantity, lineItem.Unit,
-                        lineItem.Description.Length > 100 ? lineItem.Description.Remove(100) : lineItem.Description));
-                } else
-                {
-                    lineSummary.Append(string.Format(", {0} [{1}] {2}", lineItem.Quantity, lineItem.Unit,
-                                                    lineItem.Description.Length > 100 ? lineItem.Description.Remove(100) : lineItem.Description));
+                    lineSummary.Append(", ");
                 }
 
+                lineSummary.Append(string.Format("{0} [{1}] {2}", lineItem.Quantity, lineItem.Unit,
+                                                    lineItem.Description.Length > 100 ? lineItem.Description.Remove(100) : lineItem.Description));
             }
-            if (LineItems.Count > 2)
-            {
-                lineSummary.Append(", ...");
-            }
+
             return lineSummary.ToString();
         }
 
