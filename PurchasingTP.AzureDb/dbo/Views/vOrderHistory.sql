@@ -13,7 +13,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, o.DateCreated
 	, osc.id StatusId, osc.name [Status], osc.IsComplete
 	, totals.totalamount 
-	, o.LineItemSummary as summary
+	, o.LineItemSummary as lineitems
 	, accounts.accountsubaccountsummary AccountSummary
 	, cast(CASE WHEN isnull(charindex(',', accounts.accountsubaccountsummary), 0) <> 0 THEN 1 ELSE 0 END AS bit) HasAccountSplit
 	, o.DeliverTo ShipTo
