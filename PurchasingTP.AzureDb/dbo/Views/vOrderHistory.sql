@@ -13,7 +13,7 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, o.DateCreated
 	, osc.id StatusId, osc.name [Status], osc.IsComplete
 	, totals.totalamount 
-	, lineitemsummary.summary lineitems
+	, o.LineItemSummary as lineitems
 	, accounts.accountsubaccountsummary AccountSummary
 	, cast(CASE WHEN isnull(charindex(',', accounts.accountsubaccountsummary), 0) <> 0 THEN 1 ELSE 0 END AS bit) HasAccountSplit
 	, o.DeliverTo ShipTo
@@ -41,20 +41,7 @@ from orders o
 	left outer join ordertypes ot on ot.id = o.OrderTypeId
 	inner join (
 		select orderid, sum(quantity * unitprice) totalamount from LineItems group by orderid
-	) totals on o.id = totals.orderid
-	inner join ( 
-		select orderid, STUFF(
-			(
-				select ', ' + convert(varchar(10), convert(float, a.quantity)) + ' [' + a.Unit + '] ' + a.[description]
-				from lineitems a
-				where a.orderid = lineitems.orderid
-				order by a.[description]
-				for xml PATH('')
-			), 1, 1, ''
-		) as summary
-		from lineitems
-		group by orderid
-	) lineitemsummary on lineitemsummary.orderid = o.id
+	) totals on o.id = totals.orderid	
 	inner join (
 		select orderid
 			, STUFF(
