@@ -12,7 +12,14 @@
         
             <ul>
                 <li><span>Current Review Level:</span><strong>@Model.Status</strong></li>
-                <li><span>Workgroup:</span><strong>@Model.WorkgroupName</strong></li>
+                @if (!Model.Order.Workgroup.IsActive)
+                {
+                    <li><span>Workgroup:</span><strong style="color: red" title="This workgroup is not active.">@Model.WorkgroupName</strong></li>
+                }
+                else
+                {
+                    <li><span>Workgroup:</span><strong>@Model.WorkgroupName</strong></li>    
+                }    
                 <li><span>Department:</span><strong>@Model.OrganizationName</strong></li>
                 <li><span>Date Needed:</span><strong>@Model.Order.DateNeeded.ToString("d")</strong></li>
                 

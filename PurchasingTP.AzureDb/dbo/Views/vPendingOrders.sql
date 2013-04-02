@@ -17,26 +17,13 @@ from
 		, dateneeded, creator.firstname + ' ' + creator.lastname creator
 		, tracking.datecreated lastactiondate
 		, codes.name statusname
-		, lineitemsummary.summary
+		, orders.LineItemSummary as summary
 		, access.accessuserid
 		, cast(case when approvals.id is not null then 1 else 0 end as bit) isDirectlyAssigned
 	from orders
 		inner join users creator on creator.id = orders.createdby
 		inner join ordertracking tracking on tracking.orderid = orders.id
-		inner join orderstatuscodes codes on orders.orderstatuscodeid = codes.id
-		inner join ( 
-			 select orderid, STUFF(
-				(
-					select ', ' + convert(varchar(10), a.quantity) + ' [' + a.Unit + '] ' + a.[description]
-					from lineitems a
-					where a.orderid = lineitems.orderid
-					order by a.[description]
-					for xml PATH('')
-				), 1, 1, ''
-			) as summary
-			from lineitems
-			group by orderid
-			) lineitemsummary on lineitemsummary.orderid = orders.id
+		inner join orderstatuscodes codes on orders.orderstatuscodeid = codes.id		
 		inner join vOpenAccess access on access.OrderId = dbo.orders.id and isadmin = 0 and Edit = 1
 		left outer join approvals on approvals.OrderId = orders.id and (approvals.userid = access.accessuserid or approvals.SecondaryUserId = access.accessuserid) and approvals.orderstatuscodeid = orders.orderstatuscodeid
 	where

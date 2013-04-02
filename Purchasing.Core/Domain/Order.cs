@@ -79,6 +79,9 @@ namespace Purchasing.Core.Domain
         public virtual decimal FreightAmount { get; set; }
         [Required]
         public virtual string Justification { get; set; }
+
+        public virtual string LineItemSummary { get; set; }
+
         [Required]
         public virtual OrderStatusCode StatusCode { get; set; }
         [Required]
@@ -184,31 +187,19 @@ namespace Purchasing.Core.Domain
         /// Summarizes first few line items, with elipse in more items.
         /// </summary>
         /// <returns></returns>
-        public virtual string LineItemSummary()
+        public virtual string GenerateLineItemSummary()
         {
             var lineSummary = new StringBuilder();
-            int linecount = 0;
             foreach (var lineItem in LineItems)
             {
-                if(linecount++==2)
+                if (lineSummary.Length > 0)
                 {
-                    break;
-                }
-                if(linecount==1)
-                {
-                    lineSummary.Append(string.Format("{0} [{1}] {2}", lineItem.Quantity, lineItem.Unit,
-                        lineItem.Description.Length > 100 ? lineItem.Description.Remove(100) : lineItem.Description));
-                } else
-                {
-                    lineSummary.Append(string.Format(", {0} [{1}] {2}", lineItem.Quantity, lineItem.Unit,
-                                                    lineItem.Description.Length > 100 ? lineItem.Description.Remove(100) : lineItem.Description));
+                    lineSummary.Append(", ");
                 }
 
+                lineSummary.Append(string.Format("{0} [{1}] {2}", lineItem.Quantity, lineItem.Unit, lineItem.Description));
             }
-            if (LineItems.Count > 2)
-            {
-                lineSummary.Append(", ...");
-            }
+
             return lineSummary.ToString();
         }
 
@@ -216,8 +207,7 @@ namespace Purchasing.Core.Domain
         {
             get { return LineItems != null && LineItems.Count > 0 && LineItems.All(a => a.Received); }
         }
-
-
+        
         /// <summary>
         /// Check if the order is split by line items
         /// </summary>
@@ -508,6 +498,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.DeliverToEmail);
             Map(x => x.DeliverToPhone);
             Map(x => x.Justification).Length(int.MaxValue);
+            Map(x => x.LineItemSummary);
             Map(x => x.DateCreated);
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");
             Map(x => x.TotalFromDb).Column("Total");

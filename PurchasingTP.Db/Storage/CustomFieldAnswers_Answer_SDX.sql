@@ -1,4 +1,0 @@
-﻿CREATE FULLTEXT CATALOG [CustomFieldAnswers_Answer_SDX]
-    WITH ACCENT_SENSITIVITY = ON
-    AUTHORIZATION [dbo];
-
