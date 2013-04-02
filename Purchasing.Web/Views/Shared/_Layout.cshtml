@@ -26,6 +26,7 @@
     
     @Bundles.RenderStylesheets()
     @Bundles.RenderStylesheets(pageLocation: "common")
+    @Bundles.RenderStylesheets(pageLocation: "special")
 
 	<style type="text/css">
 		#branding
@@ -53,6 +54,7 @@
     }
         
     @Bundles.RenderScripts("head")
+    
 
     @*@MvcMiniProfiler.MiniProfiler.RenderIncludes()*@
 
@@ -259,7 +261,7 @@
 	
 	</div>
     
-    @Bundles.RenderScripts("common")
+    @Bundles.RenderScripts("common")    
     @Bundles.RenderScripts()
     
     <!--[if IE]>
