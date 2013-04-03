@@ -7,7 +7,7 @@ using UCDArch.Web.Authentication;
 namespace Purchasing.Web.Controllers
 {
     /// <summary>
-    /// Controller for the Account class
+    /// Controller for the Account class.
     /// </summary>
     public class AccountController : Controller
     {
