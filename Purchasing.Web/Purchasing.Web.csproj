@@ -398,7 +398,6 @@
     <Content Include="Css\Datatables.css" />
     <Content Include="Css\icons.css" />
     <Content Include="Css\images\ui-bg_glass-arrows.png" />
-    <Content Include="Css\single\orderrequest.css" />
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Images\arrow-down.png" />
     <Content Include="Images\browser_logos-32.png" />
