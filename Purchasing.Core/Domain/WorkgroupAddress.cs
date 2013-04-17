@@ -41,7 +41,7 @@ namespace Purchasing.Core.Domain
 
         public virtual string DisplayName
         {
-            get { return string.Format("{0} ({4}{6}{5} {1}, {2} {3})", Name, Address.Summarize(), City, State, Room, Building.Summarize(), string.IsNullOrWhiteSpace(Room) || string.IsNullOrWhiteSpace(Building) ? string.Empty :"-"); }
+            get { return string.Format("{0} ({1}{2}{3} {4}, {5} {6})", Name, Room, string.IsNullOrWhiteSpace(Room) || string.IsNullOrWhiteSpace(Building) ? string.Empty : "-", Building.Summarize(), Address.Summarize(), City, State); }
         }
     }
 
