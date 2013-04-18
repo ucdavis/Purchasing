@@ -52,6 +52,7 @@ namespace Purchasing.Web.Models
         public int OrderId { get; set; }
         public IList<User> PurchaserPeeps { get; set; }
         public Order Order { get; set; }
+        public int ApprovalId { get; set; }
 
         public static OrderReRoutePurchaserModel Create(Order order)
         {
