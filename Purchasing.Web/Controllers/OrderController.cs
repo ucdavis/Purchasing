@@ -137,6 +137,12 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction(a => a.Review(id));
             }
 
+            if (approval.User != null && approval.User.Id != CurrentUser.Identity.Name && !approval.User.IsAway)
+            {
+                ErrorMessage = "Can't reroute an approval unless it is assigned to you or the assigned user is away";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+
             var originalRouting = approval.User != null ? approval.User.FullName : "Any Workgroup Account Manager";
 
             var accountManager = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == accountManagerId);
