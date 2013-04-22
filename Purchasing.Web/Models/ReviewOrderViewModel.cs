@@ -10,6 +10,7 @@ namespace Purchasing.Web.Models
         {
             ExternalApprovals = new List<Approval>();
             SubAccounts = new List<SubAccount>();
+            ReRouteAbleAccountManagerApprovals = new List<Approval>();
         }
 
         public Order Order { get; set; }
@@ -83,6 +84,7 @@ namespace Purchasing.Web.Models
         }
 
         public List<Approval> ExternalApprovals { get; set; }
+        public List<Approval> ReRouteAbleAccountManagerApprovals { get; set; }
 
         public List<OrderType> OrderTypes { get; set; }
 

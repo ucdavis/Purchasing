@@ -22,6 +22,10 @@
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UpgradeBackupLocation />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1034,6 +1038,7 @@
     <Content Include="Views\Order\_ReviewFpdComplete.cshtml" />
     <Content Include="Views\EmailQueueV2\Index.cshtml" />
     <Content Include="Views\Report\ProcessingTime.cshtml" />
+    <Content Include="Views\Order\RerouteAccountManager.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
