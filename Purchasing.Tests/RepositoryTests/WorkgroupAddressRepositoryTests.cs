@@ -1732,7 +1732,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Name3 (Address3, City3 CA)", result);
+            Assert.AreEqual("Name3 (Room3-Building3 Address3, City3 CA)", result);
             #endregion Assert		
         }
 
@@ -1750,7 +1750,76 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual("Name3 (Address abcdefghijklmn..., City abcdefghijklmnopqrstuvwzyz 1234567890 CA)", result);
+            Assert.AreEqual("Name3 (Room3-Building3 Address abcdefghijklmn..., City abcdefghijklmnopqrstuvwzyz 1234567890 CA)", result);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDisplayName3()
+        {
+            #region Arrange
+            var record = CreateValidEntities.WorkgroupAddress(3);
+            #endregion Arrange
+
+            #region Act
+            record.Room = null;
+            var result = record.DisplayName;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 (Building3 Address3, City3 CA)", result);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDisplayName4()
+        {
+            #region Arrange
+            var record = CreateValidEntities.WorkgroupAddress(3);
+            #endregion Arrange
+
+            #region Act
+            record.Building = null;
+            var result = record.DisplayName;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 (Room3 Address3, City3 CA)", result);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDisplayName5()
+        {
+            #region Arrange
+            var record = CreateValidEntities.WorkgroupAddress(3);
+            #endregion Arrange
+
+            #region Act
+            record.Room = null;
+            record.Building = null;
+            var result = record.DisplayName;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 ( Address3, City3 CA)", result);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestDisplayName6()
+        {
+            #region Arrange
+            var record = CreateValidEntities.WorkgroupAddress(3);
+            #endregion Arrange
+
+            #region Act
+            record.Building = "abcdefghijklmnopqrstuvwxyz 123456789012345678901234567890";
+            var result = record.DisplayName;
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual("Name3 (Room3-abcdefghijklmnopqrstuv... Address3, City3 CA)", result);
             #endregion Assert
         }
         #endregion DisplayName

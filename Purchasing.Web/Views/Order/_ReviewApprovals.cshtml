@@ -33,8 +33,12 @@
                                     }
                                     else if (!approval.Completed && approval.StatusCode.Level == Model.Order.StatusCode.Level && Model.ExternalApprovals.Contains(approval))
                                     {
-                                        <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute Approval</a>
-                                    }  
+                                        <a href="#" class="button reroute" data-approval-id="@approval.Id">ReRoute External Approval</a>
+                                    }
+                                    else if (!approval.Completed && approval.StatusCode.Id == OrderStatusCode.Codes.AccountManager && Model.ReRouteAbleAccountManagerApprovals.Contains(approval))
+                                    {
+                                        @Html.ActionLink("ReRoute Approval", "RerouteAccountManager", new { id = Model.Order.Id, approvalId = approval.Id }, new { @Class = "button" }) 
+                                    }
                                 </td>
                             }
                         </tr>

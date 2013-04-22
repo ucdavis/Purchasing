@@ -99,6 +99,64 @@ namespace Purchasing.Web.Controllers
         //    return View();
         //}
 
+        [AuthorizeEditOrder]
+        public ActionResult RerouteAccountManager(int id, int approvalId)
+        {
+            var approval = _repositoryFactory.ApprovalRepository.Queryable.Single(a => a.Id == approvalId);
+            Check.Require(approval.Order.Id == id);
+
+            if (approval.Order.StatusCode.Id != OrderStatusCode.Codes.AccountManager)
+            {
+                ErrorMessage = "Order Status must be at account manager to change account manager.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+            var model = OrderReRoutePurchaserModel.Create(approval.Order);
+            model.ApprovalId = approvalId;
+
+            model.PurchaserPeeps = approval.Order.Workgroup.Permissions.Where(a => a.Role.Id == Role.Codes.AccountManager).Select(b => b.User).Distinct().OrderBy(c => c.LastName).ToList();
+            model.Order = approval.Order;
+            return View(model);
+        }
+
+        [AuthorizeEditOrder]
+        [HttpPost]
+        public ActionResult RerouteAccountManager(int id, int approvalId, string accountManagerId)
+        {
+            var approval = _repositoryFactory.ApprovalRepository.Queryable.Single(a => a.Id == approvalId);
+            Check.Require(approval.Order.Id == id);
+
+            if (approval.Order.StatusCode.Id != OrderStatusCode.Codes.AccountManager)
+            {
+                ErrorMessage = "Order Status must be at account manager to change account manager.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+
+            if (approval.User != null && approval.User.Id == accountManagerId)
+            {
+                ErrorMessage = "No change detected.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+
+            if (approval.User != null && approval.User.Id != CurrentUser.Identity.Name && !approval.User.IsAway)
+            {
+                ErrorMessage = "Can't reroute an approval unless it is assigned to you or the assigned user is away";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+
+            var originalRouting = approval.User != null ? approval.User.FullName : "Any Workgroup Account Manager";
+
+            var accountManager = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == accountManagerId);
+            var accountManagerCheck = approval.Order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.AccountManager && a.User == accountManager);
+            Check.Require(accountManagerCheck); // Check that the AM assigned is in the workgroup as an account manager.
+
+            _orderService.ReRouteSingleApprovalForExistingOrder(approval, accountManager, (approval.Order.StatusCode.Id == OrderStatusCode.Codes.AccountManager));
+            _eventService.OrderReRoutedToAccountManager(approval.Order, string.Empty, originalRouting, accountManager.FullName);
+            _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
+
+            Message = string.Format("Order {0} rerouted to Account Manager {1}", approval.Order.RequestNumber, accountManager.FullName);
+            return this.RedirectToAction<HomeController>(a => a.Landing()); //May not have access to it anymore
+        }
+
         /// <summary>
         /// Change the Purchaser assignment for an order.
         /// #3
@@ -474,25 +532,38 @@ namespace Purchasing.Web.Controllers
                             .Any(s => s.Order.Id == model.Order.Id && s.Account != null);
                 }
 
+                if (model.IsAccountManager) //TODO: Get Scott to review this to make sure things like toFuture or other performance things are ok.
+                {
+                    //For orders in the account manager stage, where the approval is not external and the user is null, away, or a match the the current user, allow them to reroute.
+                    //Now, this will let an external approver reroute, but they will only be able to reroute to a list of users in the workgroup...
+                    model.ReRouteAbleAccountManagerApprovals =
+                        model.Approvals.Where(
+                            a =>
+                            a.StatusCode.Id == OrderStatusCode.Codes.AccountManager && !a.IsExternal &&
+                            (a.User == null || a.User.Id == CurrentUser.Identity.Name || a.User.IsAway)).ToList();
+
+                }
+
                 if (model.IsPurchaser)
                 {
                     model.OrderTypes = _repositoryFactory.OrderTypeRepository.Queryable.Where(x => x.PurchaserAssignable).ToList();
                 }
 
-                var app = from a in _repositoryFactory.ApprovalRepository.Queryable
-                          where a.Order.Id == id && a.StatusCode.Level == a.Order.StatusCode.Level 
-                                && a.Split != null && a.Split.Account != null && a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover
-                                && (!_repositoryFactory.WorkgroupAccountRepository.Queryable.Any(
-                                  x => x.Workgroup.Id == model.Order.Workgroup.Id && x.Account.Id == a.Split.Account))
-                          select a;
+                //var app = from a in _repositoryFactory.ApprovalRepository.Queryable
+                //          where a.Order.Id == id && a.StatusCode.Level == a.Order.StatusCode.Level
+                //                && a.Split != null && a.Split.Account != null && a.StatusCode.Id != OrderStatusCode.Codes.ConditionalApprover
+                //                && (!_repositoryFactory.WorkgroupAccountRepository.Queryable.Any(
+                //                  x => x.Workgroup.Id == model.Order.Workgroup.Id && x.Account.Id == a.Split.Account))
+                //          select a;
 
-                model.ExternalApprovals = app.ToList();
+                //model.ExternalApprovals = app.ToList();
+                model.ExternalApprovals = model.Order.Approvals.Where(a => a.IsExternal && !a.Completed).ToList();
             }
 
             var externalApprovalIds = model.ExternalApprovals.Select(x => x.Id);
             var internalApprovals = Approval.FilterUnique(model.Approvals.Where(x => !externalApprovalIds.Contains(x.Id)).ToList());
 
-            //Takes the external approvals and unqions them with the unique internal approvals
+            //Takes the external approvals and unions them with the unique internal approvals
             model.OrderedUniqueApprovals =
                 internalApprovals.Union(model.ExternalApprovals).OrderBy(a => a.StatusCode.Level);
 
@@ -731,13 +802,16 @@ namespace Purchasing.Web.Controllers
                 var approval = _repositoryFactory.ApprovalRepository.GetNullableById(approvalId);
 
                 Check.Require(approval != null);
+                Check.Require(id == approval.Order.Id);
                 Check.Require(!approval.Completed);
+                Check.Require(approval.IsExternal);
                 Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), Resources.ReRouteApproval_AccountError);
-
+                var oldUserName = approval.User.FullName;
                 var user = _securityService.GetUser(kerb);
                 Check.Require(user != null);
 
                 _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
+                _eventService.OrderReRoutedToAccountManager(approval.Order, "external ", oldUserName, user.FullName);
 
                 _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
                 return Json(new { success = true, name = user.FullName });
