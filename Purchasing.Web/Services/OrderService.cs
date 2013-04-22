@@ -361,7 +361,7 @@ namespace Purchasing.Web.Services
             approval.SecondaryUser = null;
             approval.User = user;
 
-            _eventService.OrderApprovalAdded(approval.Order, approval, notify); //TODO: should i make a new event?            
+            _eventService.OrderApprovalAdded(approval.Order, approval, notify);            
         }
 
         /// <summary>
