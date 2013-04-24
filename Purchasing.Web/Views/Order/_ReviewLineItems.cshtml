@@ -51,11 +51,12 @@
                                 <div class="row-split ui-corner-all" style="width:90%">
                                     <table>
                                         <thead>
-                                            <tr><td colspan="4">Line Item Split</td></tr>
+                                            <tr><td colspan="5">Line Item Split</td></tr>
                                             <tr>
                                                 <th>Account</th>
                                                 <th>SubAccount</th>
                                                 <th>Project</th>
+                                                <th>Reference</th>
                                                 <th>Amount</th>
                                             </tr>
                                         </thead>
@@ -66,6 +67,7 @@
                                                     <td>@(string.IsNullOrWhiteSpace(split.Account) ? "n/a" : split.AccountDisplay)</td>
                                                     <td>@(string.IsNullOrWhiteSpace(split.SubAccount) ? "n/a" : Model.GetSubAccountDisplayForSplit(split))</td>
                                                     <td>@(string.IsNullOrWhiteSpace(split.Project) ? "n/a" : split.Project)</td>
+                                                    <td>@(string.IsNullOrWhiteSpace(split.Reference) ? "n/a" : split.Reference)</td>
                                                     <td>@split.Amount</td>
                                                 </tr>
                                             }

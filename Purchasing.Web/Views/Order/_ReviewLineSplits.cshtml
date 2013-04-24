@@ -17,6 +17,7 @@
                     <strong>Account:</strong> <span class="account">@split.AccountDisplay</span>
                     <strong>SubAccount:</strong> <span class="subaccount">@Model.GetSubAccountDisplayForSplit(@split)</span>
                     <strong>Project:</strong> <span class="project">@split.Project</span>
+                    <strong>Reference:</strong> <span class="project">@split.Reference</span>
                 </div>
             }
             @* Order split over multiple accounts *@
@@ -30,6 +31,7 @@
                             <th>Account</th>
                             <th>SubAccount</th>
                             <th>Project</th>
+                            <th>Reference</th>
                             <th>Amount</th>
                         </tr>
                     </thead>
@@ -41,6 +43,7 @@
                                 <td>@split.AccountDisplay</td>
                                 <td>@Model.GetSubAccountDisplayForSplit(@split)</td>
                                 <td>@split.Project</td>
+                                <td>@split.Reference</td>
                                 <td>@split.Amount</td>
                             </tr>
                         }
