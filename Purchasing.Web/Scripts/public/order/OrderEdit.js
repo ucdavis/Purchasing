@@ -59,6 +59,7 @@
                             newSplit.account(split.Account);
                             newSplit.subAccount(split.SubAccount);
                             newSplit.project(split.Project);
+                            newSplit.reference(split.Reference);
 
                             lineItem.splits.push(newSplit);
                         }
@@ -85,6 +86,7 @@
                     newSplit.account(split.Account);
                     newSplit.subAccount(split.SubAccount);
                     newSplit.project(split.Project);
+                    newSplit.reference(split.Reference);
 
                     model.splits.push(newSplit);
                 });
@@ -101,6 +103,7 @@
                     model.account(singleSplit.Account);
                     model.subAccount(singleSplit.SubAccount);
                     model.project(singleSplit.Project);
+                    model.reference(singleSplit.Reference);
                 }
             }
 
