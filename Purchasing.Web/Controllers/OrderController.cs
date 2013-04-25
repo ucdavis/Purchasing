@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using Elmah;
-using IronRuby.Builtins;
+using MvcContrib;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
-using Purchasing.Core.Queries;
-using Purchasing.WS;
-using Purchasing.WS.PurchaseDocumentService;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
-using Purchasing.Web.Utility;
+using Purchasing.WS;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
-using MvcContrib;
-using Purchasing.Core;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
@@ -912,6 +907,7 @@ namespace Purchasing.Web.Controllers
                                          Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
                                          LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
                                          Project = s.Project,
+                                         Reference = s.Reference,
                                          SubAccount = s.SubAccount
                                      }).ToList();
 
@@ -1516,7 +1512,8 @@ namespace Purchasing.Web.Controllers
                                         Amount = decimal.Parse(split.Amount),
                                         LineItem = orderLineItem,
                                         SubAccount = split.SubAccount,
-                                        Project = split.Project
+                                        Project = split.Project,
+                                        Reference = split.Reference
                                     });
                                 }
                             }
@@ -1536,14 +1533,15 @@ namespace Purchasing.Web.Controllers
                                 Account = split.Account,
                                 Amount = decimal.Parse(split.Amount),
                                 SubAccount = split.SubAccount,
-                                Project = split.Project
+                                Project = split.Project,
+                                Reference = split.Reference
                             });
                         }
                     }
                 }
                 else if (model.SplitType == OrderViewModel.SplitTypes.None)
                 {
-                    order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                    order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project, Reference = model.Reference}); //Order with "no" splits get one split for the full amount
                 }
 
                 order.TotalFromDb = order.Total();
