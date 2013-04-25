@@ -292,11 +292,12 @@ namespace Purchasing.Web.Services
 
         private PdfPTable SplitAccountingInformation(IEnumerable<Split> splits)
         {
-            var table = InitializeTable(4);
-            table.TotalWidth = _pageWidth*.75f;
+            var table = InitializeTable(5);
+            table.TotalWidth = _pageWidth*.75f;            
 
             table.AddCell(InitializeCell("Account", _tableHeaderFont, backgroundColor:_subTableHeaderColor, bottomBorder:false));
             table.AddCell(InitializeCell("Project", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
+            table.AddCell(InitializeCell("Reference", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
             table.AddCell(InitializeCell("Amount", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
             table.AddCell(InitializeCell("Distribution", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
 
@@ -304,6 +305,7 @@ namespace Purchasing.Web.Services
             {
                 table.AddCell(InitializeCell(split.FullAccountDisplay, _font, bottomBorder: false));
                 table.AddCell(InitializeCell(split.Project, _font, bottomBorder:false));
+                table.AddCell(InitializeCell(split.Reference, _font, bottomBorder: false));
                 table.AddCell(InitializeCell(split.Amount.ToString("c"),_font, bottomBorder:false));
 
                 if (split.LineItem == null)
@@ -338,9 +340,10 @@ namespace Purchasing.Web.Services
 
                 accountingTable.AddCell(InitializeCell("Account:", _boldFont, bottomBorder:false));
                 accountingTable.AddCell(InitializeCell(split.FullAccountDisplay, _font, bottomBorder:false));
-                accountingTable.AddCell(InitializeCell("Project:", _boldFont));
-                accountingTable.AddCell(InitializeCell(split.Project, _font));
-
+                accountingTable.AddCell(InitializeCell("Project:", _boldFont, bottomBorder: false));
+                accountingTable.AddCell(InitializeCell(split.Project, _font, bottomBorder:false));
+                accountingTable.AddCell(InitializeCell("Reference:", _boldFont));
+                accountingTable.AddCell(InitializeCell(split.Reference, _font));
                 doc.Add(accountingTable);
             }
         }
