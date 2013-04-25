@@ -287,6 +287,8 @@ namespace Purchasing.Web.Controllers
 
             _orderService.HandleSavedForm(order, model.FormSaveId);
 
+            Check.Require(order.LineItems.Count > 0);
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             Message = Resources.NewOrder_Success;
@@ -355,6 +357,9 @@ namespace Purchasing.Web.Controllers
                     }
                 }
             }
+
+            Check.Require(order.LineItems.Count > 0);
+
             if(adjustRouting)
             {
             //TODO: Add expense validation
@@ -416,6 +421,8 @@ namespace Purchasing.Web.Controllers
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+
+            Check.Require(order.LineItems.Count > 0);
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
