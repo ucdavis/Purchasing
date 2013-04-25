@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.SessionState;
-using IronRuby.Builtins;
-using Purchasing.Core;
 using System.Web.Mvc;
+using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Web.Models;
 using Purchasing.Web.Services;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Web.Controllers
 {
@@ -20,14 +16,12 @@ namespace Purchasing.Web.Controllers
     public class HistoryController : ApplicationController
     {
         private readonly IRepositoryFactory _repositoryFactory;
-        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IOrderService _orderService;
 
-        public HistoryController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IOrderService OrderService)
+        public HistoryController(IRepositoryFactory repositoryFactory, IOrderService orderService)
         {
             _repositoryFactory = repositoryFactory;
-            _queryRepositoryFactory = queryRepositoryFactory;
-            _orderService = OrderService;
+            _orderService = orderService;
         }
 
         /// <summary>
