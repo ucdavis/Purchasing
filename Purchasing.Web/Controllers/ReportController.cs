@@ -53,6 +53,34 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
+        public ActionResult PurchaserWorkLoad()
+        {
+            var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
+            var workgroupIds = allWorkgroups.Select(x => x.Id).ToArray();
+
+            var xxx =
+                _repositoryFactory.OrderTrackingRepository
+                          .Queryable.Where(a => a.DateCreated >= DateTime.Now.Date && workgroupIds.Contains(a.Order.Workgroup.Id) && a.Description.Contains("completed"))
+                          .Select(a => a.User).ToList();
+            var yyy = xxx.Distinct().ToList();
+            foreach (var user in yyy)
+            {
+     
+                var sss = xxx.Where(a => a.Id == user.Id).Count(); //This will tell me how many orders have been completed by each purchaser.
+            }
+
+
+            var ooo =
+                _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(
+                    a => a.StatusId == "PR" && workgroupIds.Contains(a.WorkgroupId)).Select(b => b.Purchaser).ToList();
+            var uuu = ooo.Distinct().ToList();
+            foreach (var userName in uuu)
+            {
+                var z = ooo.FindAll(a => a.Contains(userName)).Count;
+            }
+            return null;
+        }
+
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult Workload(int? workgroupId = null)
