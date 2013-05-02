@@ -76,7 +76,7 @@ namespace Purchasing.Web.Controllers
             var uuu = ooo.Distinct().ToList();
             foreach (var userName in uuu)
             {
-                var z = ooo.FindAll(a => a.Contains(userName)).Count;
+                var z = ooo.FindAll(a => a.Contains(userName)).Count; //Find all pending orders in Purchaser state
             }
             return null;
         }
