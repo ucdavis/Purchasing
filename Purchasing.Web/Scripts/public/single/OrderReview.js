@@ -42,7 +42,6 @@
         }
         attachNav();
         
-        attachSubmitChecker();
     };
 
     function attachNav() {
@@ -52,24 +51,6 @@
 
     }
 
-    function attachSubmitChecker() {
-        $("#approve-order").click(function (e) {
-            if ($(this).hasClass("click-once")) {
-                alert("only click once");
-                e.preventDefault();
-            } else {
-                $(this).addClass("click-once");
-            }
-        });
-        $("#complete-order").click(function (e) {
-            if ($(this).hasClass("click-once")) {
-                alert("only click once");
-                e.preventDefault();
-            } else {
-                $(this).addClass("click-once");
-            }
-        });
-    }
 
     function attachReferenceNumberEvents() {
         $("#modify-reference-number-dialog").dialog({
@@ -520,6 +501,23 @@
             if (!$("#comment").val()) {
                 alert("A comment is required when denying an order");
                 e.preventDefault();
+            }
+        });
+        
+        $("#approve-order").click(function (e) {
+            if ($(this).hasClass("click-once")) {
+                alert("only click once");
+                e.preventDefault();
+            } else {
+                $(this).addClass("click-once");
+            }
+        });
+        $("#complete-order").click(function (e) {
+            if ($(this).hasClass("click-once")) {
+                alert("only click once");
+                e.preventDefault();
+            } else {
+                $(this).addClass("click-once");
             }
         });
     }
