@@ -2,6 +2,7 @@
 (function (purchasing, $, undefined) {
     //Private Property
     var options = {};
+    var clickedApprove = false;
 
     //Public Method
     purchasing.options = function (o) {
@@ -505,18 +506,18 @@
         });
         
         $("#approve-order").click(function (e) {
-            if ($(this).hasClass("click-once")) {
+            if (clickedApprove === true) {
                 e.preventDefault();
             } else {
-                $(this).addClass("click-once");
+                clickedApprove = true;
             }
         });
         $("#complete-order").click(function (e) {
-            if ($(this).hasClass("click-once")) {
+            if (clickedApprove === true) {
                 alert("Please wait for the process to complete");
                 e.preventDefault();
             } else {
-                $(this).addClass("click-once");
+                clickedApprove = true;
             }
         });
     }
