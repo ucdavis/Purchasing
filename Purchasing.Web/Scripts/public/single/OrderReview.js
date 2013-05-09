@@ -41,6 +41,8 @@
             attachPoNumberEvents();
         }
         attachNav();
+        
+        attachSubmitChecker();
     };
 
     function attachNav() {
@@ -48,6 +50,25 @@
         $('.orders-nav').addClass('orders-nav-review');
         $('.orders-nav').stickyfloat({ duration: 400 });
 
+    }
+
+    function attachSubmitChecker() {
+        $("#approve-order").click(function (e) {
+            if ($(this).hasClass("click-once")) {
+                alert("only click once");
+                e.preventDefault();
+            } else {
+                $(this).addClass("click-once");
+            }
+        });
+        $("#complete-order").click(function (e) {
+            if ($(this).hasClass("click-once")) {
+                alert("only click once");
+                e.preventDefault();
+            } else {
+                $(this).addClass("click-once");
+            }
+        });
     }
 
     function attachReferenceNumberEvents() {
