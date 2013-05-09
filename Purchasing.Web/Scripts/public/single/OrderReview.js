@@ -506,7 +506,7 @@
         
         $("#approve-order").click(function (e) {
             if ($(this).hasClass("click-once")) {
-                alert("only click once");
+                //alert("only click once");
                 e.preventDefault();
             } else {
                 $(this).addClass("click-once");
@@ -514,7 +514,7 @@
         });
         $("#complete-order").click(function (e) {
             if ($(this).hasClass("click-once")) {
-                alert("only click once");
+                alert("Please wait for the process to complete");
                 e.preventDefault();
             } else {
                 $(this).addClass("click-once");
