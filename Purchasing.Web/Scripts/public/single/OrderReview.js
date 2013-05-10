@@ -2,6 +2,7 @@
 (function (purchasing, $, undefined) {
     //Private Property
     var options = {};
+    var clickedApprove = false;
 
     //Public Method
     purchasing.options = function (o) {
@@ -41,6 +42,7 @@
             attachPoNumberEvents();
         }
         attachNav();
+        
     };
 
     function attachNav() {
@@ -49,6 +51,7 @@
         $('.orders-nav').stickyfloat({ duration: 400 });
 
     }
+
 
     function attachReferenceNumberEvents() {
         $("#modify-reference-number-dialog").dialog({
@@ -499,6 +502,22 @@
             if (!$("#comment").val()) {
                 alert("A comment is required when denying an order");
                 e.preventDefault();
+            }
+        });
+        
+        $("#approve-order").click(function (e) {
+            if (clickedApprove === true) {
+                e.preventDefault();
+            } else {
+                clickedApprove = true;
+            }
+        });
+        $("#complete-order").click(function (e) {
+            if (clickedApprove === true) {
+                alert("Please wait for the process to complete");
+                e.preventDefault();
+            } else {
+                clickedApprove = true;
             }
         });
     }
