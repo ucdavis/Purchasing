@@ -55,23 +55,20 @@ namespace Purchasing.Web.Controllers
 
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
-        public ActionResult PurchaserWorkLoad(DateTime? ReportDate)
+        public ActionResult PurchaserWorkLoad(DateTime? reportDate)
         {
-            var today = ReportDate == null;
-            if (today)
-            {
-                ReportDate = DateTime.Now;
-            }
+            reportDate = reportDate ?? DateTime.Now;
+
             var viewModel = new ReportPurchaserWorkLoadViewModel();
             viewModel.Items = new List<ReportPurchaserWorkLoadItem>();
-            viewModel.ReportDate = ReportDate;
+            viewModel.ReportDate = reportDate;
 
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
             var workgroupIds = allWorkgroups.Select(x => x.Id).ToArray();
 
             var xxx =
                 _repositoryFactory.OrderTrackingRepository
-                          .Queryable.Where(a => a.DateCreated >= ReportDate.Value.Date && a.DateCreated <= ReportDate.Value.Date.AddDays(1) && workgroupIds.Contains(a.Order.Workgroup.Id) && a.Description.Contains("completed"))
+                          .Queryable.Where(a => a.DateCreated >= reportDate.Value.Date && a.DateCreated <= reportDate.Value.Date.AddDays(1) && workgroupIds.Contains(a.Order.Workgroup.Id) && a.Description.Contains("completed"))
                           .Select(a => a.User).ToList();
             var yyy = xxx.Distinct().ToList();
             foreach (var user in yyy)
