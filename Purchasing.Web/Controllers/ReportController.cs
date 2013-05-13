@@ -53,20 +53,34 @@ namespace Purchasing.Web.Controllers
             return View();
         }
 
-        public ActionResult PurchaserWorkLoad()
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [AuthorizeWorkgroupAccess]
+        public ActionResult PurchaserWorkLoad(DateTime? ReportDate)
         {
+            var today = ReportDate == null;
+            if (today)
+            {
+                ReportDate = DateTime.Now;
+            }
+            var viewModel = new ReportPurchaserWorkLoadViewModel();
+            viewModel.Items = new List<ReportPurchaserWorkLoadItem>();
+            viewModel.ReportDate = ReportDate;
+
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
             var workgroupIds = allWorkgroups.Select(x => x.Id).ToArray();
 
             var xxx =
                 _repositoryFactory.OrderTrackingRepository
-                          .Queryable.Where(a => a.DateCreated >= DateTime.Now.Date && workgroupIds.Contains(a.Order.Workgroup.Id) && a.Description.Contains("completed"))
+                          .Queryable.Where(a => a.DateCreated >= ReportDate.Value.Date && a.DateCreated <= ReportDate.Value.Date.AddDays(1) && workgroupIds.Contains(a.Order.Workgroup.Id) && a.Description.Contains("completed"))
                           .Select(a => a.User).ToList();
             var yyy = xxx.Distinct().ToList();
             foreach (var user in yyy)
             {
-     
-                var sss = xxx.Where(a => a.Id == user.Id).Count(); //This will tell me how many orders have been completed by each purchaser.
+                var item = new ReportPurchaserWorkLoadItem();
+                item.userId = user.Id;
+                item.UserName = user.FullName;
+                item.CompletedCount = xxx.Count(a => a.Id == user.Id); //This will tell me how many orders have been completed by each purchaser.
+                viewModel.Items.Add(item);
             }
 
 
@@ -76,9 +90,22 @@ namespace Purchasing.Web.Controllers
             var uuu = ooo.Distinct().ToList();
             foreach (var userName in uuu)
             {
-                var z = ooo.FindAll(a => a.Contains(userName)).Count; //Find all pending orders in Purchaser state
+                var userName1 = userName.Trim();
+                var item = viewModel.Items.SingleOrDefault(a => a.UserName == userName1);
+                if (item == null)
+                {
+                    item = new ReportPurchaserWorkLoadItem();
+                    item.UserName = userName1;
+                    item.PendingCount = ooo.FindAll(a => a.Contains(userName1)).Count; //Find all pending orders in Purchaser state
+                    viewModel.Items.Add(item);
+                }
+                else
+                {
+                    item.PendingCount = ooo.FindAll(a => a.Contains(userName)).Count; //Find all pending orders in Purchaser state
+                }
             }
-            return null;
+
+            return View(viewModel);
         }
 
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
