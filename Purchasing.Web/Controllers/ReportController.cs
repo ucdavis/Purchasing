@@ -55,6 +55,58 @@ namespace Purchasing.Web.Controllers
 
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
+        public ActionResult PurchaserWorkLoad(DateTime? reportDate)
+        {
+            reportDate = reportDate ?? DateTime.Now;
+
+            var viewModel = new ReportPurchaserWorkLoadViewModel();
+            viewModel.Items = new List<ReportPurchaserWorkLoadItem>();
+            viewModel.ReportDate = reportDate;
+
+            var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
+            var workgroupIds = allWorkgroups.Select(x => x.Id).ToArray();
+
+            var users =
+                _repositoryFactory.OrderTrackingRepository
+                          .Queryable.Where(a => a.DateCreated >= reportDate.Value.Date && a.DateCreated <= reportDate.Value.Date.AddDays(1) && workgroupIds.Contains(a.Order.Workgroup.Id) && a.Description.Contains("completed"))
+                          .Select(a => a.User).ToList();
+            var distinctUsers = users.Distinct().ToList();
+            foreach (var user in distinctUsers)
+            {
+                var item = new ReportPurchaserWorkLoadItem();
+                item.userId = user.Id;
+                item.UserName = user.FullName;
+                item.CompletedCount = users.Count(a => a.Id == user.Id); //This will tell me how many orders have been completed by each purchaser.
+                viewModel.Items.Add(item);
+            }
+
+
+            var userNamesFromOrderHistory =
+                _queryRepositoryFactory.OrderHistoryRepository.Queryable.Where(
+                    a => a.StatusId == "PR" && workgroupIds.Contains(a.WorkgroupId)).Select(b => b.Purchaser).ToList();
+            var names = userNamesFromOrderHistory.Distinct().ToList();
+            foreach (var userName in names)
+            {
+                var userName1 = userName.Trim();
+                var item = viewModel.Items.SingleOrDefault(a => a.UserName == userName1);
+                if (item == null)
+                {
+                    item = new ReportPurchaserWorkLoadItem();
+                    item.UserName = userName1;
+                    item.PendingCount = userNamesFromOrderHistory.FindAll(a => a.Contains(userName1)).Count; //Find all pending orders in Purchaser state
+                    viewModel.Items.Add(item);
+                }
+                else
+                {
+                    item.PendingCount = userNamesFromOrderHistory.FindAll(a => a.Contains(userName)).Count; //Find all pending orders in Purchaser state
+                }
+            }
+
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [AuthorizeWorkgroupAccess]
         public ActionResult Workload(int? workgroupId = null)
         {
             Workgroup workgroup = null;

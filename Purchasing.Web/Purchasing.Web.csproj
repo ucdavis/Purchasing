@@ -366,6 +366,7 @@
     <Compile Include="Models\OrderReceiveModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Models\ReportPermissionsViewModel.cs" />
+    <Compile Include="Models\ReportPurchaserWorkLoadViewModel.cs" />
     <Compile Include="Models\ReportWorkloadViewModel.cs" />
     <Compile Include="Models\ReviewOrderViewModel.cs" />
     <Compile Include="Models\TotalByWorkgroupViewModel.cs" />
@@ -1039,6 +1040,7 @@
     <Content Include="Views\EmailQueueV2\Index.cshtml" />
     <Content Include="Views\Report\ProcessingTime.cshtml" />
     <Content Include="Views\Order\RerouteAccountManager.cshtml" />
+    <Content Include="Views\Report\PurchaserWorkLoad.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
