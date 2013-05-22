@@ -700,6 +700,22 @@ namespace Purchasing.Web.Controllers
                 
                 newOrderType.DocType = kfsDocType;
 
+                if (_orderService.WillOrderBeSentToKfs(newOrderType, kfsDocType))
+                {
+                    //Specific checks for KFS orders
+                    if (order.LineItems.Any(a => a.Commodity == null))
+                    {
+                        ErrorMessage = "Must have commodity codes for all line items to complete a KFS order";
+                        return RedirectToAction("Review", new { id });
+                    }
+
+                    if (order.Address.BuildingCode == null)
+                    {
+                        ErrorMessage = "Shipping Address needs to have a building code to complete a KFS order";
+                        return RedirectToAction("Review", new { id });
+                    }
+                }
+
                 var errors = _orderService.Complete(order, newOrderType, kfsDocType);
 
                 if (errors.Any()) //if we have any errors, raise them in ELMAH and redirect back to the review page without saving change

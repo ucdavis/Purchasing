@@ -23,13 +23,26 @@
 	            minLength: 2,
 	            select: function (event, ui) {
 
-	                $("#WorkgroupAddress_BuildingCode").val(ui.item.id); 
+	                $("#WorkgroupAddress_BuildingCode").val(ui.item.id);
+	                $("#building-code-display").html(ui.item.id);
+	                $("#building-code-display").removeClass("red");
+	                //$("#building-code-display").removeClass("green");
+	                $("#building-code-display").addClass("green");
 
 	            },
 	            change: function (event, ui) {
 
 	                if (ui.item == null) {
 	                    $("#WorkgroupAddress_BuildingCode").val("");
+	                    $("#building-code-display").html("Warning Not a Valid Building");
+	                    //$("#building-code-display").removeClass("red");	                    
+	                    $("#building-code-display").removeClass("green");
+	                    $("#building-code-display").addClass("red");
+	                } else {
+	                    $("#building-code-display").html(ui.item.id);
+	                    $("#building-code-display").removeClass("red");
+	                    //$("#building-code-display").removeClass("green");
+	                    $("#building-code-display").addClass("green");
 	                }
 	            }
 	        });
@@ -88,6 +101,15 @@ Example: Dinosaur 1  *@
                     @Html.EditorFor(model => model.WorkgroupAddress.Building)
                     @Html.Hidden("WorkgroupAddress.BuildingCode", Model.WorkgroupAddress.BuildingCode != null ? Model.WorkgroupAddress.BuildingCode.Id : string.Empty)
                     @Html.ValidationMessageFor(model => model.WorkgroupAddress.Building)
+                    <span>Building Code: </span>
+                        @if (Model.WorkgroupAddress.BuildingCode != null)
+                        {
+                            <span id="building-code-display" class="display-details green">@Model.WorkgroupAddress.BuildingCode.Id</span>
+                        }
+                        else
+                        {
+                            <span id="building-code-display" class="display-details red">Warning Not a Valid Building</span>
+                        }
                 </div>
             </li>
             <li>
