@@ -60,6 +60,7 @@ namespace Purchasing.Web.Services
         void Deny(Order order, string comment);
         void Cancel(Order order, string comment);
 
+        bool WillOrderBeSentToKfs(OrderType newOrderType, string kfsDocType = null);
         /// <summary>
         /// Complete the last approval for an order, and return any errors that result
         /// </summary>
@@ -519,6 +520,15 @@ namespace Purchasing.Web.Services
             _eventService.OrderCancelled(order, comment, previousStatus);
         }
 
+        public bool WillOrderBeSentToKfs(OrderType newOrderType, string kfsDocType = null)
+        {
+            if (newOrderType.Id == OrderType.Types.KfsDocument && _financialSystemService.AllowedType(kfsDocType))
+            {
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Complete the last approval for an order, and return any errors that result
         /// </summary>
@@ -529,6 +539,7 @@ namespace Purchasing.Web.Services
             order.OrderType = newOrderType;
             order.KfsDocType = kfsDocType;
 
+            //TODO: Replace this if with the new method.
             if (newOrderType.Id == OrderType.Types.KfsDocument && _financialSystemService.AllowedType(kfsDocType))
             {
                 //Note in this case newOrderType.DocType should be either PR or DPO

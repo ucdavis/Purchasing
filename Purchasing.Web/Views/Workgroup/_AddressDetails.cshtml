@@ -1,34 +1,46 @@
 ﻿@model Purchasing.Web.Models.WorkgroupAddressViewModel
 
 <li>
-			<div class="display-label">Name</div>
-			<div class="display-details">@Model.WorkgroupAddress.Name</div>
-		</li>
-		<li>
-			<div class="display-label">Building</div>
-			<div class="display-details">@Model.WorkgroupAddress.Building</div>
-		</li>
-		<li>
-			<div class="display-label">Room</div>
-			<div class="display-details">@Model.WorkgroupAddress.Room</div>
-		</li>
-		<li>
-			<div class="display-label">Address</div>
-			<div class="display-details">@Model.WorkgroupAddress.Address</div>
-		</li>
-		<li>
-			<div class="display-label">City</div>
-			<div class="display-details">@Model.WorkgroupAddress.City</div>
-		</li>
-		<li>
-			<div class="display-label">State</div>
-			<div class="display-details">@Model.State.Name (@Model.WorkgroupAddress.State)</div>
-		</li>
-		<li>
-			<div class="display-label">Zip</div>
-			<div class="display-details">@Model.WorkgroupAddress.Zip</div>
-		</li>
-		<li>
-			<div class="display-label">Phone</div>
-			<div class="display-details">@Model.WorkgroupAddress.Phone</div>
-		</li>
+    <div class="display-label">Name</div>
+    <div class="display-details">@Model.WorkgroupAddress.Name</div>
+</li>
+<li>
+    <div class="display-label">Building</div>
+    <div class="display-details">@Model.WorkgroupAddress.Building</div>
+</li>
+<li>
+    <div class="display-label">Building Code</div>
+    @if (Model.WorkgroupAddress.BuildingCode != null)
+    {
+        <div class="display-details">@Model.WorkgroupAddress.BuildingCode.Id</div>
+    }
+    else
+    {
+        <div style="color: red" class="display-details">Warning Not a Valid Building</div>        
+    }
+    
+</li>
+<li>
+    <div class="display-label">Room</div>
+    <div class="display-details">@Model.WorkgroupAddress.Room</div>
+</li>
+<li>
+    <div class="display-label">Address</div>
+    <div class="display-details">@Model.WorkgroupAddress.Address</div>
+</li>
+<li>
+    <div class="display-label">City</div>
+    <div class="display-details">@Model.WorkgroupAddress.City</div>
+</li>
+<li>
+    <div class="display-label">State</div>
+    <div class="display-details">@Model.State.Name (@Model.WorkgroupAddress.State)</div>
+</li>
+<li>
+    <div class="display-label">Zip</div>
+    <div class="display-details">@Model.WorkgroupAddress.Zip</div>
+</li>
+<li>
+    <div class="display-label">Phone</div>
+    <div class="display-details">@Model.WorkgroupAddress.Phone</div>
+</li>

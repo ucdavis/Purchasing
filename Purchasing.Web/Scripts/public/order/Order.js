@@ -1341,11 +1341,22 @@
             minLength: 2,
             select: function (event, ui) {
                 $("#address-buildingcode").val(ui.item.id);
+                $("#building-code-display").html("Building Code: " + ui.item.id);
+                $("#building-code-display").removeClass("red");
+                $("#building-code-display").addClass("green");
             },
             change: function (event, ui) {
                 if (ui.item == null) {
                     $("#address-buildingcode").val("");
+                    $("#building-code-display").html("Warning Not a Valid Building");
+                    $("#building-code-display").removeClass("green");
+                    $("#building-code-display").addClass("red");
+                } else {
+                    $("#building-code-display").html("Building Code: " + ui.item.id);
+                    $("#building-code-display").removeClass("red");
+                    $("#building-code-display").addClass("green");
                 }
+                
             }
         });
 
