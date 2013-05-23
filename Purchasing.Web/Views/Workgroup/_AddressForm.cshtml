@@ -40,10 +40,13 @@ Example: Dinosaur 1  *@
                         @Html.EditorFor(model => model.WorkgroupAddress.Building)
                         @Html.Hidden("WorkgroupAddress.BuildingCode", Model.WorkgroupAddress.BuildingCode != null ? Model.WorkgroupAddress.BuildingCode.Id : string.Empty)
                         @Html.ValidationMessageFor(model => model.WorkgroupAddress.Building)
-                        <span>Building Code: </span>
+                    </div>
+                </li>
+                <li>
+                    <div style="margin-left: 126px;">
                         @if (Model.WorkgroupAddress.BuildingCode != null)
                         {
-                            <span id="building-code-display" class="display-details green">@Model.WorkgroupAddress.BuildingCode.Id</span>
+                            <span id="building-code-display" class="display-details green">@Html.Encode("Building Code: " + Model.WorkgroupAddress.BuildingCode.Id)</span>
                         }
                         else
                         {

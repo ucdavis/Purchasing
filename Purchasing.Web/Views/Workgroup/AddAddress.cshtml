@@ -28,9 +28,8 @@
 	                select: function (event, ui) {
 
 	                    $("#WorkgroupAddress_BuildingCode").val(ui.item.id);
-	                    $("#building-code-display").html(ui.item.id);
+	                    $("#building-code-display").html("Building Code: " + ui.item.id);
 	                    $("#building-code-display").removeClass("red");
-	                    //$("#building-code-display").removeClass("green");
 	                    $("#building-code-display").addClass("green");
 	                    
 	                },
@@ -39,13 +38,11 @@
 	                    if (ui.item == null) {
 	                        $("#WorkgroupAddress_BuildingCode").val("");
 	                        $("#building-code-display").html("Warning Not a Valid Building");
-	                        //$("#building-code-display").removeClass("red");	                    
 	                        $("#building-code-display").removeClass("green");
 	                        $("#building-code-display").addClass("red");
 	                    } else {
-	                        $("#building-code-display").html(ui.item.id);
+	                        $("#building-code-display").html("Building Code: " + ui.item.id);
 	                        $("#building-code-display").removeClass("red");
-	                        //$("#building-code-display").removeClass("green");
 	                        $("#building-code-display").addClass("green");
 	                    }
 	                }
