@@ -22,6 +22,7 @@
           <Variable name="EMULATED">
             <RoleInstanceValue xpath="/RoleEnvironment/Deployment/@emulated" />
           </Variable>
+          <Variable name="IsWorkerRole" value="false" />
         </Environment>
       </Task>
     </Startup>
