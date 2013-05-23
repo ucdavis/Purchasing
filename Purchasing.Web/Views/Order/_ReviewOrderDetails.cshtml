@@ -154,19 +154,16 @@
                             <div class="fn">@Model.Order.DeliverTo</div>
                             <div class="email"><a href="mailto: @Model.Order.DeliverToEmail ">@Model.Order.DeliverToEmail</a></div>
                             <div class="adr">
-                                @if (Model.Address.BuildingCode == null)
-                                {
-                                    <span class="street-address">@Model.Address.Room <span class="red" title="This building does not have a valid building code">@Model.Address.Building</span></span>
-                                }
-                                else
-                                { 
-                                    <span class="street-address">@Model.Address.Room @Model.Address.Building</span>
-                                }                                
+                                <span class="street-address">@Model.Address.Room @Model.Address.Building</span>                             
                                 <span class="street-address">@Model.Address.Address</span>
                                 <span class="locality">@Model.Address.City</span>
                                 <span class="region" title="California">@Model.Address.State</span>
                                 <span class="postal-code">@Model.Address.Zip</span>
                             </div>
+                             @if (Model.Address.BuildingCode == null)
+                            {
+                                <div class="red" title="Eventually, a building code will be required for KFS completed orders.">Warning. No Building Code.</div>
+                            }
                             @if (!string.IsNullOrEmpty(Model.Order.DeliverToPhone) || !string.IsNullOrEmpty(Model.Address.Phone))
                             {
                                 <div class="phone">
