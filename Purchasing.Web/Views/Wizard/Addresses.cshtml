@@ -31,9 +31,10 @@
 			<th>
 				Name
 			</th>
-			<th>
-				Building
-			</th>
+		    <th>
+		        Building
+		    </th>
+            <th>Building Code</th>
 			<th>
 				Room
 			</th>
@@ -63,9 +64,13 @@
 			<td>
 				@item.Name
 			</td>
-			<td>
-				@item.Building
-			</td>
+		    <td>
+		        @item.Building
+		    </td>
+		    <td>
+		        @Html.Encode(item.BuildingCode != null ? item.BuildingCode.Id : string.Empty)		        
+
+		    </td>
 			<td>
 				@item.Room
 			</td>
