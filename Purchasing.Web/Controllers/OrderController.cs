@@ -287,6 +287,8 @@ namespace Purchasing.Web.Controllers
 
             _orderService.HandleSavedForm(order, model.FormSaveId);
 
+            Check.Require(order.LineItems.Count > 0);
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             Message = Resources.NewOrder_Success;
@@ -355,6 +357,9 @@ namespace Purchasing.Web.Controllers
                     }
                 }
             }
+
+            Check.Require(order.LineItems.Count > 0);
+
             if(adjustRouting)
             {
             //TODO: Add expense validation
@@ -417,6 +422,8 @@ namespace Purchasing.Web.Controllers
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
+            Check.Require(order.LineItems.Count > 0);
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             Message = Resources.OrderCopy_Success;
@@ -463,8 +470,8 @@ namespace Purchasing.Web.Controllers
             model.Vendor = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Vendor).Single();
             model.Address = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Address).Single();
             model.LineItems =
-                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToFuture();
-            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToFuture();
+                _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToList();
+            model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToList();
 
             var splitsWithSubAccounts = model.Splits.Where(a => a.Account != null && a.SubAccount != null).ToList();
 
@@ -488,19 +495,19 @@ namespace Purchasing.Web.Controllers
 
             model.CustomFieldsAnswers =
                 _repositoryFactory.CustomFieldAnswerRepository.Queryable.Fetch(x => x.CustomField).Where(
-                    x => x.Order.Id == id).ToFuture();
+                    x => x.Order.Id == id).ToList();
 
             model.Approvals =
-                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Where(x => x.Order.Id == id).ToFuture();
+                _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Where(x => x.Order.Id == id).ToList();
 
             model.Comments =
-                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
+                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
             model.Attachments =
-                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToFuture();
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
 
             model.OrderTracking =
                 _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Where(
-                    x => x.Order.Id == id).ToFuture().ToList();
+                    x => x.Order.Id == id).ToList().ToList();
 
             model.IsRequesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository.Queryable
                 .Any(
@@ -692,6 +699,23 @@ namespace Purchasing.Web.Controllers
                 Check.Require(newOrderType != null);
                 
                 newOrderType.DocType = kfsDocType;
+
+                //TODO: Enable checks when KFS version is ready.
+                //if (_orderService.WillOrderBeSentToKfs(newOrderType, kfsDocType))
+                //{
+                //    //Specific checks for KFS orders
+                //    if (order.LineItems.Any(a => a.Commodity == null))
+                //    {
+                //        ErrorMessage = "Must have commodity codes for all line items to complete a KFS order";
+                //        return RedirectToAction("Review", new { id });
+                //    }
+
+                //    if (order.Address.BuildingCode == null)
+                //    {
+                //        ErrorMessage = "Shipping Address needs to have a building code to complete a KFS order";
+                //        return RedirectToAction("Review", new { id });
+                //    }
+                //}
 
                 var errors = _orderService.Complete(order, newOrderType, kfsDocType);
 

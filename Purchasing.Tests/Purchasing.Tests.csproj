@@ -253,7 +253,6 @@
     <Compile Include="RepositoryTests\BugTrackingRepositoryTests.cs" />
     <Compile Include="RepositoryTests\BuildingRepositoryTests.cs" />
     <Compile Include="RepositoryTests\ColumnPreferencesRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\CommodityGroupRepositoryTests.cs" />
     <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
     <Compile Include="RepositoryTests\ConditionalApprovalRepositoryTests.cs" />
     <Compile Include="RepositoryTests\ControlledSubstanceInformationRepositoryTests.cs" />

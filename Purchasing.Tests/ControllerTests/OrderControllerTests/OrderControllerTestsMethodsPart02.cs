@@ -677,7 +677,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
             orderViewModel.Account = "acct123";
             orderViewModel.Approvers = "some app";
             orderViewModel.AccountManagers = "acct manage";
@@ -735,7 +739,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
             #endregion Arrange
 
             #region Act
@@ -766,7 +774,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Vendor = 0;
             #endregion Arrange
@@ -804,7 +816,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Vendor = 2;
             #endregion Arrange
@@ -841,7 +857,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShipAddress = 2;
             #endregion Arrange
@@ -878,7 +898,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShippingType = "2";
             #endregion Arrange
@@ -911,7 +935,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.DateNeeded = DateTime.Now.AddDays(3).Date;
             #endregion Arrange
@@ -944,7 +972,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Backorder = "true";
             #endregion Arrange
@@ -977,7 +1009,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Backorder = string.Empty;
             #endregion Arrange
@@ -1014,7 +1050,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.DateNeeded = DateTime.Now.AddDays(3).Date;
             #endregion Arrange
@@ -1048,7 +1088,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShipTo = "Some Ship";
             #endregion Arrange
@@ -1081,7 +1125,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShipEmail = "ship@testy.com";
             #endregion Arrange
@@ -1114,7 +1162,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShipPhone = "222 333 4444";
             #endregion Arrange
@@ -1147,7 +1199,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             var orderTypes = new List<OrderType>();
             for (int i = 0; i < 3; i++)
@@ -1191,7 +1247,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             #endregion Arrange
 
@@ -1224,7 +1284,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Justification = "Some Just";
 
@@ -1261,7 +1325,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Comments = "This is my Comment";
 
@@ -1301,7 +1369,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Comments = "  ";
 
@@ -1340,7 +1412,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Comments = string.Empty;
 
@@ -1380,7 +1456,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Comments = null;
 
@@ -1419,7 +1499,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.FileIds = null;
 
@@ -1457,7 +1541,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.FileIds = new[]{SpecificGuid.GetGuid(2)};
 
@@ -1494,7 +1582,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.FileIds = new[] { SpecificGuid.GetGuid(2), SpecificGuid.GetGuid(3), SpecificGuid.GetGuid(4) };
 
@@ -1532,7 +1624,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             new FakeCustomFields(3, RepositoryFactory.CustomFieldRepository);
             for (int i = 0; i < 3; i++)
@@ -1580,7 +1676,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             new FakeCustomFields(3, RepositoryFactory.CustomFieldRepository);
             for (int i = 0; i < 3; i++)
@@ -1628,7 +1728,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             new FakeCustomFields(3, RepositoryFactory.CustomFieldRepository);
             for (int i = 0; i < 3; i++)
@@ -1677,7 +1781,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Restricted = new OrderViewModel.ControlledSubstance();
             orderViewModel.Restricted.Status = "True";
@@ -1723,7 +1831,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Restricted = new OrderViewModel.ControlledSubstance();
             orderViewModel.Restricted.Status = "true"; //Lower case is ignored
@@ -1770,7 +1882,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Restricted = new OrderViewModel.ControlledSubstance();
             orderViewModel.Restricted.Status = "false"; 
@@ -1817,7 +1933,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Restricted = null;
             //orderViewModel.Restricted.Status = "true"; //Lower case is ignored
@@ -1866,7 +1986,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
 
             #endregion Arrange
@@ -1904,7 +2028,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.25%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
             orderViewModel.Splits = new OrderViewModel.Split[1];
             orderViewModel.Splits[0] = new OrderViewModel.Split();
             orderViewModel.Splits[0].Account = "Acct1";
@@ -1949,7 +2077,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.99%";
             orderViewModel.Shipping = "$2.35";
             orderViewModel.Freight = "$1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
 
             #endregion Arrange
@@ -1985,7 +2117,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "7.99";
             orderViewModel.Shipping = "2.35";
             orderViewModel.Freight = "1.23";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
 
             #endregion Arrange
@@ -2021,7 +2157,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Tax = "not valid";
             orderViewModel.Shipping = "not valid2";
             orderViewModel.Freight = "not valid 3";
-            orderViewModel.Items = new OrderViewModel.LineItem[0];
+            orderViewModel.Items = new OrderViewModel.LineItem[1];
+            orderViewModel.Items[0] = new OrderViewModel.LineItem();
+            orderViewModel.Items[0].Description = "Test";
+            orderViewModel.Items[0].Quantity = "0";
+            orderViewModel.Items[0].Price = "0";
 
 
             #endregion Arrange

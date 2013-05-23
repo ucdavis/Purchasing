@@ -66,19 +66,6 @@ namespace Purchasing.Tests.Core
             return rtValue;
         }
 
-        public static CommodityGroup CommodityGroup(int? counter, bool loadAll = true)
-        {
-            var rtValue = new CommodityGroup();
-            rtValue.SetIdTo(counter.HasValue ? SpecificGuid.GetGuid(counter.Value) : Guid.NewGuid());
-            if (loadAll)
-            {
-                rtValue.GroupCode = "GroupCode" + counter.Extra();
-                rtValue.Name = "Name" + counter.Extra();
-                rtValue.SubGroupCode = "SubGroupCode" + counter.Extra();
-                rtValue.SubGroupName = "SubGroupName" + counter.Extra();
-            }
-            return rtValue;
-        }
 
         public static EmailPreferences EmailPreferences(int? counter)
         {

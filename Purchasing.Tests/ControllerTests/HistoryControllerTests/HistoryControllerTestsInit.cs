@@ -61,7 +61,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
             OrderService = MockRepository.GenerateStub<IOrderService>();
             
-            Controller = new TestControllerBuilder().CreateController<HistoryController>(RepositoryFactory, QueryRepositoryFactory, OrderService);
+            Controller = new TestControllerBuilder().CreateController<HistoryController>(RepositoryFactory, OrderService);
         }
 
         protected override void RegisterRoutes()

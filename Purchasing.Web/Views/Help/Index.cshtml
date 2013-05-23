@@ -27,23 +27,43 @@
     </div>
 
 </section>
-<section id="support" class="container split">
-    <header>
-        @*<a href="http://ucdavis.uservoice.com/knowledgebase">
+    <section id="support" class="container split">
+        <header>
+            @*<a href="http://ucdavis.uservoice.com/knowledgebase">
             <img src='@Url.Content("~/Images/knowledgebase.png")' alt="knowledge base"/>
         </a>*@
-        <a href="http://ucdavis.uservoice.com/knowledgebase">
-            <img src='@Url.Content("~/Images/gethelp.png")' alt="get help"/>
-        </a>
-    </header>
+            <a href="http://ucdavis.uservoice.com/knowledgebase">
+                <img src='@Url.Content("~/Images/gethelp.png")' alt="get help"/>
+            </a>
+        </header>
     
-    <div class="contents">
+        <div class="contents">
         
-        <p>Need some help?  Try our knowledge base or submitting a ticket to our help desk.</p>
+            <p>Need some help?  Try our knowledge base or submitting a ticket to our help desk.</p>
 
-    </div>
+        </div>
 
-</section>
+    </section>
+    <section id="dept-admins" class="container split" style="margin-right: 17px;">
+        <header>
+            
+            <a href='@Url.Action("Contact", "User")'>
+                <img src='@Url.Content("~/Images/gethelp.png")' alt="Who should I contact"/>
+            </a>
+        </header>
+    
+        <div class="contents">
+        
+            <p>Who should I contact?</p>
+            <ul>
+                <li>What Workgroups do you belong to?</li>
+                <li>Who are the Departmental Admins for those workgroups?</li>
+                <li>Have a technical questions instead? Try the other help button.</li>
+            </ul>
+
+        </div>
+
+    </section>
 </div>
 
 @section AdditionalScripts

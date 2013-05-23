@@ -224,8 +224,9 @@
     <Reference Include="MvcContrib.FluentHtml">
       <HintPath>..\packages\MvcContrib.Mvc3.FluentHtml-ci.3.0.100.0\lib\MvcContrib.FluentHtml.dll</HintPath>
     </Reference>
-    <Reference Include="NewRelic.Api.Agent, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NewRelicWindowsAzure.1.0.0.29\lib\net40\NewRelic.Api.Agent.dll</HintPath>
+    <Reference Include="NewRelic.Api.Agent, Version=2.5.112.0, Culture=neutral, PublicKeyToken=06552fced0b33d87, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NewRelicWindowsAzure.1.0.0.35\lib\NewRelic.Api.Agent.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.5\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -371,6 +372,7 @@
     <Compile Include="Models\OrderReceiveModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Models\ReportPermissionsViewModel.cs" />
+    <Compile Include="Models\ReportPurchaserWorkLoadViewModel.cs" />
     <Compile Include="Models\ReportWorkloadViewModel.cs" />
     <Compile Include="Models\ReviewOrderViewModel.cs" />
     <Compile Include="Models\TotalByWorkgroupViewModel.cs" />
@@ -967,9 +969,9 @@
     <None Include="newrelic.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="NewRelicAgent_x64_2.1.2.472.msi">
+    <Content Include="NewRelicAgent_x64_2.5.112.0.msi">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="Properties\PublishProfiles\Dev.pubxml" />
     <None Include="Properties\PublishProfiles\Production-Glurmo.pubxml" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
@@ -1054,6 +1056,7 @@
     <Content Include="Views\EmailQueueV2\Index.cshtml" />
     <Content Include="Views\Report\ProcessingTime.cshtml" />
     <Content Include="Views\Order\RerouteAccountManager.cshtml" />
+    <Content Include="Views\Report\PurchaserWorkLoad.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
