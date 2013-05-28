@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Helpers;
+using UCDArch.Data.NHibernate;
 using UCDArch.Web.Controller;
 
 namespace Purchasing.Web.Controllers
@@ -24,5 +25,11 @@ namespace Purchasing.Web.Controllers
         }
 
         private const string TEMP_DATA_ERROR_MESSAGE_KEY = "ErrorMessage";
+
+        protected override void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+            NHibernateSessionManager.Instance.CloseSession();
+            base.OnResultExecuted(filterContext);
+        }
     }
 }
