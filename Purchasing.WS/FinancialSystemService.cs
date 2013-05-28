@@ -42,11 +42,12 @@ namespace Purchasing.WS
 
                 // required fields
                 doc.documentInfo = new documentInfo();
-                doc.documentInfo.explanation = SetForDafis(string.Format("{0}-{1}", order.RequestNumber, order.Justification), 400);
+                doc.documentInfo.explanation = SetForDafis(string.Format(order.Justification), 400);
+                doc.documentInfo.description = order.RequestNumber;
                 doc.documentInfo.initiatorUserId = userId;
                 doc.requestTypeCode = kfsDocType;
                 doc.requiredDate = order.DateNeeded.ToString("d");
-                doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?
+                doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?                
 
                 // vendor, only if valid kfs vendor
                 if (order.Vendor != null && !string.IsNullOrEmpty(order.Vendor.VendorId))
