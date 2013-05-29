@@ -640,6 +640,11 @@ namespace Purchasing.Web.Controllers
             ErrorMessage = "There were Errors, please correct and try again.";
             return this.RedirectToAction(x => x.Index(null));
         }
+
+        public ActionResult Instructions()
+        {
+            return View();
+        }
     }
 
     
