@@ -600,5 +600,24 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #endregion Assert
         }
         #endregion TookTraining Tests
+
+        #region Instructions Tests
+
+        [TestMethod]
+        public void TestInstructionsReturnsView()
+        {
+            #region Arrange
+            
+            #endregion Arrange
+
+            #region Act
+            Controller.Instructions()
+                      .AssertViewRendered();
+            #endregion Act
+
+            #region Assert
+            #endregion Assert		
+        }
+        #endregion Instructions Tests
     }
 }

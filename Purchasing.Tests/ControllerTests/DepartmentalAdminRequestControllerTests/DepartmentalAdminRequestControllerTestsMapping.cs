@@ -85,6 +85,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         {
             "~/DepartmentalAdminRequest/TookTraining/test".ShouldMapTo<DepartmentalAdminRequestController>(a => a.TookTraining("test", "Default"), true);
         }
+
+        [TestMethod]
+        public void TestInstructionsMapping()
+        {
+            "~/DepartmentalAdminRequest/Instructions".ShouldMapTo<DepartmentalAdminRequestController>(a => a.Instructions());
+        }
         #endregion Mapping Tests
     }
 }
