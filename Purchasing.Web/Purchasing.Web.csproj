@@ -1042,6 +1042,7 @@
     <Content Include="Views\Report\ProcessingTime.cshtml" />
     <Content Include="Views\Order\RerouteAccountManager.cshtml" />
     <Content Include="Views\Report\PurchaserWorkLoad.cshtml" />
+    <Content Include="Views\DepartmentalAdminRequest\Instructions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
