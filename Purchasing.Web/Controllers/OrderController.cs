@@ -709,11 +709,11 @@ namespace Purchasing.Web.Controllers
                         return RedirectToAction("Review", new { id });
                     }
 
-                    if (order.Address.BuildingCode == null)
-                    {
-                        ErrorMessage = "Shipping Address needs to have a building code to complete a KFS order";
-                        return RedirectToAction("Review", new { id });
-                    }
+                    //if (order.Address.BuildingCode == null)
+                    //{
+                    //    ErrorMessage = "Shipping Address needs to have a building code to complete a KFS order";
+                    //    return RedirectToAction("Review", new { id });
+                    //}
                 }
 
                 var errors = _orderService.Complete(order, newOrderType, kfsDocType);
