@@ -166,19 +166,19 @@
     <value>Looks like you were working on a form... do you want to load it back up?</value>
   </data>
   <data name="Order_ConfirmCancelLineSplit" xml:space="preserve">
-    <value>Are you sure you want to cancel the current line item split? [Description]</value>
+    <value>Are you sure you want to cancel the current line item split?</value>
   </data>
   <data name="Order_ConfirmCancelOrderSplit" xml:space="preserve">
-    <value>Are you sure you want to cancel the current order split? [Description]</value>
+    <value>Are you sure you want to cancel the current order split?</value>
   </data>
   <data name="Order_ConfirmLineSplit" xml:space="preserve">
-    <value>Are you sure you want to split each line item across multiple accounts? [Description]</value>
+    <value>Are you sure you want to split each line item across multiple accounts?</value>
   </data>
   <data name="Order_ConfirmModification" xml:space="preserve">
     <value>Enabling line item and account modification will necessitate recalculating approvals once this order edit is submitted.</value>
   </data>
   <data name="Order_ConfirmOrderSplit" xml:space="preserve">
-    <value>Are you sure you want to split this order across multiple accounts? [Description]</value>
+    <value>Are you sure you want to split this order across multiple accounts?</value>
   </data>
   <data name="Order_ConfirmSubmit" xml:space="preserve">
     <value>Are you sure you want to save this order?</value>
