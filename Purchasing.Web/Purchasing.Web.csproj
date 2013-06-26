@@ -962,6 +962,7 @@
     <None Include="disableAppPoolTimeout.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Properties\PublishProfiles\AFSTesting.pubxml" />
     <None Include="Properties\PublishProfiles\Dev.pubxml" />
     <None Include="Properties\PublishProfiles\Production-Glurmo.pubxml" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
