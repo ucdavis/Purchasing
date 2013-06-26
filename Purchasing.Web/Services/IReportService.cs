@@ -68,6 +68,7 @@ namespace Purchasing.Web.Services
             if(!forVendor)
             {
                 AddBottomSection(doc, order);
+                AddControlledSubstanceSection(doc, order);
                 AddComments(doc, order);
             }
 
@@ -93,6 +94,7 @@ namespace Purchasing.Web.Services
             table.AddCell(InitializeCell("** The order request number is an internal only number, not a PO number.", _boldFont, valignment: Element.ALIGN_LEFT, bottomBorder: false));
             table.AddCell(InitializeCell("** Not a confirmation of order and this is not a University PO.", _boldFont, valignment: Element.ALIGN_LEFT));
             doc.Add(table);
+
         }
 
         /// <summary>
@@ -342,6 +344,43 @@ namespace Purchasing.Web.Services
                 accountingTable.AddCell(InitializeCell(split.Project, _font));
 
                 doc.Add(accountingTable);
+            }
+        }
+
+        private void AddControlledSubstanceSection(Document doc, Order order)
+        {
+            if (order.HasControlledSubstance)
+            {
+                var table = InitializeTable(2);
+                table.SetWidths(new int[] { 30, 70 });
+                table.SpacingBefore = 1f;
+
+                table.AddCell(InitializeCell("Controlled Substances Information", _tableHeaderFont, true, Element.ALIGN_LEFT, colspan: 2, bottomBorder: true));
+
+
+                var authorizationInfo = order.GetAuthorizationInfo();
+
+                table.SetWidths(new int[] { 20, 80 });
+                table.AddCell(InitializeCell("Class Schedule:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+                table.AddCell(InitializeCell(authorizationInfo.ClassSchedule, padding: false, bottomBorder: false));
+
+                table.AddCell(InitializeCell("Pharmaceutical Grade:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+                table.AddCell(InitializeCell(authorizationInfo.PharmaceuticalGrade == true ? "Yes" : "No", padding: false, bottomBorder: false));
+
+                table.AddCell(InitializeCell("Use:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+                table.AddCell(InitializeCell(authorizationInfo.Use, padding: false, bottomBorder: false));
+
+                table.AddCell(InitializeCell("Storage Site:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+                table.AddCell(InitializeCell(authorizationInfo.StorageSite, padding: false, bottomBorder: false));
+
+                table.AddCell(InitializeCell("Custodian:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+                table.AddCell(InitializeCell(authorizationInfo.Custodian, padding: false, bottomBorder: false));
+
+                table.AddCell(InitializeCell("End User:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
+                table.AddCell(InitializeCell(authorizationInfo.EndUser, padding: false, bottomBorder: false));
+
+                table.AddCell(InitializeCell("", colspan: 2));
+                doc.Add(table);
             }
         }
 

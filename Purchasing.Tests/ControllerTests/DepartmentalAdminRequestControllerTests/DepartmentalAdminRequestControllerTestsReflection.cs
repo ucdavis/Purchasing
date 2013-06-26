@@ -151,7 +151,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #endregion Act
 
             #region Assert           
-            Assert.AreEqual(10, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(11, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -395,6 +395,27 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
             Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
             Assert.AreEqual(1, allAttributes.Count());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerMethodInstructionsContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Instructions");
+            var element = controllerMethod.ElementAt(0);
+            #endregion Arrange
+
+            #region Act
+            //var expectedAttribute = element.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = element.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            //Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
+            //Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(0, allAttributes.Count());
             #endregion Assert
         }
 
