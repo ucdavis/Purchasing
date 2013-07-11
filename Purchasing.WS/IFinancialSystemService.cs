@@ -29,7 +29,7 @@ namespace Purchasing.WS
         /// Checks if the requested type is allowed by the API
         /// </summary>
         /// <remarks>
-        /// Currently, the api only allows DPO and PR.  DRO is not allowed, but should be with the move to kfs.
+        /// Currently, the api only allows REQS
         /// </remarks>
         /// <param name="docType">Kfs Doc Type</param>
         /// <returns></returns>

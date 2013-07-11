@@ -40,20 +40,9 @@
                             <div class="display-details">
                                 @this.Select("orderType").Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("KFS")
                                 <select id="kfsDocType" name="kfsdoctype">
-                                    <option value="">-- Select A Document Type --</option>
-                                    <optgroup label="PR (Purchase Request)">                                    
-                                        <option value="PR">PR</option>
-                                        <option value="PR2">PR without DaFIS document</option>
-                                    </optgroup>
-                                    <optgroup label="DPO (Departmental Purchase Order)">
-                                        <option value="DPO">DPO</option>
-                                        <option value="DPO2">DPO without DaFIS document</option>
-                                    </optgroup>
-                                    <optgroup label="Other types without a DaFIS Doc">
-                                        <option value="DRO">DRO (Departmental Repair Order)</option>
-                                        <option value="CO">CO (Change Order)</option>
-                                        <option value="DC">DC (Direct Charge)</option>
-                                    </optgroup>
+                                    <option value="">-- Select A Document Type --</option>                                  
+                                    <option value="REQS">Requisition</option>
+                                    <option value="REQS2">Requisition without KFS Document</option>
                                 </select>
                                 <input type="submit" id="complete-order" name="action" class="button" value="Complete" disabled="disabled"/>
                             </div>

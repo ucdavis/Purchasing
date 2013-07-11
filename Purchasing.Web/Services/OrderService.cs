@@ -555,13 +555,9 @@ namespace Purchasing.Web.Services
                 }
             }
 
-            if (order.KfsDocType == "DPO2")
+            if (order.KfsDocType == "REQS2")
             {
-                order.KfsDocType = "DPO";
-            }
-            if (order.KfsDocType == "PR2")
-            {
-                order.KfsDocType = "PR";
+                order.KfsDocType = "REQS";
             }
 
             //Mark complete the final approval

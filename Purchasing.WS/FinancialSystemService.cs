@@ -45,7 +45,7 @@ namespace Purchasing.WS
                 doc.documentInfo.explanation = SetForDafis(string.Format(order.Justification), 400);
                 doc.documentInfo.description = order.RequestNumber;
                 doc.documentInfo.initiatorUserId = userId;
-                doc.requestTypeCode = kfsDocType;
+                doc.requestTypeCode = kfsDocType; //TODO: Remove?
                 doc.requiredDate = order.DateNeeded.ToString("d");
                 doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?                
 
@@ -297,7 +297,7 @@ namespace Purchasing.WS
 
         public bool AllowedType(string docType)
         {
-            var allowedKfsTypes = new string[2] { "DPO", "PR" };
+            var allowedKfsTypes = new string[1] { "REQS" };
 
             return allowedKfsTypes.Contains(docType);
         }

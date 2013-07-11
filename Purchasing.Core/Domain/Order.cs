@@ -39,7 +39,7 @@ namespace Purchasing.Core.Domain
         public virtual string RequestNumber { get; protected set; }
         [Required]
         public virtual OrderType OrderType { get; set; }
-        [StringLength(3)]
+        [StringLength(4)]
         public virtual string KfsDocType { get; set; }
         
         //public virtual int VendorId { get; set; }//TODO: Replace with actual vendor
