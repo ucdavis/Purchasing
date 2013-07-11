@@ -25,7 +25,7 @@
     [Total]                   MONEY         CONSTRAINT [DF_Orders_Total] DEFAULT ((0)) NOT NULL,
     [CompletionReason]        VARCHAR (MAX) NULL,
     [RequestNumber]           VARCHAR (20)  NOT NULL,
-    [KfsDocType]              CHAR (4)      NULL,
+    [KfsDocType]              CHAR (3)      NULL,
     [PoNumber]                VARCHAR (50)  NULL,
     [FpdCompleted] BIT NOT NULL DEFAULT ((0)), 
     PRIMARY KEY CLUSTERED ([Id] ASC),

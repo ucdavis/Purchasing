@@ -555,9 +555,9 @@ namespace Purchasing.Web.Services
                 }
             }
 
-            if (order.KfsDocType == "REQS2")
+            if (order.KfsDocType == "PR2")
             {
-                order.KfsDocType = "REQS";
+                order.KfsDocType = "PR";
             }
 
             //Mark complete the final approval

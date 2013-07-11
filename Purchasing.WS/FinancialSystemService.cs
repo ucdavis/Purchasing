@@ -297,7 +297,7 @@ namespace Purchasing.WS
 
         public bool AllowedType(string docType)
         {
-            var allowedKfsTypes = new string[1] { "REQS" };
+            var allowedKfsTypes = new string[1] { "PR" };
 
             return allowedKfsTypes.Contains(docType);
         }

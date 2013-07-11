@@ -41,8 +41,8 @@
                                 @this.Select("orderType").Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("KFS")
                                 <select id="kfsDocType" name="kfsdoctype">
                                     <option value="">-- Select A Document Type --</option>                                  
-                                    <option value="REQS">Requisition</option>
-                                    <option value="REQS2">Requisition without KFS Document</option>
+                                    <option value="PR">Purchase Request</option>
+                                    <option value="PR2">Purchase Request without KFS Document</option>
                                 </select>
                                 <input type="submit" id="complete-order" name="action" class="button" value="Complete" disabled="disabled"/>
                             </div>

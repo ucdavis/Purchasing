@@ -29,7 +29,7 @@ namespace Purchasing.WS
         /// Checks if the requested type is allowed by the API
         /// </summary>
         /// <remarks>
-        /// Currently, the api only allows REQS
+        /// Currently, the api only allows PR
         /// </remarks>
         /// <param name="docType">Kfs Doc Type</param>
         /// <returns></returns>
