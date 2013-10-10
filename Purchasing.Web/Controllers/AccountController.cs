@@ -9,7 +9,7 @@ namespace Purchasing.Web.Controllers
     /// <summary>
     /// Controller for the Account class.
     /// </summary>
-    public class AccountController : Controller
+    public class AccountController : Controller 
     {
         public string Message
         {

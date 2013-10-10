@@ -725,7 +725,7 @@ namespace Purchasing.Web.Services
                 return false; //If the workgroup forces account approver decision and this split doesn't have an account, then it can't be auto approved
             }
 
-            if (string.Equals(approver.Id, _userIdentity.Current, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(approver.Id, _userIdentity.Current, StringComparison.OrdinalIgnoreCase) && string.Equals(approver.Id, order.CreatedBy.Id, StringComparison.OrdinalIgnoreCase))
             {
                 return true; //Auto approved if the approver is the current user
             }

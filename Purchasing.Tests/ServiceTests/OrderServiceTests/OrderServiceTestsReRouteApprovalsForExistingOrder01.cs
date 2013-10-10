@@ -66,7 +66,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             #region Arrange
             var order = CreateValidEntities.Order(1);
-            order.CreatedBy = CreateValidEntities.User(109);
+            order.CreatedBy = CreateValidEntities.User(3);
             order.SetIdTo(99);
             order.Splits = new List<Split>();
             order.Splits.Add(CreateValidEntities.Split(1));
