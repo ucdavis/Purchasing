@@ -145,7 +145,8 @@ namespace Purchasing.WS
 
                 // try to upload the requisition
                 var client = InitializeClient();
-                var result = client.uploadRequisition(doc, _token);
+                throw new NotImplementedException("01 currently hard coded for origination code. Need to change");
+                var result = client.uploadRequisition(doc, _token, "01");
 
                 return new SubmitResult(result);
             }
