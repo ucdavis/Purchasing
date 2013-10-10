@@ -39,6 +39,7 @@
         <xs:sequence>
           <xs:element minOccurs="0" name="orderInfo" type="tns:purchaseRequisitionInfo" />
           <xs:element minOccurs="0" name="securityToken" type="xs:string" />
+          <xs:element minOccurs="0" name="feedOriginationCode" type="xs:string" />
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="purchaseRequisitionInfo">
@@ -51,12 +52,15 @@
           <xs:element minOccurs="0" name="freightAmount" type="xs:string" />
           <xs:element minOccurs="0" maxOccurs="unbounded" name="items" nillable="true" type="tns:purchasingItemInfo" />
           <xs:element minOccurs="0" name="organizationCode" type="xs:string" />
+          <xs:element minOccurs="0" name="priceSourceCode" type="xs:string" />
           <xs:element minOccurs="0" name="requestTypeCode" type="xs:string" />
           <xs:element minOccurs="0" name="requestorUserId" type="xs:string" />
           <xs:element minOccurs="0" name="requiredDate" type="xs:string" />
           <xs:element minOccurs="0" maxOccurs="unbounded" name="shippingAndHandlingAccountingLines" nillable="true" type="tns:purchasingAccountingInfo" />
           <xs:element minOccurs="0" name="shippingAndHandlingAmount" type="xs:string" />
+          <xs:element minOccurs="0" name="shippingAndHandlingDescription" type="xs:string" />
           <xs:element minOccurs="0" name="sourceSystemOrderId" type="xs:string" />
+          <xs:element minOccurs="0" name="vendorAddressNumber" type="xs:string" />
           <xs:element minOccurs="0" name="vendorDetailId" type="xs:string" />
           <xs:element minOccurs="0" name="vendorHeaderId" type="xs:string" />
         </xs:sequence>
