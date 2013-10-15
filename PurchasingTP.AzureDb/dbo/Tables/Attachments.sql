@@ -8,7 +8,7 @@
     [UserId]      VARCHAR (10)     NOT NULL,
     [Category]    VARCHAR (50)     NULL,
     [MessageId] VARCHAR(250) NULL, 
-    [IsBlob] BIT NULL DEFAULT ((0)), 
+    [IsBlob] BIT NOT NULL DEFAULT ((0)), 
     CONSTRAINT [PK_Attachments] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Attachments_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id]),
     CONSTRAINT [FK_Attachments_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id])
