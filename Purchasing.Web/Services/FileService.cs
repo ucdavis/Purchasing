@@ -23,7 +23,7 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Upload an attachment to blob storage
         /// </summary>
-        void UploadAttachment(Attachment attachment);
+        void UploadAttachment(Guid id, Stream fileStream);
     }
 
     public class FileService : IFileService
@@ -35,12 +35,16 @@ namespace Purchasing.Web.Services
         {
             _attachmentRepository = attachmentRepository;
 
-            var storageAccount =
-                CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
+            var storageConnectionString =
+                string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", "storagedev", "scIGov5W/luchHOaDu3WUQZL4WDZIQqIsRo8h/elBASAYYWbLf8FKFumDub6kG4kLgjsrFTJ7bsAm+Seql/mng==");
+                              //CloudConfigurationManager.GetSetting("AzureStorageAccountName"),
+                              //CloudConfigurationManager.GetSetting("AzureStorageKey"));
+
+            var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
 
             var blobClient = storageAccount.CreateCloudBlobClient();
 
-            _container = blobClient.GetContainerReference(CloudConfigurationManager.GetSetting("FileContainer"));
+            _container = blobClient.GetContainerReference("filesdev");
             _container.CreateIfNotExists();
             _container.SetPermissions(new BlobContainerPermissions {PublicAccess = BlobContainerPublicAccessType.Off});
 
@@ -61,7 +65,15 @@ namespace Purchasing.Web.Services
             {
                 //Get file from blob storage and populate the contents
                 var blob = _container.GetBlockBlobReference(id.ToString());
-                blob.DownloadToByteArray(file.Contents, 0);
+                using (var stream = new MemoryStream())
+                {
+                    blob.DownloadToStream(stream);
+                    using (var reader = new BinaryReader(stream))
+                    {
+                        stream.Position = 0;
+                        file.Contents = reader.ReadBytes((int)stream.Length);
+                    }
+                }
             }
 
             return file;
@@ -70,15 +82,10 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Upload an attachment to blob storage
         /// </summary>
-        public void UploadAttachment(Attachment attachment)
+        public void UploadAttachment(Guid id, Stream fileStream)
         {
-            if (attachment == null) return;
-
-            var blob = _container.GetBlockBlobReference(attachment.Id.ToString());
-            blob.UploadFromByteArray(attachment.Contents, 0, attachment.Contents.Length);
-
-            attachment.IsBlob = true;
-            attachment.Contents = null; //Clear the contents because they have been uploaded to blob storage
+            var blob = _container.GetBlockBlobReference(id.ToString());
+            blob.UploadFromStream(fileStream);
         }
     }
 }
