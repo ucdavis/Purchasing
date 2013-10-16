@@ -11,7 +11,22 @@ using Purchasing.Core.Domain;
 
 namespace Purchasing.Web.Services
 {
-    public class FileService
+    public interface IFileService
+    {
+        /// <summary>
+        /// Return the attachment associated with the given attachmentId, with contents populated
+        /// </summary>
+        /// <param name="id">attachmentID</param>
+        /// <returns></returns>
+        Attachment GetAttachment(Guid id);
+
+        /// <summary>
+        /// Upload an attachment to blob storage
+        /// </summary>
+        void UploadAttachment(Attachment attachment);
+    }
+
+    public class FileService : IFileService
     {
         private readonly IRepositoryWithTypedId<Attachment, Guid> _attachmentRepository;
         private readonly CloudBlobContainer _container;
