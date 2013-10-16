@@ -36,9 +36,9 @@ namespace Purchasing.Web.Services
             _attachmentRepository = attachmentRepository;
 
             var storageConnectionString =
-                string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", "storagedev", "scIGov5W/luchHOaDu3WUQZL4WDZIQqIsRo8h/elBASAYYWbLf8FKFumDub6kG4kLgjsrFTJ7bsAm+Seql/mng==");
-                              //CloudConfigurationManager.GetSetting("AzureStorageAccountName"),
-                              //CloudConfigurationManager.GetSetting("AzureStorageKey"));
+                string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}",
+                              CloudConfigurationManager.GetSetting("AzureStorageAccountName"),
+                              CloudConfigurationManager.GetSetting("AzureStorageKey"));
 
             var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
 
