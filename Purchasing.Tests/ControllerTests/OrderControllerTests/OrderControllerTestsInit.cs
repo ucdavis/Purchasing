@@ -44,6 +44,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public IRepositoryWithTypedId<ColumnPreferences, string> ColumnPreferencesRepository;
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
 
+        public IFileService FileService;
+
         #region Init
         /// <summary>
         /// Setups the controller.
@@ -90,6 +92,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             RepositoryFactory.SplitRepository = MockRepository.GenerateStub<IRepository<Split>>();
             RepositoryFactory.AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
 
+            FileService = MockRepository.GenerateStub<IFileService>();
+
             //QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 
             Controller = new TestControllerBuilder().CreateController<OrderController>(
@@ -100,7 +104,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 FinancialSystemService,
                 QueryRepositoryFactory,
                 EventService,
-                BugTrackingService);
+                BugTrackingService,
+                FileService);
         }
 
         protected override void RegisterRoutes()
