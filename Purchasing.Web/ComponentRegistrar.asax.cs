@@ -35,6 +35,8 @@ namespace Purchasing.Web
                                 service.SetIndexRoot(HttpContext.Current.Server.MapPath("~/App_Data/Indexes"));
                         }
                     ));
+
+            container.Register(Component.For<IFileService>().ImplementedBy<FileService>().Named("fileService").LifestyleSingleton());
             
             container.Register(Component.For<IRepositoryFactory>().ImplementedBy<RepositoryFactory>().Named("repositoryFactory"));
             container.Register(Component.For<IQueryRepositoryFactory>().ImplementedBy<QueryRepositoryFactory>().Named("queryRepositoryFactory"));
