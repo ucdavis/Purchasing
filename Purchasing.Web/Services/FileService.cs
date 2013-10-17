@@ -44,7 +44,7 @@ namespace Purchasing.Web.Services
 
             var blobClient = storageAccount.CreateCloudBlobClient();
 
-            _container = blobClient.GetContainerReference("filesdev");
+            _container = blobClient.GetContainerReference("oppattachments");
             _container.CreateIfNotExists();
             _container.SetPermissions(new BlobContainerPermissions {PublicAccess = BlobContainerPublicAccessType.Off});
 
