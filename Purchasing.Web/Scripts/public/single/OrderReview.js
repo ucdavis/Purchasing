@@ -334,7 +334,8 @@
             onComplete: function (id, fileName, response) {
                 if (response.success) {
                     var newFileContainer = $(uploader._getItemByFileId(id));
-                    var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
+                    var viewAttachmentUrl = options.ViewAttachment + "?fileId=" + response.id;
+                    var fileDisplay = $("<a>").attr('href', viewAttachmentUrl).html(fileName);
                     newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
                     $(".attachments-not-found").empty();
                     newFileContainer.find(".qq-upload-file-category").attr("data-id", response.id);

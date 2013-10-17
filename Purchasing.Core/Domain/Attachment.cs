@@ -13,7 +13,7 @@ namespace Purchasing.Core.Domain
         [Required]
         [StringLength(200)]
         public virtual string ContentType { get; set; }
-        [Required]
+        
         public virtual byte[] Contents { get; set; }
         public virtual DateTime DateCreated { get; set; }
 
@@ -23,6 +23,8 @@ namespace Purchasing.Core.Domain
         public virtual Order Order { get; set; }
         [StringLength(50)]
         public virtual string Category { get; set; }
+
+        public virtual bool IsBlob { get; set; }
     }
 
     public class AttachmentMap : ClassMap<Attachment>
@@ -36,6 +38,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Contents).CustomType("BinaryBlob");
             Map(x => x.DateCreated);
             Map(x => x.Category);
+            Map(x => x.IsBlob);
 
             References(x => x.User);
             References(x => x.Order);
