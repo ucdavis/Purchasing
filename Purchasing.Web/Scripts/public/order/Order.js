@@ -104,8 +104,10 @@
                     row.find(".description").toggleClass(options.invalidLineItemClass, descriptionBlank).toggleClass(options.validLineItemClass, !descriptionBlank);
                     row.find(".price").toggleClass(options.invalidLineItemClass, priceBlank).toggleClass(options.validLineItemClass, !priceBlank);
                 }
-
-                if (!quantityBlank && !descriptionBlank && !priceBlank &&
+                if (quantityBlank && descriptionBlank && priceBlank) {
+                    model.valid(true); //valid for empty line items 
+                }
+                else if (!quantityBlank && !descriptionBlank && !priceBlank &&
                     !model.quantity.hasError() && !model.price.hasError()) {
                     model.valid(true); //valid if none of these are blank AND price/quantity do not have errors
                 } else {
@@ -356,6 +358,13 @@
                 }
             };
 
+            self.IsEmpty = function() {
+                if (self.desc() || self.quantity() || self.price()) {
+                    return false;
+                }
+                return true;
+            };
+
             self.addSplit = function () {
                 self.splits.push(new purchasing.LineSplit(order.lineSplitCount(), self));
             };
@@ -586,22 +595,21 @@
 
             self.valid = function () {
                 //Always make sure there are >0 valid line items
-                var validLines = $.map(self.items(), function (item) {
-                    return item.valid() ? item : null;
+                var nonEmptyLines = $.map(self.items(), function (item) {
+                    return !item.IsEmpty() ? item : null;
                 });
 
-                if (validLines.length === 0) {
+                if (nonEmptyLines.length === 0) {
                     alert(options.Messages.LineItemRequired);
                     scrollTo($("#line-items-section"));
                     return false;
                 }
 
-                var invalidLines = $.map(self.items(), function (item) {
-                    if ((item.quantity() || item.desc() || item.price()) && item.quantity.hasError() || item.price.hasError() || !item.desc() ) {
+                var invalidLines = $.map(self.items(), function (item) {                    
+                    if (!item.valid() ) {
                         return item;
                     }
                     return null;
-
                 });
                 if (invalidLines.length !== 0) {
                     alert(options.Messages.InvalidLineItemDetected);
