@@ -231,4 +231,7 @@
   <data name="OrderFdp_Updated" xml:space="preserve">
     <value>FDP Completed updated</value>
   </data>
+  <data name="Order_Error_LineItem" xml:space="preserve">
+    <value>Invalid Line item Detected</value>
+  </data>
 </root>

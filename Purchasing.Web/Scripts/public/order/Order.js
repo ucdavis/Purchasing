@@ -54,6 +54,7 @@
 
     function extendKnockout() {
         function isBlank(val) {
+            
             if (val) {
                 return false;
             }
@@ -591,6 +592,20 @@
 
                 if (validLines.length === 0) {
                     alert(options.Messages.LineItemRequired);
+                    scrollTo($("#line-items-section"));
+                    return false;
+                }
+
+                var invalidLines = $.map(self.items(), function (item) {
+                    console.log(item);
+                    if ((item.quantity() || item.desc() || item.price()) && item.quantity.hasError() || item.price.hasError() || !item.desc() ) {
+                        return item;
+                    }
+                    return null;
+
+                });
+                if (invalidLines.length !== 0) {
+                    alert(options.Messages.InvalidLineItemDetected);
                     scrollTo($("#line-items-section"));
                     return false;
                 }
