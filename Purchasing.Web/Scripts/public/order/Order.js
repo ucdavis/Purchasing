@@ -597,7 +597,6 @@
                 }
 
                 var invalidLines = $.map(self.items(), function (item) {
-                    console.log(item);
                     if ((item.quantity() || item.desc() || item.price()) && item.quantity.hasError() || item.price.hasError() || !item.desc() ) {
                         return item;
                     }
