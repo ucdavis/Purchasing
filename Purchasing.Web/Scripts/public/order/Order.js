@@ -358,7 +358,7 @@
                 }
             };
 
-            self.IsEmpty = function() {
+            self.isEmpty = function() {
                 if (self.desc() || self.quantity() || self.price()) {
                     return false;
                 }
@@ -596,7 +596,7 @@
             self.valid = function () {
                 //Always make sure there are >0 valid line items
                 var nonEmptyLines = $.map(self.items(), function (item) {
-                    return !item.IsEmpty() ? item : null;
+                    return !item.isEmpty() ? item : null;
                 });
 
                 if (nonEmptyLines.length === 0) {
