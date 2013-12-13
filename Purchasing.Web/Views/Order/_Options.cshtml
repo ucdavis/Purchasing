@@ -17,7 +17,7 @@ purchasing.options({
     GetSubAccounts: '@Url.Action("GetSubAccounts", new { id = Model.Order.Id })',
     GetRequesters: '@Url.Action("GetRequesters", "Workgroup", new { id = Model.Workgroup.Id })',
     UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new { id = Model.Order.Id })',
-    AttachmentCategorySource: ["Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],    
+    AttachmentCategorySource: ["Receipt", "Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],    
     AntiForgeryToken: $("input[name=__RequestVerificationToken]").val(),
 Guider: {
         Assets: ['@Url.Css("single/guider.css")', '@Url.Script("guider.js")', '@Url.Script("OrderTour.js")'],
