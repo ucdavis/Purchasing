@@ -1,13 +1,9 @@
-﻿
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.SessionState;
 using Dapper;
 using Purchasing.Web.Services;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 
@@ -50,8 +46,6 @@ namespace Purchasing.Web.Controllers
 
                 stats.OrgsWithOrders = conn.Query<int>("select COUNT(distinct OrganizationId) from Orders").Single();
                 stats.OrgsWithWorkgroups = conn.Query<int>("select COUNT(distinct OrganizationId) from WorkgroupsXOrganizations").Single();
-
-
 
             }
 
