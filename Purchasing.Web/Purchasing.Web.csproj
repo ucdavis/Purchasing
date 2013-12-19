@@ -339,6 +339,7 @@
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
     <Compile Include="Controllers\EmailQueueV2Controller.cs" />
     <Compile Include="Controllers\HistoryAjaxController.cs" />
+    <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />

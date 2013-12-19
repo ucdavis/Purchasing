@@ -28,7 +28,7 @@
 			z-index: 0;
 		}
 		
-		#container, #browsers
+		#container, #browsers, #stats
 		{
 		    margin: auto auto 2em auto;
 		    display: block;
@@ -205,7 +205,18 @@
 
                 </div>*@
 
-
+			    <div id="stats" style="display: none;">
+			        <div>
+			            <span class="alert alert-info">
+			                Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.Now.ToShortTimeString()</span>
+			            </span>
+			            <div>
+			                <span><strong id="stats-total-orders">n</strong> total orders placed for a total of </span> <strong id="stats-total-amount">$$$</strong><span>.</span>
+			                <span>Of these </span><strong id ="stats-total-orders-completed">n</strong><span> are completed for </span><strong id="stats-total-amount-completed"></strong><span>.</span>
+			            </div>
+                        <div></div>
+			        </div>
+			    </div>
 
             </div>
 				
@@ -249,6 +260,20 @@
                     $('input').placeholder();
                 }
             }
+        });
+    </script>
+    
+    <script type="text/javascript">
+        $(function () {
+            $.getJSON('@Url.Action("Overall", "Stats")', function (data) {
+                $("#stats-updated").html(new Date(data.LastUpdated).toLocaleString());
+                $("#stats-total-orders").html(data.TotalOrdersPlaced);
+                $("#stats-total-amount").html(data.TotalAmount);
+                $("#stats-total-orders-completed").html(data.TotalOrdersCompleted);
+                $("#stats-total-amount-completed").html(data.TotalAmountCompleted);
+
+                $("#stats").show();
+            });
         });
     </script>
 	
