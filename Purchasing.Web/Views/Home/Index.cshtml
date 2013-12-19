@@ -40,6 +40,21 @@
             border-radius: 5px 5px 5px 5px;
             box-shadow: 5px 5px 5px #DDDDDD;
 		}
+
+        .stats-inner
+		{
+		    margin: auto auto 2em auto;
+		    display: inline-block;
+		    width: 250px;
+            height: 100px;
+		    text-align: center;
+		    padding: 1em;
+            vertical-align: top;
+
+            border: 1px solid #CCCCCC;
+            border-radius: 5px 5px 5px 5px;
+            box-shadow: 5px 5px 5px #DDDDDD;
+		}
 		
 		#container h2
 		{
@@ -207,18 +222,21 @@
                 </div>*@
                 
 			    <div id="stats" >
-			        <h4 id="stats-loader" ><img src='@Url.Image("ajax-loader.gif")'/> Loading Statistics</h4>
+			        <div id="stats-loader">			        
+			            <h4  ><img src='@Url.Image("ajax-loader.gif")'/> Loading Statistics</h4>
+                    </div>
 			        <div id="stats-show" style="display: none;">
-			            <span class="alert alert-info">
+			            
+			            <div class="alert alert-info">
 			                Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.Now.ToShortTimeString()</span>
-			            </span>
-			            <div>
+			            </div>
+			            <div class="stats-inner">
 			                <h4><strong id="stats-total-orders">n</strong> total orders placed with <strong id="stats-attachments">n</strong> attached files totaling <strong id="stats-total-amount">$$$</strong> and using <strong id="stats-accounts">n</strong> different accounts. Of these <strong id="stats-total-orders-completed">n</strong> are completed for <strong id="stats-total-amount-completed"></strong>.</h4>
 			            </div>
-			            <div>
+			            <div class="stats-inner">
 			                <h4>There are <strong id="stats-active-users">n</strong> active users having acted <strong id="stats-actions">n</strong> times across <strong id="stats-workgroups">n</strong> workgroups.</h4>
 			            </div>
-			            <div><h4>There are <strong id="stats-orgs">n</strong> different primary organizations that have placed orders and <strong id="stats-associated-orgs">n</strong> different organizations that have workgroups associated with them.</h4></div>
+			            <div class="stats-inner"><h4>There are <strong id="stats-orgs">n</strong> different primary organizations that have placed orders and <strong id="stats-associated-orgs">n</strong> different organizations that have workgroups associated with them.</h4></div>
 			        </div>
 			    </div>
 
