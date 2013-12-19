@@ -29,7 +29,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [HandleTransactionsManually]
-        [OutputCache(Duration = 3600)]
+        [OutputCache(Duration = 14400)] //4 hours
         public JsonNetResult Overall()
         {
             var stats = new OverallStatistics { LastUpdated = DateTime.UtcNow };
