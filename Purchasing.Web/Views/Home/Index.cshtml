@@ -205,9 +205,10 @@
                     <div class="browser firefox">&nbsp;</div>
 
                 </div>*@
-
-			    <div id="stats" style="display: none;">
-			        <div>
+                
+			    <div id="stats" >
+			        <h4 id="stats-loader" ><img src='@Url.Image("ajax-loader.gif")'/> Loading Statistics</h4>
+			        <div id="stats-show" style="display: none;">
 			            <span class="alert alert-info">
 			                Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.Now.ToShortTimeString()</span>
 			            </span>
@@ -217,7 +218,7 @@
 			            <div>
 			                <h4>There are <strong id="stats-active-users">n</strong> active users having acted <strong id="stats-actions">n</strong> times across <strong id="stats-workgroups">n</strong> workgroups.</h4>
 			            </div>
-                        <div><h4>There are <strong id="stats-orgs">n</strong> different primary organizations that have placed orders and <strong id="stats-associated-orgs">n</strong> different organizations that have workgroups associated with them.</h4></div>
+			            <div><h4>There are <strong id="stats-orgs">n</strong> different primary organizations that have placed orders and <strong id="stats-associated-orgs">n</strong> different organizations that have workgroups associated with them.</h4></div>
 			        </div>
 			    </div>
 
@@ -285,7 +286,8 @@
                 $("#stats-orgs").html(data.OrgsWithOrders);
                 $("#stats-associated-orgs").html(data.OrgsWithWorkgroups);
 
-                $("#stats").show();
+                $("#stats-loader").hide();
+                $("#stats-show").show();
             });
         });
     </script>
