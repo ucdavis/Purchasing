@@ -41,8 +41,15 @@ namespace Purchasing.Web.Controllers
                 stats.TotalAmount = string.Format("{0:C2}", conn.Query<decimal>("select SUM(Total) as OrderTotalSumCompleted from Orders").Single());
                 stats.TotalAmountCompleted = string.Format("{0:C2}",conn.Query<decimal>("select SUM(Total) as OrderTotalSumCompleted from Orders where OrderStatusCodeId = 'CP'").Single());
 
-                stats.ActiveUsersInWorkgroups = conn.Query<int>("select COUNT( distinct UserId) from WorkgroupPermissions").Single();
+                stats.Attachments = conn.Query<int>("select COUNT(*) from Attachments").Single();
+                stats.Accounts = conn.Query<int>("select COUNT(distinct Account) from Splits").Single();
 
+                stats.ActiveUsersInWorkgroups = conn.Query<int>("select COUNT( distinct UserId) from WorkgroupPermissions").Single();
+                stats.Actions = conn.Query<int>("select COUNT(*) from OrderTracking").Single();
+                stats.Workgroups = conn.Query<int>("select count(*) from Workgroups where IsActive = 1").Single();
+
+                stats.OrgsWithOrders = conn.Query<int>("select COUNT(distinct OrganizationId) from Orders").Single();
+                stats.OrgsWithWorkgroups = conn.Query<int>("select COUNT(distinct OrganizationId) from WorkgroupsXOrganizations").Single();
 
 
 
@@ -61,9 +68,15 @@ namespace Purchasing.Web.Controllers
         public string TotalAmount { get; set; }
         public string TotalAmountCompleted { get; set; }
 
+        public int Attachments { get; set; }
+        public int Accounts { get; set; }
+
         public int ActiveUsersInWorkgroups { get; set; }
+        public int Actions { get; set; }
+        public int Workgroups { get; set; }
 
-
+        public int OrgsWithOrders { get; set; }
+        public int OrgsWithWorkgroups { get; set; }
 
         public DateTime LastUpdated { get; set; }
     }

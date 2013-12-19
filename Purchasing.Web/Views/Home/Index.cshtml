@@ -52,6 +52,8 @@
 		}
 		
 		span.ui-button-text { font-size: 15px; }
+
+        #stats { font-size: 20px;}
 		
 		.browser { background-image: url('@Url.Content("~/Images/browser_logos-32.png")');width: 32px;height: 32px;display: inline-block;}
 		.chrome { background-position: 0px 0px; }
@@ -211,10 +213,13 @@
 			                Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.Now.ToShortTimeString()</span>
 			            </span>
 			            <div>
-			                <span><strong id="stats-total-orders">n</strong> total orders placed for a total of </span> <strong id="stats-total-amount">$$$</strong><span>.</span>
-			                <span>Of these </span><strong id ="stats-total-orders-completed">n</strong><span> are completed for </span><strong id="stats-total-amount-completed"></strong><span>.</span>
+			                <span><strong id="stats-total-orders">n</strong> total orders placed with <strong id="stats-attachments">n</strong> attached files totaling <strong id="stats-total-amount">$$$</strong> and using <strong id="stats-accounts">n</strong> different accounts.</span>
+			                <span>Of these </span><strong id="stats-total-orders-completed">n</strong><span> are completed for </span><strong id="stats-total-amount-completed"></strong><span>.</span>
 			            </div>
-                        <div></div>
+			            <div>
+			                <span>There are <strong id="stats-active-users">n</strong> active users having acted <strong id="stats-actions">n</strong> times across <strong id="stats-workgroups">n</strong> workgroups.</span>
+			            </div>
+                        <div><span>There are <strong id="stats-orgs">n</strong> different primary organizations that have placed orders and <strong id="stats-associated-orgs">n</strong> different organizations that have workgroups associated with them.</span></div>
 			        </div>
 			    </div>
 
@@ -271,6 +276,16 @@
                 $("#stats-total-amount").html(data.TotalAmount);
                 $("#stats-total-orders-completed").html(data.TotalOrdersCompleted);
                 $("#stats-total-amount-completed").html(data.TotalAmountCompleted);
+                
+                $("#stats-attachments").html(data.Attachments);
+                $("#stats-accounts").html(data.Accounts);
+
+                $("#stats-active-users").html(data.ActiveUsersInWorkgroups);
+                $("#stats-actions").html(data.Actions);
+                $("#stats-workgroups").html(data.Workgroups);
+                
+                $("#stats-orgs").html(data.OrgsWithOrders);
+                $("#stats-associated-orgs").html(data.OrgsWithWorkgroups);
 
                 $("#stats").show();
             });
