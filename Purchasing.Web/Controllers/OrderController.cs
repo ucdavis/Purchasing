@@ -615,7 +615,7 @@ namespace Purchasing.Web.Controllers
             if (accessLevel != OrderAccessLevel.Edit && accessLevel != OrderAccessLevel.Readonly)
             {
                 if (
-                    Repository.OfType<EmailQueue>().Queryable.Any(
+                    Repository.OfType<EmailQueueV2>().Queryable.Any(
                         a => a.Order.Id == relatedOrderId && a.User.Id.ToLower() == CurrentUser.Identity.Name.ToLower()))
                 {
                     var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == relatedOrderId);
