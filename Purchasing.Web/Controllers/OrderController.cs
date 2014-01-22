@@ -601,7 +601,8 @@ namespace Purchasing.Web.Controllers
 
             if (relatedOrderId == default(int))
             {
-                return new HttpNotFoundResult();
+                Message = "Order Not Found";
+                return this.RedirectToAction<SearchController>(a => a.Index());
             }
 
             OrderAccessLevel accessLevel;
