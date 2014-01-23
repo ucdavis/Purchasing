@@ -339,6 +339,7 @@
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
     <Compile Include="Controllers\EmailQueueV2Controller.cs" />
     <Compile Include="Controllers\HistoryAjaxController.cs" />
+    <Compile Include="Controllers\PingController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
@@ -1058,6 +1059,7 @@
     <Content Include="Views\Order\RerouteAccountManager.cshtml" />
     <Content Include="Views\Report\PurchaserWorkLoad.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Instructions.cshtml" />
+    <Content Include="Views\Ping\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
