@@ -180,6 +180,12 @@
       <HintPath>..\packages\Lucene.Net.2.9.4.1\lib\net40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.OData.5.2.0\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Dynamic">
       <HintPath>..\packages\IronRuby.1.1.3\Lib\Microsoft.Dynamic.dll</HintPath>
     </Reference>
@@ -199,17 +205,18 @@
     <Reference Include="Microsoft.Web.Mvc">
       <HintPath>..\packages\Mvc3Futures.3.0.20105.0\lib\Microsoft.Web.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.8.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.1.0\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+    <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.Storage.1.7.0.0\lib\net35-full\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=2.1.0.3, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WindowsAzure.Storage.2.1.0.3\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="MiniProfiler">
       <HintPath>..\packages\MiniProfiler.2.0.2\lib\net40\MiniProfiler.dll</HintPath>
@@ -220,9 +227,9 @@
     <Reference Include="MvcContrib.FluentHtml">
       <HintPath>..\packages\MvcContrib.Mvc3.FluentHtml-ci.3.0.100.0\lib\MvcContrib.FluentHtml.dll</HintPath>
     </Reference>
-    <Reference Include="NewRelic.Api.Agent, Version=2.5.112.0, Culture=neutral, PublicKeyToken=06552fced0b33d87, processorArchitecture=MSIL">
+    <Reference Include="NewRelic.Api.Agent, Version=2.20.25.0, Culture=neutral, PublicKeyToken=06552fced0b33d87, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NewRelicWindowsAzure.1.0.0.35\lib\NewRelic.Api.Agent.dll</HintPath>
+      <HintPath>..\packages\NewRelicWindowsAzure.2.20.25.0\lib\NewRelic.Api.Agent.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.5\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -255,6 +262,9 @@
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.DirectoryServices.Protocols" />
+    <Reference Include="System.Spatial, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Spatial.5.2.0\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
     </Reference>
@@ -329,6 +339,8 @@
     <Compile Include="Controllers\DepartmentalAdminRequestController.cs" />
     <Compile Include="Controllers\EmailQueueV2Controller.cs" />
     <Compile Include="Controllers\HistoryAjaxController.cs" />
+    <Compile Include="Controllers\PingController.cs" />
+    <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
@@ -391,6 +403,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
+    <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\IndexSearchService.cs" />
     <Compile Include="Services\IndexService.cs" />
     <Compile Include="Services\ISearchService.cs" />
@@ -960,7 +973,10 @@
     <None Include="newrelic.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="NewRelicAgent_x64_2.5.112.0.msi">
+    <Content Include="NewRelicServerMonitor_x64_3.0.224.0.msi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NewRelicAgent_x64_2.20.25.0.msi">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\PublishProfiles\Dev.pubxml" />
@@ -1043,6 +1059,7 @@
     <Content Include="Views\Order\RerouteAccountManager.cshtml" />
     <Content Include="Views\Report\PurchaserWorkLoad.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Instructions.cshtml" />
+    <Content Include="Views\Ping\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

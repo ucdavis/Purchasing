@@ -116,7 +116,8 @@
                 IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
                 IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True',
                 UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new { id = Model.Order.Id })',
-                AttachmentCategorySource: ["Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"]
+                AttachmentCategorySource: ["Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],
+                ViewAttachment: '@Url.Action("ViewFile")'
             });
 
             purchasing.init();

@@ -40,6 +40,7 @@ namespace Purchasing.Web.Controllers
         private readonly IQueryRepositoryFactory _queryRepository;
         private readonly IEventService _eventService;
         private readonly IBugTrackingService _bugTrackingService;
+        private readonly IFileService _fileService;
 
         public OrderController(
             IRepositoryFactory repositoryFactory, 
@@ -49,7 +50,8 @@ namespace Purchasing.Web.Controllers
             IFinancialSystemService financialSystemService,
             IQueryRepositoryFactory queryRepository,
             IEventService eventService,
-            IBugTrackingService bugTrackingService)
+            IBugTrackingService bugTrackingService, 
+            IFileService fileService)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
@@ -59,6 +61,7 @@ namespace Purchasing.Web.Controllers
             _queryRepository = queryRepository;
             _eventService = eventService;
             _bugTrackingService = bugTrackingService;
+            _fileService = fileService;
         }
 
         /// <summary>
@@ -503,7 +506,7 @@ namespace Purchasing.Web.Controllers
             model.Comments =
                 _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
             model.Attachments =
-                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).OrderBy(o => o.DateCreated).ToList();
 
             model.OrderTracking =
                 _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Where(
@@ -598,7 +601,8 @@ namespace Purchasing.Web.Controllers
 
             if (relatedOrderId == default(int))
             {
-                return new HttpNotFoundResult();
+                Message = "Order Not Found";
+                return this.RedirectToAction<SearchController>(a => a.Index());
             }
 
             OrderAccessLevel accessLevel;
@@ -611,7 +615,7 @@ namespace Purchasing.Web.Controllers
             if (accessLevel != OrderAccessLevel.Edit && accessLevel != OrderAccessLevel.Readonly)
             {
                 if (
-                    Repository.OfType<EmailQueue>().Queryable.Any(
+                    Repository.OfType<EmailQueueV2>().Queryable.Any(
                         a => a.Order.Id == relatedOrderId && a.User.Id.ToLower() == CurrentUser.Identity.Name.ToLower()))
                 {
                     var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == relatedOrderId);
@@ -1022,7 +1026,9 @@ namespace Purchasing.Web.Controllers
                 DateCreated = DateTime.Now,
                 User = GetCurrentUser(),
                 FileName = qqFile,
-                ContentType = request.Headers["X-File-Type"]
+                ContentType = request.Headers["X-File-Type"],
+                IsBlob = true, //Default to using blob storage
+                Contents = null //We'll upload to blob storage instead of filling contents
             };
             
             if (String.IsNullOrEmpty(qqFile)) // IE
@@ -1043,11 +1049,6 @@ namespace Purchasing.Web.Controllers
                 attachment.ContentType = "application/octet-stream";
             }
 
-            using (var binaryReader = new BinaryReader(fileStream))
-            {
-                attachment.Contents = binaryReader.ReadBytes((int)fileStream.Length);
-            }
-
             if (orderId.HasValue) //Save directly to order if a value is passed & user has access, otherwise it needs to be assoc. by form
             {
                 var accessLevel = _securityService.GetAccessLevel(orderId.Value);
@@ -1062,8 +1063,9 @@ namespace Purchasing.Web.Controllers
 
                 _eventService.OrderAddAttachment(attachment.Order);
             }
-           
+
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
+            _fileService.UploadAttachment(attachment.Id, fileStream);
 
             return Json(new { success = true, id = attachment.Id }, "text/html");
         }
@@ -1073,7 +1075,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult ViewFile(Guid fileId)
         {
-            var file = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
+            var file = _fileService.GetAttachment(fileId);
 
             if (file == null) return HttpNotFound(Resources.ViewFile_NotFound);
 

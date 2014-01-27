@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using Purchasing.Core.Queries;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Services;
 using Purchasing.Core;
 using System;
+using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -42,6 +44,12 @@ namespace Purchasing.Web.Controllers
             {
                 return RedirectToAction("Index");
             }
+
+            if (Regex.IsMatch(q, "^[A-Z]{4,4}-[A-Z,0-9]{7,7}$"))
+            {
+                return this.RedirectToAction<OrderController>(a => a.Lookup(q));
+            }
+ 
 
             var orderIds = _queryRepositoryFactory.AccessRepository.Queryable
                 .Where(a => a.AccessUserId == _userIdentity.Current)
