@@ -17,7 +17,7 @@
     [DeliverToEmail]          VARCHAR (50)  NULL,
     [DeliverToPhone]          VARCHAR (15)  NULL,
     [Justification]           VARCHAR (MAX) NOT NULL,
-	[LineItemSummary]		  VARCHAR (MAX) NULL,
+    [LineItemSummary]         VARCHAR (MAX) NULL,
     [OrderStatusCodeId]       CHAR (2)      NOT NULL,
     [CreatedBy]               VARCHAR (10)  NOT NULL,
     [DateCreated]             DATETIME      NOT NULL,
@@ -27,7 +27,7 @@
     [RequestNumber]           VARCHAR (20)  NOT NULL,
     [KfsDocType]              CHAR (3)      NULL,
     [PoNumber]                VARCHAR (50)  NULL,
-    [FpdCompleted] BIT NOT NULL DEFAULT ((0)), 
+    [FpdCompleted]            BIT           DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
     CONSTRAINT [FK_Orders_OrderTypes] FOREIGN KEY ([OrderTypeId]) REFERENCES [dbo].[OrderTypes] ([Id]),
@@ -36,6 +36,8 @@
     CONSTRAINT [FK_Orders_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]),
     CONSTRAINT [FK_Orders_WorkgroupVendors] FOREIGN KEY ([WorkgroupVendorId]) REFERENCES [dbo].[WorkgroupVendors] ([Id])
 );
+
+
 
 
 GO
@@ -76,4 +78,10 @@ CREATE NONCLUSTERED INDEX [Orders_LastCompletedApprovalId_IDX]
 GO
 CREATE NONCLUSTERED INDEX [Orders_CreatedBy_IDX]
     ON [dbo].[Orders]([CreatedBy] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Orders_OrderStatusCodeId_Incl_IdWorkgroupId_CVIDX]
+    ON [dbo].[Orders]([OrderStatusCodeId] ASC)
+    INCLUDE([Id], [WorkgroupId]);
 
