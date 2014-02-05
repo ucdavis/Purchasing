@@ -23,7 +23,7 @@ namespace Purchasing.Web.Services
         {
             using (var conn = _dbService.GetConnection())
             {
-                return conn.Query<ClosedAccess>("select * from udf_GetClosedOrdersForId(@loginid)", loginId);
+                return conn.Query<ClosedAccess>("select orderid, accessuserid, accesslevel, isadmin from udf_GetClosedOrdersForId(@loginId)", new { loginId } );
             }
         }
 
@@ -31,7 +31,7 @@ namespace Purchasing.Web.Services
         {
             using (var conn = _dbService.GetConnection())
             {
-                return conn.Query<ClosedAccess>("select * from udf_GetClosedOrdersForId(@loginid) where orderid = @orderid", new { loginId, orderId });
+                return conn.Query<ClosedAccess>("select orderid, accessuserid, accesslevel, isadmin from udf_GetClosedOrdersForId(@loginId) where orderid = @orderId", new { loginId, orderId });
             }
         }
     }

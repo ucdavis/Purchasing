@@ -1,23 +1,14 @@
-﻿-- =============================================
--- Author:		Ken Taylor
--- Create date: February 4, 2014
--- Description:	Given a Kerberos/UCD Login ID, return all closed records specific for the user provided.
--- Usage:
-/*
-select * from udf_GetClosedOrdersForId('lutmansu')
-*/
--- =============================================
-CREATE FUNCTION udf_GetClosedOrdersForId 
+﻿CREATE FUNCTION udf_GetClosedOrdersForId 
 (
 	@LoginId varchar(50) 
 )
 RETURNS 
 @CLosedOrders TABLE 
 (
-	id bigint, 
+	id int, 
 	orderid int, 
 	accessuserid varchar(10), 
-	isadmin int, 
+	isadmin bit, 
 	accesslevel char(2) 
 )
 AS
@@ -47,6 +38,6 @@ from (
 
 	) vClosedAccess
 ) cAccess
-	
-	RETURN 
+
+RETURN
 END
