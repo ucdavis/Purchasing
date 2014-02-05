@@ -26,6 +26,7 @@ namespace Purchasing.Tests.ServiceTests
     {
         public IRepositoryFactory RepositoryFactory;
         public IQueryRepositoryFactory QueryRepositoryFactory;
+        public IAccessQueryService AccessQueryService;
         public IUserIdentity UserIdentity;
         public IDirectorySearchService DirectorySearchService;
         public ISecurityService SecurityService;
@@ -34,11 +35,12 @@ namespace Purchasing.Tests.ServiceTests
         public SecurityServiceTests()
         {
             RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            AccessQueryService = MockRepository.GenerateStub<IAccessQueryService>();
             QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
             DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
 
-            SecurityService = new SecurityService(RepositoryFactory, UserIdentity, DirectorySearchService, QueryRepositoryFactory);
+            SecurityService = new SecurityService(RepositoryFactory, UserIdentity, DirectorySearchService, AccessQueryService, QueryRepositoryFactory);
 
         }
         #endregion Init
