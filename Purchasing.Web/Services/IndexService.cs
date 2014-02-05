@@ -30,6 +30,8 @@ namespace Purchasing.Web.Services
         void CreateLineItemsIndex();
         void CreateVendorsIndex();
 
+        void UpdateHistoricalOrderIndex();
+
         IndexedList<OrderHistory> GetOrderHistory(int[] orderids);
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
@@ -65,6 +67,25 @@ namespace Purchasing.Web.Services
             }
 
             ModifyAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, IndexOptions.Recreate, SearchResults.OrderResult.SearchableFields);
+        }
+
+        /// <summary>
+        /// Grabs all the ordersIDs that have been acted on since the given date and then updates the order indexes for those new orders
+        /// </summary>
+        public void UpdateHistoricalOrderIndex()
+        {
+            var lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.  TODO: pass in an actual value
+
+            IEnumerable<dynamic> orderHistoryEntries;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                var updatedOrderIds = conn.Query<int>("select DISTINCT OrderId from OrderTracking where DateCreated > @lastUpdate", new { lastUpdate }).ToArray();
+
+                orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory where orderid in @updatedOrderIds", new { updatedOrderIds });
+            }
+
+            ModifyAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, IndexOptions.Update, SearchResults.OrderResult.SearchableFields);
         }
 
         public void CreateLineItemsIndex()

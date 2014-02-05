@@ -24,7 +24,8 @@ namespace Purchasing.Web.App_Start.Jobs
 
             try
             {
-                _indexService.CreateHistoricalOrderIndex();
+                _indexService.UpdateHistoricalOrderIndex();
+                //TODO: this still recreates these other indexes from scratch
                 _indexService.CreateLineItemsIndex();
                 _indexService.CreateCommentsIndex();
                 _indexService.CreateCustomAnswersIndex();
