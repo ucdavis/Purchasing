@@ -138,6 +138,7 @@
     <Build Include="dbo\Tables\EmailQueueV2.sql" />
     <Build Include="dbo\Views\vOpenAccess.sql" />
     <Build Include="dbo\Views\vClosedAccess.sql" />
+    <Build Include="dbo\Functions\udf_GetClosedOrdersForId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />

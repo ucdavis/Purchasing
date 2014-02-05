@@ -403,6 +403,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RouteConfigurator.asax.cs" />
+    <Compile Include="Services\AccessQueryService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\IndexSearchService.cs" />
     <Compile Include="Services\IndexService.cs" />

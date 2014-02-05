@@ -32,6 +32,9 @@ namespace Purchasing.Core.Queries
         public virtual bool EditAccess { get; set; }
     }
 
+    /// <summary>
+    /// Not mapped -- will be retrieved via direct SQL query
+    /// </summary>
     public class ClosedAccess : AccessBase
     {
     }
@@ -102,22 +105,6 @@ namespace Purchasing.Core.Queries
 
             Map(x => x.EditAccess).Column("Edit");
             Map(x => x.ReadAccess).Column("`Read`");
-        }
-    }
-
-    public class ClosedAccessMap : ClassMap<ClosedAccess>
-    {
-        public ClosedAccessMap()
-        {
-            Id(x => x.Id);
-
-            Table("vClosedAccess");
-            ReadOnly();
-
-            Map(x => x.OrderId);
-            Map(x => x.AccessUserId);
-            Map(x => x.AccessLevel);
-            Map(x => x.IsAdmin);
         }
     }
 }
