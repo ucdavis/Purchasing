@@ -151,8 +151,8 @@
                     <div class="section-contents">
                         <div class="vcard">
     
-                            <div class="fn">@Model.Order.DeliverTo</div>
-                            <div class="email"><a href="mailto: @string.Format("{0}?subject=PrePurchasing Order {1} &body=http://prepurchasing.ucdavis.edu/Order/Lookup/{1}", Model.Order.DeliverToEmail, Model.Order.RequestNumber) ">@Model.Order.DeliverToEmail</a></div>
+                            <div class="fn">@Model.Order.DeliverTo</div>                            
+                            <div class="email"><a href="mailto: @string.Format("{0}?subject=PrePurchasing Order {1} &body={2}://{3}{4}{1}", Model.Order.DeliverToEmail, Model.Order.RequestNumber, Request.Url.Scheme, Request.Url.Authority, "/Order/Lookup/") ">@Model.Order.DeliverToEmail</a></div>
                             <div class="adr">
                                 <span class="street-address">@Model.Address.Room @Model.Address.Building</span>                             
                                 <span class="street-address">@Model.Address.Address</span>
