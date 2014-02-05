@@ -64,9 +64,10 @@ namespace Purchasing.Web.App_Start
                 TriggerBuilder.Create().ForJob(createJobDetails).WithSchedule(
                     SimpleScheduleBuilder.RepeatMinutelyForTotalCount(1)).StartNow().Build();
 
+            //repeat every five minutes after an initial five minite delay while the index is being initially created
             var runUpdateEveryFiveMinutes =
                 TriggerBuilder.Create().ForJob(updateJobDetails).WithSchedule(
-                    SimpleScheduleBuilder.RepeatMinutelyForever(5)).StartNow().Build();
+                    SimpleScheduleBuilder.RepeatMinutelyForever(5)).StartAt(DateTimeOffset.UtcNow.AddMinutes(5)).Build();
 
             // get reference to scheduler (remote or local) and schedule job
             var sched = StdSchedulerFactory.GetDefaultScheduler();
