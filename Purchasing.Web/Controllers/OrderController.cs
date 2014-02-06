@@ -781,6 +781,8 @@ namespace Purchasing.Web.Controllers
 
             order.FpdCompleted = fpdCompleted.HasValue && fpdCompleted.Value;
 
+            _eventService.OrderUpdated(order, "FPD Status updated.");
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             Message = Resources.OrderFdp_Updated;
