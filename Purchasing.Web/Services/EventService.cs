@@ -21,6 +21,8 @@ namespace Purchasing.Web.Services
         void OrderReRoutedToPurchaser(Order order, string routedTo);
         void OrderReRoutedToAccountManager(Order order, string external, string originalRouting, string routedTo);
 
+        void OrderUpdated(Order order, string whatWasUpdated);
+
         void OrderAddAttachment(Order order);
         void OrderAddNote(Order order, string comment);
     }
@@ -221,6 +223,18 @@ namespace Purchasing.Web.Services
                     StatusCode = order.StatusCode,
                     Description = string.Format("{0}approval routed to {1} from {2}", external, routedTo, originalRouting)
                 };
+            order.AddTracking(trackingEvent);
+        }
+
+        public void OrderUpdated(Order order, string whatWasUpdated)
+        {
+            var user = _userRepository.GetById((_userIdentity.Current));
+            var trackingEvent = new OrderTracking
+            {
+                User = user,
+                StatusCode = order.StatusCode,
+                Description = whatWasUpdated
+            };
             order.AddTracking(trackingEvent);
         }
 

@@ -781,6 +781,8 @@ namespace Purchasing.Web.Controllers
 
             order.FpdCompleted = fpdCompleted.HasValue && fpdCompleted.Value;
 
+            _eventService.OrderUpdated(order, "FPD Status updated.");
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             Message = Resources.OrderFdp_Updated;
@@ -878,7 +880,11 @@ namespace Purchasing.Web.Controllers
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
 
+            var priorValue = order.ReferenceNumber;
+
             order.ReferenceNumber = referenceNumber;
+
+            _eventService.OrderUpdated(order, string.Format("Reference # Updated. Prior Value: {0}", priorValue));
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -893,7 +899,11 @@ namespace Purchasing.Web.Controllers
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
 
+            var priorValue = order.PoNumber;
+
             order.PoNumber = poNumber;
+
+            _eventService.OrderUpdated(order, string.Format("PO # Updated. Prior Value: {0}", priorValue));
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
