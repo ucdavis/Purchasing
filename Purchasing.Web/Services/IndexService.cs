@@ -30,7 +30,7 @@ namespace Purchasing.Web.Services
         void CreateLineItemsIndex();
         void CreateVendorsIndex();
 
-        void UpdateHistoricalOrderIndex();
+        void UpdateOrderIndexes();
 
         IndexedList<OrderHistory> GetOrderHistory(int[] orderids);
         DateTime LastModified(Indexes index);
@@ -72,20 +72,31 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Grabs all the ordersIDs that have been acted on since the given date and then updates the order indexes for those new orders
         /// </summary>
-        public void UpdateHistoricalOrderIndex()
+        public void UpdateOrderIndexes()
         {
             var lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.  TODO: pass in an actual value
 
-            IEnumerable<dynamic> orderHistoryEntries;
+            IEnumerable<dynamic> orderHistoryEntries, lineItems, customAnswers;
 
             using (var conn = _dbService.GetConnection())
             {
                 var updatedOrderIds = conn.Query<int>("select DISTINCT OrderId from OrderTracking where DateCreated > @lastUpdate", new { lastUpdate }).ToArray();
 
                 orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory where orderid in @updatedOrderIds", new { updatedOrderIds });
+                lineItems =
+                    conn.Query<dynamic>(
+                        "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE where orderid in @updatedOrderIds",
+                        new {updatedOrderIds});
+                customAnswers =
+                    conn.Query<dynamic>(
+                        "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults where orderid in @updatedOrderIds",
+                        new {updatedOrderIds});
+
             }
 
             ModifyAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, IndexOptions.Update, SearchResults.OrderResult.SearchableFields);
+            ModifyAnaylizedIndex(lineItems, Indexes.LineItems, IndexOptions.Update, SearchResults.LineResult.SearchableFields);
+            ModifyAnaylizedIndex(customAnswers, Indexes.CustomAnswers, IndexOptions.Update, SearchResults.CustomFieldResult.SearchableFields);
         }
 
         public void CreateLineItemsIndex()
@@ -233,12 +244,22 @@ namespace Purchasing.Web.Services
 
             try
             {
+                var collectionArray = collection.ToArray();
+
                 if (indexOptions == IndexOptions.Recreate)
                 {
                     indexWriter.DeleteAll(); //delete all existing entries before continuing    
                 }
+                else //on update first remove all index entries for the given orderIds
+                {
+                    var orderTerms = collectionArray.Select(o => o.orderid)
+                            .Distinct()
+                            .Select(t => new Term("orderid", t));
 
-                foreach (var entity in collection)
+                    indexWriter.DeleteDocuments(orderTerms.ToArray());
+                }
+
+                foreach (var entity in collectionArray)
                 {
                     var entityDictionary = (IDictionary<string, object>) entity;
 
@@ -290,15 +311,7 @@ namespace Purchasing.Web.Services
                                 searchableFields.Contains(key) ? Field.Index.ANALYZED : Field.Index.NO));
                     }
 
-                    // if update, find the old order by orderid and replace that single document
-                    if (indexOptions == IndexOptions.Update)
-                    {
-                        indexWriter.UpdateDocument(new Term("orderid", entityDictionary[orderIdKey].ToString()), doc);
-                    }
-                    else
-                    {
-                        indexWriter.AddDocument(doc);
-                    }
+                    indexWriter.AddDocument(doc);
                 }
             }
             finally
