@@ -32,7 +32,7 @@ namespace Purchasing.Web.Services
                 IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, SearchResults.OrderResult.SearchableFields);
 
                 var orderResults = results
-                    .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                    .Select(scoreDoc => searcher.Doc(scoreDoc.Doc))
                     .Select(doc => new SearchResults.OrderResult
                     {
                         Id = int.Parse(doc.Get("orderid")),
@@ -68,7 +68,7 @@ namespace Purchasing.Web.Services
                 IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, SearchResults.LineResult.SearchableFields);
 
                 var lineResults = results
-                    .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                    .Select(scoreDoc => searcher.Doc(scoreDoc.Doc))
                     .Select(doc => new SearchResults.LineResult
                     {
                         OrderId = int.Parse(doc.Get("orderid")),
@@ -102,7 +102,7 @@ namespace Purchasing.Web.Services
                 IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, SearchResults.CustomFieldResult.SearchableFields);
 
                 var customFieldResults = results
-                    .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                    .Select(scoreDoc => searcher.Doc(scoreDoc.Doc))
                     .Select(doc => new SearchResults.CustomFieldResult
                     {
                         OrderId = int.Parse(doc.Get("orderid")),
@@ -129,7 +129,7 @@ namespace Purchasing.Web.Services
                 IEnumerable<ScoreDoc> results = SearchIndex(searcher, allowedIds, searchTerm, SearchResults.CommentResult.SearchableFields);
 
                 var commentResults = results
-                    .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                    .Select(scoreDoc => searcher.Doc(scoreDoc.Doc))
                     .Select(doc => new SearchResults.CommentResult()
                     {
                         OrderId = int.Parse(doc.Get("orderid")),
@@ -178,14 +178,14 @@ namespace Purchasing.Web.Services
             var searcher = _indexService.GetIndexSearcherFor(index);
             
             //Default to standard analyzer-- id field is tokenized into searchid non-stored field
-            var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+            var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             try
             {
-                var termsQuery = new MultiFieldQueryParser(Version.LUCENE_29, new[] { "searchid", "name" }, analyzer).Parse(searchTerm);
+                var termsQuery = new MultiFieldQueryParser(Version.LUCENE_30, new[] { "searchid", "name" }, analyzer).Parse(searchTerm);
                 var results = searcher.Search(termsQuery, topN).ScoreDocs;
 
                 var entities = results
-                    .Select(scoreDoc => searcher.Doc(scoreDoc.doc))
+                    .Select(scoreDoc => searcher.Doc(scoreDoc.Doc))
                     .Select(doc => new IdAndName(doc.Get("id"), doc.Get("name"))).ToList();
 
                 return entities;
@@ -214,8 +214,8 @@ namespace Purchasing.Web.Services
             var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
 
             //Search for all orders within the given workgroups, created in the range desired
-            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
-            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
+            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
             var filter = NumericRangeFilter.NewLongRange("datecreatedticks", createdAfter.Ticks, createdBefore.AddDays(1).Ticks, true, true);
 
             //Need to return all matching orders
@@ -224,7 +224,7 @@ namespace Purchasing.Web.Services
 
             foreach (var scoredoc in docs)
             {
-                var doc = searcher.Doc(scoredoc.doc);
+                var doc = searcher.Doc(scoredoc.Doc);
 
                 var history = new OrderHistory();
 
@@ -252,12 +252,12 @@ namespace Purchasing.Web.Services
         /// <returns>ScoreDoc hits</returns>
         private IEnumerable<ScoreDoc> SearchIndex(IndexSearcher searcher, IEnumerable<int> filteredOrderIds, string searchTerm, string[] searchableFields, int topN = 20)
         {
-            var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+            var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             try
             {
-                Query accessQuery = new QueryParser(Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", filteredOrderIds));
+                Query accessQuery = new QueryParser(Version.LUCENE_30, "orderid", analyzer).Parse(string.Join(" ", filteredOrderIds));
                 var termsQuery =
-                    new MultiFieldQueryParser(Version.LUCENE_29, searchableFields, analyzer).Parse(searchTerm);
+                    new MultiFieldQueryParser(Version.LUCENE_30, searchableFields, analyzer).Parse(searchTerm);
                 var results = searcher.Search(termsQuery, new CachingWrapperFilter(new QueryWrapperFilter(accessQuery)), topN).ScoreDocs;                
 
                 return results;

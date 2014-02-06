@@ -173,15 +173,15 @@ namespace Purchasing.Web.Services
             if (distinctOrderIds.Count() > MaxClauseCount)
                 //If number of distinct orders ids is >default limit, up the limit as necessary
             {
-                BooleanQuery.SetMaxClauseCount(distinctOrderIds.Count() + 1);
+                BooleanQuery.MaxClauseCount = distinctOrderIds.Count() + 1;
             }
 
             EnsureCurrentIndexReaderFor(Indexes.OrderHistory);
             var searcher = new IndexSearcher(_indexReaders[Indexes.OrderHistory]);
 
-            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
+            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
             Query query =
-                new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ",
+                new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "orderid", analyzer).Parse(string.Join(" ",
                                                                                                           distinctOrderIds));
 
             var querySize = distinctOrderIds.Count();
@@ -191,7 +191,7 @@ namespace Purchasing.Web.Services
 
             foreach (var scoredoc in docs)
             {
-                var doc = searcher.Doc(scoredoc.doc);
+                var doc = searcher.Doc(scoredoc.Doc);
 
                 var history = new OrderHistory();
 
@@ -439,14 +439,14 @@ namespace Purchasing.Web.Services
         {
             try
             {
-                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29),
+                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30),
                                        IndexWriter.MaxFieldLength.UNLIMITED);
             }
 
             catch (LockObtainFailedException ex)
             {
                 IndexWriter.Unlock(directory);
-                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29),
+                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30),
                                        IndexWriter.MaxFieldLength.UNLIMITED);
             }
         }
