@@ -99,9 +99,9 @@ namespace Purchasing.Web.Services
                 }
             }
 
-            ModifyAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, IndexOptions.Update, SearchResults.OrderResult.SearchableFields);
-            ModifyAnaylizedIndex(lineItems, Indexes.LineItems, IndexOptions.Update, SearchResults.LineResult.SearchableFields);
-            ModifyAnaylizedIndex(customAnswers, Indexes.CustomAnswers, IndexOptions.Update, SearchResults.CustomFieldResult.SearchableFields);
+            ModifyAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, IndexOptions.UpdateOrder, SearchResults.OrderResult.SearchableFields);
+            ModifyAnaylizedIndex(lineItems, Indexes.LineItems, IndexOptions.UpdateOrder, SearchResults.LineResult.SearchableFields);
+            ModifyAnaylizedIndex(customAnswers, Indexes.CustomAnswers, IndexOptions.UpdateOrder, SearchResults.CustomFieldResult.SearchableFields);
         }
 
         public void CreateLineItemsIndex()
@@ -126,7 +126,7 @@ namespace Purchasing.Web.Services
             {
                 comments =
                     conn.Query<dynamic>(
-                        "SELECT [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults");
+                        "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults");
             }
 
             ModifyAnaylizedIndex(comments, Indexes.Comments, IndexOptions.Recreate, SearchResults.CommentResult.SearchableFields);
@@ -142,10 +142,10 @@ namespace Purchasing.Web.Services
             {
                 comments =
                     conn.Query<dynamic>(
-                        "SELECT [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults where DateCreated > @lastUpdate", new { lastUpdate });
+                        "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults where DateCreated > @lastUpdate", new { lastUpdate });
             }
 
-            ModifyAnaylizedIndex(comments, Indexes.Comments, IndexOptions.Append, SearchResults.CommentResult.SearchableFields);
+            ModifyAnaylizedIndex(comments, Indexes.Comments, IndexOptions.UpdateItem, SearchResults.CommentResult.SearchableFields);
         }
 
         public void CreateCustomAnswersIndex()
@@ -262,18 +262,20 @@ namespace Purchasing.Web.Services
         {
             if (collection == null) return;
             
+            var collectionArray = collection.ToArray();
+
+            if (!collectionArray.Any()) return;
+            
             var directory = FSDirectory.Open(GetDirectoryFor(index));
             var indexWriter = GetIndexWriter(directory);
 
             try
             {
-                var collectionArray = collection.ToArray();
-
                 if (indexOptions == IndexOptions.Recreate)
                 {
                     indexWriter.DeleteAll(); //delete all existing entries before continuing    
                 }
-                else if (indexOptions == IndexOptions.Update) //on update first remove all index entries for the given orderIds
+                else if (indexOptions == IndexOptions.UpdateOrder) //on update first remove all index entries for the given orderIds
                 {
                     var orderTerms = collectionArray.Select(o => o.OrderId)
                                           .Distinct()
@@ -281,6 +283,15 @@ namespace Purchasing.Web.Services
                                           .ToArray();
 
                     indexWriter.DeleteDocuments(orderTerms);
+                }else if (indexOptions == IndexOptions.UpdateItem)
+                {
+                    //update the item by matching id to searchid, since searchid is indexed unlike plain ID
+                    var itemTerms = collectionArray.Select(o => o.Id)
+                                          .Distinct()
+                                          .Select(o => new Term("searchid", o.ToString(CultureInfo.InvariantCulture)))
+                                          .ToArray();
+
+                    indexWriter.DeleteDocuments(itemTerms);
                 }
 
                 foreach (var entity in collectionArray)
@@ -433,8 +444,8 @@ namespace Purchasing.Web.Services
     public enum IndexOptions
     {
         Recreate, //Delete all documents and re-create the index
-        Update, //Update documents by first removing all matching orderIds and then adding in given documents
-        Append //Just add the documents to the index
+        UpdateOrder, //Update documents by first removing all matching orderIds and then adding in given documents
+        UpdateItem //Update documents by removing item ids then adding in the given documents
     }
 
 }
