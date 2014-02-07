@@ -39,38 +39,6 @@ namespace Purchasing.Core.Queries
     {
     }
 
-    public class EditAccessMap : ClassMap<EditAccess>
-    {
-        public EditAccessMap()
-        {
-            Id(x => x.Id);
-
-            Table("vEditAccess");
-            ReadOnly();
-
-            Map(x => x.OrderId);
-            Map(x => x.AccessUserId);
-            Map(x => x.AccessLevel);
-            Map(x => x.IsAdmin);
-        }
-    }
-
-    public class ReadAccessMap : ClassMap<ReadAccess>
-    {
-        public ReadAccessMap()
-        {
-            Id(x => x.Id);
-
-            Table("vReadAccess");
-            ReadOnly();
-
-            Map(x => x.OrderId);
-            Map(x => x.AccessUserId);
-            Map(x => x.AccessLevel);
-            Map(x => x.IsAdmin);
-        }
-    }
-
     public class OpenAccessMap : ClassMap<OpenAccess>
     {
         public OpenAccessMap()

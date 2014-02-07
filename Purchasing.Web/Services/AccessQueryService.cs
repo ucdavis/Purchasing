@@ -62,5 +62,20 @@ namespace Purchasing.Web.Services
             }
         }
 
+        public IEnumerable<EditAccess> GetEditAccess(string loginId)
+        {
+            using (var conn = _dbService.GetConnection())
+            {
+                return conn.Query<EditAccess>("select orderid, accessuserid, accesslevel, isadmin from udf_GetEditAccessOrdersForLogin(@loginId)", new { loginId });
+            }
+        }
+        
+        public IEnumerable<ReadAccess> GetReadAccess(string loginId)
+        {
+            using (var conn = _dbService.GetConnection())
+            {
+                return conn.Query<ReadAccess>("select orderid, accessuserid, accesslevel, isadmin from udf_GetReadAccessOrdersForLogin(@loginId)", new { loginId });
+            }
+        }
     }
 }
