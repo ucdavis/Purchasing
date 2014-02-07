@@ -25,8 +25,7 @@ namespace Purchasing.Web.App_Start.Jobs
             try
             {
                 _indexService.UpdateOrderIndexes();
-                //TODO: still recreates this from scratch
-                _indexService.CreateCommentsIndex();
+                _indexService.UpdateCommentsIndex();
             }
             catch (Exception ex)
             {

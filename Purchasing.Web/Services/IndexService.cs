@@ -37,6 +37,7 @@ namespace Purchasing.Web.Services
         int NumRecords(Indexes index);
         IndexSearcher GetIndexSearcherFor(Indexes index);
 
+        void UpdateCommentsIndex();
     }
 
     public class IndexService : IIndexService
@@ -74,24 +75,28 @@ namespace Purchasing.Web.Services
         /// </summary>
         public void UpdateOrderIndexes()
         {
-            var lastUpdate = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.  TODO: pass in an actual value
+            var lastUpdate = DateTime.Now.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
 
-            IEnumerable<dynamic> orderHistoryEntries, lineItems, customAnswers;
+            IEnumerable<dynamic> orderHistoryEntries = null, lineItems = null, customAnswers = null;
 
             using (var conn = _dbService.GetConnection())
             {
                 var updatedOrderIds = conn.Query<int>("select DISTINCT OrderId from OrderTracking where DateCreated > @lastUpdate", new { lastUpdate }).ToArray();
 
-                orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory where orderid in @updatedOrderIds", new { updatedOrderIds });
-                lineItems =
-                    conn.Query<dynamic>(
-                        "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE where orderid in @updatedOrderIds",
-                        new {updatedOrderIds});
-                customAnswers =
-                    conn.Query<dynamic>(
-                        "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults where orderid in @updatedOrderIds",
-                        new {updatedOrderIds});
-
+                if (updatedOrderIds.Any())
+                {
+                    orderHistoryEntries =
+                        conn.Query<dynamic>("SELECT * FROM vOrderHistory where orderid in @updatedOrderIds",
+                                            new {updatedOrderIds});
+                    lineItems =
+                        conn.Query<dynamic>(
+                            "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @updatedOrderIds",
+                            new {updatedOrderIds});
+                    customAnswers =
+                        conn.Query<dynamic>(
+                            "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @updatedOrderIds",
+                            new {updatedOrderIds});
+                }
             }
 
             ModifyAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, IndexOptions.Update, SearchResults.OrderResult.SearchableFields);
@@ -125,6 +130,22 @@ namespace Purchasing.Web.Services
             }
 
             ModifyAnaylizedIndex(comments, Indexes.Comments, IndexOptions.Recreate, SearchResults.CommentResult.SearchableFields);
+        }
+
+        public void UpdateCommentsIndex()
+        {
+            var lastUpdate = DateTime.Now.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
+
+            IEnumerable<dynamic> comments;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                comments =
+                    conn.Query<dynamic>(
+                        "SELECT [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults where DateCreated > @lastUpdate", new { lastUpdate });
+            }
+
+            ModifyAnaylizedIndex(comments, Indexes.Comments, IndexOptions.Append, SearchResults.CommentResult.SearchableFields);
         }
 
         public void CreateCustomAnswersIndex()
@@ -239,6 +260,8 @@ namespace Purchasing.Web.Services
         /// </summary>
         private void ModifyAnaylizedIndex(IEnumerable<dynamic> collection, Indexes index, IndexOptions indexOptions, string[] searchableFields)
         {
+            if (collection == null) return;
+            
             var directory = FSDirectory.Open(GetDirectoryFor(index));
             var indexWriter = GetIndexWriter(directory);
 
@@ -250,88 +273,17 @@ namespace Purchasing.Web.Services
                 {
                     indexWriter.DeleteAll(); //delete all existing entries before continuing    
                 }
-                else //on update first remove all index entries for the given orderIds
+                else if (indexOptions == IndexOptions.Update) //on update first remove all index entries for the given orderIds
                 {
-                    var orderTerms = collectionArray.Select(o => o.orderid)
-                            .Distinct()
-                            .Select(t => new Term("orderid", t));
+                    var orderTerms = collectionArray.Select(o => o.OrderId)
+                                          .Distinct()
+                                          .Select(o => new Term("orderid", o.ToString(CultureInfo.InvariantCulture)))
+                                          .ToArray();
 
-                    indexWriter.DeleteDocuments(orderTerms.ToArray());
+                    indexWriter.DeleteDocuments(orderTerms);
                 }
 
                 foreach (var entity in collectionArray)
-                {
-                    var entityDictionary = (IDictionary<string, object>) entity;
-
-                    var doc = new Document();
-
-                    //If we have an orderid, store it in the index because we will be searching on it later, but don't analyze/tokenize it
-                    var orderIdKey =
-                        entityDictionary.Keys.SingleOrDefault(
-                            x => string.Equals("orderid", x, StringComparison.OrdinalIgnoreCase));
-                    if (!string.IsNullOrWhiteSpace(orderIdKey))
-                    {
-                        doc.Add(new Field("orderid", entityDictionary[orderIdKey].ToString(), Field.Store.YES,
-                                          Field.Index.NOT_ANALYZED));
-                    }
-
-                    //Same thing with the id property, except go ahead and analyze it in case there is a 3-xyz
-                    var idKey =
-                        entityDictionary.Keys.SingleOrDefault(
-                            x => string.Equals("id", x, StringComparison.OrdinalIgnoreCase));
-                    if (!string.IsNullOrWhiteSpace(idKey))
-                    {
-                        var value = entityDictionary[idKey].ToString();
-                        doc.Add(new Field("id", value, Field.Store.YES, Field.Index.NO));
-
-                        doc.Add(new Field("searchid", value.Substring(value.IndexOf('-') + 1), Field.Store.NO,
-                                          Field.Index.ANALYZED));
-                    }
-
-                    //If we have a datecreated, create a ticks version and store that for filtering
-                    var datecreatedkey =
-                        entityDictionary.Keys.SingleOrDefault(
-                            x => string.Equals("datecreated", x, StringComparison.OrdinalIgnoreCase));
-                    if (!string.IsNullOrWhiteSpace(datecreatedkey))
-                    {
-                        var value = DateTime.Parse(entityDictionary[datecreatedkey].ToString());
-                        doc.Add(new NumericField("datecreatedticks", Field.Store.NO, true).SetLongValue(value.Ticks));
-                    }
-
-                    //Now add each searchable property to the store & index. id/orderid are already removed from entityDictionary
-                    foreach (var field in entityDictionary.Where(x => x.Key != orderIdKey && x.Key != idKey))
-                    {
-                        var key = field.Key.ToLower();
-
-                        doc.Add(
-                            new Field(
-                                key,
-                                (field.Value ?? string.Empty).ToString(),
-                                Field.Store.YES,
-                                searchableFields.Contains(key) ? Field.Index.ANALYZED : Field.Index.NO));
-                    }
-
-                    indexWriter.AddDocument(doc);
-                }
-            }
-            finally
-            {
-                indexWriter.Close();
-                indexWriter.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Create an index from the given dynamic where every field is stored and indexed, except the orderid field which is just stored
-        /// </summary>
-        private void UpdateAnaylizedIndex(IEnumerable<dynamic> collection, Indexes index, string[] searchableFields)
-        {
-            var directory = FSDirectory.Open(GetDirectoryFor(index));
-            var indexWriter = GetIndexWriter(directory);
-
-            try
-            {
-                foreach (var entity in collection)
                 {
                     var entityDictionary = (IDictionary<string, object>) entity;
 
@@ -480,8 +432,9 @@ namespace Purchasing.Web.Services
 
     public enum IndexOptions
     {
-        Update,
-        Recreate
+        Recreate, //Delete all documents and re-create the index
+        Update, //Update documents by first removing all matching orderIds and then adding in given documents
+        Append //Just add the documents to the index
     }
 
 }
