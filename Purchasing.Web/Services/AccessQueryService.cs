@@ -8,6 +8,9 @@ namespace Purchasing.Web.Services
     {
         IEnumerable<ClosedAccess> GetClosedOrderAccess(string loginId);
         IEnumerable<ClosedAccess> GetClosedOrderAccess(string loginId, int orderId);
+        IEnumerable<Access> GetOrderAccess(string loginId);
+        IEnumerable<Access> GetOrderAccess(string loginId, int orderId);
+        IEnumerable<Access> GetOrderAccessByAdminStatus(string loginId, bool isAdmin);
     }
 
     public class AccessQueryService : IAccessQueryService
@@ -23,7 +26,7 @@ namespace Purchasing.Web.Services
         {
             using (var conn = _dbService.GetConnection())
             {
-                return conn.Query<ClosedAccess>("select orderid, accessuserid, accesslevel, isadmin from udf_GetClosedOrdersForId(@loginId)", new { loginId } );
+                return conn.Query<ClosedAccess>("select orderid, accessuserid, accesslevel, isadmin from udf_GetClosedOrdersForLogin(@loginId)", new { loginId } );
             }
         }
 
@@ -31,8 +34,33 @@ namespace Purchasing.Web.Services
         {
             using (var conn = _dbService.GetConnection())
             {
-                return conn.Query<ClosedAccess>("select orderid, accessuserid, accesslevel, isadmin from udf_GetClosedOrdersForId(@loginId) where orderid = @orderId", new { loginId, orderId });
+                return conn.Query<ClosedAccess>("select orderid, accessuserid, accesslevel, isadmin from udf_GetClosedOrdersForLogin(@loginId) where orderid = @orderId", new { loginId, orderId });
             }
         }
+
+        public IEnumerable<Access> GetOrderAccess(string loginId)
+        {
+            using (var conn = _dbService.GetConnection())
+            {
+                return conn.Query<Access>("select orderid, accessuserid, accesslevel, readaccess, editaccess, isadmin  from udf_GetReadAndEditAccessOrdersForLogin(@loginId)", new { loginId });
+            }
+        }
+
+        public IEnumerable<Access> GetOrderAccess(string loginId, int orderId)
+        {
+            using (var conn = _dbService.GetConnection())
+            {
+                return conn.Query<Access>("select orderid, accessuserid, accesslevel, readaccess, editaccess, isadmin  from udf_GetReadAndEditAccessOrdersForLogin(@loginId) where orderid = @orderId", new { loginId, orderId });
+            }
+        }
+
+        public IEnumerable<Access> GetOrderAccessByAdminStatus(string loginId, bool isAdmin)
+        {
+            using (var conn = _dbService.GetConnection())
+            {
+                return conn.Query<Access>("select orderid, accessuserid, accesslevel, readaccess, editaccess, isadmin  from udf_GetReadAndEditAccessOrdersForLogin(@loginId) where isadmin = @isAdmin", new { loginId, isAdmin });
+            }
+        }
+
     }
 }

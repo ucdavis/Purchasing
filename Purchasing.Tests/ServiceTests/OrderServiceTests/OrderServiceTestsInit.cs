@@ -24,6 +24,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         public IEventService EventService;
         public IUserIdentity UserIdentity;
         public ISecurityService SecurityService;
+        public IAccessQueryService AccessQueryService;
         public IRepository<WorkgroupPermission> WorkgroupPermissionRepository;
         public IRepository<Approval> ApprovalRepository;
         public IRepository<OrderTracking> OrderTrackingRepository;
@@ -51,6 +52,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             EventService = MockRepository.GenerateStub<IEventService>();
             UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
             SecurityService = MockRepository.GenerateStub<ISecurityService>();
+            AccessQueryService = MockRepository.GenerateStub<IAccessQueryService>();
             WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
             ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
             OrderTrackingRepository = MockRepository.GenerateStub<IRepository<OrderTracking>>();
@@ -85,6 +87,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
                 //UserRepository,
                 OrderRepository,
                 QueryRepositoryFactory,
+                AccessQueryService,
                 FinancialSystemService,
                 IndexService);
 

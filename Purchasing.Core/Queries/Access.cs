@@ -71,24 +71,6 @@ namespace Purchasing.Core.Queries
         }
     }
 
-    public class AccessMap : ClassMap<Access>
-    {
-        public AccessMap()
-        {
-            Id(x => x.Id);
-
-            Table("vAccess");
-            ReadOnly();
-
-            Map(x => x.OrderId);
-            Map(x => x.AccessUserId);
-            Map(x => x.ReadAccess);
-            Map(x => x.EditAccess);
-            Map(x => x.IsAdmin);
-            Map(x => x.AccessLevel);
-        }
-    }
-
     public class OpenAccessMap : ClassMap<OpenAccess>
     {
         public OpenAccessMap()

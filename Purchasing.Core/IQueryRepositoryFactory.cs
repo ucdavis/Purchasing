@@ -6,7 +6,6 @@ namespace Purchasing.Core
 {
     public interface IQueryRepositoryFactory
     {
-        IRepository<Access> AccessRepository { get; set; }
         IRepository<EditAccess> EditAccessRepository { get; set; }
         IRepository<ReadAccess> ReadAccessRepository { get; set; }
         IRepository<OpenAccess> OpenAccessRepository { get; set; }
@@ -29,7 +28,6 @@ namespace Purchasing.Core
 
     public class QueryRepositoryFactory : IQueryRepositoryFactory
     {
-        public IRepository<Access> AccessRepository { get; set; }
         public IRepository<EditAccess> EditAccessRepository { get; set; }
         public IRepository<ReadAccess> ReadAccessRepository { get; set; }
         public IRepository<OpenAccess> OpenAccessRepository { get; set; }
