@@ -17,6 +17,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [WorkgroupPermissions_workgroupid]
     ON [dbo].[WorkgroupPermissions]([WorkgroupId] ASC);
@@ -36,4 +38,15 @@ GO
 CREATE NONCLUSTERED INDEX [WordgroupPermissions_RoleId_Incl_WorkgroupIdUserIdIsAdminIsFullFeatured_CVIDX]
     ON [dbo].[WorkgroupPermissions]([RoleId] ASC)
     INCLUDE([WorkgroupId], [UserId], [IsAdmin], [IsFullFeatured]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [WorkgroupPermissions_UserIdRoldId_IDX]
+    ON [dbo].[WorkgroupPermissions]([UserId] ASC, [RoleId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [WorkgroupPermissions_IsAdminIsFullFeatured_Incl_WorkgroupIdUserIdRoleId_CVIDX]
+    ON [dbo].[WorkgroupPermissions]([IsAdmin] ASC, [IsFullFeatured] ASC)
+    INCLUDE([WorkgroupId], [UserId], [RoleId]);
 
