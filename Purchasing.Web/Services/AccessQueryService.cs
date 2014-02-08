@@ -46,7 +46,7 @@ namespace Purchasing.Web.Services
         {
             using (var conn = _dbService.GetConnection())
             {
-                return conn.Query<OpenAccess>("select orderid, accessuserid, accesslevel, readaccess, editaccess, isadmin from udf_GetOpenOrdersForLogin(@loginId)", new { loginId });
+                return conn.Query<OpenAccess>("select orderid, accessuserid, accesslevel, [read] as readaccess, edit as editaccess, isadmin from udf_GetOpenOrdersForLogin(@loginId)", new { loginId });
             }
         }
 
@@ -54,7 +54,7 @@ namespace Purchasing.Web.Services
         {
             using (var conn = _dbService.GetConnection())
             {
-                return conn.Query<OpenAccess>("select orderid, accessuserid, accesslevel, readaccess, editaccess, isadmin from udf_GetOpenOrdersForLogin(@loginId) where orderid = @orderId", new { loginId, orderId });
+                return conn.Query<OpenAccess>("select orderid, accessuserid, accesslevel, [read] as readaccess, edit as editaccess, isadmin from udf_GetOpenOrdersForLogin(@loginId) where orderid = @orderId", new { loginId, orderId });
             }
         }
 
