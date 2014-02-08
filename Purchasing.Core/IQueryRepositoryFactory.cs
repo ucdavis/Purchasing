@@ -6,7 +6,6 @@ namespace Purchasing.Core
 {
     public interface IQueryRepositoryFactory
     {
-        IRepository<OpenAccess> OpenAccessRepository { get; set; }
         IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
         //IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
         IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }
@@ -26,7 +25,6 @@ namespace Purchasing.Core
 
     public class QueryRepositoryFactory : IQueryRepositoryFactory
     {
-        public IRepository<OpenAccess> OpenAccessRepository { get; set; }
         public IRepository<OrganizationDescendant> OrganizationDescendantRepository { get; set; }
         //public IRepository<AdminOrderAccess> AdminOrderAccessRepository { get; set; }
         public IRepository<AdminWorkgroup> AdminWorkgroupRepository { get; set; }

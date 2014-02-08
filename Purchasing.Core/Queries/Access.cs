@@ -38,23 +38,4 @@ namespace Purchasing.Core.Queries
     public class ClosedAccess : AccessBase
     {
     }
-
-    public class OpenAccessMap : ClassMap<OpenAccess>
-    {
-        public OpenAccessMap()
-        {
-            Id(x => x.Id);
-
-            Table("vOpenAccess");
-            ReadOnly();
-
-            Map(x => x.OrderId);
-            Map(x => x.AccessUserId);
-            Map(x => x.AccessLevel);
-            Map(x => x.IsAdmin);
-
-            Map(x => x.EditAccess).Column("Edit");
-            Map(x => x.ReadAccess).Column("`Read`");
-        }
-    }
 }

@@ -276,11 +276,9 @@ namespace Purchasing.Web.Services
             else
             {
                 //else check the edit order access repo
-                var access =
-                    _queryRepositoryFactory.OpenAccessRepository.Queryable.Where(
-                        a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current)
-                                           .Select(x => new { x.EditAccess, x.ReadAccess, x.AccessLevel })
-                                           .ToList();
+                var access = _accessQueryService.GetOpenOrderAccess(_userIdentity.Current, order.Id)
+                                                .Select(x => new {x.EditAccess, x.ReadAccess, x.AccessLevel})
+                                                .ToList();
 
                 if (access.Any())
                 {
@@ -321,11 +319,9 @@ namespace Purchasing.Web.Services
             else
             {
                 //else check the edit order access repo
-                var access =
-                    _queryRepositoryFactory.OpenAccessRepository.Queryable.Where(
-                        a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current)
-                                           .Select(x => new {x.EditAccess, x.ReadAccess})
-                                           .ToList();
+                var access = _accessQueryService.GetOpenOrderAccess(_userIdentity.Current, orderId)
+                                                .Select(x => new {x.EditAccess, x.ReadAccess})
+                                                .ToList();
                 
                 if (access.Any())
                 {
