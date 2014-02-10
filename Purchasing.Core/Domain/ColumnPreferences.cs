@@ -107,6 +107,9 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Show FPD Completed")]
         public virtual bool ShowFpdCompleted { get; set; }
 
+        [Display(Name = "Show Accounts Payable User")]
+        public virtual bool ShowApUser { get; set; }
+
     }
 
     public class ColumnPreferencesMap : ClassMap<ColumnPreferences>
@@ -151,6 +154,8 @@ namespace Purchasing.Core.Domain
             //Map(x => x.ShowNumberOfLines);
             Map(x => x.ShowShippingCost);
             Map(x => x.ShowFpdCompleted);
+
+            Map(x => x.ShowApUser);
         }
     }
 }
