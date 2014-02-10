@@ -21,6 +21,7 @@ namespace Purchasing.Core.Domain
             ShowLineItems = true;
             ShowTotalAmount = true;
             ShowStatus = true;
+            ShowApUser = false;
             DisplayRows = 50;
         }
 
