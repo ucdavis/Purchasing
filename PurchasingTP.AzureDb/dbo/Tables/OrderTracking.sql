@@ -12,6 +12,8 @@
 );
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [OrderTracking_UserId_IDX]
     ON [dbo].[OrderTracking]([UserId] ASC);
@@ -25,4 +27,10 @@ CREATE NONCLUSTERED INDEX [OrderTracking_OrderStatusCodeId_IDX]
 GO
 CREATE NONCLUSTERED INDEX [OrderTracking_OrderId_IDX]
     ON [dbo].[OrderTracking]([OrderId] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [OrderTracking_UserId_Incl_OrderIdOrderStatusCodeId_CVIDX]
+    ON [dbo].[OrderTracking]([UserId] ASC)
+    INCLUDE([OrderId], [OrderStatusCodeId]);
 

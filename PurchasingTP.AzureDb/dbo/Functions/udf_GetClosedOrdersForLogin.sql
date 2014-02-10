@@ -1,16 +1,18 @@
 ﻿-- =============================================
 -- Author:		Ken Taylor
--- Create date: February 4, 2014
+-- Create date: February 5, 2014
 -- Description:	Given a Kerberos/UCD Login ID, return all closed records specific for the user provided.
---	Note: Replaces vClosedOrders.
+--	Notes: 
+--		Replaces vClosedOrders.
+--		Permissions access for open closed only.  Everyone essentially becomes readonly.
+--		Orders that are in the following status codes: ('CN', 'CP', 'OC', 'OD')
 -- Usage:
 /*
-select * from udf_GetClosedOrdersForId('lutmansu')
+select * from udf_GetClosedOrdersForLogin('lutmansu')
 */
 -- Modifications:
---	2014-02-05 by kjt: Changed id to int and isadmin to bit as per Scott K.
 -- =============================================
-CREATE FUNCTION udf_GetClosedOrdersForId 
+CREATE FUNCTION udf_GetClosedOrdersForLogin 
 (
 	@LoginId varchar(50) 
 )

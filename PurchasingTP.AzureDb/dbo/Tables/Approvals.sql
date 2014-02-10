@@ -6,11 +6,13 @@
     [OrderStatusCodeId] CHAR (2)     NOT NULL,
     [OrderId]           INT          NOT NULL,
     [SplitId]           INT          NULL,
-    [IsExternal] BIT NOT NULL DEFAULT ((0)), 
+    [IsExternal]        BIT          DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Approvals_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
     CONSTRAINT [FK_Approvals_Splits] FOREIGN KEY ([SplitId]) REFERENCES [dbo].[Splits] ([Id])
 );
+
+
 
 
 GO
@@ -46,4 +48,22 @@ CREATE NONCLUSTERED INDEX [Approvals_orderid_IDX]
 GO
 CREATE NONCLUSTERED INDEX [Approvals_Completed_IDX]
     ON [dbo].[Approvals]([Completed] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Approvials_Completed_Incl_UserIdOrderStatusCodeIdOrderId_CVIDX]
+    ON [dbo].[Approvals]([Completed] ASC)
+    INCLUDE([UserId], [OrderStatusCodeId], [OrderId]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Approvals_UserIdCompletedOrderStatusCodeId_Incl_OrderId_CVIDX]
+    ON [dbo].[Approvals]([UserId] ASC, [Completed] ASC, [OrderStatusCodeId] ASC)
+    INCLUDE([OrderId]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Approvals_SecondaryUserIdCompletedOrderStatusCodeId_Incl_OrderId_CVIDX]
+    ON [dbo].[Approvals]([SecondaryUserId] ASC, [Completed] ASC, [OrderStatusCodeId] ASC)
+    INCLUDE([OrderId]);
 

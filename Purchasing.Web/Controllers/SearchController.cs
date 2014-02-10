@@ -20,12 +20,14 @@ namespace Purchasing.Web.Controllers
         private readonly ISearchService _searchService;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IUserIdentity _userIdentity;
+        private readonly IAccessQueryService _accessQueryService;
 
-        public SearchController(ISearchService searchService, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity)
+        public SearchController(ISearchService searchService, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity, IAccessQueryService accessQueryService)
         {
             _searchService = searchService;
             _queryRepositoryFactory = queryRepositoryFactory;
             _userIdentity = userIdentity;
+            _accessQueryService = accessQueryService;
         }
 
         /// <summary>
@@ -51,8 +53,7 @@ namespace Purchasing.Web.Controllers
             }
  
 
-            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable
-                .Where(a => a.AccessUserId == _userIdentity.Current)
+            var orderIds = _accessQueryService.GetOrderAccess(_userIdentity.Current)
                 .Select(x=>x.OrderId)
                 .Distinct()
                 .ToArray();

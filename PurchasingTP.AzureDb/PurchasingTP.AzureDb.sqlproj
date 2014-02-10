@@ -139,6 +139,11 @@
     <Build Include="dbo\Views\vOpenAccess.sql" />
     <Build Include="dbo\Views\vClosedAccess.sql" />
     <Build Include="dbo\Functions\udf_GetClosedOrdersForId.sql" />
+    <Build Include="dbo\Functions\udf_GetReadAndEditAccessOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetReadAccessOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetOpenOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetEditAccessOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetClosedOrdersForLogin.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
