@@ -385,6 +385,18 @@
         }
     }
 
+    if (Model.ColumnPreferences.ShowApUser)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>AP Assigned</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.ApUserAssigned + "</td>");
+        }
+    }
+
     if(Model.ColumnPreferences.ShowOrderReceived)
     {
         if(tableHeader)
