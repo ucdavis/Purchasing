@@ -29,6 +29,7 @@
     [ShowReferenceNumber]     BIT          DEFAULT ((1)) NOT NULL,
     [ShowFpdCompleted] BIT NOT NULL DEFAULT ((0)), 
     [ShowOrderPaid] BIT NOT NULL DEFAULT ((0)), 
+    [ShowApUser] BIT NOT NULL DEFAULT ((0)), 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
