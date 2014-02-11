@@ -237,6 +237,79 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction<HomeController>(a => a.Landing());
         }
 
+        /// <summary>
+        /// Access checks done inside method.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult AssignAccountsPayableUser(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (order.StatusCode.Id != OrderStatusCode.Codes.Complete)
+            {
+                ErrorMessage = "Order Status must be at complete to assign an Accounts Payable user.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+
+            var completedBy = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).OrderBy(o => o.DateCreated).First().User.Id;
+
+            if (CurrentUser.Identity.Name != completedBy)
+            {
+                if (order.ApUser == null || order.ApUser.Id != CurrentUser.Identity.Name)
+                {
+                    ErrorMessage = "You do not have permission to assign an Accounts Payable user.";
+                    return this.RedirectToAction(a => a.Review(id));
+                }
+            }
+
+            var model = OrderReRoutePurchaserModel.Create(order); //Re-using this model. List reviewers though
+            model.PurchaserPeeps = order.Workgroup.Permissions.Where(a => a.Role.Id == Role.Codes.Reviewer).Select(b => b.User).Distinct().OrderBy(c => c.LastName).ToList();
+            var clearUser = new User("--CLEAR--");
+            clearUser.FirstName = "-- Clear";
+            clearUser.LastName = "User --";            
+            model.PurchaserPeeps.Add(clearUser);
+
+            model.Order = order;
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AssignAccountsPayableUser(int id, string apUserId)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (order.StatusCode.Id != OrderStatusCode.Codes.Complete)
+            {
+                ErrorMessage = "Order Status must be at complete to assign an Accounts Payable user.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+
+            var completedBy = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).OrderBy(o => o.DateCreated).First().User.Id;
+
+            if (CurrentUser.Identity.Name != completedBy)
+            {
+                if (order.ApUser == null || order.ApUser.Id != CurrentUser.Identity.Name)
+                {
+                    ErrorMessage = "You do not have permission to assign an Accounts Payable user.";
+                    return this.RedirectToAction(a => a.Review(id));
+                }
+            }
+
+            if (apUserId == "--clear--")
+            {
+                order.ApUser = null;
+                _eventService.OrderUpdated(order, "Accounts Payable user cleared");
+            }
+            else
+            {
+                var user = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == apUserId.Trim().ToLower());
+                order.ApUser = user;
+                _eventService.OrderUpdated(order, string.Format("Accounts Payable user set to {0}", user.FullName));
+            }
+           
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return this.RedirectToAction(a => a.Review(id));
+        }
 
         /// <summary>
         /// Make an order request
@@ -460,6 +533,7 @@ namespace Purchasing.Web.Controllers
                     WorkgroupName = orderQuery.Workgroup.Name,
                     WorkgroupForceAccountApprover = orderQuery.Workgroup.ForceAccountApprover,
                     OrganizationName = orderQuery.Organization.Name,
+                    CurrentUser = CurrentUser.Identity.Name,
                 };
 
             const OrderAccessLevel requiredAccessLevel = OrderAccessLevel.Edit | OrderAccessLevel.Readonly;
@@ -1113,6 +1187,7 @@ namespace Purchasing.Web.Controllers
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, payInvoice);
             viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+            viewModel.ReviewOrderViewModel.CurrentUser = CurrentUser.Identity.Name; 
 
             if (payInvoice)
             {

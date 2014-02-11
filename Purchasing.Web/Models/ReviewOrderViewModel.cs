@@ -22,6 +22,8 @@ namespace Purchasing.Web.Models
         public bool IsPurchaser { get; set; }
         public bool IsRequesterInWorkgroup { get; set; }
         public bool IsAccountManager { get; set; }
+
+        public string CurrentUser { get; set; }
         
         public HashSet<string> UserRoles { get; set; }
 
@@ -43,13 +45,34 @@ namespace Purchasing.Web.Models
         public bool CanReceiveItems
         {
             get
-            {
+            {                
                 if(!Order.StatusCode.IsComplete || Order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || Order.StatusCode.Id == OrderStatusCode.Codes.Denied)
                 {
                     return false;
                 }
 
                 return true;
+            }
+        }
+
+        public bool CanAssignApUser
+        {
+            get
+            {
+                if (!CanReceiveItems)
+                {
+                    return false;
+                }
+                var completedBy = Order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).OrderBy(o => o.DateCreated).FirstOrDefault();
+                if (completedBy != null && completedBy.User.Id == CurrentUser)
+                {
+                    return true;
+                }
+                if (Order.ApUser != null && Order.ApUser.Id == CurrentUser)
+                {
+                    return true;
+                }
+                return false;
             }
         }
 

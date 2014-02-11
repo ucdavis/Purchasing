@@ -1,0 +1,63 @@
+﻿@using Purchasing.Core.Domain
+@model OrderReRoutePurchaserModel
+
+
+@{
+    ViewBag.Title = "Assign Accounts Payable User";
+    ViewBag.HideEditDialogue = true;
+}
+@{
+    Bundles.Reference("Css/single/chosen.css");    
+    Bundles.Reference("scripts/public/single/chosen.jquery.js");
+}
+
+@section AdditionalScripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".chzn-select").chosen({ no_results_text: "No results matched", search_contains: true });
+        });
+    </script>
+}
+
+@section SubNav
+{
+    <ul class="navigation">
+        <li><a href="@Url.Action("Review", new {id=Model.OrderId})" class="ui-button button ui-state-default">Back to Order</a></li>
+    </ul>
+}
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.Hidden("id", Model.OrderId)
+    <section class="ui-corner-all display-form">
+
+        <header class="ui-corner-top ui-widget-header">Choose Available User for Order # @Model.Order.RequestNumber</header>
+        <div class="section-text">
+            <p>Note! If you assign an Accounts Payable user, only that user will be able to go in and receive items and/or pay invoice in OPP.</p>
+            <p>The purchaser will always be able to assign/reassign the Accounts Payable user.</p>
+            <p>The person assigned as the Accounts Payable user can also assign/reassign the Accounts Payable user.</p>
+            <p>If the Accounts Payable user is set to "-- Clear User --", then the access is set back and anyone who could normally receive items or pay invoices can do this again. (Maybe changing what was entered. Clear with caution.)</p>
+        </div>
+    
+        <ul>
+            <li>
+                <div class="editor-label required">
+                    <label>Accounts Payable User to (Re)Route to:</label><span>*</span>
+                </div>
+                <div class="editor-field">                                      
+                    @this.Select("ApUserId").Options(Model.PurchaserPeeps, x => x.Id, x => x.FullName).Selected("--Select Accounts Payable User--").Class("chzn-select")                    
+                </div>
+            </li>
+            <li>				
+				<div class="editor-label">&nbsp;</div>
+				<div class="editor-field">
+				<input class="button" type="submit" value="Save" /> | <a href="@Url.Action("Review", new {id=Model.OrderId})" >Cancel</a>
+				</div>
+			</li>
+        </ul>
+    </section>
+}
