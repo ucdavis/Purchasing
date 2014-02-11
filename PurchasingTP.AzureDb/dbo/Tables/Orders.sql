@@ -17,6 +17,7 @@
     [DeliverToEmail]          VARCHAR (50)  NULL,
     [DeliverToPhone]          VARCHAR (15)  NULL,
     [Justification]           VARCHAR (MAX) NOT NULL,
+    [BusinessPurpose]         VARCHAR (MAX) NULL,
     [LineItemSummary]         VARCHAR (MAX) NULL,
     [OrderStatusCodeId]       CHAR (2)      NOT NULL,
     [CreatedBy]               VARCHAR (10)  NOT NULL,
@@ -25,10 +26,11 @@
     [Total]                   MONEY         CONSTRAINT [DF_Orders_Total] DEFAULT ((0)) NOT NULL,
     [CompletionReason]        VARCHAR (MAX) NULL,
     [RequestNumber]           VARCHAR (20)  NOT NULL,
+    [RequestType]             VARCHAR (128) NULL,
     [KfsDocType]              CHAR (3)      NULL,
     [PoNumber]                VARCHAR (50)  NULL,
-    [FpdCompleted]            BIT           DEFAULT ((0)) NOT NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
+    [FpdCompleted]            BIT           CONSTRAINT [DF__Orders__FpdCompl__3BFFE745] DEFAULT ((0)) NOT NULL,
+    CONSTRAINT [PK__Orders__3214EC07C3C277D7] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
     CONSTRAINT [FK_Orders_OrderTypes] FOREIGN KEY ([OrderTypeId]) REFERENCES [dbo].[OrderTypes] ([Id]),
     CONSTRAINT [FK_Orders_ShippingTypes] FOREIGN KEY ([ShippingTypeId]) REFERENCES [dbo].[ShippingTypes] ([Id]),
@@ -36,6 +38,8 @@
     CONSTRAINT [FK_Orders_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]),
     CONSTRAINT [FK_Orders_WorkgroupVendors] FOREIGN KEY ([WorkgroupVendorId]) REFERENCES [dbo].[WorkgroupVendors] ([Id])
 );
+
+
 
 
 

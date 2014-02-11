@@ -1444,7 +1444,9 @@ namespace Purchasing.Web.Controllers
             order.OrderType = order.OrderType ?? _repositoryFactory.OrderTypeRepository.GetById(OrderType.Types.OrderRequest);
             order.CreatedBy = order.CreatedBy ?? _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name); //Only replace created by if it doesn't already exist
             order.Justification = model.Justification;
-
+            order.BusinessPurpose = model.BusinessPurpose;
+            order.RequestType = model.RequestType;
+            
             if (!string.IsNullOrWhiteSpace(model.Comments))
             {
                 var comment = new OrderComment

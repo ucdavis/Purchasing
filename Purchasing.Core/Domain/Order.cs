@@ -37,6 +37,10 @@ namespace Purchasing.Core.Domain
         }
 
         public virtual string RequestNumber { get; protected set; }
+
+        [StringLength(128)]
+        public virtual string RequestType { get; set; }
+
         [Required]
         public virtual OrderType OrderType { get; set; }
         [StringLength(3)]
@@ -79,6 +83,8 @@ namespace Purchasing.Core.Domain
         public virtual decimal FreightAmount { get; set; }
         [Required]
         public virtual string Justification { get; set; }
+
+        public virtual string BusinessPurpose { get; set; }
 
         public virtual string LineItemSummary { get; set; }
 
@@ -487,6 +493,7 @@ namespace Purchasing.Core.Domain
             References(x => x.Address).Column("WorkgroupAddressId");
 
             Map(x => x.RequestNumber);
+            Map(x => x.RequestType).Length(128);
             Map(x => x.DateNeeded).Nullable();
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);
@@ -498,6 +505,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.DeliverToEmail);
             Map(x => x.DeliverToPhone);
             Map(x => x.Justification).Length(int.MaxValue);
+            Map(x => x.BusinessPurpose).Length(int.MaxValue);
             Map(x => x.LineItemSummary).Length(int.MaxValue);
             Map(x => x.DateCreated);
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");

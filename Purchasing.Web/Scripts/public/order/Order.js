@@ -937,6 +937,7 @@
 
     function attachChosen() {
         $(".unit").chosen();
+        $("#requestType").chosen();
     }
 
     function attachNav() {
