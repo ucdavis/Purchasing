@@ -302,6 +302,12 @@
 <section id="line-items" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header">Line Items</header>
+    @if (Model.ReviewOrderViewModel.Order.ApUser != null)
+    {
+        <div class="section-text">
+            <p>Note! This order has been assigned to <strong>@Model.ReviewOrderViewModel.Order.ApUser.FullName</strong> for Accounts Payable. Only they will be able to edit these values.</p>
+        </div>
+    }
 
     <div class="section-contents">
 
@@ -309,6 +315,13 @@
         @Html.AntiForgeryToken()
         @{
             var headerName = Model.PayInvoice ? "Pay Qty" : "Receive Qty";
+        }
+        @{
+            var disabled = string.Empty;
+            if (Model.Locked == true)
+            {
+                disabled = "disabled='disabled'";
+            }
         }
 
         <table class="no-icon-table">
@@ -354,8 +367,8 @@
                     
                     <tr id="@item.Id" class="@(odd ? "odd" : "even")">
                         <td class="lineitem">@count</td>               
-                        <td class="receiveLineItemCell">
-                            <input class="receiveLineItem showTip" data-id="@item.Id" title="@titleName" />
+                        <td class="receiveLineItemCell">                           
+                            <input class="receiveLineItem showTip" data-id="@item.Id" title="@titleName" @disabled/>
                             <div class="receiveQuantity">@string.Format("{0:0.###}", Model.PayInvoice ? item.QuantityPaid: item.QuantityReceived)</div>
                             <span class="quantity-loader" style="display: none;">
                                 <img src='@Url.Image("ajax-loader.gif")'/>
@@ -387,7 +400,7 @@
                                 <tr>
                                     <td class="label">Notes:</td>
                                     <td>
-                                        <textarea class="receiveNotes showTip" data-id="@item.Id" title="<strong>Tip:</strong> Don't put things like serial numbers in here because this can be edited. <br/>Information like that should be added to the comments/notes of the review page." >@notes</textarea>
+                                        <textarea class="receiveNotes showTip" data-id="@item.Id" title="<strong>Tip:</strong> Don't put things like serial numbers in here because this can be edited. <br/>Information like that should be added to the comments/notes of the review page." @disabled >@notes</textarea>
                                     </td>
                                     <td>
                                         <span class="notes-loader" style="display: none;">
