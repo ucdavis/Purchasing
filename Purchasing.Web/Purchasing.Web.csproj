@@ -1064,6 +1064,7 @@
     <Content Include="Views\DepartmentalAdminRequest\Instructions.cshtml" />
     <Content Include="Views\Ping\Index.cshtml" />
     <Content Include="Views\Order\_BusinessPurpose.cshtml" />
+    <Content Include="Views\Order\_ReviewBusinessPurpose.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

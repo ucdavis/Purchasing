@@ -159,6 +159,11 @@
     @Html.Partial("_ReviewKfs")   
 }
 
+@if (!string.IsNullOrWhiteSpace(Model.Order.BusinessPurpose))
+{
+    @Html.Partial("_ReviewBusinessPurpose")
+}
+
 @Html.Partial("_ReviewLineItems")
 
 @Html.Partial("_ReviewLineSplits")
