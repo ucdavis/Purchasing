@@ -1112,6 +1112,7 @@ namespace Purchasing.Web.Controllers
             }
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, payInvoice);
+            viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
 
             if (payInvoice)
             {

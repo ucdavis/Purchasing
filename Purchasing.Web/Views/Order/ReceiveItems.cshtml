@@ -7,6 +7,10 @@
     ViewBag.HideEditDialogue = true;
 }
 
+@{
+    Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
+}
+
 @section SubNav
 {
     <ul class="navigation">
@@ -185,8 +189,52 @@
             });
         });
 
+        $(function() {
+            $("#add-note").click(function () {
+                $("#notes-dialog").dialog({
+                    modal: true,
+                    autoOpen: true,
+                    width: 400,
+                    buttons: {
+                        "Confirm": function () {
+
+                            var note = $("#notes-box").val();
+                            $("#notes-box").val("");
+
+                            var url = "@Url.Action("AddComment", "Order", new { id = Model.OrderId })";
+
+                            var orderid = $("#id").val();
+                            var antiforgery = $("input[name='__RequestVerificationToken']").val();
+                            
+
+                            $.post(url, { id: orderid, comment: note, __RequestVerificationToken: antiforgery },
+                                function (result) {
+
+                                    if (result == false) {
+                                        alert("There was a problem adding the comment.");
+                                    }
+                                    else {
+                                        var comment = [{ datetime: result.Date, txt: result.Text, user: result.User }];
+                                        $.tmpl($("#comment-template"), comment).appendTo("#notes table tbody");
+                                        $(".notes-not-found").empty();
+                                    }
+
+                                }
+                            );
+
+                            $(this).dialog("close");
+                        },
+                        "Cancel": function () { $(this).dialog("close"); }
+                    }
+                });
+
+                $("#add-note").click(function () { $("#notes-dialog").dialog("open"); return false; });
+            });
+        });
+
 
     </script>
+    
 
     
     <script type="text/javascript">
@@ -362,3 +410,5 @@
 </section>
 
 @Html.Partial("_ReceivedItemsHistoryDialog")
+
+@Html.Partial("_ReviewNotes", Model.ReviewOrderViewModel)
