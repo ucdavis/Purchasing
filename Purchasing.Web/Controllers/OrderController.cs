@@ -1224,6 +1224,15 @@ namespace Purchasing.Web.Controllers
             var success = true;
             var message = "Succeeded";
             var lastUpdatedBy = string.Empty;
+
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
+            {
+                success = false;
+                message = "Permission Denied to update";
+                return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
+            }
+
             if(updateNote)
             {
                 #region Notes                
