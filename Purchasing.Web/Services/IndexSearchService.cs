@@ -34,20 +34,20 @@ namespace Purchasing.Web.Services
                 var orderResults = results
                     .Select(scoreDoc => searcher.Doc(scoreDoc.Doc))
                     .Select(doc => new SearchResults.OrderResult
-                    {
-                        Id = int.Parse(doc.Get("orderid")),
-                        Justification = doc.Get("justification"),
-                        CreatedBy = doc.Get("createdby"),
-                        DeliverTo = doc.Get("shipto"),
-                        DeliverToEmail = doc.Get("shiptoemail"),
-                        RequestNumber = doc.Get("requestnumber"),
-                        DateCreated = DateTime.Parse(doc.Get("datecreated")),
-                        PoNumber = doc.Get("ponumber"),
-                        ReferenceNumber = doc.Get("referencenumber"),
-                        Approver = doc.Get("approver"),
-                        AccountManager = doc.Get("accountmanager"),
-                        Purchaser = doc.Get("purchaser")
-                    }).ToList();
+                        {
+                            Id = int.Parse(doc.Get("orderid")),
+                            Justification = doc.Get("justification"),
+                            CreatedBy = doc.Get("createdby"),
+                            DeliverTo = doc.Get("shipto"),
+                            DeliverToEmail = doc.Get("shiptoemail"),
+                            RequestNumber = doc.Get("requestnumber"),
+                            DateCreated = DateTime.Parse(doc.Get("datecreated")),
+                            PoNumber = doc.Get("ponumber"),
+                            ReferenceNumber = doc.Get("referencenumber"),
+                            Approver = doc.Get("approver"),
+                            AccountManager = doc.Get("accountmanager"),
+                            Purchaser = doc.Get("purchaser")
+                        }).ToList();
 
 
                 return orderResults;
@@ -262,10 +262,11 @@ namespace Purchasing.Web.Services
 
                 return results;
             }
-            catch (ParseException)
+            catch (ParseException ex)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                 return null;
-            }
+            }                
             finally
             {
                 analyzer.Close();
