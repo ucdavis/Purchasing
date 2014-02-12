@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using Purchasing.Core.Queries;
@@ -8,6 +11,9 @@ using Purchasing.Web.Services;
 using Purchasing.Core;
 using System;
 using MvcContrib;
+using SendGridMail;
+using SendGridMail.Transport;
+using UCDArch.Core.Utils;
 
 namespace Purchasing.Web.Controllers
 {
@@ -71,12 +77,30 @@ namespace Purchasing.Web.Controllers
                     CustomFields = _searchService.SearchCustomFieldAnswers(q, orderIds)
                 };
             }
-            catch //If the search fails, return no results
+            catch(Exception ex) //If the search fails, return no results
             {
+                var sendGridUserName = ConfigurationManager.AppSettings["SendGridUserName"];
+                var sendGridPassword = ConfigurationManager.AppSettings["SendGridPassword"];
+                SendSingleEmail(string.Format("Search term: '{0}' ====== User {1} ======= {2} ====== {3}", q, _userIdentity.Current, ex.Message, ex.InnerException.ToString()), sendGridUserName, sendGridPassword);
                 model = new SearchResultModel {Query = q};
             }
 
             return View(model);
+        }
+
+        private void SendSingleEmail(string body, string sendGridUserName, string sendGridPassword)
+        {
+            Check.Require(!string.IsNullOrWhiteSpace(sendGridUserName));
+            Check.Require(!string.IsNullOrWhiteSpace(sendGridPassword));
+
+            var sgMessage = SendGrid.GenerateInstance();
+            sgMessage.From = new MailAddress("opp-Exception@ucdavis.edu", "OPP No Reply");
+            sgMessage.Subject = "Lucene Exception";
+            sgMessage.AddTo("opp-tech-request@ucdavis.edu");
+            sgMessage.Html = body;
+
+            var transport = SMTP.GenerateInstance(new NetworkCredential(sendGridUserName, sendGridPassword));
+            transport.Deliver(sgMessage);
         }
     }
 
