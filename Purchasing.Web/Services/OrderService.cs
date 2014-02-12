@@ -99,6 +99,8 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         IndexedList<OrderHistory> GetAdministrativeIndexedListofOrders(string received, string paid, bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
 
+        IndexedList<OrderHistory> GetAccountsPayableIndexedListofOrders(string received, string paid, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
+
     }
 
     public class OrderService : IOrderService
@@ -898,6 +900,27 @@ namespace Purchasing.Web.Services
 
             ordersIndexQuery.Results = ordersQuery.OrderByDescending(a => a.LastActionDate).Take(1000).ToList();
             
+            return ordersIndexQuery;
+        }
+
+        public IndexedList<OrderHistory> GetAccountsPayableIndexedListofOrders(string received, string paid, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
+        {
+            // get orderids accessible by user
+            //var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: true);
+            var orderIds = _repositoryFactory.OrderRepository.Queryable.Where(a => a.ApUser != null && a.ApUser.Id == _userIdentity.Current).Select(s => s.Id).ToArray();
+
+            // filter for accessible orders
+            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds);
+            var ordersQuery = ordersIndexQuery.Results.AsQueryable();
+
+            // filter for selected status
+            ordersQuery = GetOrdersByStatus(ordersQuery, true, orderStatusCode, received, paid);
+
+            // filter for selected dates            
+            ordersQuery = GetOrdersByDate(ordersQuery, startDate, endDate, startLastActionDate, endLastActionDate);
+
+            ordersIndexQuery.Results = ordersQuery.OrderByDescending(a => a.LastActionDate).Take(1000).ToList();
+
             return ordersIndexQuery;
         }
 
