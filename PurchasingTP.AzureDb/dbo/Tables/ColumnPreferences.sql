@@ -19,6 +19,7 @@
     [ShowNeededDate]          BIT          NOT NULL,
     [ShowShippingType]        BIT          NOT NULL,
     [ShowPurchaseOrderNumber] BIT          NOT NULL,
+    [ShowTag]                 BIT          CONSTRAINT [DF_ColumnPreferences_ShowTag] DEFAULT ((0)) NOT NULL,
     [ShowLastActedOnDate]     BIT          NOT NULL,
     [ShowDaysNotActedOn]      BIT          NOT NULL,
     [ShowLastActedOnBy]       BIT          NOT NULL,
@@ -32,6 +33,8 @@
     [ShowOrderPaid]           BIT          CONSTRAINT [DF__ColumnPre__ShowO__19AACF41] DEFAULT ((0)) NOT NULL,
     CONSTRAINT [PK__ColumnPr__3214EC078992C893] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
 
 
 

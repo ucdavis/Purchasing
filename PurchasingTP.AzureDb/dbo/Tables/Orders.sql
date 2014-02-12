@@ -29,6 +29,7 @@
     [RequestType]             VARCHAR (128) NULL,
     [KfsDocType]              CHAR (3)      NULL,
     [PoNumber]                VARCHAR (50)  NULL,
+    [Tag]                     VARCHAR (256) NULL,
     [FpdCompleted]            BIT           CONSTRAINT [DF__Orders__FpdCompl__3BFFE745] DEFAULT ((0)) NOT NULL,
     CONSTRAINT [PK__Orders__3214EC07C3C277D7] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
@@ -38,6 +39,8 @@
     CONSTRAINT [FK_Orders_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]),
     CONSTRAINT [FK_Orders_WorkgroupVendors] FOREIGN KEY ([WorkgroupVendorId]) REFERENCES [dbo].[WorkgroupVendors] ([Id])
 );
+
+
 
 
 

@@ -1,5 +1,6 @@
 ﻿
 
+
 CREATE VIEW [dbo].[vOrderHistory]
 AS
 select row_number() over (order by o.id) Id, o.id OrderId,  o.RequestNumber, o.RequestType
@@ -28,6 +29,7 @@ select row_number() over (order by o.id) Id, o.id OrderId,  o.RequestNumber, o.R
 	, st.name ShippingType
 	, o.ReferenceNumber
 	, o.PoNumber
+	, o.Tag
 	, o.ShippingAmount
 	, lastaction.DateCreated LastActionDate
 	, lastaction.lastuser LastActionUser
