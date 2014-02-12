@@ -54,11 +54,7 @@
                         }
                     </li>       
                     <li>
-                        <span>Tag: 
-                        </span>
-                        
-                        <strong id="tag" style="width:auto;">
-                            @(string.IsNullOrWhiteSpace(Model.Order.Tag) ? "[None]" : Model.Order.Tag)
+                        <span>Tag:</span><strong id="tag" style="width:auto;">@(string.IsNullOrWhiteSpace(Model.Order.Tag) ? "[None]" : Model.Order.Tag)
                         </strong>
                         @if (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
                         {
@@ -223,6 +219,26 @@
                     <li><div class="editor-label required">PO Number: <span class="required">*</span></div>
                         <div class="editor-field">
                             <input type="text" id="new-po-number" placeholder="po number" maxlength="50" value="@Model.Order.PoNumber"></input>
+                        </div>
+                    </li>
+                </ul>
+            </div> 
+        </section>
+    </form>
+</div>
+
+<div id="modify-tag-dialog" title="Modify Order Tag" style="display: none;">
+    <form>
+        <section>
+            <div class="section-text">
+                <p>Assign this order a new tag and then click 'Assign Tag'</p>
+                <p>Tag is a free text field that can be used for external reference numbers (non-kfs), tracking numbers, or any other order-specific information. Can be shown on the order history page and filtered/sorted on.</p>
+            </div>
+            <div class="section-contents">
+                <ul>
+                    <li><div class="editor-label required">Tag: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input type="text" id="new-tag" placeholder="order tag" maxlength="256" value="@Model.Order.Tag" />
                         </div>
                     </li>
                 </ul>

@@ -910,6 +910,25 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new { success = true, poNumber });
         }
 
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdateTag(int id, string tag)
+        {
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+
+            var priorValue = order.Tag;
+
+            order.Tag = tag;
+
+            _eventService.OrderUpdated(order, string.Format("Tag Updated. Prior Value: {0}", priorValue));
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new { success = true, tag });
+        }
+
         [AuthorizeReadOrEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
