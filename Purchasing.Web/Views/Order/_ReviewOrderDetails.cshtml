@@ -52,6 +52,20 @@
                         {
                             <a id="edit-po-number" href="#" class="ui-icon ui-icon-pencil" title="Edit PO Number"></a>
                         }
+                    </li>       
+                    <li>
+                        <span>Tag: 
+                        </span>
+                        
+                        <strong id="tag" style="width:auto;">
+                            @(string.IsNullOrWhiteSpace(Model.Order.Tag) ? "[None]" : Model.Order.Tag)
+                        </strong>
+                        @if (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
+                        {
+                            <a id="edit-tag" href="#" class="ui-icon ui-icon-pencil" title="Edit Tag"></a>
+                        }
+                            <a href="#" class="ui-icon ui-icon-help" title="Tag is a free text field that can be used for external reference numbers (non-kfs), tracking numbers, or any other order-specific information. Can be shown on the order history page and filtered/sorted on." style="float:inherit" ></a>
+                        
                     </li>                    
                     <li>
                         <span>Order Type:</span><strong>@Model.Order.OrderType.Name @(!string.IsNullOrEmpty(Model.Order.KfsDocType) ? string.Format("({0})", Model.Order.KfsDocType) : string.Empty)</strong>
