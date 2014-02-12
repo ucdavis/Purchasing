@@ -310,11 +310,12 @@
     }
 
     <div class="section-contents">
-
+        
         @Html.Hidden("id", Model.OrderId)
         @Html.AntiForgeryToken()
         @{
             var headerName = Model.PayInvoice ? "Pay Qty" : "Receive Qty";
+            var allButtoneName = Model.PayInvoice ? "Pay All" : "Receive All";
         }
         @{
             var disabled = string.Empty;
@@ -322,6 +323,20 @@
             {
                 disabled = "disabled='disabled'";
             }
+        }
+        
+        @using (Html.BeginForm("ReceiveAll", "Order", new { id = Model.OrderId }, FormMethod.Post))
+        {
+            @Html.Hidden("payInvoice", Model.PayInvoice)
+            @Html.Hidden("id", Model.OrderId)
+            @Html.AntiForgeryToken()
+            <ul>
+
+                <li class="apply">
+                    <label>&nbsp;</label>
+			        <input class="button" type="submit" value="@allButtoneName" />
+                </li>
+            </ul>
         }
 
         <table class="no-icon-table">

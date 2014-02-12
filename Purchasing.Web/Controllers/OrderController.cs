@@ -1219,6 +1219,62 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
+        public ActionResult ReceiveAll(int id, bool payInvoice)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+
+            if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
+            {
+                Message = string.Format("Order must be complete before {0} line items.", payInvoice == false ? "receiving" : "paying for");
+                return this.RedirectToAction(a => a.Review(id));
+            }
+            if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
+            {                
+                Message = "Permission Denied to update";                
+            }
+            else
+            {
+                foreach (var lineItem in order.LineItems)
+                {
+                    var history = new HistoryReceivedLineItem();
+                    history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
+                    history.OldReceivedQuantity = payInvoice ? lineItem.QuantityPaid : lineItem.QuantityReceived;
+                    history.NewReceivedQuantity = (lineItem.Quantity);
+                    history.LineItem = lineItem;
+                    history.PayInvoice = payInvoice;
+                    if (payInvoice)
+                    {
+                        lineItem.QuantityPaid = lineItem.Quantity;
+                    }
+                    else
+                    {
+                        lineItem.QuantityReceived = lineItem.Quantity;
+                    }
+                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                    if (history.NewReceivedQuantity != history.OldReceivedQuantity)
+                    {
+                       _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                    }
+                }
+
+                if (payInvoice)
+                {
+                    _eventService.OrderUpdated(order, "Paid all line items");                    
+                    Message = "All Line Items Paid";
+                }
+                else
+                {
+                    _eventService.OrderUpdated(order, "Received all line items");
+                    Message = "All Line Items Received";
+                }
+                _repositoryFactory.OrderRepository.EnsurePersistent(order);
+            }
+
+            return this.RedirectToAction(a => a.ReceiveItems(id, payInvoice));
+        }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
         public JsonNetResult ReceiveItems(int id, int lineItemId, decimal? receivedQuantity, bool updateNote, string note, bool payInvoice)
         {
             var success = true;
