@@ -264,10 +264,7 @@ namespace Purchasing.Web.Controllers
 
             var model = OrderReRoutePurchaserModel.Create(order); //Re-using this model. List reviewers though
             model.PurchaserPeeps = order.Workgroup.Permissions.Where(a => a.Role.Id == Role.Codes.Reviewer).Select(b => b.User).Distinct().OrderBy(c => c.LastName).ToList();
-            var clearUser = new User("--CLEAR--");
-            clearUser.FirstName = "-- Clear";
-            clearUser.LastName = "User --";            
-            model.PurchaserPeeps.Add(clearUser);
+
 
             model.Order = order;
             return View(model);
@@ -294,7 +291,7 @@ namespace Purchasing.Web.Controllers
                 }
             }
 
-            if (apUserId == "--clear--")
+            if (string.IsNullOrWhiteSpace(apUserId))
             {
                 order.ApUser = null;
                 _eventService.OrderUpdated(order, "Accounts Payable user cleared");
