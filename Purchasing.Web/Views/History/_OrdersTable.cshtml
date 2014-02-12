@@ -55,7 +55,7 @@
             
         }
     }
-
+    
     if(Model.ColumnPreferences.ShowPurchaseOrderNumber)
     {
         if(tableHeader)
@@ -77,6 +77,18 @@
         else
         {
             result.Append("<td>" + @Html.Encode(item.ReferenceNumber) + "</td>");
+        }
+    }
+    
+    if (Model.ColumnPreferences.ShowRequestType)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Request Type</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.RequestType) + "</td>");
         }
     }
 

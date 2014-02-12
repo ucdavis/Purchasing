@@ -72,6 +72,9 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Show Ref#")]
         public virtual bool ShowReferenceNumber { get; set; }
 
+        [Display(Name = "Show Request Type")]
+        public virtual bool ShowRequestType { get; set; }
+
         [Display(Name = "Show Last Acted On Date")]
         public virtual bool ShowLastActedOnDate { get; set; }
         [Display(Name = "Show Days Not Acted On")]
@@ -116,6 +119,7 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id).GeneratedBy.Assigned();
 
             Map(x => x.ShowRequestNumber);
+            Map(x => x.ShowRequestType);
             Map(x => x.ShowWorkgroup);
             Map(x => x.ShowVendor);
             Map(x => x.ShowCreatedBy);
