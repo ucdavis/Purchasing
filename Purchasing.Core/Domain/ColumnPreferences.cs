@@ -69,6 +69,8 @@ namespace Purchasing.Core.Domain
 
         [Display(Name = "Show PO#")]
         public virtual bool ShowPurchaseOrderNumber { get; set; }
+        [Display(Name = "Show Tag")]
+        public virtual bool ShowTag { get; set; }
         [Display(Name = "Show Ref#")]
         public virtual bool ShowReferenceNumber { get; set; }
 
@@ -128,6 +130,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowTotalAmount);
             Map(x => x.ShowStatus);
             Map(x => x.ShowPurchaseOrderNumber);
+            Map(x => x.ShowTag);
             Map(x => x.ShowReferenceNumber);
             Map(x => x.ShowShipTo);
             Map(x => x.ShowAllowBackorder);

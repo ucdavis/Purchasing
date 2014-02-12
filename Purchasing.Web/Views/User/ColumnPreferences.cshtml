@@ -205,6 +205,15 @@
                         @Html.EditorFor(model => model.ShowPurchaseOrderNumber)
                         @Html.ValidationMessageFor(model => model.ShowPurchaseOrderNumber)
                     </div>
+                </li>                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowTag) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowTag)
+                        @Html.ValidationMessageFor(model => model.ShowTag)
+                    </div>
                 </li>
                 <li>
                     <div class="editor-label">

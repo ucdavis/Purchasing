@@ -80,6 +80,18 @@
         }
     }
     
+    if (Model.ColumnPreferences.ShowTag)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Tag</th>");
+        }
+        else
+        {
+            result.Append("<td>" + @Html.Encode(item.Tag) + "</td>");
+        }
+    }
+    
     if (Model.ColumnPreferences.ShowRequestType)
     {
         if (tableHeader)
