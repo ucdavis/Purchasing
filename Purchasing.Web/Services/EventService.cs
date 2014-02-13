@@ -16,8 +16,8 @@ namespace Purchasing.Web.Services
         void OrderDenied(Order order, string comment, OrderStatusCode previousStatus);
         void OrderCancelled(Order order, string comment, OrderStatusCode previousStatus);
         void OrderCompleted(Order order);
-        void OrderReceived(Order order, LineItem lineItem, decimal quantity);
-        void OrderPaid(Order order, LineItem lineItem, decimal quantity);
+        void OrderReceived(Order order, LineItem lineItem, decimal quantity, string overrideDescription = null);
+        void OrderPaid(Order order, LineItem lineItem, decimal quantity, string overrideDescription = null);
         void OrderReRoutedToPurchaser(Order order, string routedTo);
         void OrderReRoutedToAccountManager(Order order, string external, string originalRouting, string routedTo);
 
@@ -167,36 +167,59 @@ namespace Purchasing.Web.Services
             _notificationService.OrderCompleted(order, user);
         }
 
-        public void OrderReceived(Order order, LineItem lineItem, decimal quantity)
+        public void OrderReceived(Order order, LineItem lineItem, decimal quantity, string overrideDescription = null)
         {
             var user = _userRepository.GetById(_userIdentity.Current);
+            var description = overrideDescription;
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                description = string.Format("{0} received {1} of {2}", user.FullName, quantity, lineItem.Description);
+            }
 
             var trackingEvent = new OrderTracking
             {
                 User = user,
                 StatusCode = order.StatusCode,
-                Description = string.Format("{0} received {1} of {2}", user.FullName, quantity, lineItem.Description)
+                Description = description
             };
 
             order.AddTracking(trackingEvent);
-
-            _notificationService.OrderReceived(order, lineItem, user, quantity);
+            if (string.IsNullOrWhiteSpace(overrideDescription))
+            {
+                _notificationService.OrderReceived(order, lineItem, user, quantity);
+            }
+            else
+            {
+                _notificationService.OrderReceived(order, lineItem, user, quantity, string.Format("{0} by {1}", description, user.FullName));
+            }
         }
 
-        public void OrderPaid(Order order, LineItem lineItem, decimal quantity)
+        public void OrderPaid(Order order, LineItem lineItem, decimal quantity, string overrideDescription = null)
         {
             var user = _userRepository.GetById(_userIdentity.Current);
+            var description = overrideDescription;
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                description = string.Format("{0} paid {1} of {2}", user.FullName, quantity, lineItem.Description);
+            }
 
             var trackingEvent = new OrderTracking
             {
                 User = user,
                 StatusCode = order.StatusCode,
-                Description = string.Format("{0} paid {1} of {2}", user.FullName, quantity, lineItem.Description)
+                Description = description
             };
 
             order.AddTracking(trackingEvent);
 
-            _notificationService.OrderPaid(order, lineItem, user, quantity);
+            if (string.IsNullOrWhiteSpace(overrideDescription))
+            {
+                _notificationService.OrderPaid(order, lineItem, user, quantity);
+            }
+            else
+            {
+                _notificationService.OrderPaid(order, lineItem, user, quantity, string.Format("{0} by {1}", description, user.FullName));
+            }
         }
 
         public void OrderReRoutedToPurchaser(Order order, string routedTo)

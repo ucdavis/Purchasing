@@ -25,8 +25,8 @@ namespace Purchasing.Web.Services
         void OrderDenied(Order order, User user, string comment, OrderStatusCode previousStatus);
         void OrderCompleted(Order order, User user);
         void OrderReRouted(Order order, int level, bool assigned = false);
-        void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity);
-        void OrderPaid(Order order, LineItem lineItem, User actor, decimal quantity);
+        void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity, string overrideDescription = null);
+        void OrderPaid(Order order, LineItem lineItem, User actor, decimal quantity, string overrideDescription = null);
 
         void OrderAddAttachment(Order order, User actor);
         void OrderAddNote(Order order, User actor, string comment);
@@ -171,9 +171,15 @@ namespace Purchasing.Web.Services
             ProcessArrival(order, null, level, assigned);
         }
 
-        public void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity)
+        public void OrderReceived(Order order, LineItem lineItem, User actor, decimal quantity, string overrideDescription = null)
         {
             var queues = new List<EmailQueueV2>();
+
+            var description = overrideDescription;
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                description = string.Format("{0} item(s) by {1}.", quantity, actor.FullName);
+            }
 
             // get the order's purchaser
             // var purchasers = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).ToList();
@@ -181,7 +187,7 @@ namespace Purchasing.Web.Services
             if (!string.IsNullOrEmpty(order.Workgroup.NotificationEmailList))
             {
                 //var emailQueue = new EmailQueue(order, EmailPreferences.NotificationTypes.PerEvent, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), actor, order.Workgroup.NotificationEmailList);
-                var emailQueue2 = new EmailQueueV2(order, EmailPreferences.NotificationTypes.PerEvent, "Received", string.Format("{0} item(s) by {1}.", quantity, actor.FullName), null, order.Workgroup.NotificationEmailList);
+                var emailQueue2 = new EmailQueueV2(order, EmailPreferences.NotificationTypes.PerEvent, "Received", description, null, order.Workgroup.NotificationEmailList);
                 AddToQueue(queues, emailQueue2);
             }
             
@@ -192,7 +198,7 @@ namespace Purchasing.Web.Services
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Received, order.OrderType))
                 {
                     //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(ReceiveMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, quantity), approval.User);
-                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Received", string.Format("{0} item(s) by {1}.", quantity, actor.FullName), approval.User);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Received", description, approval.User);
                     AddToQueue(queues, emailQueue2);
                 }
             }
@@ -200,13 +206,19 @@ namespace Purchasing.Web.Services
             AddQueuesToOrder(order, queues);
         }
 
-        public void OrderPaid(Order order, LineItem lineItem, User actor, decimal quantity)
+        public void OrderPaid(Order order, LineItem lineItem, User actor, decimal quantity, string overrideDescription = null)
         {
             var queues = new List<EmailQueueV2>();
 
+            var description = overrideDescription;
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                description = string.Format("{0} item(s) by {1}.", quantity, actor.FullName);
+            }
+
             if (!string.IsNullOrEmpty(order.Workgroup.NotificationEmailList))
             {                
-                var emailQueue2 = new EmailQueueV2(order, EmailPreferences.NotificationTypes.PerEvent, "Paid", string.Format("{0} item(s) by {1}.", quantity, actor.FullName), null, order.Workgroup.NotificationEmailList);
+                var emailQueue2 = new EmailQueueV2(order, EmailPreferences.NotificationTypes.PerEvent, "Paid", description, null, order.Workgroup.NotificationEmailList);
                 AddToQueue(queues, emailQueue2);
             }
 
@@ -216,13 +228,15 @@ namespace Purchasing.Web.Services
 
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Paid, order.OrderType))
                 {                    
-                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Paid", string.Format("{0} item(s) by {1}.", quantity, actor.FullName), approval.User);
+                    var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Paid", description, approval.User);
                     AddToQueue(queues, emailQueue2);
                 }
             }
 
             AddQueuesToOrder(order, queues);
         }
+
+
 
         public void ProcessArrival(Order order, Approval approval, int level, bool assigned = false)
         {
