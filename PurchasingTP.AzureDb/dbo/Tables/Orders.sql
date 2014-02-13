@@ -32,7 +32,7 @@
     [Tag]                     VARCHAR (256) NULL,
     [FpdCompleted]            BIT           DEFAULT ((0)) NOT NULL,
     [ApUser] VARCHAR(10) NULL, 
-    CONSTRAINT [PK__Orders__3214EC07C3C277D7] PRIMARY KEY CLUSTERED ([Id] ASC),
+    PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
     CONSTRAINT [FK_Orders_OrderTypes] FOREIGN KEY ([OrderTypeId]) REFERENCES [dbo].[OrderTypes] ([Id]),
     CONSTRAINT [FK_Orders_ShippingTypes] FOREIGN KEY ([ShippingTypeId]) REFERENCES [dbo].[ShippingTypes] ([Id]),
