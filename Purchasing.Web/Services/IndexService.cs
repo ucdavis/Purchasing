@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Web;
 using Dapper;
 using Lucene.Net.Analysis.Standard;
@@ -85,9 +86,18 @@ namespace Purchasing.Web.Services
 
                 if (updatedOrderIds.Any())
                 {
+                    var updatedOrderIdsParameter = new StringBuilder();
+                    foreach (var updatedOrderId in updatedOrderIds)
+                    {
+                        updatedOrderIdsParameter.AppendFormat("({0}),", updatedOrderId);
+                    }
+                    updatedOrderIdsParameter.Remove(updatedOrderIdsParameter.Length - 1, 1); //take off the last comma
+
                     orderHistoryEntries =
-                        conn.Query<dynamic>("SELECT * FROM vOrderHistory where orderid in @updatedOrderIds",
-                                            new {updatedOrderIds});
+                        conn.Query<dynamic>(string.Format(@"DECLARE @OrderIds OrderIdsTableType
+                                                INSERT INTO @OrderIds VALUES {0}
+                                                select * from udf_GetOrderHistoryForOrderIds(@OrderIds)", updatedOrderIdsParameter));
+
                     lineItems =
                         conn.Query<dynamic>(
                             "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @updatedOrderIds",
