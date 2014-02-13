@@ -15,6 +15,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [HistoryReceivedLineItems_UserID_IDX]
     ON [dbo].[Approvals]([SplitId] ASC);
@@ -66,4 +68,16 @@ GO
 CREATE NONCLUSTERED INDEX [Approvals_SecondaryUserIdCompletedOrderStatusCodeId_Incl_OrderId_CVIDX]
     ON [dbo].[Approvals]([SecondaryUserId] ASC, [Completed] ASC, [OrderStatusCodeId] ASC)
     INCLUDE([OrderId]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Approvals_OrderStatusCodeId_Incl_UserIdSecondaryUserIdOrderId_CVIDX]
+    ON [dbo].[Approvals]([OrderStatusCodeId] ASC)
+    INCLUDE([UserId], [SecondaryUserId], [OrderId]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [Approvals_OrderStatusCodeId_Incl_IdUserIdSecondaryUserIdCompletedOrderId_CVINDX]
+    ON [dbo].[Approvals]([OrderStatusCodeId] ASC)
+    INCLUDE([Id], [UserId], [SecondaryUserId], [Completed], [OrderId]);
 
