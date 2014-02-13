@@ -129,6 +129,10 @@
                         {
                             <li>@Html.ActionLink("Admin Order History", "AdminOrders", "History")</li>    
                         }
+                        @if (roles.Contains(Role.Codes.Reviewer))
+                        {
+                            <li>@Html.ActionLink("AP Order History", "AccountsPayableOrders", "History")</li>
+                        }
                     </ul>
                 
                 </li>
