@@ -104,7 +104,8 @@
             highlight: '#line-items-section',
             title: "Line Item Tour: Description"
         });
-
+        
+        
         guiders.createGuider({
             attachTo: "input[name='items[0].price']",
             buttons: [closeButton, { name: "Next"}],
@@ -868,12 +869,40 @@
             attachTo: "textarea[name=justification]",
             description: "Note the required <span class='required'>*</span> for required fields.",
             id: "justification",
-            next: "vendor",
+            next: "request-type",
+            overlay: true,
+            highlight: "#justification-section",
             onShow: function (guider) {
                 $(guider.attachTo).val("Enter some text");
             },
             position: 11,
-            highlight: ".orders-nav",
+            title: "Fill Out Fields"
+        });
+        
+        guiders.createGuider({
+            buttons: [closeButton, { name: "Next" }],
+            attachTo: "#requestType_chzn",
+            description: "Select a request type. We default it to Purchasing. Your department may have specific business rules for what Request Type you should pick.",
+            id: "request-type",
+            next: "businessPurpose",
+            overlay: true,
+            highlight: "#business-purpose-section",
+            position: 1,
+            title: "Request Type Selection Options"
+        });
+        
+        guiders.createGuider({
+            buttons: [closeButton, { name: "Next" }],
+            attachTo: "textarea[name=businessPurpose]",
+            description: "You may increase the display size of this field by dragging on the bottom right corner. Note the business purpose is optional, but your department may have business rules that require you to fill out the information.",
+            id: "businessPurpose",
+            next: "vendor",
+            overlay: true,
+            onShow: function (guider) {
+                $(guider.attachTo).val("Attending Western Association of Colleges and Universities Business Officers (WACUBO) – This Business Management Institute conference provides a variety of workshop opportunities to meet the needs of campus administrators in higher education.");
+            },
+            position: 11,
+            highlight: "#business-purpose-section",
             title: "Fill Out Fields"
         });
 

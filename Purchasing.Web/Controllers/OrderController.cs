@@ -981,6 +981,25 @@ namespace Purchasing.Web.Controllers
             return new JsonNetResult(new { success = true, poNumber });
         }
 
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdateTag(int id, string tag)
+        {
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+
+            var priorValue = order.Tag;
+
+            order.Tag = tag;
+
+            _eventService.OrderUpdated(order, string.Format("Tag Updated. Prior Value: {0}", priorValue));
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new { success = true, tag });
+        }
+
         [AuthorizeReadOrEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
@@ -1590,7 +1609,9 @@ namespace Purchasing.Web.Controllers
             order.OrderType = order.OrderType ?? _repositoryFactory.OrderTypeRepository.GetById(OrderType.Types.OrderRequest);
             order.CreatedBy = order.CreatedBy ?? _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name); //Only replace created by if it doesn't already exist
             order.Justification = model.Justification;
-
+            order.BusinessPurpose = model.BusinessPurpose;
+            order.RequestType = model.RequestType;
+            
             if (!string.IsNullOrWhiteSpace(model.Comments))
             {
                 var comment = new OrderComment

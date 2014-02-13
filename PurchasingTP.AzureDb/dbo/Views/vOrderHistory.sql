@@ -1,7 +1,9 @@
 ﻿
+
+
 CREATE VIEW [dbo].[vOrderHistory]
 AS
-select row_number() over (order by o.id) Id, o.id OrderId,  o.RequestNumber
+select row_number() over (order by o.id) Id, o.id OrderId,  o.RequestNumber, o.RequestType
 	, w.id WorkgroupId, w.name WorkgroupName
 	, case 
 		when o.WorkgroupVendorId is null then '-- Unspecified --'
@@ -20,12 +22,14 @@ select row_number() over (order by o.id) Id, o.id OrderId,  o.RequestNumber
 	, o.DeliverTo ShipTo
 	, o.DeliverToEmail ShipToEmail
 	, o.Justification
+	, o.BusinessPurpose
 	, case when o.AllowBackorder = 1 then 'Yes'else 'No' end AllowBackorder
 	, case when o.HasAuthorizationNum = 1 then 'Yes' else 'No' end Restricted
 	, o.DateNeeded
 	, st.name ShippingType
 	, o.ReferenceNumber
 	, o.PoNumber
+	, o.Tag
 	, o.ShippingAmount
 	, lastaction.DateCreated LastActionDate
 	, lastaction.lastuser LastActionUser

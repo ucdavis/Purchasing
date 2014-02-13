@@ -1063,6 +1063,8 @@
     <Content Include="Views\Report\PurchaserWorkLoad.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Instructions.cshtml" />
     <Content Include="Views\Ping\Index.cshtml" />
+    <Content Include="Views\Order\_BusinessPurpose.cshtml" />
+    <Content Include="Views\Order\_ReviewBusinessPurpose.cshtml" />
     <Content Include="Views\Order\AssignAccountsPayableUser.cshtml" />
     <Content Include="Views\History\AccountsPayableOrders.cshtml" />
   </ItemGroup>

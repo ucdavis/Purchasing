@@ -6,6 +6,8 @@ namespace Purchasing.Web.Models
     {
         public SplitTypes SplitType { get; set; }
         public string Justification { get; set; }
+        public string RequestType { get; set; }
+        public string BusinessPurpose { get; set; }
         public int Vendor { get; set; }
         public string ShipTo { get; set; }
         public string ShipEmail { get; set; }
