@@ -1275,12 +1275,12 @@ namespace Purchasing.Web.Controllers
 
                 if (payInvoice)
                 {
-                    _eventService.OrderUpdated(order, "Paid all line items");                    
+                    _eventService.OrderPaid(order, null, 0, "Paid all line items");
                     Message = "All Line Items Paid";
                 }
                 else
                 {
-                    _eventService.OrderUpdated(order, "Received all line items");
+                    _eventService.OrderReceived(order, null, 0, "Received all line items");
                     Message = "All Line Items Received";
                 }
                 _repositoryFactory.OrderRepository.EnsurePersistent(order);
