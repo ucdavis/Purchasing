@@ -116,6 +116,8 @@ namespace Purchasing.Core.Domain
 
         public virtual bool FpdCompleted { get; set; }
 
+        public virtual User ApUser { get; set; } //If not null, the user who is assigned to do Accounts payable stuff. (Receive Items and Pay Invoices)
+
 
         private IList<ControlledSubstanceInformation> ControlledSubstances { get; set; }
 
@@ -528,6 +530,8 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.CompletionReason).Length(int.MaxValue);
             Map(x => x.FpdCompleted);
+
+            References(x => x.ApUser).Column("ApUser");
 
             HasMany(x => x.Attachments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();

@@ -31,7 +31,8 @@
     [ShowReferenceNumber]     BIT          CONSTRAINT [DF__ColumnPre__ShowR__15DA3E5D] DEFAULT ((1)) NOT NULL,
     [ShowFpdCompleted]        BIT          CONSTRAINT [DF__ColumnPre__ShowF__11158940] DEFAULT ((0)) NOT NULL,
     [ShowOrderPaid]           BIT          CONSTRAINT [DF__ColumnPre__ShowO__19AACF41] DEFAULT ((0)) NOT NULL,
-    CONSTRAINT [PK__ColumnPr__3214EC078992C893] PRIMARY KEY CLUSTERED ([Id] ASC)
+    [ShowApUser] BIT NOT NULL DEFAULT ((0)), 
+    PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
 

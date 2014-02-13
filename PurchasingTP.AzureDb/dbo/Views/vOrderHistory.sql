@@ -38,10 +38,13 @@ select row_number() over (order by o.id) Id, o.id OrderId,  o.RequestNumber, o.R
 	, ot.id OrderTypeId, ot.name OrderType
 	, approvers.approver Approver, AccountManagers.AccountManager, Purchasers.Purchaser
 	, case when o.FpdCompleted = 1 then 'Yes'else 'No' end FpdCompleted
+	, ApUser.FirstName + ' ' + ApUser.LastName ApUserAssigned
+	, ApUser.id ApUser
 from orders o
 	inner join workgroups w on o.WorkgroupId = w.id
 	left outer join WorkgroupVendors wv on o.WorkgroupVendorId = wv.id
 	inner join Users creator on o.CreatedBy = creator.id
+	left outer join Users ApUser on o.ApUser = ApUser.id
 	inner join OrderStatusCodes osc on o.OrderStatusCodeId = osc.id
 	left outer join ordertypes ot on ot.id = o.OrderTypeId
 	inner join (

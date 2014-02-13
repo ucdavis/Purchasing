@@ -34,22 +34,39 @@ namespace Purchasing.Web.Services
                 var orderResults = results
                     .Select(scoreDoc => searcher.Doc(scoreDoc.Doc))
                     .Select(doc => new SearchResults.OrderResult
+<<<<<<< HEAD
+                    {
+                        Id = int.Parse(doc.Get("orderid")),
+                        Justification = doc.Get("justification"),
+                        BusinessPurpose = doc.Get("businesspurpose"),
+                        CreatedBy = doc.Get("createdby"),
+                        DeliverTo = doc.Get("shipto"),
+                        DeliverToEmail = doc.Get("shiptoemail"),
+                        RequestNumber = doc.Get("requestnumber"),
+                        DateCreated = DateTime.Parse(doc.Get("datecreated")),
+                        PoNumber = doc.Get("ponumber"),
+                        Tag = doc.Get("tag"),
+                        ReferenceNumber = doc.Get("referencenumber"),
+                        Approver = doc.Get("approver"),
+                        AccountManager = doc.Get("accountmanager"),
+                        Purchaser = doc.Get("purchaser")
+                    }).ToList();
+=======
                         {
                             Id = int.Parse(doc.Get("orderid")),
                             Justification = doc.Get("justification"),
-                        BusinessPurpose = doc.Get("businesspurpose"),
                             CreatedBy = doc.Get("createdby"),
                             DeliverTo = doc.Get("shipto"),
                             DeliverToEmail = doc.Get("shiptoemail"),
                             RequestNumber = doc.Get("requestnumber"),
                             DateCreated = DateTime.Parse(doc.Get("datecreated")),
                             PoNumber = doc.Get("ponumber"),
-                        Tag = doc.Get("tag"),
                             ReferenceNumber = doc.Get("referencenumber"),
                             Approver = doc.Get("approver"),
                             AccountManager = doc.Get("accountmanager"),
                             Purchaser = doc.Get("purchaser")
                         }).ToList();
+>>>>>>> master
 
 
                 return orderResults;

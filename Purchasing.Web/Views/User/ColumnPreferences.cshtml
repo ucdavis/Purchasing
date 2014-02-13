@@ -299,6 +299,16 @@
                         @Html.ValidationMessageFor(model => model.ShowHasSplits)
                     </div>
                 </li>
+                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowApUser) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowApUser)
+                        @Html.ValidationMessageFor(model => model.ShowApUser)
+                    </div>
+                </li>
 
                 <li>
                     <div class="editor-label">

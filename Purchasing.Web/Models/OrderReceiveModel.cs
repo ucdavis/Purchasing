@@ -15,6 +15,7 @@ namespace Purchasing.Web.Models
         public ReviewOrderViewModel ReviewOrderViewModel { get; set; }
         public Dictionary<int, HistoryReceivedLineItem> LastChangedBy { get; set; }
         public bool PayInvoice { get; set; }
+        public bool Locked { get; set; }
         
 
         public static OrderReceiveModel Create(Order order, IRepository<HistoryReceivedLineItem> historyReceivedLineItemRepository, bool payInvoice)

@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using MvcContrib;
+using Purchasing.Core;
 using Purchasing.Core.Queries;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Services;
-using Purchasing.Core;
-using System;
-using MvcContrib;
 
 namespace Purchasing.Web.Controllers
 {
@@ -71,13 +71,15 @@ namespace Purchasing.Web.Controllers
                     CustomFields = _searchService.SearchCustomFieldAnswers(q, orderIds)
                 };
             }
-            catch //If the search fails, return no results
+            catch(Exception ex) //If the search fails, return no results
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                 model = new SearchResultModel {Query = q};
             }
 
             return View(model);
         }
+
     }
 
     public class SearchResultModel

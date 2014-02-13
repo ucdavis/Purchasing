@@ -44,6 +44,8 @@ namespace Purchasing.Core.Queries
         public virtual string AccountManager { get; set; }
         public virtual string Purchaser { get; set; }
         public virtual string FpdCompleted { get; set; }
+        public virtual string ApUserAssigned { get; set; } //First and last name
+        public virtual string ApUser { get; set; } // Id
     }
 
     public class OrderHistoryMap : ClassMap<OrderHistory>
@@ -95,6 +97,8 @@ namespace Purchasing.Core.Queries
             Map(x => x.Purchaser);
             Map(x => x.FpdCompleted);
             Map(x => x.Paid);
+            Map(x => x.ApUserAssigned);
+            Map(x => x.ApUser);
         }
     }
 }

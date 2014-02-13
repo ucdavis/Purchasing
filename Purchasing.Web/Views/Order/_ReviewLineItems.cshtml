@@ -5,12 +5,32 @@
     <header class="ui-corner-top ui-widget-header showInNav">Line Items </header>
    
     <div class="section-contents">
-        <div class="col1">&nbsp;</div><div class="col2">
-        @if(Model.CanReceiveItems)
-        {
-            @Html.ActionLink("Receive Items", "ReceiveItems", new {id = Model.Order.Id}, new {@class = "button"})
-             @Html.ActionLink("Pay Invoice", "ReceiveItems", new { id = Model.Order.Id, payInvoice = true }, new { @class = "button" })
-        }
+        <div class="col1">
+            @if (Model.Order.ApUser != null)
+            {                
+                <span>Assigned to <strong>@Model.Order.ApUser.FullName</strong> for Accounts Payable</span>
+            }
+            else
+            {
+                <span>&nbsp;</span>
+            }
+        </div>
+        <div class="col2">
+            @if (Model.CanAssignApUser)
+            {
+                var bttnText = "Assign AP User";
+                if (Model.Order.ApUser != null)
+                {
+                    bttnText = "Re-Assign AP User";
+                }
+                @Html.ActionLink(bttnText, "AssignAccountsPayableUser", new {id = Model.Order.Id}, new {@class = "button"})
+            }
+            @if (Model.CanReceiveItems)
+            {
+                @Html.ActionLink("Receive Items", "ReceiveItems", new {id = Model.Order.Id}, new {@class = "button"})
+                @Html.ActionLink("Pay Invoice", "ReceiveItems", new {id = Model.Order.Id, payInvoice = true}, new {@class = "button"})
+            }
+
         </div>
         <table>
             <thead>
