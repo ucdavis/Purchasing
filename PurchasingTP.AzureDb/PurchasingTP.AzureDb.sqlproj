@@ -67,6 +67,7 @@
     <Folder Include="dbo\Functions\" />
     <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="SchemaCompares" />
+    <Folder Include="dbo\User Defined Types\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\ShippingTypes.sql" />
@@ -144,6 +145,8 @@
     <Build Include="dbo\Functions\udf_GetOpenOrdersForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetEditAccessOrdersForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetClosedOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetOrderHistoryForOrderIds.sql" />
+    <Build Include="dbo\User Defined Types\OrderIdsTableType.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
