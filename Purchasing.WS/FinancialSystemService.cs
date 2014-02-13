@@ -42,11 +42,12 @@ namespace Purchasing.WS
 
                 // required fields
                 doc.documentInfo = new documentInfo();
-                doc.documentInfo.explanation = SetForDafis(string.Format("{0}-{1}", order.RequestNumber, order.Justification), 400);
+                doc.documentInfo.explanation = SetForDafis(string.Format(order.Justification), 400);
+                doc.documentInfo.description = order.RequestNumber;
                 doc.documentInfo.initiatorUserId = userId;
-                doc.requestTypeCode = kfsDocType;
+                doc.requestTypeCode = kfsDocType; //TODO: Remove?
                 doc.requiredDate = order.DateNeeded.ToString("d");
-                doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?
+                doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?                
 
                 // vendor, only if valid kfs vendor
                 if (order.Vendor != null && !string.IsNullOrEmpty(order.Vendor.VendorId))
@@ -144,7 +145,7 @@ namespace Purchasing.WS
 
                 // try to upload the requisition
                 var client = InitializeClient();
-                var result = client.uploadRequisition(doc, _token);
+                var result = client.uploadRequisition(doc, _token, "PP"); //Hard coded to PP which was assigned to us.
 
                 return new SubmitResult(result);
             }
@@ -296,7 +297,7 @@ namespace Purchasing.WS
 
         public bool AllowedType(string docType)
         {
-            var allowedKfsTypes = new string[2] { "DPO", "PR" };
+            var allowedKfsTypes = new string[1] { "PR" };
 
             return allowedKfsTypes.Contains(docType);
         }

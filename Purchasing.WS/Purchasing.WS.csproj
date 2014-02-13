@@ -214,7 +214,7 @@
     <None Include="Service References\PurchaseDocumentService\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\PurchaseDocumentService\purchasingDocumentsInterfaceServiceSOAP1.wsdl" />
+    <None Include="Service References\PurchaseDocumentService\purchasingDocumentsInterfaceServiceSOAP.wsdl" />
     <None Include="Service References\PurchaseDocumentService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
