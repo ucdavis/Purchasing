@@ -69,8 +69,13 @@ namespace Purchasing.Core.Domain
 
         [Display(Name = "Show PO#")]
         public virtual bool ShowPurchaseOrderNumber { get; set; }
+        [Display(Name = "Show Tag")]
+        public virtual bool ShowTag { get; set; }
         [Display(Name = "Show Ref#")]
         public virtual bool ShowReferenceNumber { get; set; }
+
+        [Display(Name = "Show Request Type")]
+        public virtual bool ShowRequestType { get; set; }
 
         [Display(Name = "Show Last Acted On Date")]
         public virtual bool ShowLastActedOnDate { get; set; }
@@ -116,6 +121,7 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id).GeneratedBy.Assigned();
 
             Map(x => x.ShowRequestNumber);
+            Map(x => x.ShowRequestType);
             Map(x => x.ShowWorkgroup);
             Map(x => x.ShowVendor);
             Map(x => x.ShowCreatedBy);
@@ -124,6 +130,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowTotalAmount);
             Map(x => x.ShowStatus);
             Map(x => x.ShowPurchaseOrderNumber);
+            Map(x => x.ShowTag);
             Map(x => x.ShowReferenceNumber);
             Map(x => x.ShowShipTo);
             Map(x => x.ShowAllowBackorder);
