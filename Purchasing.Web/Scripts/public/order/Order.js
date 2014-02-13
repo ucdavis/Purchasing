@@ -1165,6 +1165,10 @@
             checkDuplicates($("#loader-line1"));
         });
 
+        $("#vendor-search-form").on('submit', function(e) {
+            e.preventDefault();
+        });
+
         $("#vendor-form").on("click", "#toggle-address", function (e) {
             e.preventDefault();
 
