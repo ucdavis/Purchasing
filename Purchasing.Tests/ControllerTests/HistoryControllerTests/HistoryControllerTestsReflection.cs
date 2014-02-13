@@ -176,7 +176,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(2, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(3, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -203,6 +203,23 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Arrange
             var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethod("AdminOrders");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerMethodAccountsPayableOrdersContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("AccountsPayableOrders");
             #endregion Arrange
 
             #region Act

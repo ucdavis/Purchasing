@@ -193,6 +193,7 @@
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsMapping.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart01.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart02.cs" />
+    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart03.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\HomeControllerTests.cs" />
     <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsPart01.cs" />
