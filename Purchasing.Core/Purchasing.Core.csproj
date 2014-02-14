@@ -185,12 +185,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\CompleteOrdersThisMonth.cs" />
     <Compile Include="Queries\CommentHistory.cs" />
-    <Compile Include="Queries\OpenOrderByUser.cs" />
     <Compile Include="Queries\OrderHistory.cs" />
     <Compile Include="Queries\OrderHistoryBase.cs" />
     <Compile Include="Queries\OrderTrackingHistory.cs" />
     <Compile Include="Queries\OrganizationDescendant.cs" />
-    <Compile Include="Queries\PendingOrder.cs" />
     <Compile Include="Queries\SearchResults.cs" />
   </ItemGroup>
   <ItemGroup>
