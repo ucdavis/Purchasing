@@ -147,6 +147,7 @@
     <Build Include="dbo\Functions\udf_GetClosedOrdersForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetOrderHistoryForOrderIds.sql" />
     <Build Include="dbo\User Defined Types\OrderIdsTableType.sql" />
+    <Build Include="dbo\Functions\udf_GetPendingOrdersForLogin.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />

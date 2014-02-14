@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using Dapper;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
@@ -22,12 +23,12 @@ namespace Purchasing.Web.Controllers
     public class HomeController : ApplicationController
     {
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
-        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IDbService _dbService;
 
-        public HomeController(IRepositoryWithTypedId<User, string> userRepository, IQueryRepositoryFactory queryRepositoryFactory)
+        public HomeController(IRepositoryWithTypedId<User, string> userRepository, IDbService dbService)
         {
             _userRepository = userRepository;
-            _queryRepositoryFactory = queryRepositoryFactory;
+            _dbService = dbService;
         }
 
         /// <summary>
@@ -41,6 +42,7 @@ namespace Purchasing.Web.Controllers
         }
 
         [Authorize]
+        [HandleTransactionsManually]
         public ActionResult Landing()
         {
             if (!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
@@ -49,21 +51,22 @@ namespace Purchasing.Web.Controllers
                 return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
-            var viewModel = new LandingViewModel
-                                {
-                                    PendingOrders = _queryRepositoryFactory.PendingOrderRepository
-                                                        .Queryable
-                                                        .Where(x=>x.AccessUserId == CurrentUser.Identity.Name)
-                                                        .OrderByDescending(x=>x.LastActionDate)
-                                                        .Select(x=>(OrderHistoryBase)x).ToFuture(),
-                                    YourOpenOrders = _queryRepositoryFactory.OpenOrderByUserRepository
-                                                        .Queryable
-                                                        .Where(x => x.AccessUserId == CurrentUser.Identity.Name)
-                                                        .OrderByDescending(x => x.LastActionDate)
-                                                        .Select(x => (OrderHistoryBase)x).ToFuture().ToList()
-                                };
-
-            return View(viewModel);
+            using (var conn = _dbService.GetConnection())
+            {
+                var viewModel = new LandingViewModel
+                    {
+                        PendingOrders =
+                            conn.Query<OrderHistoryBase>(
+                                "SELECT * FROM [dbo].[udf_GetPendingOrdersForLogin] (@login) ORDER BY lastactiondate DESC",
+                                new {login = CurrentUser.Identity.Name}),
+                        YourOpenOrders =
+                            conn.Query<OrderHistoryBase>(
+                                "SELECT * FROM [dbo].[vOpenOrdersByUser] WHERE accessuserid = @login ORDER BY lastactiondate DESC",
+                                new {login = CurrentUser.Identity.Name})
+                    };
+                
+                return View(viewModel);
+            }
         }
     }
 }

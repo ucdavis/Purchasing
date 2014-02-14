@@ -1,10 +1,10 @@
 using System;
-using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Queries
 {
-    public class OrderHistoryBase : DomainObject
+    public class OrderHistoryBase
     {
+        //public virtual int Id { get; set; }
         public virtual int OrderId { get; set; }
         public virtual string RequestNumber { get; set; }
         public virtual DateTime DateCreated { get; set; }
