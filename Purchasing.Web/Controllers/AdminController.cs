@@ -469,6 +469,11 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction(a => a.ValidateChildWorkgroups());
         }
 
+        public ActionResult TestException()
+        {
+            throw new Exception("Test -- Test -- Test");
+        }
+
 
 
 
