@@ -208,7 +208,6 @@ namespace Purchasing.Web.Services
             
         }
 
-
         public IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore)
         {
             var workgroupIds = workgroups.Select(x => x.Id).Distinct().ToArray();
@@ -216,8 +215,8 @@ namespace Purchasing.Web.Services
             var searcher = _indexService.GetIndexSearcherFor(Indexes.OrderHistory);
 
             //Search for all orders within the given workgroups, created in the range desired
-            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
+            var analyzer = new StandardAnalyzer(Version.LUCENE_30);
+            Query query = new QueryParser(Version.LUCENE_30, "workgroupid", analyzer).Parse(string.Join(" ", workgroupIds));
             var filter = NumericRangeFilter.NewLongRange("datecreatedticks", createdAfter.Ticks, createdBefore.AddDays(1).Ticks, true, true);
 
             //Need to return all matching orders
@@ -256,8 +255,12 @@ namespace Purchasing.Web.Services
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             try
-            {
-                Query accessQuery = new QueryParser(Version.LUCENE_30, "orderid", analyzer).Parse(string.Join(" ", filteredOrderIds));
+            {   
+                var orderIds = filteredOrderIds as int[] ?? filteredOrderIds.ToArray();
+
+                BooleanQuery.MaxClauseCount = orderIds.Length + 1;
+
+                Query accessQuery = new QueryParser(Version.LUCENE_30, "orderid", analyzer).Parse(string.Join(" ", orderIds));
                 var termsQuery =
                     new MultiFieldQueryParser(Version.LUCENE_30, searchableFields, analyzer).Parse(searchTerm);
                 var results = searcher.Search(termsQuery, new CachingWrapperFilter(new QueryWrapperFilter(accessQuery)), topN).ScoreDocs;                
