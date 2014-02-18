@@ -258,7 +258,10 @@ namespace Purchasing.Web.Services
             {   
                 var orderIds = filteredOrderIds as int[] ?? filteredOrderIds.ToArray();
 
-                BooleanQuery.MaxClauseCount = orderIds.Length + 1;
+                if (BooleanQuery.MaxClauseCount < orderIds.Length)
+                {
+                    BooleanQuery.MaxClauseCount = orderIds.Length + 1;
+                }
 
                 Query accessQuery = new QueryParser(Version.LUCENE_30, "orderid", analyzer).Parse(string.Join(" ", orderIds));
                 var termsQuery =

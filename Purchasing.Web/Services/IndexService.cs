@@ -46,8 +46,7 @@ namespace Purchasing.Web.Services
         private readonly IDbService _dbService;
         private string _indexRoot;
         private readonly Dictionary<Indexes, IndexReader> _indexReaders = new Dictionary<Indexes, IndexReader>();
-        private const int MaxClauseCount = 1024;
-
+        
         public IndexService(IDbService dbService)
         {
             _dbService = dbService;
@@ -201,8 +200,8 @@ namespace Purchasing.Web.Services
 
             var distinctOrderIds = orderids.Distinct().ToArray();
 
-            if (distinctOrderIds.Count() > MaxClauseCount)
-                //If number of distinct orders ids is >default limit, up the limit as necessary
+            if (BooleanQuery.MaxClauseCount < distinctOrderIds.Length)
+            //If number of distinct orders ids is > limit, up the limit as necessary
             {
                 BooleanQuery.MaxClauseCount = distinctOrderIds.Count() + 1;
             }
