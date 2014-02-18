@@ -153,9 +153,9 @@ namespace Purchasing.WS
             {
                 return new SubmitResult() { Success = false, Messages = new List<string>() { "Service call timed out." } };
             }
-            catch (CommunicationException)
+            catch (CommunicationException ex)
             {
-                return new SubmitResult() {Success = false, Messages = new List<string>() { "There was an error communicating with the campus financial system." }};
+                return new SubmitResult() {Success = false, Messages = new List<string>() { "There was an error communicating with the campus financial system." , ex.Message}};
             }
             catch (Exception ex)
             {
