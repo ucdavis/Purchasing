@@ -151,15 +151,15 @@ namespace Purchasing.WS
             }
             catch (TimeoutException)
             {
-                return new SubmitResult() { Success = false, Messages = new List<string>() { "Service call timed out." } };
+                return new SubmitResult() { Success = false, Messages = new List<string>() {"Service call timed out." } };
             }
             catch (CommunicationException ex)
             {
-                return new SubmitResult() {Success = false, Messages = new List<string>() { "There was an error communicating with the campus financial system." , ex.Message}};
+                return new SubmitResult() {Success = false, Messages = new List<string>() {"Hide Errors", "There was an error communicating with the campus financial system." , ex.Message}};
             }
             catch (Exception ex)
             {
-                return new SubmitResult() { Success = false, Messages = new List<string>() { ex.Message } };
+                return new SubmitResult() { Success = false, Messages = new List<string>() { "Hide Errors", ex.Message } };
             }
         }
 
