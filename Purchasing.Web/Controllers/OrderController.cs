@@ -795,12 +795,18 @@ namespace Purchasing.Web.Controllers
 
                 if (errors.Any()) //if we have any errors, raise them in ELMAH and redirect back to the review page without saving change
                 {
-                    ErrorMessage =
-                        "There was a problem completing this order. Please try again later and notify support if problems persist."; 
-                    
-                    ErrorSignal.FromCurrentContext().Raise(
-                        new System.ApplicationException(string.Join(Environment.NewLine, errors)));
-                    
+                    if (errors.Contains("Hide Errors"))
+                    {
+                        ErrorMessage =
+                            "There was a problem completing this order. Please try again later and notify support if problems persist.";
+
+                        ErrorSignal.FromCurrentContext().Raise(
+                            new System.ApplicationException(string.Join(Environment.NewLine, errors)));
+                    }
+                    else
+                    {
+                        ErrorMessage = string.Format("There was a problem completing this order. Details,  Error: {0}", string.Join("Error: ", errors));
+                    }
                     return RedirectToAction("Review", new {id});
                 }
             }
