@@ -53,7 +53,8 @@ namespace Purchasing.WS
                 if (order.Vendor != null && !string.IsNullOrEmpty(order.Vendor.VendorId))
                 {
                     doc.vendorHeaderId = order.Vendor.VendorId;
-                    doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;
+                    doc.vendorDetailId = "0";
+                    doc.vendorAddressNumber = order.Vendor.VendorAddressTypeCode;
                 }
 
                 string line1, line2;
