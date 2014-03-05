@@ -28,7 +28,7 @@ namespace Purchasing.Tests.ServiceTests
     {
         public IWorkgroupService WorkgroupService;
         public IRepositoryWithTypedId<Vendor, string> VendorRepository;
-        public IRepositoryWithTypedId<VendorAddress, Guid> VendorAddressRepository;
+        public IRepositoryWithTypedId<VendorAddress, string> VendorAddressRepository;
         public IRepositoryWithTypedId<User, string> UserRepository;
         public IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
         public IRepository<WorkgroupPermission> WorkgroupPermissionRepository;
@@ -44,7 +44,7 @@ namespace Purchasing.Tests.ServiceTests
         {
             AutomapperConfig.Configure();
             VendorRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Vendor, string>>();
-            VendorAddressRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<VendorAddress, Guid>>();
+            VendorAddressRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<VendorAddress, string>>();
             UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
             EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
             WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();

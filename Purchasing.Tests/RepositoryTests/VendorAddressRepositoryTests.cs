@@ -16,13 +16,13 @@ namespace Purchasing.Tests.RepositoryTests
     /// LookupFieldName:	Name
     /// </summary>
     [TestClass]
-    public class VendorAddressRepositoryTests : AbstractRepositoryTests<VendorAddress, Guid, VendorAddressMap>
+    public class VendorAddressRepositoryTests : AbstractRepositoryTests<VendorAddress, string, VendorAddressMap>
     {
         /// <summary>
         /// Gets or sets the VendorAddress repository.
         /// </summary>
         /// <value>The VendorAddress repository.</value>
-        public IRepositoryWithTypedId<VendorAddress, Guid> VendorAddressRepository { get; set; }
+        public IRepositoryWithTypedId<VendorAddress, string> VendorAddressRepository { get; set; }
         public IRepositoryWithTypedId<Vendor, string> VendorRepository { get; set; } 
 		
         #region Init and Overrides
@@ -32,7 +32,7 @@ namespace Purchasing.Tests.RepositoryTests
         /// </summary>
         public VendorAddressRepositoryTests()
         {
-            VendorAddressRepository = new RepositoryWithTypedId<VendorAddress, Guid>();
+            VendorAddressRepository = new RepositoryWithTypedId<VendorAddress, string>();
             VendorRepository = new RepositoryWithTypedId<Vendor, string>();
         }
 
@@ -44,7 +44,7 @@ namespace Purchasing.Tests.RepositoryTests
         protected override VendorAddress GetValid(int? counter)
         {
             var rtValue = CreateValidEntities.VendorAddress(counter);
-            rtValue.SetIdTo(Guid.NewGuid());
+            rtValue.SetIdTo(Guid.NewGuid().ToString());
             rtValue.Vendor = VendorRepository.Queryable.First();
 
             return rtValue;

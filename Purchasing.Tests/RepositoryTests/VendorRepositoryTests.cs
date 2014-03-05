@@ -23,7 +23,7 @@ namespace Purchasing.Tests.RepositoryTests
         /// </summary>
         /// <value>The Vendor repository.</value>
         public IRepositoryWithTypedId<Vendor, string> VendorRepository { get; set; }
-        public IRepositoryWithTypedId<VendorAddress, Guid> VendorAddressRepository { get; set; } 
+        public IRepositoryWithTypedId<VendorAddress, string> VendorAddressRepository { get; set; } 
 		
         #region Init and Overrides
 
@@ -33,7 +33,7 @@ namespace Purchasing.Tests.RepositoryTests
         public VendorRepositoryTests()
         {
             VendorRepository = new RepositoryWithTypedId<Vendor, string>();
-            VendorAddressRepository = new RepositoryWithTypedId<VendorAddress, Guid>();
+            VendorAddressRepository = new RepositoryWithTypedId<VendorAddress, string>();
         }
 
         /// <summary>
@@ -632,7 +632,7 @@ namespace Purchasing.Tests.RepositoryTests
             for (int i = 0; i < addedCount; i++)
             {
                 relatedRecords.Add(CreateValidEntities.VendorAddress(i + 1));
-                relatedRecords[i].SetIdTo(Guid.NewGuid());
+                relatedRecords[i].SetIdTo(Guid.NewGuid().ToString());
                 relatedRecords[i].Vendor = record;
                 VendorAddressRepository.EnsurePersistent(relatedRecords[i]);
             }
@@ -698,7 +698,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 relatedRecords.Add(CreateValidEntities.VendorAddress(i + 1));
                 relatedRecords[i].Vendor = record;
-                relatedRecords[i].SetIdTo(Guid.NewGuid());
+                relatedRecords[i].SetIdTo(Guid.NewGuid().ToString());
                 VendorAddressRepository.EnsurePersistent(relatedRecords[i]);
             }
             foreach (var relatedRecord in relatedRecords)
@@ -759,7 +759,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 relatedRecords.Add(CreateValidEntities.VendorAddress(i + 1));
                 relatedRecords[i].Vendor = record;
-                relatedRecords[i].SetIdTo(Guid.NewGuid());
+                relatedRecords[i].SetIdTo(Guid.NewGuid().ToString());
                 VendorAddressRepository.EnsurePersistent(relatedRecords[i]);
             }
             foreach (var relatedRecord in relatedRecords)

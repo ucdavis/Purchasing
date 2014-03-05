@@ -39,7 +39,7 @@ namespace Purchasing.Web.Controllers
         private readonly IDirectorySearchService _searchService;
         private readonly IRepository<WorkgroupVendor> _workgroupVendorRepository;
         private readonly IRepositoryWithTypedId<Vendor, string> _vendorRepository;
-        private readonly IRepositoryWithTypedId<VendorAddress, Guid> _vendorAddressRepository;
+        private readonly IRepositoryWithTypedId<VendorAddress, string> _vendorAddressRepository;
         private readonly IRepositoryWithTypedId<State, string> _stateRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupAccount> _workgroupAccountRepository;
@@ -55,7 +55,7 @@ namespace Purchasing.Web.Controllers
             ISecurityService securityService, IDirectorySearchService searchService,
             IRepository<WorkgroupVendor> workgroupVendorRepository, 
             IRepositoryWithTypedId<Vendor, string> vendorRepository, 
-            IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository,
+            IRepositoryWithTypedId<VendorAddress, string> vendorAddressRepository,
             IRepositoryWithTypedId<State, string> stateRepository,
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
             IRepository<WorkgroupAccount> workgroupAccountRepository,
