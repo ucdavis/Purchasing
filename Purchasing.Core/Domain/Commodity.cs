@@ -9,6 +9,8 @@ namespace Purchasing.Core.Domain
         public virtual string GroupCode { get; set; }
         public virtual string SubGroupCode { get; set; }
 
+        public virtual bool IsActive { get; set; }
+
         public virtual string NameAndId {get { return string.Format("{0} ({1})", Name, Id); }}
     }
 
@@ -25,6 +27,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Name);
             Map(x => x.GroupCode);
             Map(x => x.SubGroupCode);
+            Map(x => x.IsActive);
         }
     }
 }

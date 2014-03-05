@@ -784,6 +784,17 @@ namespace Purchasing.Web.Controllers
                         return RedirectToAction("Review", new { id });
                     }
 
+                    if (order.LineItems.Any(a => a.Commodity != null && !a.Commodity.IsActive))
+                    {
+                        var inactiveCodes = string.Empty;
+                        foreach (var invalidLineItem in order.LineItems.Where(a => a.Commodity != null && !a.Commodity.IsActive))
+                        {
+                            inactiveCodes = string.Format("{0} Commodity Code: {1} ", inactiveCodes, invalidLineItem.Commodity.Id);
+                        }
+                        ErrorMessage = string.Format("Inactive (old) commodity codes detected. Please update to submit to KFS: {0}", inactiveCodes);
+                        return RedirectToAction("Review", new { id });
+                    }
+
                     //if (order.Address.BuildingCode == null)
                     //{
                     //    ErrorMessage = "Shipping Address needs to have a building code to complete a KFS order";
@@ -1690,9 +1701,11 @@ namespace Purchasing.Web.Controllers
                 {
                     if (lineItem.IsValid())
                     {
-                        var commodity = string.IsNullOrWhiteSpace(lineItem.CommodityCode)
-                                            ? null
-                                            : _repositoryFactory.CommodityRepository.GetNullableById(lineItem.CommodityCode);
+                        Commodity commodity = null;
+                        if (!string.IsNullOrWhiteSpace(lineItem.CommodityCode))
+                        {
+                            commodity = _repositoryFactory.CommodityRepository.Queryable.SingleOrDefault(a => a.Id == lineItem.CommodityCode && a.IsActive);
+                        }
 
                         //TODO: could use automapper later, but need to do validation
                         var orderLineItem = new LineItem
