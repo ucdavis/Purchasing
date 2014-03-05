@@ -5,7 +5,7 @@ using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
-    public class VendorAddress : DomainObjectWithTypedId<Guid>
+    public class VendorAddress : DomainObjectWithTypedId<string>
     {
         [Required]
         [StringLength(4)]

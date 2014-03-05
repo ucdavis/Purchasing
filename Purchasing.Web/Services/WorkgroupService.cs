@@ -41,7 +41,7 @@ namespace Purchasing.Web.Services
     public class WorkgroupService : IWorkgroupService
     {
         private readonly IRepositoryWithTypedId<Vendor, string> _vendorRepository;
-        private readonly IRepositoryWithTypedId<VendorAddress, Guid> _vendorAddressRepository;
+        private readonly IRepositoryWithTypedId<VendorAddress, string> _vendorAddressRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
         private readonly IRepositoryWithTypedId<EmailPreferences, string> _emailPreferencesRepository;
         private readonly IRepository<WorkgroupPermission> _workgroupPermissionRepository;
@@ -54,7 +54,7 @@ namespace Purchasing.Web.Services
         
 
         public WorkgroupService(IRepositoryWithTypedId<Vendor, string> vendorRepository, 
-            IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository, 
+            IRepositoryWithTypedId<VendorAddress, string> vendorAddressRepository, 
             IRepositoryWithTypedId<User, string> userRepository,
             IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository,
             IRepository<WorkgroupPermission> workgroupPermissionRepository,

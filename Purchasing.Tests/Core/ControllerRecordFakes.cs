@@ -603,18 +603,18 @@ namespace Purchasing.Tests.Core
         }
     }
 
-    public class FakeVendorAddresses : AbstractControllerRecordFakesGuids<VendorAddress>
+    public class FakeVendorAddresses : AbstractControllerRecordFakesStrings<VendorAddress>
     {
         protected override VendorAddress CreateValid(int i)
         {
             return CreateValidEntities.VendorAddress(i);
         }
-        public FakeVendorAddresses(int count, IRepositoryWithTypedId<VendorAddress, Guid> repository, List<VendorAddress> specificRecords, bool bypassSetIdTo)
+        public FakeVendorAddresses(int count, IRepositoryWithTypedId<VendorAddress, string> repository, List<VendorAddress> specificRecords, bool bypassSetIdTo)
         {
             Records(count, repository, specificRecords, bypassSetIdTo);
         }
 
-        public FakeVendorAddresses(int count, IRepositoryWithTypedId<VendorAddress, Guid> repository)
+        public FakeVendorAddresses(int count, IRepositoryWithTypedId<VendorAddress, string> repository)
         {
             Records(count, repository, false);
         }
