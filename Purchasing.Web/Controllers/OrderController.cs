@@ -816,7 +816,7 @@ namespace Purchasing.Web.Controllers
                     }
                     else
                     {
-                        ErrorMessage = string.Format("There was a problem completing this order. Details,  Error: {0}", string.Join("Error: ", errors));
+                        ErrorMessage = string.Format("There was a problem completing this order. Details,  Error: {0}", string.Join(" Error: ", errors));
                     }
                     return RedirectToAction("Review", new {id});
                 }
