@@ -62,6 +62,7 @@ namespace Purchasing.Tests.Core
                 rtValue.GroupCode = "GroupCode" + counter.Extra();
                 rtValue.SubGroupCode = "SubGroupCode" + counter.Extra();
             }
+            rtValue.IsActive = true;
 
             return rtValue;
         }
