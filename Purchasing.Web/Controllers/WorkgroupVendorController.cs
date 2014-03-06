@@ -99,7 +99,7 @@ namespace Purchasing.Web.Controllers
                     if (tempModelState.ContainsKey("WorkgroupVendor.Email"))
                     {
                         workgroupVendorToCreate.Email = null;
-                        errorMessage = "Warning, Email removed. KFS Vendor's Email in DAFIS was invalid";
+                        errorMessage = "Warning, Email removed. KFS Vendor's Email was invalid";
                     }
                 }
 
