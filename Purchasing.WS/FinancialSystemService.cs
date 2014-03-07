@@ -85,7 +85,7 @@ namespace Purchasing.WS
                     phoneNumber = !string.IsNullOrEmpty(order.DeliverToPhone) ? order.DeliverToPhone : order.Address.Phone,
                     campusCode = CampusCode,
                     buildingCode = order.Address.BuildingCode != null ? order.Address.BuildingCode.BuildingCode : string.Empty,
-                    roomNumber = SetForDafis(order.Address.Room, 8)
+                    roomNumber = string.Empty //SetForDafis(order.Address.Room, 8)
                 };
                 doc.deliveryInstructionText = string.Empty;     // don't have this from anywhere yet
 
