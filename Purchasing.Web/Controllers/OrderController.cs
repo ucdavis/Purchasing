@@ -1806,7 +1806,7 @@ namespace Purchasing.Web.Controllers
             try
             {
                 // make the call
-                var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber);
+                var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber.Trim());
                 return new JsonNetResult(result);
             }
             catch (Exception)

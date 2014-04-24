@@ -490,7 +490,7 @@ namespace Purchasing.Web.Controllers
             var transport = SMTP.GenerateInstance(new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"], WebConfigurationManager.AppSettings["SendGridPassword"]));
             transport.Deliver(sgMessage);
 
-            Message = "Test mesage sent";
+            Message = "Test message sent";
             return this.RedirectToAction(a => a.Index());
         }
 
