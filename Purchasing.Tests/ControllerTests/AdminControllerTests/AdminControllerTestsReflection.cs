@@ -151,7 +151,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(18, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(19, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -524,6 +524,45 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Assert
         }
 
+        /// <summary>
+        /// 18
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodTestExceptionContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("TestException");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// 19
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodTestEmailContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("TestEmail");
+            #endregion Arrange
+
+            #region Act
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
         #endregion Controller Method Tests
 
         #endregion Reflection Tests
