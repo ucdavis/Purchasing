@@ -481,10 +481,10 @@ namespace Purchasing.Core.Domain
 
         public virtual bool IsValidKfs()
         {
-            var regex = new Regex(@"3\d{7}");
+            int i = 0;
             var validKfsOrder = OrderType.Id == OrderType.Types.KfsDocument
-                && !string.IsNullOrEmpty(ReferenceNumber)
-                && regex.IsMatch(ReferenceNumber);
+                                && !string.IsNullOrEmpty(ReferenceNumber)
+                                && int.TryParse(ReferenceNumber.Trim(), out i);
 
             return validKfsOrder;
         }
