@@ -1806,6 +1806,11 @@ namespace Purchasing.Web.Controllers
             try
             {
                 // make the call
+                var i = 0;
+                if (!int.TryParse(order.ReferenceNumber.Trim(), out i))
+                {
+                    return new JsonNetResult(null);
+                }
                 var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber.Trim());
                 return new JsonNetResult(result);
             }
