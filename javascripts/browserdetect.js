@@ -79,6 +79,12 @@ var BrowserDetect = {
 		},
 		{
 			string: navigator.userAgent,
+			subString: "Trident",
+			identity: "Internet Explorer",
+			versionSearch: "rv"
+		},
+		{
+			string: navigator.userAgent,
 			subString: "Gecko",
 			identity: "Mozilla",
 			versionSearch: "rv"
