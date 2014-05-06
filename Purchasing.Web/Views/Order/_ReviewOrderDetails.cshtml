@@ -88,7 +88,8 @@
                             <div class="fn">@Model.Vendor.Name
                                 @if (!string.IsNullOrEmpty(Model.Vendor.VendorId))
                                 {
-                                    <span>@string.Format("(KFS Id: {0})", Model.Vendor.VendorId)</span>
+                                    var kfsLookup = string.Format("https://kfs.ucdavis.edu/kfs-prd/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={0}", Model.Vendor.VendorId);                                    
+                                    <span>(KFS Id: <a href="@kfsLookup" target="_blank"> @Model.Vendor.VendorId</a>)</span>
                                 }
                             </div>
                             <div class="adr">
