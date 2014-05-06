@@ -344,6 +344,7 @@
     <Compile Include="Controllers\PingController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
+    <Compile Include="Helpers\cas.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\ListSyncController.cs" />
