@@ -42,17 +42,19 @@ namespace Purchasing.WS
 
                 // required fields
                 doc.documentInfo = new documentInfo();
-                doc.documentInfo.explanation = SetForDafis(string.Format("{0}-{1}", order.RequestNumber, order.Justification), 400);
+                doc.documentInfo.explanation = SetForDafis(string.Format(order.Justification), 400);
+                doc.documentInfo.description = order.RequestNumber;
                 doc.documentInfo.initiatorUserId = userId;
-                doc.requestTypeCode = kfsDocType;
+                doc.requestTypeCode = kfsDocType; //TODO: Remove?
                 doc.requiredDate = order.DateNeeded.ToString("d");
-                doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?
+                doc.sourceSystemOrderId = order.RequestNumber;  // currently does nothing in DaFIS, but should in KFS?                
 
                 // vendor, only if valid kfs vendor
                 if (order.Vendor != null && !string.IsNullOrEmpty(order.Vendor.VendorId))
                 {
                     doc.vendorHeaderId = order.Vendor.VendorId;
-                    doc.vendorDetailId = order.Vendor.VendorAddressTypeCode;
+                    doc.vendorDetailId = "0";
+                    doc.vendorAddressNumber = order.Vendor.VendorAddressTypeCode;
                 }
 
                 string line1, line2;
@@ -82,8 +84,8 @@ namespace Purchasing.WS
                     emailAddress = order.DeliverToEmail,
                     phoneNumber = !string.IsNullOrEmpty(order.DeliverToPhone) ? order.DeliverToPhone : order.Address.Phone,
                     campusCode = CampusCode,
-                    buildingCode = order.Address.BuildingCode != null ? order.Address.BuildingCode.Id : string.Empty,
-                    roomNumber = order.Address.Room
+                    buildingCode = order.Address.BuildingCode != null ? order.Address.BuildingCode.BuildingCode : string.Empty,
+                    roomNumber = string.Empty //SetForDafis(order.Address.Room, 8)
                 };
                 doc.deliveryInstructionText = string.Empty;     // don't have this from anywhere yet
 
@@ -109,7 +111,7 @@ namespace Purchasing.WS
                 foreach (var line in order.LineItems)
                 {
                     var li = new purchasingItemInfo();
-                    li.catelogNumber = SetForDafis(line.CatalogNumber, 15);
+                    li.catelogNumber = SetForDafis(line.CatalogNumber, 30);
                     li.unitOfMeasureCode = line.Unit;
                     li.description = SetForDafis(line.Description, 400);
                     li.commodityCode = line.Commodity != null ? line.Commodity.Id.ToUpper() : string.Empty;
@@ -144,21 +146,21 @@ namespace Purchasing.WS
 
                 // try to upload the requisition
                 var client = InitializeClient();
-                var result = client.uploadRequisition(doc, _token);
+                var result = client.uploadRequisition(doc, _token, "PP"); //Hard coded to PP which was assigned to us.
 
                 return new SubmitResult(result);
             }
             catch (TimeoutException)
             {
-                return new SubmitResult() { Success = false, Messages = new List<string>() { "Service call timed out." } };
+                return new SubmitResult() { Success = false, Messages = new List<string>() {"Service call timed out." } };
             }
-            catch (CommunicationException)
+            catch (CommunicationException ex)
             {
-                return new SubmitResult() {Success = false, Messages = new List<string>() { "There was an error communicating with the campus financial system." }};
+                return new SubmitResult() {Success = false, Messages = new List<string>() {"Hide Errors", "There was an error communicating with the campus financial system." , ex.Message}};
             }
             catch (Exception ex)
             {
-                return new SubmitResult() { Success = false, Messages = new List<string>() { ex.Message } };
+                return new SubmitResult() { Success = false, Messages = new List<string>() { "Hide Errors", ex.Message } };
             }
         }
 
@@ -296,7 +298,7 @@ namespace Purchasing.WS
 
         public bool AllowedType(string docType)
         {
-            var allowedKfsTypes = new string[2] { "DPO", "PR" };
+            var allowedKfsTypes = new string[1] { "PR" };
 
             return allowedKfsTypes.Contains(docType);
         }

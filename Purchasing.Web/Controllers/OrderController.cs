@@ -40,6 +40,7 @@ namespace Purchasing.Web.Controllers
         private readonly IQueryRepositoryFactory _queryRepository;
         private readonly IEventService _eventService;
         private readonly IBugTrackingService _bugTrackingService;
+        private readonly IFileService _fileService;
 
         public OrderController(
             IRepositoryFactory repositoryFactory, 
@@ -49,7 +50,8 @@ namespace Purchasing.Web.Controllers
             IFinancialSystemService financialSystemService,
             IQueryRepositoryFactory queryRepository,
             IEventService eventService,
-            IBugTrackingService bugTrackingService)
+            IBugTrackingService bugTrackingService, 
+            IFileService fileService)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
@@ -59,6 +61,7 @@ namespace Purchasing.Web.Controllers
             _queryRepository = queryRepository;
             _eventService = eventService;
             _bugTrackingService = bugTrackingService;
+            _fileService = fileService;
         }
 
         /// <summary>
@@ -234,6 +237,76 @@ namespace Purchasing.Web.Controllers
             return this.RedirectToAction<HomeController>(a => a.Landing());
         }
 
+        /// <summary>
+        /// Access checks done inside method.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult AssignAccountsPayableUser(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (order.StatusCode.Id != OrderStatusCode.Codes.Complete)
+            {
+                ErrorMessage = "Order Status must be at complete to assign an Accounts Payable user.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+
+            var completedBy = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).OrderBy(o => o.DateCreated).First().User.Id;
+
+            if (CurrentUser.Identity.Name != completedBy)
+            {
+                if (order.ApUser == null || order.ApUser.Id != CurrentUser.Identity.Name)
+                {
+                    ErrorMessage = "You do not have permission to assign an Accounts Payable user.";
+                    return this.RedirectToAction(a => a.Review(id));
+                }
+            }
+
+            var model = OrderReRoutePurchaserModel.Create(order); //Re-using this model. List reviewers though
+            model.PurchaserPeeps = order.Workgroup.Permissions.Where(a => a.Role.Id == Role.Codes.Reviewer).Select(b => b.User).Distinct().OrderBy(c => c.LastName).ToList();
+
+
+            model.Order = order;
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AssignAccountsPayableUser(int id, string apUserId)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (order.StatusCode.Id != OrderStatusCode.Codes.Complete)
+            {
+                ErrorMessage = "Order Status must be at complete to assign an Accounts Payable user.";
+                return this.RedirectToAction(a => a.Review(id));
+            }
+
+            var completedBy = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).OrderBy(o => o.DateCreated).First().User.Id;
+
+            if (CurrentUser.Identity.Name != completedBy)
+            {
+                if (order.ApUser == null || order.ApUser.Id != CurrentUser.Identity.Name)
+                {
+                    ErrorMessage = "You do not have permission to assign an Accounts Payable user.";
+                    return this.RedirectToAction(a => a.Review(id));
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(apUserId))
+            {
+                order.ApUser = null;
+                _eventService.OrderUpdated(order, "Accounts Payable user cleared");
+            }
+            else
+            {
+                var user = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == apUserId.Trim().ToLower());
+                order.ApUser = user;
+                _eventService.OrderUpdated(order, string.Format("Accounts Payable user set to {0}", user.FullName));
+            }
+           
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return this.RedirectToAction(a => a.Review(id));
+        }
 
         /// <summary>
         /// Make an order request
@@ -457,6 +530,7 @@ namespace Purchasing.Web.Controllers
                     WorkgroupName = orderQuery.Workgroup.Name,
                     WorkgroupForceAccountApprover = orderQuery.Workgroup.ForceAccountApprover,
                     OrganizationName = orderQuery.Organization.Name,
+                    CurrentUser = CurrentUser.Identity.Name,
                 };
 
             const OrderAccessLevel requiredAccessLevel = OrderAccessLevel.Edit | OrderAccessLevel.Readonly;
@@ -503,7 +577,7 @@ namespace Purchasing.Web.Controllers
             model.Comments =
                 _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
             model.Attachments =
-                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).OrderBy(o => o.DateCreated).ToList();
 
             model.OrderTracking =
                 _repositoryFactory.OrderTrackingRepository.Queryable.Fetch(x => x.StatusCode).Fetch(x => x.User).Where(
@@ -598,7 +672,8 @@ namespace Purchasing.Web.Controllers
 
             if (relatedOrderId == default(int))
             {
-                return new HttpNotFoundResult();
+                Message = "Order Not Found";
+                return this.RedirectToAction<SearchController>(a => a.Index());
             }
 
             OrderAccessLevel accessLevel;
@@ -611,7 +686,7 @@ namespace Purchasing.Web.Controllers
             if (accessLevel != OrderAccessLevel.Edit && accessLevel != OrderAccessLevel.Readonly)
             {
                 if (
-                    Repository.OfType<EmailQueue>().Queryable.Any(
+                    Repository.OfType<EmailQueueV2>().Queryable.Any(
                         a => a.Order.Id == relatedOrderId && a.User.Id.ToLower() == CurrentUser.Identity.Name.ToLower()))
                 {
                     var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == relatedOrderId);
@@ -700,33 +775,49 @@ namespace Purchasing.Web.Controllers
                 
                 newOrderType.DocType = kfsDocType;
 
-                //TODO: Enable checks when KFS version is ready.
-                //if (_orderService.WillOrderBeSentToKfs(newOrderType, kfsDocType))
-                //{
-                //    //Specific checks for KFS orders
-                //    if (order.LineItems.Any(a => a.Commodity == null))
-                //    {
-                //        ErrorMessage = "Must have commodity codes for all line items to complete a KFS order";
-                //        return RedirectToAction("Review", new { id });
-                //    }
+                if (_orderService.WillOrderBeSentToKfs(newOrderType, kfsDocType))
+                {
+                    //Specific checks for KFS orders
+                    if (order.LineItems.Any(a => a.Commodity == null))
+                    {
+                        ErrorMessage = "Must have commodity codes for all line items to complete a KFS order";
+                        return RedirectToAction("Review", new { id });
+                    }
 
-                //    if (order.Address.BuildingCode == null)
-                //    {
-                //        ErrorMessage = "Shipping Address needs to have a building code to complete a KFS order";
-                //        return RedirectToAction("Review", new { id });
-                //    }
-                //}
+                    if (order.LineItems.Any(a => a.Commodity != null && !a.Commodity.IsActive))
+                    {
+                        var inactiveCodes = string.Empty;
+                        foreach (var invalidLineItem in order.LineItems.Where(a => a.Commodity != null && !a.Commodity.IsActive))
+                        {
+                            inactiveCodes = string.Format("{0} Commodity Code: {1} ", inactiveCodes, invalidLineItem.Commodity.Id);
+                        }
+                        ErrorMessage = string.Format("Inactive (old) commodity codes detected. Please update to submit to KFS: {0}", inactiveCodes);
+                        return RedirectToAction("Review", new { id });
+                    }
+
+                    //if (order.Address.BuildingCode == null)
+                    //{
+                    //    ErrorMessage = "Shipping Address needs to have a building code to complete a KFS order";
+                    //    return RedirectToAction("Review", new { id });
+                    //}
+                }
 
                 var errors = _orderService.Complete(order, newOrderType, kfsDocType);
 
                 if (errors.Any()) //if we have any errors, raise them in ELMAH and redirect back to the review page without saving change
                 {
-                    ErrorMessage =
-                        "There was a problem completing this order. Please try again later and notify support if problems persist."; 
-                    
-                    ErrorSignal.FromCurrentContext().Raise(
-                        new System.ApplicationException(string.Join(Environment.NewLine, errors)));
-                    
+                    if (errors.Contains("Hide Errors"))
+                    {
+                        ErrorMessage =
+                            "There was a problem completing this order. Please try again later and notify support if problems persist.";
+
+                        ErrorSignal.FromCurrentContext().Raise(
+                            new System.ApplicationException(string.Join(Environment.NewLine, errors)));
+                    }
+                    else
+                    {
+                        ErrorMessage = string.Format("There was a problem completing this order. Details,  Error: {0}", string.Join(" Error: ", errors));
+                    }
                     return RedirectToAction("Review", new {id});
                 }
             }
@@ -776,6 +867,8 @@ namespace Purchasing.Web.Controllers
             Check.Require(order != null);
 
             order.FpdCompleted = fpdCompleted.HasValue && fpdCompleted.Value;
+
+            _eventService.OrderUpdated(order, "FPD Status updated.");
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -874,7 +967,11 @@ namespace Purchasing.Web.Controllers
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
 
+            var priorValue = order.ReferenceNumber;
+
             order.ReferenceNumber = referenceNumber;
+
+            _eventService.OrderUpdated(order, string.Format("Reference # Updated. Prior Value: {0}", priorValue));
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -889,11 +986,34 @@ namespace Purchasing.Web.Controllers
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
 
+            var priorValue = order.PoNumber;
+
             order.PoNumber = poNumber;
+
+            _eventService.OrderUpdated(order, string.Format("PO # Updated. Prior Value: {0}", priorValue));
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             return new JsonNetResult(new { success = true, poNumber });
+        }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdateTag(int id, string tag)
+        {
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+
+            var priorValue = order.Tag;
+
+            order.Tag = tag;
+
+            _eventService.OrderUpdated(order, string.Format("Tag Updated. Prior Value: {0}", priorValue));
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new { success = true, tag });
         }
 
         [AuthorizeReadOrEditOrder]
@@ -1023,7 +1143,9 @@ namespace Purchasing.Web.Controllers
                 DateCreated = DateTime.Now,
                 User = GetCurrentUser(),
                 FileName = qqFile,
-                ContentType = request.Headers["X-File-Type"]
+                ContentType = request.Headers["X-File-Type"],
+                IsBlob = true, //Default to using blob storage
+                Contents = null //We'll upload to blob storage instead of filling contents
             };
             
             if (String.IsNullOrEmpty(qqFile)) // IE
@@ -1044,11 +1166,6 @@ namespace Purchasing.Web.Controllers
                 attachment.ContentType = "application/octet-stream";
             }
 
-            using (var binaryReader = new BinaryReader(fileStream))
-            {
-                attachment.Contents = binaryReader.ReadBytes((int)fileStream.Length);
-            }
-
             if (orderId.HasValue) //Save directly to order if a value is passed & user has access, otherwise it needs to be assoc. by form
             {
                 var accessLevel = _securityService.GetAccessLevel(orderId.Value);
@@ -1063,8 +1180,9 @@ namespace Purchasing.Web.Controllers
 
                 _eventService.OrderAddAttachment(attachment.Order);
             }
-           
+
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
+            _fileService.UploadAttachment(attachment.Id, fileStream);
 
             return Json(new { success = true, id = attachment.Id }, "text/html");
         }
@@ -1074,7 +1192,7 @@ namespace Purchasing.Web.Controllers
         /// </summary>
         public ActionResult ViewFile(Guid fileId)
         {
-            var file = _repositoryFactory.AttachmentRepository.GetNullableById(fileId);
+            var file = _fileService.GetAttachment(fileId);
 
             if (file == null) return HttpNotFound(Resources.ViewFile_NotFound);
 
@@ -1100,6 +1218,16 @@ namespace Purchasing.Web.Controllers
             }
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, payInvoice);
+            viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+            viewModel.ReviewOrderViewModel.CurrentUser = CurrentUser.Identity.Name;
+            if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
+            {
+                viewModel.Locked = true;
+            }
+            else
+            {
+                viewModel.Locked = false;
+            }
 
             if (payInvoice)
             {
@@ -1123,11 +1251,76 @@ namespace Purchasing.Web.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
+        public ActionResult ReceiveAll(int id, bool payInvoice)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+
+            if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
+            {
+                Message = string.Format("Order must be complete before {0} line items.", payInvoice == false ? "receiving" : "paying for");
+                return this.RedirectToAction(a => a.Review(id));
+            }
+            if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
+            {                
+                Message = "Permission Denied to update";                
+            }
+            else
+            {
+                foreach (var lineItem in order.LineItems)
+                {
+                    var history = new HistoryReceivedLineItem();
+                    history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
+                    history.OldReceivedQuantity = payInvoice ? lineItem.QuantityPaid : lineItem.QuantityReceived;
+                    history.NewReceivedQuantity = (lineItem.Quantity);
+                    history.LineItem = lineItem;
+                    history.PayInvoice = payInvoice;
+                    if (payInvoice)
+                    {
+                        lineItem.QuantityPaid = lineItem.Quantity;
+                    }
+                    else
+                    {
+                        lineItem.QuantityReceived = lineItem.Quantity;
+                    }
+                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                    if (history.NewReceivedQuantity != history.OldReceivedQuantity)
+                    {
+                       _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                    }
+                }
+
+                if (payInvoice)
+                {
+                    _eventService.OrderPaid(order, null, 0, "Paid all line items");
+                    Message = "All Line Items Paid";
+                }
+                else
+                {
+                    _eventService.OrderReceived(order, null, 0, "Received all line items");
+                    Message = "All Line Items Received";
+                }
+                _repositoryFactory.OrderRepository.EnsurePersistent(order);
+            }
+
+            return this.RedirectToAction(a => a.ReceiveItems(id, payInvoice));
+        }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
         public JsonNetResult ReceiveItems(int id, int lineItemId, decimal? receivedQuantity, bool updateNote, string note, bool payInvoice)
         {
             var success = true;
             var message = "Succeeded";
             var lastUpdatedBy = string.Empty;
+
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
+            {
+                success = false;
+                message = "Permission Denied to update";
+                return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
+            }
+
             if(updateNote)
             {
                 #region Notes                
@@ -1432,7 +1625,9 @@ namespace Purchasing.Web.Controllers
             order.OrderType = order.OrderType ?? _repositoryFactory.OrderTypeRepository.GetById(OrderType.Types.OrderRequest);
             order.CreatedBy = order.CreatedBy ?? _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name); //Only replace created by if it doesn't already exist
             order.Justification = model.Justification;
-
+            order.BusinessPurpose = model.BusinessPurpose;
+            order.RequestType = model.RequestType;
+            
             if (!string.IsNullOrWhiteSpace(model.Comments))
             {
                 var comment = new OrderComment
@@ -1506,9 +1701,11 @@ namespace Purchasing.Web.Controllers
                 {
                     if (lineItem.IsValid())
                     {
-                        var commodity = string.IsNullOrWhiteSpace(lineItem.CommodityCode)
-                                            ? null
-                                            : _repositoryFactory.CommodityRepository.GetNullableById(lineItem.CommodityCode);
+                        Commodity commodity = null;
+                        if (!string.IsNullOrWhiteSpace(lineItem.CommodityCode))
+                        {
+                            commodity = _repositoryFactory.CommodityRepository.Queryable.SingleOrDefault(a => a.Id == lineItem.CommodityCode && a.IsActive);
+                        }
 
                         //TODO: could use automapper later, but need to do validation
                         var orderLineItem = new LineItem
@@ -1609,7 +1806,12 @@ namespace Purchasing.Web.Controllers
             try
             {
                 // make the call
-                var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber);
+                var i = 0;
+                if (!int.TryParse(order.ReferenceNumber.Trim(), out i))
+                {
+                    return new JsonNetResult(null);
+                }
+                var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber.Trim());
                 return new JsonNetResult(result);
             }
             catch (Exception)

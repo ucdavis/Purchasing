@@ -17,7 +17,7 @@ purchasing.options({
     GetSubAccounts: '@Url.Action("GetSubAccounts", new { id = Model.Order.Id })',
     GetRequesters: '@Url.Action("GetRequesters", "Workgroup", new { id = Model.Workgroup.Id })',
     UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new { id = Model.Order.Id })',
-    AttachmentCategorySource: ["Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],    
+    AttachmentCategorySource: ["Receipt", "Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],    
     AntiForgeryToken: $("input[name=__RequestVerificationToken]").val(),
 Guider: {
         Assets: ['@Url.Css("single/guider.css")', '@Url.Script("guider.js")', '@Url.Script("OrderTour.js")'],
@@ -39,6 +39,7 @@ Messages: {
         OrderSplitWithNoAccount: '@Resources.Order_Error_OrderSplitWithNoAccount',
         TotalAmountRequired: '@Resources.Order_Error_TotalAmountRequired',
         LineSplitNoAccount: '@Resources.Order_Error_LineSplitNoAccount',
-        LineSplitTotalAmountRequired: '@Resources.Order_Error_LineSplitTotalAmountRequired'
+        LineSplitTotalAmountRequired: '@Resources.Order_Error_LineSplitTotalAmountRequired',
+        InvalidLineItemDetected: '@Resources.Order_Error_LineItem'
     }
 });

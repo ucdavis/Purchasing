@@ -52,6 +52,16 @@
                         {
                             <a id="edit-po-number" href="#" class="ui-icon ui-icon-pencil" title="Edit PO Number"></a>
                         }
+                    </li>       
+                    <li>
+                        <span>Tag:</span><strong id="tag" style="width:auto;">@(string.IsNullOrWhiteSpace(Model.Order.Tag) ? "[None]" : Model.Order.Tag)
+                        </strong>
+                        @if (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
+                        {
+                            <a id="edit-tag" href="#" class="ui-icon ui-icon-pencil" title="Edit Tag"></a>
+                        }
+                            <a href="#" class="ui-icon ui-icon-help" title="Tag is a free text field that can be used for external reference numbers (non-kfs), tracking numbers, or any other order-specific information. Can be shown on the order history page and filtered/sorted on." style="float:inherit" ></a>
+                        
                     </li>                    
                     <li>
                         <span>Order Type:</span><strong>@Model.Order.OrderType.Name @(!string.IsNullOrEmpty(Model.Order.KfsDocType) ? string.Format("({0})", Model.Order.KfsDocType) : string.Empty)</strong>
@@ -78,7 +88,8 @@
                             <div class="fn">@Model.Vendor.Name
                                 @if (!string.IsNullOrEmpty(Model.Vendor.VendorId))
                                 {
-                                    <span>@string.Format("(DaFis Id: {0})", Model.Vendor.VendorId)</span>
+                                    var kfsLookup = string.Format("https://kfs.ucdavis.edu/kfs-prd/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={0}", Model.Vendor.VendorId);                                    
+                                    <span>(KFS Id: <a href="@kfsLookup" target="_blank"> @Model.Vendor.VendorId</a>)</span>
                                 }
                             </div>
                             <div class="adr">
@@ -151,8 +162,8 @@
                     <div class="section-contents">
                         <div class="vcard">
     
-                            <div class="fn">@Model.Order.DeliverTo</div>
-                            <div class="email"><a href="mailto: @Model.Order.DeliverToEmail ">@Model.Order.DeliverToEmail</a></div>
+                            <div class="fn">@Model.Order.DeliverTo</div>                            
+                            <div class="email"><a href="mailto: @string.Format("{0}?subject=PrePurchasing Order {1} &body={2}://{3}{4}{1}", Model.Order.DeliverToEmail, Model.Order.RequestNumber, Request.Url.Scheme, Request.Url.Authority, "/Order/Lookup/") ">@Model.Order.DeliverToEmail</a></div>
                             <div class="adr">
                                 <span class="street-address">@Model.Address.Room @Model.Address.Building</span>                             
                                 <span class="street-address">@Model.Address.Address</span>
@@ -209,6 +220,26 @@
                     <li><div class="editor-label required">PO Number: <span class="required">*</span></div>
                         <div class="editor-field">
                             <input type="text" id="new-po-number" placeholder="po number" maxlength="50" value="@Model.Order.PoNumber"></input>
+                        </div>
+                    </li>
+                </ul>
+            </div> 
+        </section>
+    </form>
+</div>
+
+<div id="modify-tag-dialog" title="Modify Order Tag" style="display: none;">
+    <form>
+        <section>
+            <div class="section-text">
+                <p>Assign this order a new tag and then click 'Assign Tag'</p>
+                <p>Tag is a free text field that can be used for external reference numbers (non-kfs), tracking numbers, or any other order-specific information. Can be shown on the order history page and filtered/sorted on.</p>
+            </div>
+            <div class="section-contents">
+                <ul>
+                    <li><div class="editor-label required">Tag: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input type="text" id="new-tag" placeholder="order tag" maxlength="256" value="@Model.Order.Tag" />
                         </div>
                     </li>
                 </ul>

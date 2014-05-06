@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using MvcContrib;
+using Purchasing.Core;
 using Purchasing.Core.Queries;
 using Purchasing.Web.Attributes;
 using Purchasing.Web.Services;
-using Purchasing.Core;
-using System;
 
 namespace Purchasing.Web.Controllers
 {
@@ -18,12 +20,14 @@ namespace Purchasing.Web.Controllers
         private readonly ISearchService _searchService;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IUserIdentity _userIdentity;
+        private readonly IAccessQueryService _accessQueryService;
 
-        public SearchController(ISearchService searchService, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity)
+        public SearchController(ISearchService searchService, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity, IAccessQueryService accessQueryService)
         {
             _searchService = searchService;
             _queryRepositoryFactory = queryRepositoryFactory;
             _userIdentity = userIdentity;
+            _accessQueryService = accessQueryService;
         }
 
         /// <summary>
@@ -43,8 +47,13 @@ namespace Purchasing.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable
-                .Where(a => a.AccessUserId == _userIdentity.Current)
+            if (Regex.IsMatch(q, "^[A-Z]{4,4}-[A-Z,0-9]{7,7}$"))
+            {
+                return this.RedirectToAction<OrderController>(a => a.Lookup(q));
+            }
+ 
+
+            var orderIds = _accessQueryService.GetOrderAccess(_userIdentity.Current)
                 .Select(x=>x.OrderId)
                 .Distinct()
                 .ToArray();
@@ -62,13 +71,15 @@ namespace Purchasing.Web.Controllers
                     CustomFields = _searchService.SearchCustomFieldAnswers(q, orderIds)
                 };
             }
-            catch //If the search fails, return no results
+            catch(Exception ex) //If the search fails, return no results
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                 model = new SearchResultModel {Query = q};
             }
 
             return View(model);
         }
+
     }
 
     public class SearchResultModel

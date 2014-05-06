@@ -79,6 +79,7 @@
     <Folder Include="dbo\Functions\" />
     <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="SchemaCompares" />
+    <Folder Include="dbo\User Defined Types\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\ShippingTypes.sql" />
@@ -150,6 +151,15 @@
     <Build Include="dbo\Tables\EmailQueueV2.sql" />
     <Build Include="dbo\Views\vOpenAccess.sql" />
     <Build Include="dbo\Views\vClosedAccess.sql" />
+    <Build Include="dbo\Functions\udf_GetClosedOrdersForId.sql" />
+    <Build Include="dbo\Functions\udf_GetReadAndEditAccessOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetReadAccessOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetOpenOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetEditAccessOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetClosedOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetOrderHistoryForOrderIds.sql" />
+    <Build Include="dbo\User Defined Types\OrderIdsTableType.sql" />
+    <Build Include="dbo\Functions\udf_GetPendingOrdersForLogin.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />

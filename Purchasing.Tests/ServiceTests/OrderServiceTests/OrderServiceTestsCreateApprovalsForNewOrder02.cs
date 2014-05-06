@@ -65,7 +65,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #region Arrange
             var order = CreateValidEntities.Order(1);
             order.SetIdTo(99);
-            order.CreatedBy = CreateValidEntities.User(109);
+            order.CreatedBy = CreateValidEntities.User(3);
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             //order.Splits[0].Account = "12345";
@@ -482,6 +482,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             #region Arrange
             var order = CreateValidEntities.Order(1);
+            order.CreatedBy = CreateValidEntities.User(11);
             order.SetIdTo(99);
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());

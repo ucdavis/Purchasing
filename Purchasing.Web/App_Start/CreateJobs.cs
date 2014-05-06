@@ -22,8 +22,6 @@ namespace Purchasing.Web.App_Start
             CreateOrderIndexesJob(indexRoot);
             CreateLookupIndexsJob(indexRoot);
 
-            //CreateEmailJob();
-
             CreateVerifyPermissionsJob(); // If the org descendants changes, it is possible the inherited workgroup permissions will change. This checks that and emails me. -JCS
         }
 
@@ -58,43 +56,25 @@ namespace Purchasing.Web.App_Start
         private static void CreateOrderIndexesJob(string indexRoot)
         {
             // create job
-            var jobDetails = JobBuilder.Create<CreateOrderIndexsJob>().UsingJobData("indexRoot", indexRoot).Build();
+            var createJobDetails = JobBuilder.Create<CreateOrderIndexsJob>().UsingJobData("indexRoot", indexRoot).Build();
+            var updateJobDetails = JobBuilder.Create<UpdateOrderIndexsJob>().UsingJobData("indexRoot", indexRoot).Build();
 
             // create trigger
-            var everyFiveMinutes =
-                TriggerBuilder.Create().ForJob(jobDetails).WithSchedule(
-                    SimpleScheduleBuilder.RepeatMinutelyForever(5)).StartNow().Build();
+            var runCreateOnce =
+                TriggerBuilder.Create().ForJob(createJobDetails).WithSchedule(
+                    SimpleScheduleBuilder.RepeatMinutelyForTotalCount(1)).StartNow().Build();
+
+            //repeat every five minutes after an initial five minite delay while the index is being initially created
+            var runUpdateEveryFiveMinutes =
+                TriggerBuilder.Create().ForJob(updateJobDetails).WithSchedule(
+                    SimpleScheduleBuilder.RepeatMinutelyForever(5)).StartAt(DateTimeOffset.UtcNow.AddMinutes(5)).Build();
 
             // get reference to scheduler (remote or local) and schedule job
             var sched = StdSchedulerFactory.GetDefaultScheduler();
-            sched.ScheduleJob(jobDetails, everyFiveMinutes);
+            sched.ScheduleJob(createJobDetails, runCreateOnce);
+            sched.ScheduleJob(updateJobDetails, runUpdateEveryFiveMinutes);
             sched.Start();
         }
-
-        //private static void CreateEmailJob() // Moved to smithers
-        //{
-        //    //only create the email job if we explicitly set sendNotifications
-        //    if (WebConfigurationManager.AppSettings["SendNotifications"] == "true")
-        //    {
-        //        var job = JobBuilder.Create<EmailJob>().Build();
-        //        var dailyjob = JobBuilder.Create<DailyEmailJob>().Build();
-
-        //        //run daily trigger every 5 minutes after inital 30 second delay to give priority to warmup
-        //        var trigger = TriggerBuilder.Create().ForJob(job)
-        //                        .WithSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(5))
-        //                        .StartAt(DateTimeOffset.Now.AddSeconds(30))
-        //                        .Build();
-
-        //        var dailyTrigger = TriggerBuilder.Create().ForJob(dailyjob)
-        //                            .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(17, 0))
-        //                            .StartNow().Build();
-
-        //        var sched = StdSchedulerFactory.GetDefaultScheduler();
-        //        sched.ScheduleJob(job, trigger);
-        //        sched.ScheduleJob(dailyjob, dailyTrigger);
-        //        sched.Start();
-        //    }
-        //}
 
         private static void CreateVerifyPermissionsJob()
         {

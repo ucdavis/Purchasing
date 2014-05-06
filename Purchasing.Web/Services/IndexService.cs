@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Web;
 using Dapper;
 using Lucene.Net.Analysis.Standard;
@@ -30,11 +31,14 @@ namespace Purchasing.Web.Services
         void CreateLineItemsIndex();
         void CreateVendorsIndex();
 
+        void UpdateOrderIndexes();
+
         IndexedList<OrderHistory> GetOrderHistory(int[] orderids);
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
         IndexSearcher GetIndexSearcherFor(Indexes index);
 
+        void UpdateCommentsIndex();
     }
 
     public class IndexService : IIndexService
@@ -42,8 +46,7 @@ namespace Purchasing.Web.Services
         private readonly IDbService _dbService;
         private string _indexRoot;
         private readonly Dictionary<Indexes, IndexReader> _indexReaders = new Dictionary<Indexes, IndexReader>();
-        private const int MaxClauseCount = 1024;
-
+        
         public IndexService(IDbService dbService)
         {
             _dbService = dbService;
@@ -64,7 +67,50 @@ namespace Purchasing.Web.Services
                 orderHistoryEntries = conn.Query<dynamic>("SELECT * FROM vOrderHistory");
             }
 
-            CreateAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, SearchResults.OrderResult.SearchableFields);
+            ModifyAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, IndexOptions.Recreate, SearchResults.OrderResult.SearchableFields);
+        }
+
+        /// <summary>
+        /// Grabs all the ordersIDs that have been acted on since the given date and then updates the order indexes for those new orders
+        /// </summary>
+        public void UpdateOrderIndexes()
+        {
+            var lastUpdate = DateTime.Now.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
+
+            IEnumerable<dynamic> orderHistoryEntries = null, lineItems = null, customAnswers = null;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                var updatedOrderIds = conn.Query<int>("select DISTINCT OrderId from OrderTracking where DateCreated > @lastUpdate", new { lastUpdate }).ToArray();
+
+                if (updatedOrderIds.Any())
+                {
+                    var updatedOrderIdsParameter = new StringBuilder();
+                    foreach (var updatedOrderId in updatedOrderIds)
+                    {
+                        updatedOrderIdsParameter.AppendFormat("({0}),", updatedOrderId);
+                    }
+                    updatedOrderIdsParameter.Remove(updatedOrderIdsParameter.Length - 1, 1); //take off the last comma
+
+                    orderHistoryEntries =
+                        conn.Query<dynamic>(string.Format(@"DECLARE @OrderIds OrderIdsTableType
+                                                INSERT INTO @OrderIds VALUES {0}
+                                                select * from udf_GetOrderHistoryForOrderIds(@OrderIds)", updatedOrderIdsParameter));
+
+                    lineItems =
+                        conn.Query<dynamic>(
+                            "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @updatedOrderIds",
+                            new {updatedOrderIds});
+                    customAnswers =
+                        conn.Query<dynamic>(
+                            "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @updatedOrderIds",
+                            new {updatedOrderIds});
+                }
+            }
+
+            ModifyAnaylizedIndex(orderHistoryEntries, Indexes.OrderHistory, IndexOptions.UpdateOrder, SearchResults.OrderResult.SearchableFields);
+            ModifyAnaylizedIndex(lineItems, Indexes.LineItems, IndexOptions.UpdateOrder, SearchResults.LineResult.SearchableFields);
+            ModifyAnaylizedIndex(customAnswers, Indexes.CustomAnswers, IndexOptions.UpdateOrder, SearchResults.CustomFieldResult.SearchableFields);
         }
 
         public void CreateLineItemsIndex()
@@ -73,10 +119,12 @@ namespace Purchasing.Web.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                lineItems = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults");
+                lineItems =
+                    conn.Query<dynamic>(
+                        "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults");
             }
 
-            CreateAnaylizedIndex(lineItems, Indexes.LineItems, SearchResults.LineResult.SearchableFields);
+            ModifyAnaylizedIndex(lineItems, Indexes.LineItems, IndexOptions.Recreate, SearchResults.LineResult.SearchableFields);
         }
 
         public void CreateCommentsIndex()
@@ -85,10 +133,28 @@ namespace Purchasing.Web.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                comments = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults");
+                comments =
+                    conn.Query<dynamic>(
+                        "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults");
             }
 
-            CreateAnaylizedIndex(comments, Indexes.Comments, SearchResults.CommentResult.SearchableFields);
+            ModifyAnaylizedIndex(comments, Indexes.Comments, IndexOptions.Recreate, SearchResults.CommentResult.SearchableFields);
+        }
+
+        public void UpdateCommentsIndex()
+        {
+            var lastUpdate = DateTime.Now.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
+
+            IEnumerable<dynamic> comments;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                comments =
+                    conn.Query<dynamic>(
+                        "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults where DateCreated > @lastUpdate", new { lastUpdate });
+            }
+
+            ModifyAnaylizedIndex(comments, Indexes.Comments, IndexOptions.UpdateItem, SearchResults.CommentResult.SearchableFields);
         }
 
         public void CreateCustomAnswersIndex()
@@ -97,10 +163,12 @@ namespace Purchasing.Web.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                customAnswers = conn.Query<dynamic>("SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults");
+                customAnswers =
+                    conn.Query<dynamic>(
+                        "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults");
             }
 
-            CreateAnaylizedIndex(customAnswers, Indexes.CustomAnswers, SearchResults.CustomFieldResult.SearchableFields);
+            ModifyAnaylizedIndex(customAnswers, Indexes.CustomAnswers, IndexOptions.Recreate, SearchResults.CustomFieldResult.SearchableFields);
         }
 
         public void CreateAccountsIndex()
@@ -127,21 +195,24 @@ namespace Purchasing.Web.Services
         {
             if (orderids == null || !orderids.Any()) //return empty result if there are no orderids passed in
             {
-                return new IndexedList<OrderHistory> { Results = new List<OrderHistory>() };
+                return new IndexedList<OrderHistory> {Results = new List<OrderHistory>()};
             }
 
             var distinctOrderIds = orderids.Distinct().ToArray();
 
-            if (distinctOrderIds.Count() > MaxClauseCount) //If number of distinct orders ids is >default limit, up the limit as necessary
+            if (BooleanQuery.MaxClauseCount < distinctOrderIds.Length)
+            //If number of distinct orders ids is > limit, up the limit as necessary
             {
-                BooleanQuery.SetMaxClauseCount(distinctOrderIds.Count() + 1);
+                BooleanQuery.MaxClauseCount = distinctOrderIds.Count() + 1;
             }
 
             EnsureCurrentIndexReaderFor(Indexes.OrderHistory);
             var searcher = new IndexSearcher(_indexReaders[Indexes.OrderHistory]);
 
-            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29);
-            Query query = new QueryParser(Lucene.Net.Util.Version.LUCENE_29, "orderid", analyzer).Parse(string.Join(" ", distinctOrderIds));
+            var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+            Query query =
+                new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "orderid", analyzer).Parse(string.Join(" ",
+                                                                                                          distinctOrderIds));
 
             var querySize = distinctOrderIds.Count();
 
@@ -150,7 +221,7 @@ namespace Purchasing.Web.Services
 
             foreach (var scoredoc in docs)
             {
-                var doc = searcher.Doc(scoredoc.doc);
+                var doc = searcher.Doc(scoredoc.Doc);
 
                 var history = new OrderHistory();
 
@@ -171,7 +242,7 @@ namespace Purchasing.Web.Services
             searcher.Close();
             searcher.Dispose();
 
-            return new IndexedList<OrderHistory> { Results = orderHistory, LastModified = lastModified };
+            return new IndexedList<OrderHistory> {Results = orderHistory, LastModified = lastModified};
         }
 
         public DateTime LastModified(Indexes index)
@@ -196,38 +267,75 @@ namespace Purchasing.Web.Services
         /// <summary>
         /// Create an index from the given dynamic where every field is stored and indexed, except the orderid field which is just stored
         /// </summary>
-        private void CreateAnaylizedIndex(IEnumerable<dynamic> collection, Indexes index, string[] searchableFields)
+        private void ModifyAnaylizedIndex(IEnumerable<dynamic> collection, Indexes index, IndexOptions indexOptions, string[] searchableFields)
         {
+            if (collection == null) return;
+            
+            var collectionArray = collection.ToArray();
+
+            if (!collectionArray.Any()) return;
+            
             var directory = FSDirectory.Open(GetDirectoryFor(index));
             var indexWriter = GetIndexWriter(directory);
 
             try
             {
-                foreach (var entity in collection)
+                if (indexOptions == IndexOptions.Recreate)
                 {
-                    var entityDictionary = (IDictionary<string, object>)entity;
+                    indexWriter.DeleteAll(); //delete all existing entries before continuing    
+                }
+                else if (indexOptions == IndexOptions.UpdateOrder) //on update first remove all index entries for the given orderIds
+                {
+                    var orderTerms = collectionArray.Select(o => o.OrderId)
+                                          .Distinct()
+                                          .Select(o => new Term("orderid", o.ToString(CultureInfo.InvariantCulture)))
+                                          .ToArray();
+
+                    indexWriter.DeleteDocuments(orderTerms);
+                }else if (indexOptions == IndexOptions.UpdateItem)
+                {
+                    //update the item by matching id to searchid, since searchid is indexed unlike plain ID
+                    var itemTerms = collectionArray.Select(o => o.Id)
+                                          .Distinct()
+                                          .Select(o => new Term("searchid", o.ToString(CultureInfo.InvariantCulture)))
+                                          .ToArray();
+
+                    indexWriter.DeleteDocuments(itemTerms);
+                }
+
+                foreach (var entity in collectionArray)
+                {
+                    var entityDictionary = (IDictionary<string, object>) entity;
 
                     var doc = new Document();
 
                     //If we have an orderid, store it in the index because we will be searching on it later, but don't analyze/tokenize it
-                    var orderIdKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("orderid", x, StringComparison.OrdinalIgnoreCase));
+                    var orderIdKey =
+                        entityDictionary.Keys.SingleOrDefault(
+                            x => string.Equals("orderid", x, StringComparison.OrdinalIgnoreCase));
                     if (!string.IsNullOrWhiteSpace(orderIdKey))
                     {
-                        doc.Add(new Field("orderid", entityDictionary[orderIdKey].ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+                        doc.Add(new Field("orderid", entityDictionary[orderIdKey].ToString(), Field.Store.YES,
+                                          Field.Index.NOT_ANALYZED));
                     }
 
                     //Same thing with the id property, except go ahead and analyze it in case there is a 3-xyz
-                    var idKey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("id", x, StringComparison.OrdinalIgnoreCase));
+                    var idKey =
+                        entityDictionary.Keys.SingleOrDefault(
+                            x => string.Equals("id", x, StringComparison.OrdinalIgnoreCase));
                     if (!string.IsNullOrWhiteSpace(idKey))
                     {
                         var value = entityDictionary[idKey].ToString();
                         doc.Add(new Field("id", value, Field.Store.YES, Field.Index.NO));
 
-                        doc.Add(new Field("searchid", value.Substring(value.IndexOf('-') + 1), Field.Store.NO, Field.Index.ANALYZED));
+                        doc.Add(new Field("searchid", value.Substring(value.IndexOf('-') + 1), Field.Store.NO,
+                                          Field.Index.ANALYZED));
                     }
 
                     //If we have a datecreated, create a ticks version and store that for filtering
-                    var datecreatedkey = entityDictionary.Keys.SingleOrDefault(x => string.Equals("datecreated", x, StringComparison.OrdinalIgnoreCase));
+                    var datecreatedkey =
+                        entityDictionary.Keys.SingleOrDefault(
+                            x => string.Equals("datecreated", x, StringComparison.OrdinalIgnoreCase));
                     if (!string.IsNullOrWhiteSpace(datecreatedkey))
                     {
                         var value = DateTime.Parse(entityDictionary[datecreatedkey].ToString());
@@ -269,7 +377,7 @@ namespace Purchasing.Web.Services
                 lookups = conn.Query<dynamic>(sql);
             }
 
-            CreateAnaylizedIndex(lookups, index, new[] { "id", "name" });
+            ModifyAnaylizedIndex(lookups, index, IndexOptions.Recreate, new[] {"id", "name"});
         }
 
         /// <summary>
@@ -294,23 +402,31 @@ namespace Purchasing.Web.Services
             }
         }
 
+        /// <summary>
+        /// Returns an index write which will create a new index if there is not one already there, else opens an existing index
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
         private IndexWriter GetIndexWriter(FSDirectory directory)
         {
             try
             {
-                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
+                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30),
+                                       IndexWriter.MaxFieldLength.UNLIMITED);
             }
 
             catch (LockObtainFailedException ex)
             {
                 IndexWriter.Unlock(directory);
-                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED);
+                return new IndexWriter(directory, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30),
+                                       IndexWriter.MaxFieldLength.UNLIMITED);
             }
         }
 
         private DirectoryInfo GetDirectoryFor(Indexes index)
         {
-            Check.Require(!string.IsNullOrWhiteSpace(_indexRoot), "Index Root (File Path Root) Must Be Set Before Using Indexes.");
+            Check.Require(!string.IsNullOrWhiteSpace(_indexRoot),
+                          "Index Root (File Path Root) Must Be Set Before Using Indexes.");
 
             return new DirectoryInfo(Path.Combine(_indexRoot, index.ToString()));
         }
@@ -333,4 +449,12 @@ namespace Purchasing.Web.Services
         OrderHistory,
         Vendors
     }
+
+    public enum IndexOptions
+    {
+        Recreate, //Delete all documents and re-create the index
+        UpdateOrder, //Update documents by first removing all matching orderIds and then adding in given documents
+        UpdateItem //Update documents by removing item ids then adding in the given documents
+    }
+
 }

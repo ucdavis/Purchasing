@@ -99,12 +99,15 @@ namespace Purchasing.Web.Services
         /// <returns></returns>
         IndexedList<OrderHistory> GetAdministrativeIndexedListofOrders(string received, string paid, bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
 
+        IndexedList<OrderHistory> GetAccountsPayableIndexedListofOrders(string received, string paid, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
+
     }
 
     public class OrderService : IOrderService
     {
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly IAccessQueryService _accessQueryService;
         private readonly IFinancialSystemService _financialSystemService;
         private readonly IIndexService _indexService;
         private readonly IEventService _eventService;
@@ -128,6 +131,7 @@ namespace Purchasing.Web.Services
                             //IRepositoryWithTypedId<User, string> userRepository, 
                             IRepository<Order> orderRepository, 
                             IQueryRepositoryFactory queryRepositoryFactory, 
+                            IAccessQueryService accessQueryService,
                             IFinancialSystemService financialSystemService,
                             IIndexService indexService)
         {
@@ -142,6 +146,7 @@ namespace Purchasing.Web.Services
             //_userRepository = userRepository;
             _orderRepository = orderRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
+            _accessQueryService = accessQueryService;
             _financialSystemService = financialSystemService;
             _indexService = indexService;
         }
@@ -555,10 +560,6 @@ namespace Purchasing.Web.Services
                 }
             }
 
-            if (order.KfsDocType == "DPO2")
-            {
-                order.KfsDocType = "DPO";
-            }
             if (order.KfsDocType == "PR2")
             {
                 order.KfsDocType = "PR";
@@ -729,7 +730,7 @@ namespace Purchasing.Web.Services
                 return false; //If the workgroup forces account approver decision and this split doesn't have an account, then it can't be auto approved
             }
 
-            if (string.Equals(approver.Id, _userIdentity.Current, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(approver.Id, _userIdentity.Current, StringComparison.OrdinalIgnoreCase) && string.Equals(approver.Id, order.CreatedBy.Id, StringComparison.OrdinalIgnoreCase))
             {
                 return true; //Auto approved if the approver is the current user
             }
@@ -795,7 +796,7 @@ namespace Purchasing.Web.Services
         public IQueryable<OrderHistory> GetListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
             // get orderids accessible by user
-            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && !a.IsAdmin);
+            var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: false);
 
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
@@ -823,7 +824,7 @@ namespace Purchasing.Web.Services
         public IndexedList<OrderHistory> GetIndexedListofOrders(string received, string paid,bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
             // get orderids accessible by user
-            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && !a.IsAdmin);
+            var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: false);
 
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
@@ -854,7 +855,7 @@ namespace Purchasing.Web.Services
         public IQueryable<OrderHistory> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
             // get orderids accessible by user
-            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && a.IsAdmin);
+            var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: true);
 
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
@@ -876,7 +877,7 @@ namespace Purchasing.Web.Services
         public IndexedList<OrderHistory> GetAdministrativeIndexedListofOrders(string received, string paid,bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
             // get orderids accessible by user
-            var orderIds = _queryRepositoryFactory.AccessRepository.Queryable.Where(a => a.AccessUserId == _userIdentity.Current && a.IsAdmin);
+            var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: true);
 
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
@@ -895,6 +896,27 @@ namespace Purchasing.Web.Services
 
             ordersIndexQuery.Results = ordersQuery.OrderByDescending(a => a.LastActionDate).Take(1000).ToList();
             
+            return ordersIndexQuery;
+        }
+
+        public IndexedList<OrderHistory> GetAccountsPayableIndexedListofOrders(string received, string paid, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
+        {
+            // get orderids accessible by user
+            //var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: true);
+            var orderIds = _repositoryFactory.OrderRepository.Queryable.Where(a => a.ApUser != null && a.ApUser.Id == _userIdentity.Current).Select(s => s.Id).ToArray();
+
+            // filter for accessible orders
+            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds);
+            var ordersQuery = ordersIndexQuery.Results.AsQueryable();
+
+            // filter for selected status
+            ordersQuery = GetOrdersByStatus(ordersQuery, true, orderStatusCode, received, paid);
+
+            // filter for selected dates            
+            ordersQuery = GetOrdersByDate(ordersQuery, startDate, endDate, startLastActionDate, endLastActionDate);
+
+            ordersIndexQuery.Results = ordersQuery.OrderByDescending(a => a.LastActionDate).Take(1000).ToList();
+
             return ordersIndexQuery;
         }
 

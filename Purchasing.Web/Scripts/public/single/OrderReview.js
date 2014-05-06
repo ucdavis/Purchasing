@@ -40,6 +40,7 @@
         if (options.IsComplete) {
             attachReferenceNumberEvents();
             attachPoNumberEvents();
+            attachTagEvents();
         }
         attachNav();
         
@@ -128,7 +129,43 @@
             $("#modify-po-number-dialog").dialog("open");
         });
     }
+    
+    function attachTagEvents() {
+        $("#modify-tag-dialog").dialog({
+            modal: true,
+            autoOpen: false,
+            width: 400,
+            buttons: {
+                "Assign Tag": function () {
+                    var tag = $("#new-tag").val();
 
+                    var url = options.UpdateTagUrl;
+
+                    console.log(options.AntiForgeryToken);
+
+                    $.post(url, { tag: tag, __RequestVerificationToken: options.AntiForgeryToken },
+                            function (result) {
+                                if (result.success === false) {
+                                    alert("There was a problem updating the order tag.");
+                                }
+                                else {
+                                    $("#tag").html(tag).effect('highlight', 'slow');
+                                }
+                            }
+                        );
+                    $(this).dialog("close");
+                },
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $("#edit-tag").click(function (e) {
+            e.preventDefault();
+
+            $("#modify-tag-dialog").dialog("open");
+        });
+    }
+    
     purchasing.loadKfsData = function () {
         $.getJSON(options.KfsStatusUrl, function (result) {
             console.log(result);
@@ -334,7 +371,8 @@
             onComplete: function (id, fileName, response) {
                 if (response.success) {
                     var newFileContainer = $(uploader._getItemByFileId(id));
-                    var fileDisplay = $("<a>").attr('href', '/Order/ViewFile?fileId=' + response.id).html(fileName);
+                    var viewAttachmentUrl = options.ViewAttachment + "?fileId=" + response.id;
+                    var fileDisplay = $("<a>").attr('href', viewAttachmentUrl).html(fileName);
                     newFileContainer.find(".qq-upload-file").empty().append(fileDisplay);
                     $(".attachments-not-found").empty();
                     newFileContainer.find(".qq-upload-file-category").attr("data-id", response.id);

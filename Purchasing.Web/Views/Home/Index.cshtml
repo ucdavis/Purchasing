@@ -28,13 +28,28 @@
 			z-index: 0;
 		}
 		
-		#container, #browsers
+		#container, #browsers, #stats
 		{
 		    margin: auto auto 2em auto;
 		    display: block;
 		    width: 900px;
 		    text-align: center;
 		    padding: 1em;
+
+            border: 1px solid #CCCCCC;
+            border-radius: 5px 5px 5px 5px;
+            box-shadow: 5px 5px 5px #DDDDDD;
+		}
+
+        .stats-inner
+		{
+		    margin: auto auto 2em auto;
+		    display: inline-block;
+		    width: 250px;
+            height: 100px;
+		    text-align: center;
+		    padding: 1em;
+            vertical-align: top;
 
             border: 1px solid #CCCCCC;
             border-radius: 5px 5px 5px 5px;
@@ -52,6 +67,7 @@
 		}
 		
 		span.ui-button-text { font-size: 15px; }
+
 		
 		.browser { background-image: url('@Url.Content("~/Images/browser_logos-32.png")');width: 32px;height: 32px;display: inline-block;}
 		.chrome { background-position: 0px 0px; }
@@ -170,7 +186,7 @@
                     <h2>Welcome to the UC Davis PrePurchasing System</h2>
                     
                     <p>
-                        This application is designed to handle the departmental pre-purchasing process.  PrePurchasing allows users to submit any type of order request, including KFS, MyTravel, DPO/DRO/PR, and other campus services. This application also aids in the departmental approval process associated with approving order requests. Seamless integration with DaFIS/KFS is expected in the near future.
+                        This application is designed to handle the departmental pre-purchasing process.  PrePurchasing allows users to submit any type of order request, including KFS, MyTravel, and other campus services. This application also aids in the departmental approval process associated with approving order requests. Seamless integration with KFS.
                     </p>
                     
                     <p>
@@ -204,8 +220,25 @@
                     <div class="browser firefox">&nbsp;</div>
 
                 </div>*@
-
-
+                
+			    <div id="stats" >
+			        <div id="stats-loader">			        
+			            <h4  ><img src='@Url.Image("ajax-loader.gif")'/> Loading Statistics</h4>
+                    </div>
+			        <div id="stats-show" style="display: none;">
+			            
+			            <div class="alert alert-info">
+			                Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.Now.ToShortTimeString()</span>
+			            </div>
+			            <div class="stats-inner">
+			                <h4><strong id="stats-total-orders">n</strong> orders placed totaling <strong id="stats-total-amount">$$$</strong> with <strong id="stats-attachments">n</strong> attached files and using <strong id="stats-accounts">n</strong> different accounts. Of these <strong id="stats-total-orders-completed">n</strong> are completed for <strong id="stats-total-amount-completed"></strong>.</h4>
+			            </div>
+			            <div class="stats-inner">
+			                <h4>There are <strong id="stats-active-users">n</strong> active users having acted <strong id="stats-actions">n</strong> times across <strong id="stats-workgroups">n</strong> workgroups.</h4>
+			            </div>
+			            <div class="stats-inner"><h4>There are <strong id="stats-orgs">n</strong> different primary organizations that have placed orders and <strong id="stats-associated-orgs">n</strong> different organizations that have workgroups associated with them.</h4></div>
+			        </div>
+			    </div>
 
             </div>
 				
@@ -249,6 +282,31 @@
                     $('input').placeholder();
                 }
             }
+        });
+    </script>
+    
+    <script type="text/javascript">
+        $(function () {
+            $.getJSON('@Url.Action("Overall", "Stats")', function (data) {
+                $("#stats-updated").html(new Date(data.LastUpdated).toLocaleString());
+                $("#stats-total-orders").html(data.TotalOrdersPlaced);
+                $("#stats-total-amount").html(data.TotalAmount);
+                $("#stats-total-orders-completed").html(data.TotalOrdersCompleted);
+                $("#stats-total-amount-completed").html(data.TotalAmountCompleted);
+                
+                $("#stats-attachments").html(data.Attachments);
+                $("#stats-accounts").html(data.Accounts);
+
+                $("#stats-active-users").html(data.ActiveUsersInWorkgroups);
+                $("#stats-actions").html(data.Actions);
+                $("#stats-workgroups").html(data.Workgroups);
+                
+                $("#stats-orgs").html(data.OrgsWithOrders);
+                $("#stats-associated-orgs").html(data.OrgsWithWorkgroups);
+
+                $("#stats-loader").hide();
+                $("#stats-show").show();
+            });
         });
     </script>
 	

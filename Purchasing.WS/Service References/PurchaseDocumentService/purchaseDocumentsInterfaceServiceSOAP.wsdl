@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="KFS" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="purap" name="purchaseDocumentsInterfaceServiceSOAP" targetNamespace="KFS" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:import namespace="purap" location="http://kfs1.ucdavis.edu/kfs-prd/remoting/purchaseDocumentsInterfaceServiceSOAP?wsdl=purchasingDocumentsInterfaceServiceSOAP.wsdl" />
+  <wsdl:types />
+  <wsdl:binding name="purchaseDocumentsInterfaceServiceSOAPSoapBinding" type="ns1:purchasingDocumentsInterfaceServiceSOAP">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getPurchaseRequisitionStatus">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getPurchaseRequisitionStatus">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getPurchaseRequisitionStatusResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="uploadRequisition">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="uploadRequisition">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="uploadRequisitionResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPurchasingDocumentUrl">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getPurchasingDocumentUrl">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getPurchasingDocumentUrlResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="purchaseDocumentsInterfaceServiceSOAP">
+    <wsdl:port name="purchasingDocumentsInterfaceServiceSOAPPort" binding="tns:purchaseDocumentsInterfaceServiceSOAPSoapBinding">
+      <soap:address location="http://kfs1.ucdavis.edu/kfs-prd/remoting/purchaseDocumentsInterfaceServiceSOAP" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

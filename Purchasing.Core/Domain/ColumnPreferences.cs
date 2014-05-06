@@ -21,6 +21,7 @@ namespace Purchasing.Core.Domain
             ShowLineItems = true;
             ShowTotalAmount = true;
             ShowStatus = true;
+            ShowApUser = false;
             DisplayRows = 50;
         }
 
@@ -69,8 +70,13 @@ namespace Purchasing.Core.Domain
 
         [Display(Name = "Show PO#")]
         public virtual bool ShowPurchaseOrderNumber { get; set; }
+        [Display(Name = "Show Tag")]
+        public virtual bool ShowTag { get; set; }
         [Display(Name = "Show Ref#")]
         public virtual bool ShowReferenceNumber { get; set; }
+
+        [Display(Name = "Show Request Type")]
+        public virtual bool ShowRequestType { get; set; }
 
         [Display(Name = "Show Last Acted On Date")]
         public virtual bool ShowLastActedOnDate { get; set; }
@@ -107,6 +113,9 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Show FPD Completed")]
         public virtual bool ShowFpdCompleted { get; set; }
 
+        [Display(Name = "Show Accounts Payable User")]
+        public virtual bool ShowApUser { get; set; }
+
     }
 
     public class ColumnPreferencesMap : ClassMap<ColumnPreferences>
@@ -116,6 +125,7 @@ namespace Purchasing.Core.Domain
             Id(x => x.Id).GeneratedBy.Assigned();
 
             Map(x => x.ShowRequestNumber);
+            Map(x => x.ShowRequestType);
             Map(x => x.ShowWorkgroup);
             Map(x => x.ShowVendor);
             Map(x => x.ShowCreatedBy);
@@ -124,6 +134,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowTotalAmount);
             Map(x => x.ShowStatus);
             Map(x => x.ShowPurchaseOrderNumber);
+            Map(x => x.ShowTag);
             Map(x => x.ShowReferenceNumber);
             Map(x => x.ShowShipTo);
             Map(x => x.ShowAllowBackorder);
@@ -151,6 +162,8 @@ namespace Purchasing.Core.Domain
             //Map(x => x.ShowNumberOfLines);
             Map(x => x.ShowShippingCost);
             Map(x => x.ShowFpdCompleted);
+
+            Map(x => x.ShowApUser);
         }
     }
 }

@@ -17,25 +17,28 @@
                 <div class="editor-label">Filter by Status</div>
                 <div class="editor-field">
                     @Html.DropDownListFor(model => model.SelectedOrderStatus, new SelectList(Model.OrderStatusCodes, "Item1", "Item2"))
-               </div>
-            </li>
-            <li class="checkbox">
-                <div class="editor-label">Only show pending</div>
-                <div class="editor-field">
-                    @{
-                        isChecked = string.Empty;
-                        if(Model.ShowPending)
-                        {
-                            isChecked = "checked=\"checked\"";
-                        }
-                    }
-                    @*<input type="checkbox" value="true" @isChecked name="ShowPending"/> <br />*@
-
-                    @Html.CheckBox("ShowPending", Model.ShowPending)
-
                 </div>
             </li>
-            @if ((string)ViewBag.GetMethod != "AdminOrders")
+            @if ((string) ViewBag.GetMethod != "AccountsPayableOrders")
+            {
+                <li class="checkbox">
+                    <div class="editor-label">Only show pending</div>
+                    <div class="editor-field">
+                        @{
+                            isChecked = string.Empty;
+                            if (Model.ShowPending)
+                            {
+                                isChecked = "checked=\"checked\"";
+                            }
+                        }
+                        @*<input type="checkbox" value="true" @isChecked name="ShowPending"/> <br />*@
+
+                        @Html.CheckBox("ShowPending", Model.ShowPending)
+
+                    </div>
+                </li>
+            }
+            @if ((string)ViewBag.GetMethod != "AdminOrders" && (string)ViewBag.GetMethod != "AccountsPayableOrders")
             {
                 <li class="checkbox">
                     <div class="editor-label">Your Orders</div>

@@ -109,12 +109,14 @@ namespace Purchasing.Web.Services
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IUserIdentity _userIdentity;
         private readonly IDirectorySearchService _directorySearchService;
+        private readonly IAccessQueryService _accessQueryService;
 
-        public SecurityService(IRepositoryFactory repositoryFactory, IUserIdentity userIdentity, IDirectorySearchService directorySearchService, IQueryRepositoryFactory queryRepositoryFactory)
+        public SecurityService(IRepositoryFactory repositoryFactory, IUserIdentity userIdentity, IDirectorySearchService directorySearchService, IAccessQueryService accessQueryService, IQueryRepositoryFactory queryRepositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
             _userIdentity = userIdentity;
             _directorySearchService = directorySearchService;
+            _accessQueryService = accessQueryService;
             _queryRepositoryFactory = queryRepositoryFactory;
         }
 
@@ -260,8 +262,9 @@ namespace Purchasing.Web.Services
             {
                 //check if there are any access entries for this closed order 
                 var accessLevels =
-                    _queryRepositoryFactory.ClosedAccessRepository.Queryable.Where(
-                        a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current).Select(x=>x.AccessLevel).ToList();
+                    _accessQueryService.GetClosedOrderAccess(_userIdentity.Current, order.Id)
+                                       .Select(x => x.AccessLevel)
+                                       .ToList();
 
                 if (accessLevels.Any())
                 {
@@ -273,11 +276,9 @@ namespace Purchasing.Web.Services
             else
             {
                 //else check the edit order access repo
-                var access =
-                    _queryRepositoryFactory.OpenAccessRepository.Queryable.Where(
-                        a => a.OrderId == order.Id && a.AccessUserId == _userIdentity.Current)
-                                           .Select(x => new { x.EditAccess, x.ReadAccess, x.AccessLevel })
-                                           .ToList();
+                var access = _accessQueryService.GetOpenOrderAccess(_userIdentity.Current, order.Id)
+                                                .Select(x => new {x.EditAccess, x.ReadAccess, x.AccessLevel})
+                                                .ToList();
 
                 if (access.Any())
                 {
@@ -310,9 +311,7 @@ namespace Purchasing.Web.Services
             if (isClosed)
             {
                 //check if there are any access entries for this closed order 
-                var access =
-                    _queryRepositoryFactory.ClosedAccessRepository.Queryable.Any(
-                        a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current);
+                var access = _accessQueryService.GetClosedOrderAccess(_userIdentity.Current, orderId).Any();
 
                 // if it's closed and you don't have read...i'm pretty sure there shouldn't be access
                 return access ? OrderAccessLevel.Readonly : OrderAccessLevel.None;
@@ -320,11 +319,9 @@ namespace Purchasing.Web.Services
             else
             {
                 //else check the edit order access repo
-                var access =
-                    _queryRepositoryFactory.OpenAccessRepository.Queryable.Where(
-                        a => a.OrderId == orderId && a.AccessUserId == _userIdentity.Current)
-                                           .Select(x => new {x.EditAccess, x.ReadAccess})
-                                           .ToList();
+                var access = _accessQueryService.GetOpenOrderAccess(_userIdentity.Current, orderId)
+                                                .Select(x => new {x.EditAccess, x.ReadAccess})
+                                                .ToList();
                 
                 if (access.Any())
                 {

@@ -493,6 +493,60 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion NameAndId Tests
 
+        #region IsActive Tests
+
+        /// <summary>
+        /// Tests the IsActive is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsActiveIsFalseSaves()
+        {
+            #region Arrange
+            Commodity commodity = GetValid(9);
+            commodity.IsActive = false;
+            #endregion Arrange
+
+            #region Act
+            CommodityRepository.DbContext.BeginTransaction();
+            CommodityRepository.EnsurePersistent(commodity);
+            CommodityRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(commodity.IsActive);
+            Assert.IsFalse(commodity.IsTransient());
+            Assert.IsTrue(commodity.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsActive is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsActiveIsTrueSaves()
+        {
+            #region Arrange
+            var commodity = GetValid(9);
+            commodity.IsActive = true;
+            #endregion Arrange
+
+            #region Act
+            CommodityRepository.DbContext.BeginTransaction();
+            CommodityRepository.EnsurePersistent(commodity);
+            CommodityRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(commodity.IsActive);
+            Assert.IsFalse(commodity.IsTransient());
+            Assert.IsTrue(commodity.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsActive Tests
+
+     
+
         #region Reflection of Database.
 
         /// <summary>
@@ -510,6 +564,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("IsActive", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("NameAndId", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("SubGroupCode", "System.String", new List<string>()));

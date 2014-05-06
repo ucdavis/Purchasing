@@ -124,6 +124,18 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             "~/Admin/RemoveExtraChildPermissions/".ShouldMapTo<AdminController>(a => a.RemoveExtraChildPermissions());
         }
+
+        [TestMethod]
+        public void TestTestExceptionMapping()
+        {
+            "~/Admin/TestException".ShouldMapTo<AdminController>(a => a.TestException());
+        }
+
+        [TestMethod]
+        public void TestTestEmailMapping()
+        {
+            "~/Admin/TestEmail".ShouldMapTo<AdminController>(a => a.TestEmail());
+        }
         #endregion Mapping Tests
     }
 }

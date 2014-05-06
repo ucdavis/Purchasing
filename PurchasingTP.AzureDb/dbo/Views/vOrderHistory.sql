@@ -1,7 +1,10 @@
-﻿CREATE VIEW dbo.vOrderHistory
+﻿
+
+
+CREATE VIEW [dbo].[vOrderHistory]
 AS
-select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
-	, w.id workgroupid, w.name workgroupname
+select row_number() over (order by o.id) Id, o.id OrderId,  o.RequestNumber, o.RequestType
+	, w.id WorkgroupId, w.name WorkgroupName
 	, case 
 		when o.WorkgroupVendorId is null then '-- Unspecified --'
 		when o.WorkgroupVendorId is not null and wv.line1 = 'N/A' and url is null then wv.name + '(No Adddress)' 
@@ -12,31 +15,36 @@ select row_number() over (order by o.id) id, o.id orderid,  o.RequestNumber
 	, creator.id CreatorId
 	, o.DateCreated
 	, osc.id StatusId, osc.name [Status], osc.IsComplete
-	, totals.totalamount 
-	, o.LineItemSummary as lineitems
+	, totals.totalamount TotalAmount
+	, o.LineItemSummary as LineItems
 	, accounts.accountsubaccountsummary AccountSummary
 	, cast(CASE WHEN isnull(charindex(',', accounts.accountsubaccountsummary), 0) <> 0 THEN 1 ELSE 0 END AS bit) HasAccountSplit
 	, o.DeliverTo ShipTo
 	, o.DeliverToEmail ShipToEmail
 	, o.Justification
+	, o.BusinessPurpose
 	, case when o.AllowBackorder = 1 then 'Yes'else 'No' end AllowBackorder
 	, case when o.HasAuthorizationNum = 1 then 'Yes' else 'No' end Restricted
 	, o.DateNeeded
 	, st.name ShippingType
 	, o.ReferenceNumber
 	, o.PoNumber
+	, o.Tag
 	, o.ShippingAmount
 	, lastaction.DateCreated LastActionDate
 	, lastaction.lastuser LastActionUser
 	, case when oreceived.received = 1 then 'Yes' else 'No' end Received
 	, case when opaid.paid = 1 then 'Yes' else 'No' end Paid 
-	, ot.id ordertypeid, ot.name ordertype
-	, approvers.approver, AccountManagers.AccountManager, Purchasers.Purchaser
+	, ot.id OrderTypeId, ot.name OrderType
+	, approvers.approver Approver, AccountManagers.AccountManager, Purchasers.Purchaser
 	, case when o.FpdCompleted = 1 then 'Yes'else 'No' end FpdCompleted
+	, ApUser.FirstName + ' ' + ApUser.LastName ApUserAssigned
+	, ApUser.id ApUser
 from orders o
 	inner join workgroups w on o.WorkgroupId = w.id
 	left outer join WorkgroupVendors wv on o.WorkgroupVendorId = wv.id
 	inner join Users creator on o.CreatedBy = creator.id
+	left outer join Users ApUser on o.ApUser = ApUser.id
 	inner join OrderStatusCodes osc on o.OrderStatusCodeId = osc.id
 	left outer join ordertypes ot on ot.id = o.OrderTypeId
 	inner join (

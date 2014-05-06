@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Security;
 using AutoMapper;
@@ -9,6 +12,8 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Web.App_GlobalResources;
 using Purchasing.Web.Services;
+using SendGridMail;
+using SendGridMail.Transport;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
@@ -467,6 +472,30 @@ namespace Purchasing.Web.Controllers
             }
             Message = string.Format("{0} permissions removed", count);
             return this.RedirectToAction(a => a.ValidateChildWorkgroups());
+        }
+
+        /// <summary>
+        /// #18
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult TestException()
+        {
+            throw new Exception("Test -- Test -- Test");
+        }
+
+        public ActionResult TestEmail()
+        {
+            var sgMessage = SendGrid.GenerateInstance();
+            sgMessage.From = new MailAddress("opp-noreply@ucdavis.edu", "OPP No Reply");
+            sgMessage.Subject = "OPP Test Email from Sendgrid";
+            sgMessage.AddTo("opp-tech@ucdavis.edu");
+            sgMessage.Html = "Just a test";
+
+            var transport = SMTP.GenerateInstance(new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"], WebConfigurationManager.AppSettings["SendGridPassword"]));
+            transport.Deliver(sgMessage);
+
+            Message = "Test message sent";
+            return this.RedirectToAction(a => a.Index());
         }
 
 

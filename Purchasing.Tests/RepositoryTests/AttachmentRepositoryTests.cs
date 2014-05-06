@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FluentNHibernate.Testing;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Extensions;
@@ -481,38 +479,6 @@ namespace Purchasing.Tests.RepositoryTests
         #endregion ContentType Tests
 
         #region Contents Tests
-        /// <summary>
-        /// Tests the Contents with A value of null does not save.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(ApplicationException))]
-        public void TestContentsWithAValueOfNullDoesNotSave()
-        {
-            Attachment attachment = null;
-            try
-            {
-                #region Arrange
-                attachment = GetValid(9);
-                attachment.Contents = null;
-                #endregion Arrange
-
-                #region Act
-                AttachmentRepository.DbContext.BeginTransaction();
-                AttachmentRepository.EnsurePersistent(attachment);
-                AttachmentRepository.DbContext.CommitTransaction();
-                #endregion Act
-            }
-            catch (Exception)
-            {
-                Assert.IsNotNull(attachment);
-                Assert.AreEqual(attachment.Contents, null);
-                var results = attachment.ValidationResults().AsMessageList();
-                results.AssertErrorsAre("The Contents field is required.");
-                Assert.IsTrue(attachment.IsTransient());
-                Assert.IsFalse(attachment.IsValid());
-                throw;
-            }	
-        }
 
 
         [TestMethod]
@@ -552,6 +518,27 @@ namespace Purchasing.Tests.RepositoryTests
 
             #region Assert
             Assert.AreEqual("1234", attachment.Contents.ByteArrayToString());
+            Assert.IsFalse(attachment.IsTransient());
+            Assert.IsTrue(attachment.IsValid());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestAttachmentWithContentsSaves3()
+        {
+            #region Arrange
+            var attachment = GetValid(9);
+            attachment.Contents = null;
+            #endregion Arrange
+
+            #region Act
+            AttachmentRepository.DbContext.BeginTransaction();
+            AttachmentRepository.EnsurePersistent(attachment);
+            AttachmentRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(null, attachment.Contents);
             Assert.IsFalse(attachment.IsTransient());
             Assert.IsTrue(attachment.IsValid());
             #endregion Assert
@@ -806,6 +793,60 @@ namespace Purchasing.Tests.RepositoryTests
         }
         
         #endregion Order Tests
+
+        #region IsBlob Tests
+
+        /// <summary>
+        /// Tests the IsBlob is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsBlobIsFalseSaves()
+        {
+            #region Arrange
+            Attachment attachment = GetValid(9);
+            attachment.IsBlob = false;
+            #endregion Arrange
+
+            #region Act
+            AttachmentRepository.DbContext.BeginTransaction();
+            AttachmentRepository.EnsurePersistent(attachment);
+            AttachmentRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(attachment.IsBlob);
+            Assert.IsFalse(attachment.IsTransient());
+            Assert.IsTrue(attachment.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsBlob is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsBlobIsTrueSaves()
+        {
+            #region Arrange
+            var attachment = GetValid(9);
+            attachment.IsBlob = true;
+            #endregion Arrange
+
+            #region Act
+            AttachmentRepository.DbContext.BeginTransaction();
+            AttachmentRepository.EnsurePersistent(attachment);
+            AttachmentRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(attachment.IsBlob);
+            Assert.IsFalse(attachment.IsTransient());
+            Assert.IsTrue(attachment.IsValid());
+            #endregion Assert
+        }
+
+        #endregion IsBlob Tests
+
+    
         
         #region Category Tests
         #region Invalid Tests
@@ -981,10 +1022,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
-            expectedFields.Add(new NameAndType("Contents", "System.Byte[]", new List<string>
-            {
-                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
-            }));
+            expectedFields.Add(new NameAndType("Contents", "System.Byte[]", new List<string>()));
             expectedFields.Add(new NameAndType("ContentType", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
@@ -1001,6 +1039,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("IsBlob", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("Order", "Purchasing.Core.Domain.Order", new List<string>()));
             expectedFields.Add(new NameAndType("User", "Purchasing.Core.Domain.User", new List<string>
             {

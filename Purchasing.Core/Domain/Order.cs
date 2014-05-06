@@ -37,6 +37,10 @@ namespace Purchasing.Core.Domain
         }
 
         public virtual string RequestNumber { get; protected set; }
+
+        [StringLength(128)]
+        public virtual string RequestType { get; set; }
+
         [Required]
         public virtual OrderType OrderType { get; set; }
         [StringLength(3)]
@@ -72,13 +76,20 @@ namespace Purchasing.Core.Domain
         public virtual Organization Organization { get; set; }
         [StringLength(50)]
         public virtual string ReferenceNumber { get; set; }
+        
         [StringLength(50)]
         public virtual string PoNumber { get; set; }
+        
+        [StringLength(256)]
+        public virtual string Tag { get; set; }
+
         public virtual Approval LastCompletedApproval { get; set; }
         public virtual decimal ShippingAmount { get; set; }
         public virtual decimal FreightAmount { get; set; }
         [Required]
         public virtual string Justification { get; set; }
+
+        public virtual string BusinessPurpose { get; set; }
 
         public virtual string LineItemSummary { get; set; }
 
@@ -104,6 +115,8 @@ namespace Purchasing.Core.Domain
         public virtual IList<CustomFieldAnswer> CustomFieldAnswers { get; set; }
 
         public virtual bool FpdCompleted { get; set; }
+
+        public virtual User ApUser { get; set; } //If not null, the user who is assigned to do Accounts payable stuff. (Receive Items and Pay Invoices)
 
 
         private IList<ControlledSubstanceInformation> ControlledSubstances { get; set; }
@@ -468,10 +481,10 @@ namespace Purchasing.Core.Domain
 
         public virtual bool IsValidKfs()
         {
-            var regex = new Regex(@"P\d{8}");
+            int i = 0;
             var validKfsOrder = OrderType.Id == OrderType.Types.KfsDocument
-                && !string.IsNullOrEmpty(ReferenceNumber)
-                && regex.IsMatch(ReferenceNumber);
+                                && !string.IsNullOrEmpty(ReferenceNumber)
+                                && int.TryParse(ReferenceNumber.Trim(), out i);
 
             return validKfsOrder;
         }
@@ -487,17 +500,20 @@ namespace Purchasing.Core.Domain
             References(x => x.Address).Column("WorkgroupAddressId");
 
             Map(x => x.RequestNumber);
+            Map(x => x.RequestType).Length(128);
             Map(x => x.DateNeeded).Nullable();
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);
             Map(x => x.ReferenceNumber);
             Map(x => x.PoNumber); //Added a specific PO Number because users were changing the reference number, messing up KFS access and some other reasons https://ucdavis.uservoice.com/admin/forums/126891-purchasing/suggestions/3224208-purchase-order-number
+            Map(x => x.Tag).Length(256);
             Map(x => x.ShippingAmount);
             Map(x => x.FreightAmount);
             Map(x => x.DeliverTo);
             Map(x => x.DeliverToEmail);
             Map(x => x.DeliverToPhone);
             Map(x => x.Justification).Length(int.MaxValue);
+            Map(x => x.BusinessPurpose).Length(int.MaxValue);
             Map(x => x.LineItemSummary).Length(int.MaxValue);
             Map(x => x.DateCreated);
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");
@@ -514,6 +530,8 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.CompletionReason).Length(int.MaxValue);
             Map(x => x.FpdCompleted);
+
+            References(x => x.ApUser).Column("ApUser");
 
             HasMany(x => x.Attachments).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.LineItems).ExtraLazyLoad().Cascade.AllDeleteOrphan().Inverse();
