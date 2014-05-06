@@ -147,7 +147,7 @@ namespace Purchasing.Web.Controllers
 
         public JsonNetResult GetOrderCount(string userId)
         {
-            var ordercount = _queryRepositoryFactory.AccessRepository.Queryable.Count(a => a.AccessUserId == userId);
+            var ordercount = 0; // _queryRepositoryFactory.AccessRepository.Queryable.Count(a => a.AccessUserId == userId);
 
             return new JsonNetResult(ordercount);
         }

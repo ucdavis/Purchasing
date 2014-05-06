@@ -1013,6 +1013,7 @@
     <Content Include="Views\History\_OrderFilter.cshtml" />
     <Content Include="Web.Test.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\ConditionalApproval\ByWorkgroup.cshtml">
       <SubType>Code</SubType>
