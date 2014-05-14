@@ -130,6 +130,8 @@
             self.account = ko.observable();
             self.subAccount = ko.observable();
             self.project = ko.observable();
+            self.reference = ko.observable();
+           
             self.subAccounts = ko.observableArray();
 
             //Subscriptions
@@ -199,6 +201,7 @@
             self.account = ko.observable();
             self.subAccount = ko.observable();
             self.project = ko.observable();
+            self.reference = ko.observable();
             self.subAccounts = ko.observableArray();
 
             //Subscriptions
@@ -396,6 +399,7 @@
             self.account = ko.observable();
             self.subAccount = ko.observable();
             self.project = ko.observable();
+            self.reference = ko.observable();
 
             self.accounts = ko.observableArray([new purchasing.Account('', "-- Account --", "No Account Selected")]);
             self.subAccounts = ko.observableArray();

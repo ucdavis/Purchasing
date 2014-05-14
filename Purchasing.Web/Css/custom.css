@@ -169,6 +169,7 @@ form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 3
         
 form select.account-subaccount, form select.account-number {min-width: 120px; width: 120px;}
 form input.account-projectcode {min-width: 80px; width: 80px;}
+form input.account-reference {min-width: 70px; width: 70px;}
 
 .account-container, .account-split-amounts {display: inline-block;}
 .account-container {}
@@ -230,12 +231,13 @@ table.sub-line-item { margin: 0px;}
 table.sub-line-item-split { margin: 1em 0 0;}
 .sub-line-item-split td, .line-item-splits-totals td { padding: 0.5em .5em 1em .5em; text-align: left;vertical-align: middle;}
 tr.line-item-splits td:first-child, tr.line-item-splits td:last-child { width: auto; text-align: left;}
-table.sub-line-item-split td:first-child { width: 390px;}
+table.sub-line-item-split td:first-child { width: 490px;}
 table.sub-line-item-split td:last-child { width: 230px; text-align: right;}
 table#line-items table.sub-line-item-split tfoot {border-top: 0px;}
 table.sub-line-item-split tfoot tr { background: transparent;color: #000;}
 table.sub-line-item-split tfoot td { text-align: right;}
 input.account-projectcode { width: 50px;}
+input.account-reference { width: 45px;}
 
 .lineitemsplit .ui-state-default {background: #438bc9;}
 .main tfoot .item-footer a:hover, .main tfoot .lineitemsplit a:hover {color: #6b9069 !important;}
@@ -259,7 +261,7 @@ table.line-item-splits-totals td { padding: 0.5em 0 1em;}
 .account-split-amounts input:focus { font-size: 1.3em;font-weight: bold;}
 input.line-item-split-account-percent { text-align: right;}
 
-table#order-splits {width: 570px; display: inline-block; border: 0px none;}
+table#order-splits {width: 670px; display: inline-block; border: 0px none;}
 table#order-splits td:first-child {width: auto;}
 table#order-splits td:last-child {width: auto;}
 table#order-splits td {vertical-align: middle;}

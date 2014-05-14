@@ -25,6 +25,7 @@ namespace Purchasing.Web.Models
         public string Account { get; set; }
         public string SubAccount { get; set; }
         public string Project { get; set; }
+        public string Reference { get; set; }
         public string Approvers { get; set; }
         public string AccountManagers { get; set; }
         public int[] ConditionalApprovals { get; set; }
@@ -51,6 +52,7 @@ namespace Purchasing.Web.Models
             public string AccountName { get; set; }
             public string SubAccount { get; set; }
             public string Project { get; set; }
+            public string Reference { get; set; }
             public string Amount { get; set; }
             public string Percent { get; set; }
 

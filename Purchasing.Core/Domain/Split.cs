@@ -26,6 +26,9 @@ namespace Purchasing.Core.Domain
         [StringLength(10)]
         public virtual string Project { get; set; }
 
+        [StringLength(8)]
+        public virtual string Reference { get; set; }
+
         public virtual Account DbAccount { get; set; }
 
         public virtual SubAccount DbSubAccount { get; set; }
@@ -80,6 +83,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Account);
             Map(x => x.SubAccount);
             Map(x => x.Project);
+            Map(x => x.Reference);
             
             References(x => x.Order);
             References(x => x.LineItem);
