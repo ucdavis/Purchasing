@@ -15,6 +15,12 @@
                 this.unsupported = true;
             }
         }
+        if (this.browser === "Explorer11") {
+            this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "unknown";
+            if (this.version === "unknown" || this.version < 11) {
+                this.unsupported = true;
+            }
+        }
 
         if (this.browser === "unknown") {
             this.unsupported = true;
@@ -34,6 +40,7 @@
         }
     },
     searchVersion: function (dataString) {
+
         var index = dataString.indexOf(this.versionSearchString);
         if (index == -1) return;
         return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
@@ -65,7 +72,14 @@
 		    subString: "MSIE",
 		    identity: "Explorer",
 		    versionSearch: "MSIE"
-		}
+		},
+        {
+            //"Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; InfoPath.3; .NET4.0E; MS-RTC LM 8; rv:11.0) like Gecko"
+            string: navigator.userAgent,
+            subString: "Trident/7.0",
+            identity: "Explorer11",
+            versionSearch: "rv"
+        }
 	]
 };
 BrowserDetect.init();
