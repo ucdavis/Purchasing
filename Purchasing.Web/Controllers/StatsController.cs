@@ -39,7 +39,7 @@ namespace Purchasing.Web.Controllers
                 stats.TotalAmountCompleted = string.Format("{0:C2}",amount);
 
                 
-                stats.ShowFireworks = ( amount > 1000000.0m && amount < 1001000.0m);
+                stats.ShowFireworks = ( amount > 100000000.0m && amount < 101000000.0m);
 
                 stats.Attachments = conn.Query<int>("select COUNT(*) from Attachments").Single();
                 stats.Accounts = conn.Query<int>("select COUNT(distinct Account) from Splits").Single();
