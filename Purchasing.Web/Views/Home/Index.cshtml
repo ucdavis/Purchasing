@@ -222,6 +222,7 @@
                 </div>*@
                 
 			    <div id="stats" >
+                    <img id="fireworks" style="display: none" src='@Url.Image("fireworksanimated.gif")' />
 			        <div id="stats-loader">			        
 			            <h4  ><img src='@Url.Image("ajax-loader.gif")'/> Loading Statistics</h4>
                     </div>
@@ -303,6 +304,9 @@
                 
                 $("#stats-orgs").html(data.OrgsWithOrders);
                 $("#stats-associated-orgs").html(data.OrgsWithWorkgroups);
+                if (data.ShowFireworks) {
+                    $("#fireworks").show();
+                }
 
                 $("#stats-loader").hide();
                 $("#stats-show").show();

@@ -35,7 +35,11 @@ namespace Purchasing.Web.Controllers
                 stats.TotalOrdersPlaced = conn.Query<int>("select COUNT(*) from Orders").Single();
                 stats.TotalOrdersCompleted = conn.Query<int>("select COUNT(*) from Orders where OrderStatusCodeId = 'CP'").Single();
                 stats.TotalAmount = string.Format("{0:C2}", conn.Query<decimal>("select SUM(Total) as OrderTotalSumCompleted from Orders").Single());
-                stats.TotalAmountCompleted = string.Format("{0:C2}",conn.Query<decimal>("select SUM(Total) as OrderTotalSumCompleted from Orders where OrderStatusCodeId = 'CP'").Single());
+                var amount = conn.Query<decimal>("select SUM(Total) as OrderTotalSumCompleted from Orders where OrderStatusCodeId = 'CP'").Single();
+                stats.TotalAmountCompleted = string.Format("{0:C2}",amount);
+
+                
+                stats.ShowFireworks = ( amount > 100000000.0m && amount < 101000000.0m);
 
                 stats.Attachments = conn.Query<int>("select COUNT(*) from Attachments").Single();
                 stats.Accounts = conn.Query<int>("select COUNT(distinct Account) from Splits").Single();
@@ -73,5 +77,6 @@ namespace Purchasing.Web.Controllers
         public int OrgsWithWorkgroups { get; set; }
 
         public DateTime LastUpdated { get; set; }
+        public bool ShowFireworks { get; set; }
     }
 }

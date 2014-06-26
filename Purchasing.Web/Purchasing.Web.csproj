@@ -433,6 +433,7 @@
     <Content Include="Images\datatable-bg.jpg" />
     <Content Include="Images\devfriend-sprite.png" />
     <Content Include="Images\feedback.png" />
+    <Content Include="Images\fireworksanimated.gif" />
     <Content Include="Images\gethelp.png" />
     <Content Include="Images\icon-assigned.png" />
     <Content Include="Images\KFSVendorSearch.gif" />
