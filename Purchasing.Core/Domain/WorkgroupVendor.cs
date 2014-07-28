@@ -25,7 +25,7 @@ namespace Purchasing.Core.Domain
         public virtual string VendorAddressTypeCode { get; set; }
 
         [Required]
-        [StringLength(40)]
+        [StringLength(45)]
         public virtual string Name { get; set; }
 
         //Address info

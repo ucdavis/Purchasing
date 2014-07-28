@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[vVendors] (
     [Id]               VARCHAR (10) NOT NULL,
-    [Name]             VARCHAR (40) NOT NULL,
+    [Name]             VARCHAR (45) NOT NULL,
     [OwnershipCode]    VARCHAR (2)  NULL,
     [BusinessTypeCode] VARCHAR (4)  NULL,
     [IsActive]         BIT          NULL,

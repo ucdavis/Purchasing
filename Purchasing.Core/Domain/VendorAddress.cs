@@ -11,7 +11,7 @@ namespace Purchasing.Core.Domain
         [StringLength(4)]
         public virtual string TypeCode { get; set; }
         [Required]
-        [StringLength(40)]
+        [StringLength(50)]
         public virtual string Name { get; set; }
         [Required]
         [StringLength(40)]
