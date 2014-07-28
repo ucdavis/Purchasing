@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[WorkgroupVendors] (
     [Id]                    INT           IDENTITY (1, 1) NOT NULL,
     [WorkgroupId]           INT           NOT NULL,
-    [VendorId]              CHAR (10)     NULL,
+    [VendorId]              VARCHAR(10)     NULL,
     [VendorAddressTypeCode] VARCHAR (4)   NULL,
     [Name]                  VARCHAR (45)  NOT NULL,
     [Line1]                 VARCHAR (40)  NOT NULL,
@@ -16,6 +16,8 @@
     [Fax]                   VARCHAR (15)  NULL,
     [Email]                 VARCHAR (50)  NULL,
     [Url]                   VARCHAR (128) NULL,
+    [VendorAddressDetailId] VARCHAR(4) NULL, 
+    [VendorAddressId] VARCHAR(25) NULL, 
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_WorkgroupVendors_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id])
 );
