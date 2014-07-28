@@ -618,7 +618,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 workgroupVendor = GetValid(9);
-                workgroupVendor.Name = "x".RepeatTimes((40 + 1));
+                workgroupVendor.Name = "x".RepeatTimes((45 + 1));
                 #endregion Arrange
 
                 #region Act
@@ -630,9 +630,9 @@ namespace Purchasing.Tests.RepositoryTests
             catch (Exception)
             {
                 Assert.IsNotNull(workgroupVendor);
-                Assert.AreEqual(40 + 1, workgroupVendor.Name.Length);
+                Assert.AreEqual(45 + 1, workgroupVendor.Name.Length);
                 var results = workgroupVendor.ValidationResults().AsMessageList();		
-                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Name", "40"));
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Name", "45"));
                 Assert.IsTrue(workgroupVendor.IsTransient());
                 Assert.IsFalse(workgroupVendor.IsValid());
                 throw;
@@ -2758,7 +2758,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
-                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)40)]"
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)45)]"
             }));
             expectedFields.Add(new NameAndType("Phone", "System.String", new List<string>
             {
