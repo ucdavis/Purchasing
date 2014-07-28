@@ -3,7 +3,7 @@
     [WorkgroupId]           INT           NOT NULL,
     [VendorId]              CHAR (10)     NULL,
     [VendorAddressTypeCode] VARCHAR (4)   NULL,
-    [Name]                  VARCHAR (40)  NOT NULL,
+    [Name]                  VARCHAR (45)  NOT NULL,
     [Line1]                 VARCHAR (40)  NOT NULL,
     [Line2]                 VARCHAR (40)  NULL,
     [Line3]                 VARCHAR (40)  NULL,
