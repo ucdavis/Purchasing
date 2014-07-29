@@ -1561,8 +1561,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
             var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
-            Assert.AreEqual(1, ((Order)orderServiceArgs1[0]).Attachments.Count);
-            Assert.AreEqual(SpecificGuid.GetGuid(2), ((Order)orderServiceArgs1[0]).Attachments[0].Id);
+            Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).Attachments.Count); //This is now zero because the attachments get added after the order is saved
+            
             #endregion Assert
         }
 
@@ -1602,10 +1602,10 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
             var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
-            Assert.AreEqual(3, ((Order)orderServiceArgs1[0]).Attachments.Count);
-            Assert.AreEqual(SpecificGuid.GetGuid(2), ((Order)orderServiceArgs1[0]).Attachments[0].Id);
-            Assert.AreEqual(SpecificGuid.GetGuid(3), ((Order)orderServiceArgs1[0]).Attachments[1].Id);
-            Assert.AreEqual(SpecificGuid.GetGuid(4), ((Order)orderServiceArgs1[0]).Attachments[2].Id);
+            Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).Attachments.Count); //This is zero now because the attachments are added to the order after the order is saved
+            //Assert.AreEqual(SpecificGuid.GetGuid(2), ((Order)orderServiceArgs1[0]).Attachments[0].Id);
+            //Assert.AreEqual(SpecificGuid.GetGuid(3), ((Order)orderServiceArgs1[0]).Attachments[1].Id);
+            //Assert.AreEqual(SpecificGuid.GetGuid(4), ((Order)orderServiceArgs1[0]).Attachments[2].Id);
             #endregion Assert
         }
 
