@@ -364,7 +364,7 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-            //Do attachment stuff
+            //Do attachment stuff Note, must be done by persisting the attachment directly, not adding it to the order and having the order save it, otherwise we get a transient exception if we have to add a new user because of an external account
             if (model.FileIds != null)
             {
                 foreach (var fileId in model.FileIds.Where(x => !Guid.Empty.Equals(x)))
@@ -1650,14 +1650,6 @@ namespace Purchasing.Web.Controllers
 
                 order.AddOrderComment(comment);
             }
-
-            //if (model.FileIds != null) //If this is here, and a user has to be added (new user because external account), then we get a transient exception in the SecurityService, line 373 when the user is saved. So, moved this after the order is saved.
-            //{
-            //    foreach (var fileId in model.FileIds.Where(x => !Guid.Empty.Equals(x)))
-            //    {
-            //        order.AddAttachment(_repositoryFactory.AttachmentRepository.GetById(fileId));
-            //    }
-            //}
 
             if (model.CustomFields != null)
             {
