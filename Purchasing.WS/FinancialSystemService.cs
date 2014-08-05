@@ -74,14 +74,14 @@ namespace Purchasing.WS
                 // delivery address
                 doc.deliveryAddress = new purchasingAddressInfo()
                 {
-                    name = order.DeliverTo,
-                    addressLine1 = SetForDafis(line1, 40),
-                    addressLine2 = SetForDafis(line2, 40),
-                    cityName = SetForDafis(order.Address.City, 40),
+                    name = SetForDafis(order.DeliverTo, 45),
+                    addressLine1 = SetForDafis(line1, 45),
+                    addressLine2 = SetForDafis(line2, 45),
+                    cityName = SetForDafis(order.Address.City, 45),
                     stateCode = SetForDafis(order.Address.State,2),
-                    countryCode = SetForDafis(Countrycode,3),
-                    zipCode = order.Address.Zip,
-                    emailAddress = order.DeliverToEmail,
+                    countryCode = SetForDafis(Countrycode,2),
+                    zipCode = SetForDafis(order.Address.Zip, 20),
+                    emailAddress = SetForDafis(order.DeliverToEmail, 100),
                     phoneNumber = !string.IsNullOrEmpty(order.DeliverToPhone) ? order.DeliverToPhone : order.Address.Phone,
                     campusCode = CampusCode,
                     buildingCode = order.Address.BuildingCode != null ? order.Address.BuildingCode.BuildingCode : string.Empty,
