@@ -469,6 +469,7 @@ namespace Purchasing.Web.Controllers
         [AuthorizeReadOrEditOrder]
         public ActionResult Copy(int id)
         {
+
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
             Check.Require(order != null);
 
@@ -476,6 +477,16 @@ namespace Purchasing.Web.Controllers
             {
                 ErrorMessage = order.Workgroup == null ? "workgroup not found." : "workgroup not active.";
                 return this.RedirectToAction(a => a.SelectWorkgroup());
+            }
+
+            var requesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository
+                .Queryable.Where(x => x.Workgroup.Id == order.Workgroup.Id && x.User.Id == CurrentUser.Identity.Name)
+                .Where(x => x.Role.Id == Role.Codes.Requester);
+
+            if (!requesterInWorkgroup.Any())
+            {
+                ErrorMessage = Resources.NoAccess_Workgroup;
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
             var model = CreateOrderModifyModel(order.Workgroup);
@@ -500,6 +511,11 @@ namespace Purchasing.Web.Controllers
         [AuthorizeReadOrEditOrder]
         public ActionResult Copy(int id, OrderViewModel model)
         {
+            var canCreateOrderInWorkgroup =
+                _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
+
+            Check.Require(canCreateOrderInWorkgroup);
+
             var order = new Order();
 
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
