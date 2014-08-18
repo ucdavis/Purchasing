@@ -1212,7 +1212,7 @@
             });
         }
 
-        $("#vendor").chosen();
+        $("#vendor").chosen({ search_contains: true });
 
         $("#add-vendor").click(function (e) {
             e.preventDefault();
@@ -1387,7 +1387,7 @@
             }
         });
 
-        $("#shipAddress").chosen();
+        $("#shipAddress").chosen({search_contains: true});
 
         $("#shipAddress").bind("change", function () {
             $("#order-form").validate().element(this);
