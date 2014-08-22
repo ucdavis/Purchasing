@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Attachments] (
     [Id]          UNIQUEIDENTIFIER CONSTRAINT [DF_Attachments_Id] DEFAULT (newid()) NOT NULL,
-    [Filename]    VARCHAR (100)    NOT NULL,
+    [Filename]    VARCHAR (250)    NOT NULL,
     [ContentType] VARCHAR (200)    NOT NULL,
     [Contents]    VARBINARY (MAX)  NULL,
     [OrderId]     INT              NULL,

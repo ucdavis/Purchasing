@@ -8,7 +8,7 @@ namespace Purchasing.Core.Domain
     public class Attachment : DomainObjectWithTypedId<Guid>
     {
         [Required]
-        [StringLength(100)]
+        [StringLength(250)]
         public virtual string FileName { get; set; }
         [Required]
         [StringLength(200)]
