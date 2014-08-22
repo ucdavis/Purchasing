@@ -219,7 +219,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 attachment = GetValid(9);
-                attachment.FileName = "x".RepeatTimes((100 + 1));
+                attachment.FileName = "x".RepeatTimes((250 + 1));
                 #endregion Arrange
 
                 #region Act
@@ -231,9 +231,9 @@ namespace Purchasing.Tests.RepositoryTests
             catch (Exception)
             {
                 Assert.IsNotNull(attachment);
-                Assert.AreEqual(100 + 1, attachment.FileName.Length);
+                Assert.AreEqual(250 + 1, attachment.FileName.Length);
                 var results = attachment.ValidationResults().AsMessageList();		
-                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "FileName", "100"));
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "FileName", "250"));
                 Assert.IsTrue(attachment.IsTransient());
                 Assert.IsFalse(attachment.IsValid());
                 throw;
@@ -274,7 +274,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var attachment = GetValid(9);
-            attachment.FileName = "x".RepeatTimes(100);
+            attachment.FileName = "x".RepeatTimes(250);
             #endregion Arrange
 
             #region Act
@@ -284,7 +284,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(100, attachment.FileName.Length);
+            Assert.AreEqual(250, attachment.FileName.Length);
             Assert.IsFalse(attachment.IsTransient());
             Assert.IsTrue(attachment.IsValid());
             #endregion Assert
@@ -1032,7 +1032,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("FileName", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
-                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)100)]"
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)250)]"
             }));
             expectedFields.Add(new NameAndType("Id", "System.Guid", new List<string>
             {
