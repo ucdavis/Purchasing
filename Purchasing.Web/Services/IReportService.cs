@@ -199,6 +199,15 @@ namespace Purchasing.Web.Services
             jCell.AddElement(new Phrase(order.Justification, _font));
             table.AddCell(jCell);
 
+            if (!string.IsNullOrWhiteSpace(order.BusinessPurpose))
+            {
+                var bpCell = InitializeCell(colspan: 2, bottomBorder: false);
+                bpCell.Padding = 10;
+                bpCell.AddElement(new Phrase(string.Format("Business Purpose: {0}", order.RequestType), _boldFont));
+                bpCell.AddElement(new Phrase(order.BusinessPurpose, _font));
+                table.AddCell(bpCell);
+            }
+
             doc.Add(table);            
         }
         
