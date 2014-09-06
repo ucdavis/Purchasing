@@ -21,10 +21,20 @@
 <section class="display-form ui-corner-all">
 	<header class="ui-corner-top ui-widget-header">WorkgroupVendor</header>
 	<ul>
-		<li>
-			<div class="display-label">Kfs Vendor?</div>
-			<div class="display-details">@(string.IsNullOrWhiteSpace(Model.VendorId) && string.IsNullOrWhiteSpace(Model.VendorAddressTypeCode) ? "No" : "Yes")</div>
-		</li>
+	    <li>
+	        <div class="display-label">Kfs Vendor?</div>
+	        <div class="display-details">@(string.IsNullOrWhiteSpace(Model.VendorId) && string.IsNullOrWhiteSpace(Model.VendorAddressTypeCode) ? "No" : "Yes")</div>
+	    </li>
+        @if (!string.IsNullOrWhiteSpace(Model.VendorId))
+        {
+            var kfsLookup = string.Format("https://kfs.ucdavis.edu/kfs-prd/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={0}", Model.VendorId);                                    
+            <li>
+                <div class="display-label">Vendor Id</div>
+                <div class="display-details">
+                    <span><a href="@kfsLookup" target="_blank"> @Model.VendorId</a></span>
+                </div>
+            </li>
+        }
 		<li>
 			<div class="display-label">Name</div>
 			<div class="display-details">@Model.Name</div>
