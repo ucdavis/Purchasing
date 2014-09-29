@@ -102,7 +102,7 @@
                     {
                         <tr class="@(odd ? "row-odd" : "row-even") row-bottom">
                             <td class="lineitem"></td>
-                            <td colspan="7" class="extra-info">
+                            <td colspan="7" class="extra-info" style="word-wrap: break-word">
                                 @if (line.Commodity != null)
                                 {
                                     <div class="line-commodity"><strong>Commodity:</strong> @string.Format("[{0}] {1}", line.Commodity.Id, line.Commodity.Name)</div>
