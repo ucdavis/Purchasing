@@ -458,6 +458,17 @@ namespace Purchasing.Web.Controllers
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
+            //Do attachment stuff Note, must be done by persisting the attachment directly, not adding it to the order and having the order save it, otherwise we get a transient exception if we have to add a new user because of an external account
+            if (model.FileIds != null)
+            {
+                foreach (var fileId in model.FileIds.Where(x => !Guid.Empty.Equals(x)))
+                {
+                    var attachment = _repositoryFactory.AttachmentRepository.GetById(fileId);
+                    attachment.Order = order;
+                    _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
+                }
+            }
+
             Message = Resources.OrderEdit_Success;
 
             return RedirectToAction("Review", new { id });
