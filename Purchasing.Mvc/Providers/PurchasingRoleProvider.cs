@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Configuration.Provider;
+using System.Data.Odbc;
 using System.Linq;
 using System.Web.Security;
 using Dapper;
 using Microsoft.Practices.ServiceLocation;
 using Purchasing.Web.Services;
-using System.Configuration.Provider;
-using System.Data.Odbc;
 
-namespace Purchasing.Web.Providers
+namespace Purchasing.Mvc.Providers
 {
     public class PurchasingRoleProvider : RoleProvider
     {
