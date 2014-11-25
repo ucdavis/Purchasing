@@ -1,0 +1,12 @@
+﻿@if(Request.IsAuthenticated) {
+<div id="personalbar">
+	<!-- Example Welcome user message -->
+	<div class="col1">
+		<span id="welcome_user">Welcome back @User.Identity.Name!</span>
+	</div>
+	<!-- Example logout button -->
+	<div class="col2">
+		@Html.ActionLink("Logout", "LogOut", "Account")
+	</div>			
+</div>
+}

@@ -1,0 +1,109 @@
+/* the humans responsible */
+/* humanstxt.org */
+ 
+/* TEAM */
+  Sr. Application Architect: Scott Kirkland
+  Site: http://weblogs.asp.net/srkirkland/
+  Contact: srkirkland [at] ucdavis
+  Location: Redding, California
+
+  Senior Application Developer: Alan Lai
+  Site: http://anlai.wordpress.com
+  Contact: anlai [at] ucdavis
+  Location: Davis, California
+
+  Application Developer: Jason Sylvestre
+  Contact: jsylvestre [at] ucdavis
+  Location: Davis, California
+
+  Application Developer: James Cubbage
+  Contect: jscubbage [at] ucdavis
+  Location: Department of Plant Sciences
+
+  Application Design: Tyler Randles
+  Contact: tbrandles [at] ucdavis.edu
+  Location: Davis, California
+
+  Application Design: Trish Ang
+  Site: http://about.me/feesh
+  Contact: pgang [at] ucdavis.edu
+  Location: Oakland, California
+
+  Application and Database Developer: Ken Taylor
+  SQL Stored Procedures and Database Enhancements
+  Contact: kentaylor [at] ucdavis.edu
+  Location: Davis, California
+
+/* CONTRIBUTORS */
+
+  Database Application Developer: Ed Henn
+  Site: https://github.com/emhenn
+  Location: Law School, UC Davis
+
+  Application Developer: Christopher Thielen
+  Site: https://github.com/cthielen
+  Location: Division of Social Sciences, UC Davis
+
+  KFS Integration API Programmer: Jean Zhou
+  Site: https://github.com/zjzhou
+  Location: Accounting & Financial Services: Systems Operations, UC Davis
+
+  
+/* STEERING COMMITTEE */
+
+  Chief Administrative Officer, Chair: Patricia Conners
+  Site: http://caes-cluster5.ucdavis.edu/
+  Contact: pmconners [at] ucdavis [dot] edu
+  Location: Cheddar Cluster, College of Agricultural & Environmental Sciences, UC Davis
+
+  Director of Information Technology: Adam Getchell
+  Site: http://insecure.ucdavis.edu/Members/adam
+  Contact: acgetchell [at] ucdavis [dot] edu
+  Location: Dean's Office, College of Agricultural & Environmental Sciences, UC Davis
+  
+  Angela Cummins
+  Genome Center & Bioinformatics Program
+
+  Deborah Fraga-Decker
+  Materiel Management
+
+  Helen Henry
+  Library Administration
+
+  Sandy Higby
+  Physio & Membrane Bio
+
+  Karl Krist
+  ANR: Communication Svc
+
+  Deidra Madderra
+  Plant Sciences
+
+  Shelley Martin
+  Molecular & Cellular Biology
+
+  Michael Kuhner
+  Accounting & Financial Services: Project Management Office
+
+  Jeremy Phillips
+  DSS IT Service Center
+
+  Radhika Prabhu
+  Accounting & Financial Services
+
+  Sondra Salazar
+  Engineering Dean's Office
+
+  Luci Schmidl
+  Memorial Union Business Office
+
+
+/* THANKS */ 
+
+  Icons: Developer's Friend by Actual Objects (http://actualobjects.com)
+
+ 
+/* SITE */
+  Standards: HTML5, CSS3
+  Components: jQuery, Modernizr
+  Software: UCDArch, ASP.NET MVC 3, NHibernate

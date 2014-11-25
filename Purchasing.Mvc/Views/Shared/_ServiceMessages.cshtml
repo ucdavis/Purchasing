@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.ServiceMessage>
+@{
+    var hasMessages = Model != null && Model.Count() > 0 ? true : false;
+}        
+ 
+@if (hasMessages)
+{ 
+   <div id="system-messages">
+			
+	    <div id="system-messages-text">
+        
+           @foreach (var message in Model.OrderByDescending(a=> a.Critical))
+            {
+                var isCritical = message.Critical ? "critical" : "non-critical";
+                <p class="@isCritical">@message.Message</p>
+            }			
+          			
+	    </div>
+			
+    </div>
+}

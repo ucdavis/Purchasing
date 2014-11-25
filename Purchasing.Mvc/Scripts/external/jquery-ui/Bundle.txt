@@ -1,0 +1,6 @@
+﻿[external]
+url = //ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js
+fallbackCondition = !window.jQuery
+
+[assets]
+jquery-ui-1.8.17.js
