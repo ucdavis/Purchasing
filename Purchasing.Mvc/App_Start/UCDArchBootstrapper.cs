@@ -2,14 +2,15 @@ using System.Web.Mvc;
 using Castle.Windsor;
 using Microsoft.Practices.ServiceLocation;
 using Purchasing.Core.Domain;
-using Purchasing.Mvc.App_Start;
+using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
+using Purchasing.Web.Controllers;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.IoC;
 using UCDArch.Web.ModelBinder;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(UCDArchBootstrapper), "PreStart")]
-namespace Purchasing.Mvc.App_Start
+namespace Purchasing.Mvc
 {
     public class UCDArchBootstrapper
     {
