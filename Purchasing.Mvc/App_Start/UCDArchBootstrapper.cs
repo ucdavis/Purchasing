@@ -1,6 +1,7 @@
 using System.Web.Mvc;
 using Castle.Windsor;
 using Microsoft.Practices.ServiceLocation;
+using Purchasing.Core.Domain;
 using Purchasing.Mvc.App_Start;
 using Purchasing.Mvc.Controllers;
 using UCDArch.Data.NHibernate;
@@ -10,7 +11,6 @@ using UCDArch.Web.ModelBinder;
 [assembly: WebActivator.PreApplicationStartMethod(typeof(UCDArchBootstrapper), "PreStart")]
 namespace Purchasing.Mvc.App_Start
 {
-    public class Customer { }
     public class UCDArchBootstrapper
     {
         /// <summary>
@@ -20,7 +20,7 @@ namespace Purchasing.Mvc.App_Start
         {
             ModelBinders.Binders.DefaultBinder = new UCDArchModelBinder();
 
-            NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Customer).Assembly);
+            NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Approval).Assembly);
             
             IWindsorContainer container = InitializeServiceLocator();
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Purchasing.Core.Domain;
 using UCDArch.Web.Controller;
 
 namespace Purchasing.Mvc.Controllers
@@ -11,6 +12,8 @@ namespace Purchasing.Mvc.Controllers
     {
         public ActionResult Index()
         {
+            var a = Repository.OfType<Approval>().Queryable.First();
+            
             return View();
         }
 
