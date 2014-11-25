@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Caching;
 using System.Web.Mvc;
+using AutoMapper;
 using Purchasing.Core.Domain;
 using Purchasing.Web.Controllers;
 using UCDArch.Core.PersistanceSupport;

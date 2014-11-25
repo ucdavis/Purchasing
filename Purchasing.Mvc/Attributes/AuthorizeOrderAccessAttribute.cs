@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
+using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;

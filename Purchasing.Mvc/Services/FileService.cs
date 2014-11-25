@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using Microsoft.WindowsAzure;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;

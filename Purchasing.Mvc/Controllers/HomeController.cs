@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Dapper;
+using Microsoft.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Web.Controllers;
@@ -39,6 +40,7 @@ namespace Purchasing.Mvc.Controllers
             if (!_userRepository.Queryable.Any(a => a.Id == CurrentUser.Identity.Name && a.IsActive))
             {
                 Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
+                
                 return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 

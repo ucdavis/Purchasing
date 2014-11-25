@@ -5,6 +5,7 @@ using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Web.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;

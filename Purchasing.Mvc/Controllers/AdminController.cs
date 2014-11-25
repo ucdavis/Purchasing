@@ -6,8 +6,10 @@ using System.Net.Mail;
 using System.Text;
 using System.Web.Configuration;
 using System.Web.Mvc;
+using Microsoft.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
 using Purchasing.Web.Controllers;
 using Purchasing.Web.Services;
@@ -480,14 +482,20 @@ namespace Purchasing.Mvc.Controllers
 
         public ActionResult TestEmail()
         {
-            var sgMessage = SendGrid.GenerateInstance();
-            sgMessage.From = new MailAddress("opp-noreply@ucdavis.edu", "OPP No Reply");
-            sgMessage.Subject = "OPP Test Email from Sendgrid";
-            sgMessage.AddTo("opp-tech@ucdavis.edu");
-            sgMessage.Html = "Just a test";
+            var sgMessage = new MailMessage(
+                new MailAddress("opp-noreply@ucdavis.edu", "OPP No Reply"),
+                new MailAddress("opp-tech@ucdavis.edu"))
+            {
+                Subject = "OPP Test Email from Sendgrid",
+                Body = "Just a test"
+            };
 
-            var transport = SMTP.GenerateInstance(new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"], WebConfigurationManager.AppSettings["SendGridPassword"]));
-            transport.Deliver(sgMessage);
+            var smtpClient = new SmtpClient("smtp.sendgrid.net", Convert.ToInt32(587));
+            var credentials = new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"],
+                WebConfigurationManager.AppSettings["SendGridPassword"]);
+            smtpClient.Credentials = credentials;
+
+            smtpClient.Send(sgMessage);
 
             Message = "Test message sent";
             return this.RedirectToAction(a => a.Index());
