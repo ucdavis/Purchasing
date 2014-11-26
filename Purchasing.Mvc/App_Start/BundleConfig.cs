@@ -8,14 +8,6 @@ namespace Purchasing.Mvc
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
-            //TODO: combine CSS into a bundle
-            //bundles.AddPerSubDirectory<StylesheetBundle>("Css", new FileSearch { Exclude = new Regex("/single/") });
-            //bundles.AddPerIndividualFile<StylesheetBundle>("Css/single");
-
-            //bundles.AddPerSubDirectory<ScriptBundle>("Scripts/external"); //just the CDN hosted stuff
-            //bundles.AddPerSubDirectory<ScriptBundle>("Scripts/public", new FileSearch { Exclude = new Regex("/single/") });
-            //bundles.AddPerIndividualFile<ScriptBundle>("Scripts/public/single"); //stuff in single is shared and can be referenced individually
-
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
@@ -34,7 +26,7 @@ namespace Purchasing.Mvc
 
             bundles.Add(new ScriptBundle("~/bundles/landing")
                 .Include("~/Scripts/public/single/Landing.js"));
-
+            
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -53,9 +45,20 @@ namespace Purchasing.Mvc
                       "~/Css/custom.css",
                       "~/Css/icons.css"));
 
+            RegisterIndividualAssets(bundles);
+            
             // Set EnableOptimizations to false for debugging. For more information,
             // visit http://go.microsoft.com/fwlink/?LinkId=301862
             BundleTable.EnableOptimizations = false;
+        }
+
+        static void RegisterIndividualAssets(BundleCollection bundles)
+        {
+            //css
+            bundles.Add(new StyleBundle("~/Css/single/chosen").Include("~/Css/single/chosen.css"));
+
+            //scripts
+            bundles.Add(new ScriptBundle("~/bundles/single/chosen").Include("~/Scripts/public/single/chosen.jquery.js"));
         }
     }
 }

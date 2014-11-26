@@ -1,0 +1,18 @@
+﻿@using Purchasing.Mvc.Models
+@model AutoApprovalViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index", new { showAll = @ViewBag.ShowAll }, new { @class = "button" })</li>
+	</ul>
+}
+
+@Html.Partial("_AutoApproval")
+
+
+

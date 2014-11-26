@@ -1,0 +1,76 @@
+﻿@model Purchasing.Web.Controllers.ConditionalApprovalViewModel
+
+@{
+    ViewBag.Title = "Delete";
+
+}
+
+<h3>Are you sure you want to delete this conditional approval?</h3>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+<section class="display-form ui-corner-all">
+	<header class="ui-corner-top ui-widget-header">Conditional Approval</header>
+    
+    
+        <div class="section-text">
+    
+            <p>Deleting Conditional Approval for @Model.OrgOrWorkgroupName</p>
+        
+        </div>
+
+    <div class="section-contents">
+	    <ul>
+		    <li>
+			    <div class="editor-label required">
+				    @Html.LabelFor(model => model.Question)<span>*</span> 
+			    </div>
+			    <div class="editor-field">
+				    @Model.Question
+			    </div>
+		    </li>
+            <li>
+			    <div class="editor-label">
+				    @Html.LabelFor(model => model.PrimaryUserName)
+			    </div>
+			    <div class="editor-field">
+				    @Model.PrimaryUserName
+			    </div>
+		    </li>
+            <li>
+			    <div class="editor-label">
+				    @Html.LabelFor(model => model.SecondaryUserName)
+			    </div>
+			    <div class="editor-field">
+				    @Model.SecondaryUserName
+			    </div>
+		    </li>
+
+		    @Html.HiddenFor(model => model.Id)
+
+		    <li>
+			    @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			    <div class="display-label">&nbsp;</div>
+			    <div class="display-details">
+                    <input class="button" type="submit" value="Delete" /> |                
+                    @if(ViewBag.IsWorkgroup)
+                    {
+                        @Html.ActionLink("Cancel", "ByWorkgroup", "ConditionalApproval", new { id = ViewBag.WorkgroupId }, new { })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Cancel", "ByOrg", "ConditionalApproval", new {id = ViewBag.OrganizationId}, new {})
+                    }
+			    </div>
+		    </li>
+	    </ul>
+
+    </div>
+
+</section>
+}
+
+
+
+

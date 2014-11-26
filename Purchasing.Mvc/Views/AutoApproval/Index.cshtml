@@ -1,0 +1,136 @@
+﻿@model AutoApprovalListModel
+
+@{
+    ViewBag.Title = "Auto Approvals";
+
+}
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Create New", "Create", new { showAll = @Model.ShowAll }, new { @class = "button" })</li>
+	</ul>
+}
+
+@section AdditionalScripts
+{
+    <style type="text/css">
+        .dt-table-filter-header .section-contents li {width: auto;}
+        .dt-table-filter-header ul {text-align: center;}
+    </style>
+}
+
+<div class="dt-table-filter-header display-form">
+<header class="ui-widget-header ui-corner-top">Filters</header>
+<div class="section-contents">
+
+    @using(Html.BeginForm("Index", "AutoApproval", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken();
+            <ul>
+                <li>
+                    <div class="editor-label">
+                        @Html.Label("Show All")
+                    </div>
+                    <div class="editor-field">
+                        @Html.CheckBoxFor(x => x.ShowAll) 
+                    </div>
+                </li>
+
+                <li class="apply">
+                    <label>&nbsp;</label>
+			        <input class="button" type="submit" value="Apply" />
+                </li>
+            </ul>
+    }
+</div>
+</div>
+
+<table class='datatable'>
+	<thead>
+		<tr>
+			<th></th>
+
+			<th>
+				MaxAmount
+			</th>
+
+			<th>
+				LessThan
+			</th>
+
+			<th>
+				Equal
+			</th>
+            <th>
+                Account
+            </th>
+            <th>
+                User
+            </th>
+            @if((Model.ShowAll))
+            { 
+			<th>
+				IsActive
+			</th>
+            }
+			<th>
+				Expiration
+			</th>
+
+
+			<th></th>
+
+		</tr>
+	</thead>
+	<tbody>
+@foreach(var item in Model.AutoApprovals)
+{
+		<tr>
+			<td>
+				<a href='@Url.Action("Details", new { id = item.Id, showAll = @Model.ShowAll })' class="ui-icon ui-icon-document">
+				</a>
+				<a href='@Url.Action("Edit", new { id = item.Id, showAll = @Model.ShowAll })' class="ui-icon ui-icon-pencil">
+				</a>
+			</td>
+
+			<td>
+				@String.Format("{0:F}", item.MaxAmount)
+			</td>
+
+			<td>
+				@item.LessThan
+			</td>
+
+			<td>
+				@item.Equal
+			</td>
+
+            <td>
+                @(item.Account == null ? "No Account" : item.Account.NameAndId)
+            </td>
+
+            <td>
+                @(item.TargetUser == null ? "No User" : item.TargetUser.FullNameAndId)
+            </td>
+			@if((Model.ShowAll))
+            {
+            <td>
+				@item.IsActive
+			</td>
+            }    
+			<td>
+				@String.Format("{0:d}", item.Expiration)
+			</td>
+
+		
+					<td>
+						<a href='@Url.Action("Delete", new { id = item.Id, showAll = @Model.ShowAll })' class="ui-icon ui-icon-trash">
+						</a>
+					</td>
+		
+
+		</tr>
+}
+	</tbody>
+</table>

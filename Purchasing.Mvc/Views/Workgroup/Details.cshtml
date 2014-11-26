@@ -1,0 +1,224 @@
+﻿@using Purchasing.Core.Domain
+@using Purchasing.Mvc.Models
+@model WorkgroupDetailsViewModel
+
+@{
+    ViewBag.Title = Model.Workgroup.Name;
+}
+
+@helper ContainerFor(string name, int count, string action = null, string roleFilter = null, bool special = false, string label = null, bool disable = false){
+    if (special && (disable == null || disable == false))
+    {
+          <a href="@Url.Action("ByWorkgroup", "ConditionalApproval", new { id = Model.Workgroup.Id }, null)">
+
+            <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
+        
+                <ul>
+        
+                    <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
+
+                    <li class="prop-value">@count
+                    </li>
+
+                </ul>
+        
+            </div>
+        </a>
+    }
+    else
+    {
+        if (disable)
+        {
+
+                <div title="Administrative workgroups do not allow @(!string.IsNullOrWhiteSpace(label) ? label : name) to be added." class=" disable workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
+        
+                    <ul>
+        
+                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
+
+                        <li class="prop-value">@count
+                        </li>
+
+                    </ul>
+        
+                </div>
+
+        }
+        else
+        {
+            <a href="@Url.Action(action ?? name, "Workgroup", new {id = Model.Workgroup.Id, roleFilter = roleFilter})">
+                <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
+        
+                    <ul>
+        
+                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
+
+                        <li class="prop-value">@count
+                        </li>
+
+                    </ul>
+        
+                </div>
+            </a>
+        }
+
+    }
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+        <li>@Html.ActionLink("Edit", "Edit", new { id = @Model.Workgroup.Id }, new { @class = "button" })</li>
+        <li>@Html.ActionLink("Who", "WhoHasAccessToWorkgroup", new { id = @Model.Workgroup.Id }, new { @class = "button showTip", title = "See who has access to edit this workgroup by organization." })</li>
+        <li>@Html.ActionLink("Back to List", "Index", null, new { @class = "button" })</li>
+	</ul>
+}
+
+@section AdditionalScripts{
+    <script src="@Url.Script("jquery.qtip.min.js")"></script>
+    <link href="@Url.Css("jquery.qtip.min.css")" rel="stylesheet" type="text/css" />
+
+    <style>
+        div.workgroup-info
+        {
+            border: 1px solid #CCCCCC;
+            padding: 1em;
+            width: 180px;
+            float: left;
+            margin-right: 30px;
+            cursor: pointer;            
+        }
+        div.workgroup-info.disable {border: 1px solid #ddd; color: #bbb; cursor: auto; box-shadow: none;}
+        div.workgroup-info:last-child {}
+        div.workgroup-info:hover
+        {
+            -moz-box-shadow:inset 0 0 10px lightblue;
+            -webkit-box-shadow:inset 0 0 10px lightblue;
+            box-shadow:inset 0 0 10px lightblue;
+        }
+        div.workgroup-info.disable:hover {-moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;}
+        div.workgroup-info ul
+        {
+            padding: 0;
+        }
+        div.workgroup-info ul li
+        {
+            text-align: center;
+        }
+        .prop-name
+        {
+            padding: 1em;
+            color: #014A81;
+            font-weight: bold;
+        }
+        .disable .prop-name { color: #aaa; }
+        .prop-value
+        {
+            font-size: 4em;
+            font-weight: bold;
+
+        }
+        
+        div.workgroup-people div.workgroup-info {
+            width: 135px;   
+        }
+    </style>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".showTip").qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+
+    </script>
+}
+
+
+<section class="display-form ui-corner-all box-shadow">
+
+    <header class="ui-corner-top ui-widget-header">Workgroup Details</header>
+
+    <div class="section-contents">
+    
+        <ul>
+            <li><div class="display-label">Primary Org:</div>
+                <div class="display-details">@string.Format("{0} ({1})", Model.Workgroup.PrimaryOrganization.Name, Model.Workgroup.PrimaryOrganization.Id)</div>
+            </li>
+            @if(Model.Workgroup.Organizations.Count > 1)
+            {
+                <li><div class="display-label">Orgs:</div>
+                    <div class="display-details">@string.Join(", ", Model.Workgroup.Organizations.Select(a => a.Name + " (" + a.Id + ")"))</div>
+                </li>    
+            }
+            <li><div class="display-label">Administrative:</div>
+                <div class="display-details">@(Model.Workgroup.Administrative ? "Yes" : "No")</div>
+            </li>
+            @if(!string.IsNullOrWhiteSpace(Model.Workgroup.Disclaimer))
+            {
+                <li><div class="display-label">Disclaimer:</div>
+                    <div class="display-details">@Model.Workgroup.Disclaimer</div>
+                </li>                
+            }
+            <li>
+                <div class="display-label">@Html.LabelFor(model => model.Workgroup.NotificationEmailList)</div>
+                <div class="display-details">
+                    @Model.Workgroup.NotificationEmailList
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all box-shadow">
+
+    <header class="ui-corner-top ui-widget-header">Workgroup Associations</header>
+
+    <div class="section-contents">
+        @{
+            var accountLabel = "Unsynchronized Accounts";
+            if(Model.Workgroup.SyncAccounts)
+            {
+                accountLabel = "Synchronized Accounts";
+            }
+        }
+        @ContainerFor("Accounts", Model.AccountCount, label: accountLabel, disable: Model.Workgroup.Administrative ? true : false)
+        @ContainerFor("Vendors", Model.VendorCount, "VendorList", disable: Model.Workgroup.Administrative ? true : false)
+        @ContainerFor("Addresses", Model.AddressCount, disable: Model.Workgroup.Administrative ? true : false)
+        @ContainerFor("Conditional Approvals", Model.WorkgroupConditionalApprovalCount, null, null, true, disable: Model.Workgroup.Administrative ? true : false)
+        <div style="clear: both;"></div>
+
+    </div>
+
+</section>
+
+<section class="display-form ui-corner-all box-shadow">
+
+    <header class="ui-corner-top ui-widget-header">Workgroup People</header>
+
+    <div class="section-contents workgroup-people">
+    
+        @ContainerFor("Requesters", Model.UserCount, "People", Role.Codes.Requester, disable: Model.Workgroup.Administrative ? true : false)
+        @ContainerFor("Approvers", Model.ApproverCount, "People", Role.Codes.Approver)
+        @ContainerFor("Account Managers", Model.AccountManagerCount, "People", Role.Codes.AccountManager)
+        @ContainerFor("Purchasers", Model.PurchaserCount, "People", Role.Codes.Purchaser)
+        @ContainerFor("Reviewer", Model.ReviewerCount, "People", Role.Codes.Reviewer)
+
+        <div style="clear: both;"></div>
+
+    </div>
+
+</section>

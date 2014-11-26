@@ -1,0 +1,37 @@
+﻿<div id="order-save-dialog" title="Save Order For Later" style="display:none;">
+    <form id="order-save-form">
+        <section class="section-contents">
+            <div class="section-text">
+                <p>
+                    Saving this form will allow you to come back later and continue work exactly where you left off.  
+                    Please enter a name so you can remember this order later.
+                </p>
+                <p>
+                    If you are preparing this order for another person in this workgroup you may optionally select them in the "Prepared For" list
+                </p>
+                <p class="highlight" id="order-save-message" style="display:none;">** Saving Order Form. Please Wait.... **</p>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        <div class="editor-label required">Name: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input id="order-save-name" name="ordersavename" type="text" placeholder="Save Name" maxlength="50" class="required" />
+                            <span data-valmsg-for="ordersavename" data-valmsg-replace="true"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                            Prepared For:
+                        </div>
+                        <div class="editor-field">
+                            <select id="order-save-prepared-for">
+                                <option value="">Prepared For (optional)</option>
+                            </select>
+                        </div>
+                    </li>
+                    </ul> 
+            </div>
+        </section>
+    </form>
+</div>

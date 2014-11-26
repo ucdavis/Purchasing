@@ -1,0 +1,24 @@
+﻿@model ReviewOrderViewModel
+
+<section id="history" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header showInNav">Order History</header>
+
+    <div class="section-contents">
+        <table class="noicon">
+            <tbody>
+                @foreach (var tracking in Model.OrderTracking.OrderBy(a => a.DateCreated).ThenBy(t=>t.StatusCode.Level))
+                {
+                    <tr>
+                        <td>@tracking.DateCreated</td>
+                        <td>@tracking.Description</td>
+                        <td>@tracking.StatusCode.Name</td>
+                        <td>@tracking.User.FullName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+</section>

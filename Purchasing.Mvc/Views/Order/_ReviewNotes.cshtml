@@ -1,0 +1,47 @@
+﻿@model ReviewOrderViewModel
+
+<section id="notes" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">
+        <div class="col1 showInNav">Order Notes</div>
+        <div class="col2">
+            <a href="#" class="button" id="add-note">Add Note</a>
+        </div>
+    </header>
+
+    <div class="section-contents">
+        @if (!Model.Comments.Any())
+        {
+            <span class="notes-not-found">There Are No Notes Attached To This Order</span>
+        }
+        <table class="noicon">
+            <tbody>
+                @foreach (var notes in Model.Comments)
+                {
+                    <tr>
+                        <td>@notes.DateCreated.ToString("d")</td>
+                        <td>@notes.Text</td>
+                        <td>@notes.User.FullName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*<footer class="ui-corner-bottom"></footer>*@
+
+</section>
+
+<div id="notes-dialog" title="Add Order Notes" style="display:none;">
+
+    <textarea id="notes-box" style="width: 370px; height: 110px;"></textarea>
+
+</div>
+
+<script id="comment-template" type="text/x-jquery-tmpl">
+    <tr>
+        <td>${datetime}</td>
+        <td>${txt}</td>
+        <td>${user}</td>
+    </tr>
+</script>

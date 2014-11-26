@@ -1,0 +1,121 @@
+﻿@using Purchasing.Core.Domain
+@model ReportPermissionsViewModel
+
+@{
+    ViewBag.Title = "Permissions Report";
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index", "Report", new { @class = "button" })</li>
+	</ul>
+}
+
+@section AdditionalScripts {
+ 
+    <script type="text/javascript">
+        $(function () {
+            $("#tabs").tabs();
+        });
+    </script>
+    
+}
+
+@helper DisplayWorkgroupType(Workgroup wk)
+{
+    if (wk.Administrative || wk.IsFullFeatured)
+    {
+        <text>(</text>
+        if (wk.Administrative && wk.IsFullFeatured)
+        {
+            <text>Admin, Shared or Cluster</text>
+        }
+        else
+        {
+            if (wk.Administrative)
+            {
+                <text>Admin</text>
+            }
+            if (wk.IsFullFeatured)
+            {
+                <text>Shared or Cluster</text>
+            }
+        }
+        <text>)</text>
+    }
+}
+
+<div id="tabs">
+    
+    <ul>
+        <li><a href="#byworkgroup">By Workgroup</a></li>
+        <li><a href="#byuser">By User</a></li>
+    </ul>
+
+
+    <div id="byworkgroup">
+        @foreach (var wk in Model.Workgroups.Where(a => a.Permissions.Any()).OrderBy(a => a.Name))
+        {
+    
+            <section class="display-form">
+        
+                <header class="ui-widget ui-widget-header">
+                    @wk.Name
+                    @DisplayWorkgroupType(wk)
+                </header>
+
+                <div class="section-contents">
+            
+                    @{
+                    var perms = Model.Permissions.Where(a => a.Workgroup == wk).OrderBy(a => a.Role.Name);
+                    var roles = perms.Select(a => a.Role).Distinct();
+                    }
+
+                    @foreach (var role in roles)
+                    {
+                        var people = perms.Where(a => a.Role == role);
+
+                        <h3>@role.Name</h3>
+                        <ul>
+                            @foreach (var person in people)
+                            {
+                                <li>@(string.Format("{0} {1}", person.User.FullName, person.IsAdmin ? "*" : string.Empty))</li>    
+                            }
+                        </ul>    
+                    }
+                </div>
+
+            </section>
+        }
+    </div>
+
+    <div id="byuser">
+    
+        @foreach (var user in Model.Permissions.Select(a => a.User).Distinct().OrderBy(a => a.LastName))
+        {
+        
+            <section class="display-form">
+            
+                <header class="ui-widget ui-widget-header">@user.FullName</header>
+            
+                @{
+                var perms = Model.Permissions.Where(a => a.User == user).OrderBy(a => a.Workgroup.Name).ThenBy(a => a.Role.Level);
+                }
+            
+                <ul>
+                    @foreach (var perm in perms)
+                    {
+                        <li>@(string.Format("{0} ( {1} ) {2}", perm.Workgroup.Name, perm.Role.Name, perm.IsAdmin ? "*" : string.Empty))
+                            @DisplayWorkgroupType(perm.Workgroup)
+                        </li>
+                    }
+                </ul>
+
+            </section>
+        
+        }
+
+    </div>
+    * denotes permission is inherited from an administrative workgroup.
+</div>

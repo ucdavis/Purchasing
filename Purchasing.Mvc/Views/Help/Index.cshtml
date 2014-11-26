@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "PrePurchasing Help";
+}
+
+
+<div id="top" class="container" style="width: 100%; font-weight: bold;">
+    <p>
+        Use the below links to get help and make suggestions to improve PrePurchasing.
+    </p>
+</div>
+
+<div id="keeper">
+<section id="suggestion" class="container split" style="margin-right: 17px;">
+    <header>
+        <a href="https://ucdavis.uservoice.com/forums/126891-purchasing">
+        <img src='@Url.Content("~/Images/feedback.png")' alt='feedback'/>
+        </a>
+    </header>
+    
+    <div class="contents">
+        
+        <p>Help make PrePurchasing better with your ideas</p>
+        <ul>
+            <li>See a suggestion you like?  Vote for it!</li>
+            <li>Make your own suggestions</li>
+        </ul>
+    </div>
+
+</section>
+    <section id="support" class="container split">
+        <header>
+            <a href="https://secure.caes.ucdavis.edu/help/Ticket/Submit?appName=opp?appName=opp" target="_blank">
+                <img src='@Url.Content("~/Images/gethelp.png")' alt="get help"/>
+            </a>
+        </header>
+    
+        <div class="contents">
+        
+            <p>Need some help?  Try submitting a ticket to our help desk.</p>
+
+        </div>
+
+    </section>
+    <section id="dept-admins" class="container split" style="margin-right: 17px;">
+        <header>
+            
+            <a href='@Url.Action("Contact", "User")'>
+                <img src='@Url.Content("~/Images/gethelp.png")' alt="Who should I contact"/>
+            </a>
+        </header>
+    
+        <div class="contents">
+        
+            <p>Who should I contact?</p>
+            <ul>
+                <li>What Workgroups do you belong to?</li>
+                <li>Who are the Departmental Admins for those workgroups?</li>
+                <li>Have a technical questions instead? Try the other help button.</li>
+            </ul>
+
+        </div>
+
+    </section>
+    <section id="faq" class="container split">
+        <header>
+            <a class="button" href="https://ucdavis.uservoice.com/knowledgebase" target="_blank">
+                Knowledge Base
+            </a>
+        </header>
+    
+        <div class="contents">
+        
+            <p>Try our knowledge base.</p>
+
+        </div>
+
+    </section>
+</div>
+
+@section AdditionalScripts
+{
+    <style type="text/css">
+        .container { display: inline-block;margin: .5em 0;padding: 1em;}
+        .split {width: 47%;float: left;}
+        .container header { margin: auto;padding: 0;color: #014A81; }
+        .container ul { margin: 0 20px;}
+    </style>
+}

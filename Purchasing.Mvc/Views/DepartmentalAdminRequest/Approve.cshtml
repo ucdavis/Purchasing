@@ -1,0 +1,174 @@
+﻿@model Purchasing.Web.Controllers.DepartmentalAdminRequestViewModel
+
+@{
+    ViewBag.Title = "Approve";
+
+}
+
+@{
+    Bundles.Reference("css/single/jquery.multiselector.css");
+    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
+}
+
+@section AdditionalScripts{
+ 
+    <script type="text/javascript">
+
+        $(function () {
+            var userUrl = "@Url.Action("SearchOrgs", "DepartmentalAdminRequest")";            
+            $("#User_Organizations").multiSelector({dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true});
+            $("#Existing_Organizations").multiSelector({dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true});
+        })
+
+    </script>
+
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index", new { }, new { @class = "button" })</li>
+	</ul>
+}
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    @Html.HiddenFor(x => x.DepartmentalAdminRequest.Id)
+    @Html.HiddenFor(x => x.DepartmentalAdminRequest.FirstName)
+    @Html.HiddenFor(x => x.DepartmentalAdminRequest.LastName)
+    @Html.HiddenFor(x => x.DepartmentalAdminRequest.Email)
+
+    @Html.Partial("_daRequest")
+}
+
+<section class="display-form">
+    <header class="ui-widget-header ui-corner-top">All Existing Related Departmental Administrators</header>
+
+    <div class="section-contents">
+    @foreach (var email in Model.AllExistingUsers)
+    {
+        var emailString = string.Format("mailto:{0}", email);
+        <a href="@emailString">@Html.Encode(email)</a>@Html.Encode(";")
+    }
+    </div>
+</section>
+
+<section class="display-form">
+    <header class="ui-widget-header ui-corner-top">Org Details</header>
+
+    <div class="section-contents">
+        
+        <dl>
+            @foreach (var org in Model.Organizations)
+            {
+                var nameAndId = string.Format("{0} ({1})", org.Name, org.Id);
+                <dt>
+                    <h2>@nameAndId</h2>
+                </dt>
+                    
+                foreach (var email in Model.OrgsExistingUsers.Where(a => a.Key == org.Id))
+                {
+                    <dd>
+  
+                        <div class="display-details">
+                                     
+                            @{
+                                var url = string.Format("http://www.ucdavis.edu/search/directory_results.shtml?filter={0}", email.Value);
+                                var emailString = string.Format("mailto:{0}", email.Value);
+                            }
+                            <a class="button" href="@url" target="_blank">Lookup</a>
+                            <a href="@emailString">@Html.Encode(email.Value)</a>                                                       
+                        </div>
+                    </dd>
+                }
+            }
+        </dl>
+
+
+    </div>
+    <footer class="ui-corner-bottom"></footer>
+
+</section>
+
+    
+<section class="display-form">
+    <header class="ui-widget-header ui-corner-top">Child Organizations With Existing Users</header>
+
+    <div class="section-contents">
+        
+        <dl>
+            @foreach (var org in Model.OrganizationsWhithChildUsers)
+            {
+                var nameAndId = string.Format("{0} ({1})", org.Name, org.Id);
+                <dt>
+                    <h2>@nameAndId</h2>
+                </dt>
+                    
+                foreach (var email in Model.ChildOrgsExistingUsers.Where(a => a.Key == org.Id))
+                {
+                    <dd>
+  
+                        <div class="display-details">
+                                     
+                            @{
+                    var url = string.Format("http://www.ucdavis.edu/search/directory_results.shtml?filter={0}", email.Value);
+                    var emailString = string.Format("mailto:{0}", email.Value);
+                            }
+                            <a class="button" href="@url" target="_blank">Lookup</a>
+                            <a href="@emailString">@Html.Encode(email.Value)</a>                                                       
+                        </div>
+                    </dd>
+                }
+            }
+        </dl>
+
+
+    </div>
+    <footer class="ui-corner-bottom"></footer>
+
+</section>
+
+<section class="display-form">
+    <header class="ui-widget-header ui-corner-top">Parent Organizations With Existing Users</header>
+
+    <div class="section-contents">
+        
+        <dl>
+            @foreach (var org in Model.OrganizationsWhithParentUsers)
+            {
+                var nameAndId = string.Format("{0} ({1})", org.Name, org.Id);
+                <dt>
+                    <h2>@nameAndId</h2>
+                </dt>
+                    
+                foreach (var email in Model.ParentOrgsExistingUsers.Where(a => a.Key == org.Id))
+                {
+                    <dd>
+  
+                        <div class="display-details">
+                                     
+                            @{
+                    var url = string.Format("http://www.ucdavis.edu/search/directory_results.shtml?filter={0}", email.Value);
+                    var emailString = string.Format("mailto:{0}", email.Value);
+                            }
+                            <a class="button" href="@url" target="_blank">Lookup</a>
+                            <a href="@emailString">@Html.Encode(email.Value)</a>                                                       
+                        </div>
+                    </dd>
+                }
+            }
+        </dl>
+
+
+    </div>
+
+    <footer class="ui-corner-bottom"></footer>
+
+</section>
+
+
+
+
+

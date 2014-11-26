@@ -1,0 +1,35 @@
+﻿@model Purchasing.Mvc.Models.WorkgroupAccountModel
+
+@{
+    ViewBag.Title = "Edit Account";
+}
+
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+        $(function () {
+
+            $("#account-search").autocomplete({
+
+                source: function (request, response) {
+
+                    var url = '@Url.Action("SearchKfsAccounts", "Accounts")';
+
+                    $.getJSON(url, { searchTerm: request.term }, function (result) {
+
+                        var data = $.map(result, function (item) { return { label: item.Name, value: item.Id }; });
+                        response(data);
+
+                    });
+
+                },
+                minLength: 3,
+                select: function (event, ui) {
+                    $("#WorkgroupAccount_Account").val(ui.item.value);
+                }
+            });
+        });
+    </script>
+}
+
+@Html.Partial("_AccountForm")

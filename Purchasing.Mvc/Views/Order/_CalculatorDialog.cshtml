@@ -1,0 +1,28 @@
+﻿<div id="calculator-dialog" title="Price Calculator" style="display:none;">
+    <form id="calculator-form">
+        <section class="section-contents">
+            <div class="section-text">
+                <p>
+                    Enter a quantity and total value for this line item, and price will be calculated for you.  
+                    After you are finished press 'Accept Values' to insert the quantity and price values into the underlying line item.
+                </p>    
+            </div> 
+            <ul> 
+                <li>           
+                <div class="editor-field">
+                    <select><option>Calculate Price with Extended Price</option></select><br />
+                </div>
+                </li>       
+                <li><div class="editor-label">Quantity:</div>
+                    <div class="editor-field"><input id="calculator-quantity" type="text" placeholder="Quantity"/></div>
+                </li>
+                <li><div class="editor-label">Extended Total:</div>
+                    <div class="editor-field"><input id="calculator-total" type="text" placeholder="Total" title="Extended Total is the total price of all items on this line" /></div>
+                </li>
+                <li><div class="editor-label">Price:</div>
+                    <div class="editor-field"><input id="calculator-price" disabled="disabled" type="text" placeholder="Price" title="The price of one unit" /></div>
+                </li>
+            </ul>
+        </section>
+    </form>
+</div>

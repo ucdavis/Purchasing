@@ -1,0 +1,167 @@
+﻿@model ReviewOrderViewModel
+
+<section id="line-items" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header showInNav">Line Items </header>
+   
+    <div class="section-contents">
+        <div class="col1">
+            @if (Model.Order.ApUser != null)
+            {                
+                <span>Assigned to <strong>@Model.Order.ApUser.FullName</strong> for Accounts Payable</span>
+            }
+            else
+            {
+                <span>&nbsp;</span>
+            }
+        </div>
+        <div class="col2">
+            @if (Model.CanAssignApUser)
+            {
+                var bttnText = "Assign AP User";
+                if (Model.Order.ApUser != null)
+                {
+                    bttnText = "Re-Assign AP User";
+                }
+                @Html.ActionLink(bttnText, "AssignAccountsPayableUser", new {id = Model.Order.Id}, new {@class = "button"})
+            }
+            @if (Model.CanReceiveItems)
+            {
+                @Html.ActionLink("Receive Items", "ReceiveItems", new {id = Model.Order.Id}, new {@class = "button"})
+                @Html.ActionLink("Pay Invoice", "ReceiveItems", new {id = Model.Order.Id, payInvoice = true}, new {@class = "button"})
+            }
+
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Qty.</th>
+                    <th>Unit</th>
+                    <th>Catalog #</th>
+                    <th>Description</th>
+                    <th>Commodity</th>
+                    <th>Unit $</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ var odd = false; var count = 0;}
+                @foreach (var line in Model.LineItems)
+                {
+                    count++;
+                    var hasLinesplits = Model.HasLineSplits;
+                    var hasMoreInfo = line.Commodity != null || !string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url);
+                
+                    <tr class="row-item @(odd ? "row-odd" : "row-even") @(!hasLinesplits && !hasMoreInfo ? "row-bottom" : string.Empty)">
+                        <td class="lineitem">@count</td>
+                        <td>@string.Format("{0:0.###}", line.Quantity)</td>
+                        <td>@line.Unit</td>
+                        <td>@(string.IsNullOrWhiteSpace(line.CatalogNumber) ? "n/a" : line.CatalogNumber)</td>
+                        <td>@line.Description</td>
+                        <td>@(line.Commodity != null ? line.Commodity.Name : "n/a")</td>
+                        <td>@line.UnitPrice.ToString("c")</td>
+                    </tr>
+                              
+                    if (hasLinesplits)
+                    {
+                        <tr class="@(odd ? "row-odd" : "row-even") @(hasMoreInfo ? "row-bottom" : string.Empty)">
+                            <td class="lineitem"></td>
+                            <td colspan="7">
+                                @*<div class="row-split ui-corner-all @(line.UnitPrice * line.Quantity != line.Splits.Sum(a => a.Amount) ? "row-split-prob" : string.Empty)">*@
+                                <div class="row-split ui-corner-all" style="width:90%">
+                                    <table>
+                                        <thead>
+                                            <tr><td colspan="4">Line Item Split</td></tr>
+                                            <tr>
+                                                <th>Account</th>
+                                                <th>SubAccount</th>
+                                                <th>Project</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var split in Model.Splits.Where(x => x.LineItem == line))
+                                            {  
+                                                <tr>
+                                                    <td>@(string.IsNullOrWhiteSpace(split.Account) ? "n/a" : split.AccountDisplay)</td>
+                                                    <td>@(string.IsNullOrWhiteSpace(split.SubAccount) ? "n/a" : Model.GetSubAccountDisplayForSplit(split))</td>
+                                                    <td>@(string.IsNullOrWhiteSpace(split.Project) ? "n/a" : split.Project)</td>
+                                                    <td>@split.Amount</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </td>
+                        </tr>                    
+                    }
+
+
+                    if (hasMoreInfo)
+                    {
+                        <tr class="@(odd ? "row-odd" : "row-even") row-bottom">
+                            <td class="lineitem"></td>
+                            <td colspan="7" class="extra-info" style="word-wrap: break-word">
+                                @if (line.Commodity != null)
+                                {
+                                    <div class="line-commodity"><strong>Commodity:</strong> @string.Format("[{0}] {1}", line.Commodity.Id, line.Commodity.Name)</div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(line.Url))
+                                {
+                                    var validUrl = Uri.IsWellFormedUriString(line.Url, UriKind.Absolute);
+                                    <div class="line-url">
+                                        <strong>Url:</strong>
+                                        @if (validUrl)
+                                        {
+                                            <a href="@line.Url">@line.Url</a>   
+                                        }
+                                        else
+                                        {
+                                            @line.Url
+                                        }
+                                    </div>    
+                                }
+                                @if (!string.IsNullOrWhiteSpace(line.Notes))
+                                {
+                                    <div class="line-notes"><strong>Notes:</strong> @line.Notes</div>    
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                    odd = !odd;
+                }
+            </tbody>
+            <tfoot>
+                <tr class="item-footer">
+                    <td colspan="5">&nbsp;</td>
+                    <td class="label row-total-label">Subtotal:</td>
+                    <td class="row-total-value">@Model.Order.TotalFromDb.ToString("c")</td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="5">&nbsp;</td>
+                    <td class="label row-total-label">Estimated Freight:</td>
+                    <td class="row-total-value">@Model.Order.FreightAmount.ToString("c")</td>            
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="5">&nbsp;</td>
+                    <td class="label row-total-label">Estimated Shipping & Handling:</td>
+                    <td class="row-total-value">@Model.Order.ShippingAmount.ToString("c")</td>            
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="5"></td>
+                    <td class="label row-total-label">Estimated Tax (@string.Format("{0:f}%", Model.Order.EstimatedTax)):</td>
+                    <td class="row-total-value">@Model.Order.Tax().ToString("c")</td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="5"><em>*All totals are estimates, final values are determined after order is uploaded to KFS.</em></td>
+                    <td class="label row-total-label row-total-grandtotal">Grand Total:</td>
+                    <td class="row-total-value">@Model.Order.GrandTotalFromDb.ToString("c")</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+
+</section>

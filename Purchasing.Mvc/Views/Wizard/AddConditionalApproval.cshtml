@@ -1,0 +1,94 @@
+﻿@model Purchasing.Core.Domain.ConditionalApproval
+
+@{
+    ViewBag.Title = Model.Workgroup.Name;
+    ViewBag.StepName = "Add Conditional Approval(s)";
+    ViewBag.Previous = Url.Action("Vendors", "Wizard", new { id = Model.Workgroup.Id});
+    ViewBag.Skip = Url.Action("ConditionalApprovals", "Wizard", new { id = Model.Workgroup.Id });
+    ViewBag.IsAdministrative = Model.Workgroup.Administrative;
+    ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
+}
+
+@section AdditionalScripts
+{
+    <style type="text/css">
+    
+        /* override the default width */
+        form section div.editor-label {width: 150px;}
+    
+    </style>
+}
+
+@{
+    var helpText = "A <strong>Conditional Approval</strong> is a question that is asked for each order created in the workgroup that requires a specific person to approve the order if answered \"yes\". This is in addition to the other approvals an order may require.</br>" +
+                   "An example of this could be a computer purchase that must be checked by the IT staff first.</br>" +
+                   "You may have many or no Conditional Approvals.</br>" +
+                   "If the Primary Approver is away, the Secondary Approver may approve the order in their absence.</br>" +
+                   "If both of the conditional approvers are away, the order cannot be approved until one of them returns";
+}
+
+@Html.Partial("_StatusBar", Model.Workgroup.Id)
+
+@using(Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.Partial("_Navigation")
+
+    <section class="ui-corner-all">
+        @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+        <header class="ui-corner-top ui-widget-header">ConditionalApproval <a href="#" id="help-accounts-page" class="ui-icon ui-icon-help showTip" title="@helpText" ></a></header>
+        
+
+            <div class="section-text">
+
+                @*<h4>Form Header</h4>*@
+                @*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+                <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+
+            </div>
+        <div class="section-contents">
+
+            <ul>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.Question)<span>*</span> 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.Question)
+                        @Html.ValidationMessageFor(model => model.Question)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.PrimaryApprover) <span class="required">*</span>
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBox("primaryApproverParm", null, new {data_val = "true", data_val_required = "Primary Approver is required", placeholder = "Kerberos or Email"})
+                        @Html.ValidationMessage("primaryApproverParm")
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.SecondaryApprover) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBox("secondaryApproverParm", null, new {placeholder = "Kerberos or Email"})
+                        @Html.ValidationMessage("secondaryApproverParm")
+                    </div>
+                </li>
+                @Html.Hidden("id", @Model.Workgroup.Id)
+					
+            </ul>
+
+        </div>
+
+        <footer class="ui-corner-bottom"></footer>
+	
+    </section>
+    @Html.Partial("_Navigation")
+}
+
+
+

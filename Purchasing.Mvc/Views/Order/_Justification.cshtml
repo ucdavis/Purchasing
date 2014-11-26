@@ -1,0 +1,26 @@
+﻿@model OrderModifyModel
+
+<section id="justification-section">
+    <header class="ui-widget-header ui-corner-top">Justification</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>
+                Please enter your justification for placing this order request.
+            </p>    
+        </div>
+
+        <ul>
+            <li>
+                <div class="editor-label required">Justification <span class="required">*</span></div>
+                <div class="editor-field">
+                    <textarea name="justification" placeholder="Enter your justification for this order" rows="4" cols="50" data-val="true" data-val-required="Please specify a reason for this order">@Model.Order.Justification</textarea>
+                    <span data-valmsg-for="justification" data-valmsg-replace="true"></span>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</section>
+

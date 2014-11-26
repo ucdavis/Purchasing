@@ -1,0 +1,153 @@
+﻿@model Purchasing.Web.Controllers.DepartmentalAdminModel
+
+@{
+	ViewBag.Title = "Create Departmental Admin";
+
+}
+
+@{
+    Bundles.Reference("css/single/jquery.multiselector.css");
+    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+        @if (!string.IsNullOrWhiteSpace(Model.User.Id))
+        {
+            <li>@Html.ActionLink("Clone User", "Clone", "Admin", new {id = Model.User.Id}, new {@class="button"})</li>
+        }
+		<li>@Html.ActionLink("Back to List", "Index", null, new {@class="button"})</li>
+	</ul>
+}
+
+@section AdditionalScripts{
+ 
+    <script type="text/javascript">
+
+        $(function () {
+//            $("#User_Organizations").multiSelector({ useRemote: false });
+            
+            var userUrl = "@Url.Action("SearchOrgs")";            
+            $("#User_Organizations").multiSelector({dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true});
+        })
+
+    </script>
+
+        <script type="text/javascript">
+        $(document).ready(function() {
+            // attach event handlers
+            var userLookupBtn = $("#userLookupBtn");
+            
+            if (userLookupBtn.length > 0) {
+                userLookupBtn.click(function() {
+                    Lookup();
+                });
+            }
+        });
+
+
+        function Lookup() {
+            var userUrl = "@Url.Action("FindUser")";
+            var searchTerm = $("#userLookup").val();
+
+            $.getJSON(userUrl, {SearchTerm: searchTerm}, function(results) {
+                if(results == undefined) {
+                    alert("User Not Found");
+                }
+                else {
+                    $("#User_FirstName").val(results[0].FirstName);
+                    $("#User_LastName").val(results[0].LastName);
+                    $("#User_Email").val(results[0].Email);
+                    $("#User_Id").val(results[0].id);       
+                     if(results[0].IsActive == true) {
+                        if($("#User_IsActive").prop("checked")) {
+                            $("#User_IsActive").prop("checked", true);
+                        }
+                        else {
+                             $("#User_IsActive").change();
+                        }
+                    }
+                    else {
+                        if($("#User_IsActive").prop("checked") != false) {
+                            $("#User_IsActive").prop("checked", false);
+                            $("#User_IsActive").change();
+                        } else {
+                            $("#User_IsActive").prop("checked", false);
+                        }
+                    }
+                }
+
+            } );
+        }
+
+   </script>
+}
+
+
+@using (Html.BeginForm("ModifyDepartmental", "Admin")) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section class="display-form">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-widget-header ui-corner-top">Create Departmental Admin</header>
+    
+        <div class="section-text">
+	        @*<h4>Form Header</h4>*@
+	        @*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+	        <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>        
+        </div>
+
+    <div class="section-contents">
+
+        <ul>
+            @if (string.IsNullOrWhiteSpace(Model.User.Id))
+            {
+                <li>
+                    <div class="editor-label">User Lookup</div>
+                    <div class="editor-field">
+                        <input id="userLookup" class="text-box single-line" type="text" placeholder="KerberosID or email"/>
+                        <input id="userLookupBtn" type="button" value="Lookup User" class="button ui-button ui-widget ui-state-default ui-corner-all" role="button" aria-disabled="false">
+                    </div>
+                </li>
+            }
+            
+            @Html.EditorFor(x => x.User)
+
+            <li>
+                <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>
+@*                                <div class="editor-field">
+                    @this.MultiSelect("User.Organizations").Options(Model.Organizations, x=>x.Id, x=> string.Format("{0} ({1})", x.Name, x.Id)).Selected(Model.User.Organizations.Select(x=>x.Id))
+                </div>*@
+                <select id="User_Organizations" name="orgs" multiple="" >
+                    @if(Model.User.Organizations != null)
+                    {
+                        foreach(var a in Model.User.Organizations)
+                        {
+                            <option selected="" value="@a.Id">@(string.Format("{0} ({1})", a.Name, a.Id))</option>
+                        }
+                    }
+                </select>
+                @Html.ValidationMessageFor(a => a.User.Organizations)
+            </li>
+
+            <li>
+                @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+                <div class="editor-label">&nbsp;</div>
+                <div class="editor-field">
+                    <input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Index")
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
+
+
+</section>
+}
+
+
+
+

@@ -1,0 +1,100 @@
+﻿@model Purchasing.Mvc.Models.WorkgroupAddressListModel
+
+@{
+	ViewBag.Title = "Addresses " + Model.Workgroup.Name;
+}
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li>@Html.ActionLink("Create New", "AddAddress", new { id = @Model.Workgroup.Id }, new { @class = "button" })</li>
+        <li>@Html.ActionLink("Back to Workgroup", "Details", new { id = @Model.Workgroup.Id }, new { @class = "button" })</li>
+	</ul>
+}
+
+
+<table class='dt-table'>
+	<thead>
+		<tr>
+			<th></th>
+			<th>
+				Name
+			</th>
+		    <th>
+		        Building
+		    </th>
+            <th>Building Code</th>
+			<th>
+				Room
+			</th>
+			<th>
+				Address
+			</th>
+			<th>
+				City
+			</th>
+			<th>
+				State
+			</th>
+			<th>
+				Zip
+			</th>
+			<th>
+				Phone
+			</th>
+
+			<th></th>
+
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model.WorkgroupAddresses) {
+		<tr class="@(odd ? "odd": "even")">
+			<td>
+				<a href='@Url.Action("AddressDetails", new {id=item.Workgroup.Id, addressid= item.Id})' class="ui-icon ui-icon-document">
+				</a>
+				<a href='@Url.Action("EditAddress", new { id = item.Workgroup.Id, addressid = item.Id })' class="ui-icon ui-icon-pencil">
+				</a>
+			</td>
+			<td>
+                @Html.ActionLink(item.Name, "AddressDetails", "Workgroup", new {id=item.Workgroup.Id, addressid = item.Id}, new {})
+			</td>
+		    <td>
+		        @item.Building
+		    </td>
+		    <td>
+		        @Html.Encode(item.BuildingCode != null ? item.BuildingCode.Id : string.Empty)		        
+
+		    </td>
+			<td>
+				@item.Room
+			</td>
+			<td>
+				@item.Address
+			</td>
+			<td>
+				@item.City
+			</td>
+			<td>
+				@item.State
+			</td>
+			<td>
+				@item.Zip
+			</td>
+			<td>
+				@item.Phone
+			</td>
+							<td>
+						<a href='@Url.Action("DeleteAddress", new { id = item.Workgroup.Id, addressid = item.Id })' class="ui-icon ui-icon-trash">
+						</a>
+					</td>
+		
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+
+
+

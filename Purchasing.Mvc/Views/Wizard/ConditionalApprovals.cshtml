@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Purchasing.Core.Domain.ConditionalApproval>
+
+@{
+    ViewBag.StepName = "Confirm Conditional Approvals";
+    ViewBag.Previous = Url.Action("Addresses", "Wizard", new { id = ViewBag.WorkgroupId });
+    ViewBag.Next = Url.Action("Index", "Workgroup");
+    ViewBag.ListPage = true;
+    ViewBag.IsAdministrative = false;
+    ViewBag.LastStep = true;
+}
+
+    @Html.Partial("_StatusBar", (int)ViewBag.WorkgroupId)
+    @Html.Partial("_Navigation")
+    <nav class="col2">
+        <ul class='navigation'>
+            <li>
+                <a href="#" id="help-organizations-page" class="ui-icon ui-icon-help showTip" style="margin-bottom: -6px;" title="
+        You can add any number of additional conditional approvals to this workgroup.
+        Using the wizard, you can only add sub-organizations. </br>If you need to remove them, please use the the admin: workgroup page."></a>
+            </li>
+            <li>@Html.ActionLink("Add More Conditional Approvals", "AddConditionalApproval", new { id = ViewBag.WorkgroupId }, new { @class = "button" })</li>
+        </ul>
+    </nav>
+
+<table class='dt-table no-icon-table'>
+	<thead>
+		<tr>			
+			<th>
+				Question
+			</th>
+			<th>Primary Approver</th>
+            <th>Secondary Approver</th>
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">			
+			<td>
+				@item.Question
+			</td>
+            <td>@item.PrimaryApprover.FullNameAndId</td>				
+            <td>@(item.SecondaryApprover == null ? "n/a" : item.SecondaryApprover.FullNameAndId) </td>
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>
+@Html.Partial("_Navigation")
+

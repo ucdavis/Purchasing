@@ -1,0 +1,81 @@
+﻿@using Purchasing.Core.Domain
+@model OrderModifyModel
+
+<section data-bind="visible: showForSplit('None')" id="order-account-section">
+    <header class="ui-widget-header ui-corner-top">
+        <div class="col1">Order Details</div>
+        <div class="col2"><a href="#" title="Click here to learn all about entering order details" id="orderDetails-intro" data-tourid="orderDetails-intro" class="ui-icon ui-icon-help tour-help"></a><div style="clear:both;"></div></div>
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>
+                Select <strong>ONE</strong> of the choices below for the proper accounting/routing information. Select an <strong>account</strong> if it is known, otherwise select the <strong>approver and account manager</strong> the order request should be routed to.
+            </p>
+            <p>
+                If this purchasing request needs to be <strong>split across multiple accounts</strong> you also have the option to <strong>'Split Order Request'</strong> (below) and <strong>'Split By Line'</strong> (above).
+            </p>    
+        </div>
+        <div id="details-select">
+            <a data-bind="css: { selected: orderSplitType() === 'account' }" class="details-option"><input type="radio" data-bind="checked: orderSplitType, event: { change: resetOrderRouting }" name="orderdetails" value="account" id="account" />
+                    <label for="account" class="editor-label">
+						Select an Account
+					</label></a>
+
+
+                @if (Model.IsNewOrder || Model.Order.StatusCode.Id == OrderStatusCode.Codes.Approver)
+                {        
+                        <a data-bind="css: { selected: orderSplitType() === 'approver' }" class="details-option"><input type="radio" data-bind="checked: orderSplitType, event: { change: resetOrderRouting }" name="orderdetails" value="approver" id="approver" />
+                        <label for="approver" class="editor-label">Approver &amp; Account Manager</label></a>
+                }
+                
+                    <a class="details-option"><input data-bind="click: splitByOrder" type="radio" name="orderdetails" value="split" id="split" />
+                    <label for="split" class="editor-label">Split Order Request</label></a>
+
+            <div class="details-content">
+            
+                <div id="account-form" data-bind="visible: orderSplitType() === 'account'">
+                    <h2>Select an account</h2>
+                    <div class="account-container">
+                        <select data-bind="value: account, foreach: $root.accounts" id="Account" name="Account" class="account-number" title="No Account Selected">
+                            <option data-bind="value: id, text: text, attr: { title: title }"></option>
+                        </select>
+                        <span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0 0.1em 0; padding-top: .4em; vertical-align: sub; float: none; width: auto; display: inline;">
+                        <a href="#" title="Search Accounts" class="search-account ui-icon ui-icon-search"></a></span>
+                        <select data-bind="enable: $root.shouldEnableSubAccounts($root.subAccounts), value: subAccount, foreach: $root.subAccounts" name="SubAccount" class="account-subaccount">
+                            <option data-bind="value: id, text: text, attr: { title: title }"></option>
+                        </select>
+                        <input data-bind="value: project" name="Project" type="text" placeholder="Proj" class="account-projectcode" maxlength="10"/>
+                    </div>
+				</div>
+
+                @if (Model.IsNewOrder || Model.Order.StatusCode.Id == OrderStatusCode.Codes.Approver)
+                {   
+                <div id="account-manager" data-bind="visible: orderSplitType() === 'approver'">
+                    <h2>Select an approver &amp; account manager</h2>
+                    <div class="editor-label">Select An Approver:</div>
+                    <div class="editor-field">
+                        @this.Select("approvers").FirstOption("--Select An Approver (Optional)--").Options(Model.Approvers, x => x.Id, x => x.FullNameAndId)
+                    </div>
+                    <div class="editor-label">
+                        Select An Account Manager:
+                    </div>
+                    <div class="editor-field">
+                        <select id="accountmanagers" name="accountmanagers">
+                            <option value="">--Select An Account Manager--</option>
+                            <option value="anymanager">*Any Workgroup Account Manager*</option>
+                            @foreach (var accountManager in Model.AccountManagers)
+                            {
+                            <option value="@accountManager.Id">@accountManager.FullNameAndId</option>   
+                            }
+                        </select>
+                    </div>
+                </div>
+                }
+            </div>
+            <div style="clear: both;">&nbsp;</div>
+        </div>
+    </div>
+
+</section>

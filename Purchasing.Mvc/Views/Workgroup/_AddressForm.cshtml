@@ -1,0 +1,134 @@
+﻿@model Purchasing.Mvc.Models.WorkgroupAddressViewModel
+
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    <section class="ui-corner-all">
+        @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+        <header class="ui-corner-top ui-widget-header">Workgroup Address</header>
+    
+
+        <div class="section-text">
+
+            @*<h4>Form Header</h4>*@
+            @*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+            <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+
+        </div>
+
+        <div class="section-contents">
+
+            <ul>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.WorkgroupAddress.Name)<span>*</span> 
+                    </div>
+                    <div class="editor-field">
+                        @*@Html.EditorFor(model => model.WorkgroupAddress.Name, string.Empty, new {@class="hastip", title="Name for the location, to be displayed to requester."})*@
+                        @Html.TextBoxFor(model => model.WorkgroupAddress.Name, new { @class = "showTip", title = "Name for the location, to be displayed to requester." })
+                        @Html.ValidationMessageFor(model => model.WorkgroupAddress.Name)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.WorkgroupAddress.Building) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupAddress.Building)
+                        @Html.Hidden("WorkgroupAddress.BuildingCode", Model.WorkgroupAddress.BuildingCode != null ? Model.WorkgroupAddress.BuildingCode.Id : string.Empty)
+                        @Html.ValidationMessageFor(model => model.WorkgroupAddress.Building)
+                    </div>
+                </li>
+                <li>
+                    <div style="margin-left: 126px;">
+                        @if (Model.WorkgroupAddress.BuildingCode != null)
+                        {
+                            <span id="building-code-display" class="display-details green">@Html.Encode("Building Code: " + Model.WorkgroupAddress.BuildingCode.Id)</span>
+                        }
+                        else
+                        {
+                            <span id="building-code-display" class="display-details red">Warning Not a Valid Building</span>
+                        }
+                    </div>
+                </li>
+    
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.WorkgroupAddress.Room) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupAddress.Room)
+                        @Html.ValidationMessageFor(model => model.WorkgroupAddress.Room)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.WorkgroupAddress.Address)<span>*</span> 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupAddress.Address)
+                        @Html.ValidationMessageFor(model => model.WorkgroupAddress.Address)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.WorkgroupAddress.City)<span>*</span> 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupAddress.City)
+                        @Html.ValidationMessageFor(model => model.WorkgroupAddress.City)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.WorkgroupAddress.State)<span>*</span> 
+                    </div>
+                    <div class="editor-field">
+                        @this.Select("WorkgroupAddress.State").Options(Model.States, a => a.Id, a => a.Name).FirstOption("--Select State--").Selected(Model.WorkgroupAddress != null && !string.IsNullOrEmpty(Model.WorkgroupAddress.State) ? Model.WorkgroupAddress.State : string.Empty)
+                        @*@Html.EditorFor(model => model.WorkgroupAddress.State)*@
+                        @Html.ValidationMessageFor(model => model.WorkgroupAddress.State)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.WorkgroupAddress.Zip)<span>*</span> 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupAddress.Zip)
+                        @Html.ValidationMessageFor(model => model.WorkgroupAddress.Zip)
+                        <span style="font-style: italic; margin-left: 10px;">* When shipping to campus, use 95616-5270 for proper tax calculation.</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.WorkgroupAddress.Phone) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.WorkgroupAddress.Phone)
+                        @Html.ValidationMessageFor(model => model.WorkgroupAddress.Phone)
+                    </div>
+                </li>
+                @Html.HiddenFor(model => model.WorkgroupAddress.Id)
+                <li>
+                    @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+                    <div class="editor-label">&nbsp;</div>
+                    <div class="editor-field">
+                        <input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Addresses", new { id = @Model.Workgroup.Id })
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+
+    </section>
+}
+
+<script type="text/javascript">
+    $(function () {
+        $(".showTip").qtip({ position: { my: 'left middle', at: 'right middle' } });
+    });
+</script>

@@ -1,0 +1,42 @@
+﻿
+@model Purchasing.Core.Domain.AutoApproval
+
+
+@{
+    ViewBag.Title = "Delete";
+
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index", new { showAll = @ViewBag.ShowAll }, new { @class = "button" })</li>
+	</ul>
+}
+
+<h3>Are you sure you want to delete this auto approval?</h3>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+
+<section class="display-form ui-corner-all">
+	<header class="ui-corner-top ui-widget-header">Auto Approval</header>
+	<ul>
+
+        @Html.Partial("_AutoApprovalDetails")
+		
+		<li>
+			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			<div class="display-label">&nbsp;</div>
+			<div class="display-details">
+			<input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "Index", new {showAll = @ViewBag.ShowAll})
+			</div>
+		</li>
+	</ul>
+
+</section>
+}
+
+
+
+

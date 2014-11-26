@@ -1,0 +1,49 @@
+﻿@model System.Linq.IQueryable<Purchasing.Core.Domain.ConditionalApproval>
+
+@{
+    ViewBag.Title = "Conditional Approvals by Organization";
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+        <li>@Html.ActionLink("Back to Organization", "Details", "Organization", new { id = ViewBag.OrganizationId }, new { @class="button" })</li>
+	</ul>
+}
+
+<section class="display-form ui-corner-all">
+
+    <header class="ui-corner-top ui-widget-header">
+    </header>
+
+    <div class="section-contents">
+        <div class="col1"></div><div class="col2">@Html.ActionLink("Create Approval", "Create", "ConditionalApproval", new { orgId = ViewBag.OrganizationId }, new { @class = "button" })</div>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Organization</th>
+                    <th>Primary Approver</th>
+                    <th>Secondary Approver</th>
+                    <th>Question</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ca in Model)
+                {
+                    <tr>
+                        <td><a href='@Url.Action("Edit", new { ca.Id })' class="ui-icon ui-icon-pencil" title="Edit approval"><img src='@Url.Image("edit.png")'></a></td>
+                        <td>@ca.Organization.Name (@ca.Organization.Id)</td>
+                        <td>@ca.PrimaryApprover.FullNameAndIdLastFirst</td>
+                        <td>@(ca.SecondaryApprover == null ? "N/A" : ca.SecondaryApprover.FullNameAndIdLastFirst)</td>
+                        <td>@ca.Question</td>
+                        <td><a href='@Url.Action("Delete", new {ca.Id})' class="ui-icon ui-icon-trash" title="Delete approval"><img src='@Url.Image("delete.png")'></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+</section>

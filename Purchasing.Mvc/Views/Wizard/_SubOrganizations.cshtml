@@ -1,0 +1,36 @@
+﻿@using Purchasing.Core.Domain
+@model IList<Organization>
+
+@*           <div class="wizard-instructions" id="wizard-instructions-table">
+    <p>
+        You can add any number of additional organizations to this workgroup. This provides
+        the ability for administrative workgroups from other organizations to view this
+        workgroup. You are limited to the organizations that have been added to your account.</p>
+        <p>Using the wizard, you can only add sub-organizations. If you need to remove them, please use the the admin: workgroup page. </p>
+</div>*@
+<table class='dt-table no-icon-table no_select'>
+	<thead>
+		<tr class="white_bkgnd">			
+            <th>
+                Name
+            </th>
+			<th>
+				Org Code
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">			
+            <td>
+                @item.Name
+            </td>
+			<td>
+				@item.Id
+			</td>
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>

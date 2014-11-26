@@ -1,0 +1,32 @@
+﻿@model OrderModifyModel
+
+<section id="vendor-section">
+    <header class="ui-widget-header ui-corner-top">Vendor</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>
+                Please select the vendor from where the requested items will be purchased.  If you are unsure of which vendor, leave the drop down as "unspecified".  You may also add a new vendor or search for a vendor from the campus financial system.
+            </p>
+            <p>
+                Note: Creating a new vendor using 'Add Vendor' will not add that vendor to the campus financial system.
+            </p>    
+        </div>
+
+        <ul>
+            <li>
+                <div class="editor-label">&nbsp;</div>
+                <div class="editor-field">
+                    @this.Select("vendor").Options(Model.Vendors, x=>x.Id, x=>x.ShortDisplayName).Selected(Model.Order.Vendor != null ? Model.Order.Vendor.Id : 0).FirstOption("Unspecified").Title("Select a vendor to purchase from. Selecting 'Unspecified' indicates no specific vendor will be associated").Styles(width => "300px")
+                    <span class="field-validation-valid" data-valmsg-for="vendor" data-valmsg-replace="true"></span>
+                    (or)
+                    <a id="add-vendor" class="button" href="#">Add new vendor</a>
+                    (or)
+                    <a id="search-vendor" class="button" href="#">Search Vendor</a>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</section>

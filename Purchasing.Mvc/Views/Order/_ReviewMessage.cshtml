@@ -1,0 +1,9 @@
+﻿@model ReviewOrderViewModel
+
+@if (Model.CanEditOrder && !Model.CanSubmitOrder)
+{
+    <div id="error-message">
+        Warning: You cannot advance this order until it is assigned at least one account. 
+        @Html.ActionLink("Please edit this order", "Edit", new {Model.Order.Id}) and rectify the issue before proceeding.
+    </div>
+}

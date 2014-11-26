@@ -1,0 +1,46 @@
+﻿@model OrderModifyModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@{
+    Bundles.Reference("~/Css/single/fileuploader/fileuploader.css");
+    Bundles.Reference("~/Css/single/chosen.css");
+    Bundles.Reference("~/Css/single/orderrequest.css", pageLocation:"special");
+    
+    Bundles.Reference("scripts/public/order");
+}
+
+@section AdditionalScripts{
+    
+    <script type="text/javascript">
+
+        $(function () {
+            @Html.Partial("_Options")
+
+            purchasing.init(); //Init all base order form js
+
+            purchasing.initEdit(); //Add in the edit functionality
+        });
+
+    </script>
+    
+}
+
+@Html.Partial("_SideNavigation")
+
+<div class="orders-right">
+@using (Html.BeginForm("Edit", "Order", new { Model.Order.Id }, FormMethod.Post, new { id = "order-form" }))
+{
+    <input data-bind="value: adjustRouting" id="adjustRouting" name="adjustRouting" type="hidden" />
+
+    @Html.Partial("_OrderForm")
+}
+</div>
+
+@Html.Partial("_OrderTemplates")
+
+@Html.Partial("_ItemModificationTemplate")
+
+@Html.Partial("_OrderDialogs")

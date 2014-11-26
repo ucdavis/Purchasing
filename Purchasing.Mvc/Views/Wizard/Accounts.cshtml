@@ -1,0 +1,32 @@
+﻿@using Purchasing.Core.Domain
+@model Workgroup
+@{
+    ViewBag.Title = Model.Name;
+    ViewBag.StepName = " Confirm Accounts";
+    ViewBag.Previous = Url.Action("AddAccounts", "Wizard", new { id = Model.Id });
+    ViewBag.Next = Url.Action("Vendors", "Wizard", new { id = Model.Id });
+    ViewBag.ListPage = true;
+    ViewBag.IsAdministrative = Model.Administrative;
+    ViewBag.IsAccountSync = Model.SyncAccounts;
+}
+
+@section AdditionalScripts{
+
+}
+
+@Html.Partial("_StatusBar", Model.Id) 
+	@Html.Partial("_Navigation")
+    <nav class="col2">
+        <ul class='navigation'>
+            <li>
+                <a href="#" id="help-organizations-page" class="ui-icon ui-icon-help showTip" style="margin-bottom: -6px;" title="
+                    You can add any number of additional accounts to this workgroup. 
+                    Using the wizard, you can only add accounts. </br>If you need to remove or edit them, please use the the admin: workgroup page."></a>
+            </li>
+            <li>@Html.ActionLink("Add another account", "AddAccounts", new { Model.Id}, new{@class="button"})</li>
+        </ul>
+    </nav>
+
+@Html.Partial("_AccountsTable", Model.Accounts)
+
+@Html.Partial("_Navigation")

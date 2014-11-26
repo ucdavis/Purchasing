@@ -1,0 +1,53 @@
+﻿@model OrderModifyModel
+
+<section id="shipping-address-section" name="shipping-address">
+    <header class="ui-widget-header ui-corner-top">Shipping Address</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>
+                Please enter the shipping information for this request, which includes who will be receiving the delivery and the delivery location.  Either select from the predefined list, or add a new address as needed.
+            </p>    
+        </div>
+
+    </div>
+
+    <ul>
+        
+        <li><div class="editor-label required">Deliver To: <span class="required">*</span></div>
+            <div class="editor-field">
+                <input name="shipTo" type="text" title="Specify to whom the delivery should be sent." placeholder="Delivery Name" value="@Model.Order.DeliverTo"
+                    data-val="true" data-val-required="Please specify a Deliver To Name" data-val-length="Deliver To can be up to 50 characters" data-val-length-max="50" maxlength="50" />
+                <span data-valmsg-for="shipTo" data-valmsg-replace="true"></span>
+            </div>
+        </li>
+        
+        <li><div class="editor-label">Phone #:</div>
+            <div class="editor-field">
+                <input name="shipPhone" type="phone" title="Specify the phone number of the delivery recipient" placeholder="Delivery Phone Number" value="@Model.Order.DeliverToPhone"
+                    data-val="true" data-val-length="Deliver To Phone can be up to 15 characters" data-val-length-max="15" maxlength="15" /> @*data-val-required="Please Specify a Delivery Phone" *@
+                <span data-valmsg-for="shipPhone" data-valmsg-replace="true"></span>
+            </div>
+        </li>
+
+        <li><div class="editor-label">Email:</div>
+            <div class="editor-field">
+                <input name="shipEmail" type="email" title="Specify the email address of the delivery recipient" placeholder="Delivery Email" value="@Model.Order.DeliverToEmail"
+                    data-val="true" data-val-email="Email address format not valid" data-val-length="Deliver To Email can be up to 50 characters" data-val-length-max="50" maxlength="50" /> @*data-val-required="Please Specify a Delivery Email" *@
+                <span data-valmsg-for="shipEmail" data-valmsg-replace="true"></span>
+            </div>
+        </li>
+
+        <li><div class="editor-label required">Address: <span class="required">*</span></div>
+            <div class="editor-field">
+                @this.Select("shipAddress").Options(Model.Addresses, x=>x.Id,x=>x.DisplayName).Class("required").FirstOption("-- Select an address --").Selected(Model.Order.Address != null ? Model.Order.Address.Id : 0)
+                <span class="field-validation-valid" data-valmsg-for="shipAddress" data-valmsg-replace="true"></span>
+                (or)
+                <a id="add-address" class="button" href="#">Add new Shipping Address</a>
+            </div>
+        </li>
+
+    </ul>
+        
+</section>

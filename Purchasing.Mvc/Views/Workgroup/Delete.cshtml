@@ -1,0 +1,44 @@
+﻿@model Purchasing.Core.Domain.Workgroup
+
+@{
+    ViewBag.Title = "Disable Workgroup";
+}
+
+
+<h3>Are you sure you want to disable this workgroup?</h3>
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+    @Html.Hidden("id", Model.Id)
+
+<section class="display-form ui-corner-all">
+	<header class="ui-corner-top ui-widget-header">Workgroup</header>
+
+    <div class="section-contents">
+    
+    <ul>
+		<li>
+			<div class="display-label">Name</div>
+			<div class="display-details">@Model.Name</div>
+		</li>
+		<li>
+			<div class="display-label">IsActive</div>
+			<div class="display-details">@Model.IsActive</div>
+		</li>
+
+        @Html.HiddenFor(model => model.Id)
+		
+		<li>
+			@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			<div class="display-label">&nbsp;</div>
+			<div class="display-details">
+			<input class="button" type="submit" value="Disable" /> | @Html.ActionLink("Cancel", "Index")
+			</div>
+		</li>
+	</ul>
+
+    </div>
+
+	
+</section>
+}

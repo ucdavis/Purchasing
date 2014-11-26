@@ -1,0 +1,70 @@
+﻿@model IList<UserRoles> 
+<table class='dt-table nofirsticon no_select'>
+	<thead>
+		<tr>
+						
+			<th>
+				FirstName
+			</th>
+			<th>
+				LastName
+			</th>			
+			<th>
+				@*Is Away?*@
+                Status
+			</th>
+            <th>
+				Away Until
+			</th>			
+            <th>
+                Roles
+            </th>
+			
+
+		</tr>
+	</thead>
+	<tbody>
+@{ var odd = false; }
+@foreach (var item in Model) {
+		<tr class="@(odd ? "odd": "even")">
+			
+			<td>
+				@item.User.FirstName
+			</td>
+            <td>
+				@item.User.LastName
+			</td>
+            <td>
+                <span class="away-status">
+				@*@item.User.IsAway*@
+                @if (item.User.IsAway)
+                {
+                    <span class="table-bool-bad">Away</span>
+                }
+                else
+                {
+                    <span class="table-bool-good">Available</span>
+                }
+                </span>
+			</td>           
+            <td>
+                <span class="away-date">
+                    @if (item.User.IsAway)
+                    {
+                        @String.Format("{0:d}", item.User.AwayUntil)    
+                    }
+                </span>
+               
+               @if (ViewBag.HideCalendar == null)
+               {
+                <img src="@Url.Image("calendar.png")" style="float: right;" class="away-btn" data-name="@item.User.FullName" data-userid="@item.User.Id" />
+               }
+            </td>
+            <td>
+                @item.RolesList
+            </td>   
+		</tr>
+		odd = !odd;
+}
+	</tbody>
+</table>

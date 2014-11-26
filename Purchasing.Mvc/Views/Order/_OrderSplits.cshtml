@@ -1,0 +1,57 @@
+﻿<section data-bind="visible: showForSplit('Order')" id="order-split-section" class="" style="display: none;">
+    <header class="ui-widget-header ui-corner-top">
+            <div class="col1">Order Account Splits</div>
+            <div class="col2"><a href="#" title="Click here to learn all about entering order details" id="orderDetails-intro" data-tourid="orderDetails-intro" class="ui-icon ui-icon-help tour-help"></a><div style="clear:both;"></div></div>
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>
+                Please enter the accounts and the distribution amount/percent for each split. The distributed amounts must add up to the Order Total.
+            </p>
+        </div>
+
+        <table id="order-splits">
+            
+            <tbody data-bind="foreach: splits">
+                <tr class="order-split-line">
+                    <td>@Html.Partial("_AccountSelectTemplate")</td>
+                    <td class="account-split-amounts">
+                        <span>$</span><input data-bind="value: amountComputed, splitName: 'amount', valueUpdate: 'afterkeydown'"
+                                             type="text" autocomplete="off" placeholder="amt" class="order-split-account-amount" 
+                                             title="Dollar amount for this account. Will also auto-calculate a percentage. Press Ctrl+Enter to fill with remaining unaccounted $."/>
+                   
+                        <input data-bind="value: percentComputed, splitName: 'percent', valueUpdate: 'afterkeydown'" 
+                               type="text" autocomplete="off" placeholder="pct" class="order-split-account-percent" 
+                               title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2"><a data-bind="click: addOrderSplit" href="#" id="add-order-split" class="biggify" style="float:right;" ><span class="biggify">+</span> Add Split</a></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <table class="order-split-totals">
+        <tr>
+        <td>Split Total</td>
+        <td><span data-bind="text: orderSplitTotal" id="order-split-account-total">$0.00</span></td>
+        </tr>
+        <tr data-bind="css: { red: hasUnaccounted(), green: !hasUnaccounted() }">
+        <td>Unaccounted</td>
+        <td><span data-bind="text: orderSplitUnaccounted" id="order-split-account-difference" class="amount-difference"></span></td>
+        </tr>
+        <tr>
+        <td>Order Total</td>
+        <td><span data-bind="text: grandTotal" id="order-split-total">$0.00</span></td>
+        </tr>
+        </table>
+    </div>
+    <footer>
+        <div class="col1"><a data-bind="click: cancelSplitByOrder" href="#" id="cancel-order-split" class="button" >Cancel Order Split</a><div style="clear:both;"></div></div>
+        <div class="col2"></div>
+    </footer>
+</section>

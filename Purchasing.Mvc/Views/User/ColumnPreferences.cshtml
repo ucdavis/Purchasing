@@ -1,0 +1,340 @@
+﻿@model Purchasing.Core.Domain.ColumnPreferences
+
+@{
+	ViewBag.Title = "Column Preferences";
+}
+
+
+@section SubNav
+{
+    <ul class="navigation">
+        <li>@Html.ActionLink("Back to Profile", "Profile", null, new { @class = "button" })</li>
+        @if(@ViewBag.FromList){
+        <li>@Html.ActionLink("Back to Order List", "Index", "Order", null, new { @class = "button" })</li> 
+        }
+    </ul>
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    <section class="ui-corner-all">
+        <header class="ui-corner-top ui-widget-header">Column Preferences</header>
+
+        <div class="section-contents user-col-pref">
+
+		
+            <ul>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowRequestNumber) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowRequestNumber)
+                        @Html.ValidationMessageFor(model => model.ShowRequestNumber)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowRequestType) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowRequestType)
+                        @Html.ValidationMessageFor(model => model.ShowRequestType)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowWorkgroup) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowWorkgroup)
+                        @Html.ValidationMessageFor(model => model.ShowWorkgroup)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowVendor) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowVendor)
+                        @Html.ValidationMessageFor(model => model.ShowVendor)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowCreatedBy) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowCreatedBy)
+                        @Html.ValidationMessageFor(model => model.ShowCreatedBy)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowCreatedDate) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowCreatedDate)
+                        @Html.ValidationMessageFor(model => model.ShowCreatedDate)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowLineItems) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowLineItems)
+                        @Html.ValidationMessageFor(model => model.ShowLineItems)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowTotalAmount) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowTotalAmount)
+                        @Html.ValidationMessageFor(model => model.ShowTotalAmount)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowStatus) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowStatus)
+                        @Html.ValidationMessageFor(model => model.ShowStatus)
+                    </div>
+                </li>
+
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowApprover) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowApprover)
+                        @Html.ValidationMessageFor(model => model.ShowApprover)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowAccountManager) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowAccountManager)
+                        @Html.ValidationMessageFor(model => model.ShowAccountManager)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowPurchaser) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowPurchaser)
+                        @Html.ValidationMessageFor(model => model.ShowPurchaser)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowAccountNumber) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowAccountNumber)
+                        @Html.ValidationMessageFor(model => model.ShowAccountNumber)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowShipTo) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowShipTo)
+                        @Html.ValidationMessageFor(model => model.ShowShipTo)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowShippingCost) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowShippingCost)
+                        @Html.ValidationMessageFor(model => model.ShowShippingCost)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowAllowBackorder) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowAllowBackorder)
+                        @Html.ValidationMessageFor(model => model.ShowAllowBackorder)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowRestrictedOrder) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowRestrictedOrder)
+                        @Html.ValidationMessageFor(model => model.ShowRestrictedOrder)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowNeededDate) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowNeededDate)
+                        @Html.ValidationMessageFor(model => model.ShowNeededDate)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowShippingType) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowShippingType)
+                        @Html.ValidationMessageFor(model => model.ShowShippingType)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowPurchaseOrderNumber) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowPurchaseOrderNumber)
+                        @Html.ValidationMessageFor(model => model.ShowPurchaseOrderNumber)
+                    </div>
+                </li>                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowTag) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowTag)
+                        @Html.ValidationMessageFor(model => model.ShowTag)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowReferenceNumber) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowReferenceNumber)
+                        @Html.ValidationMessageFor(model => model.ShowReferenceNumber)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowLastActedOnDate) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowLastActedOnDate)
+                        @Html.ValidationMessageFor(model => model.ShowLastActedOnDate)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowDaysNotActedOn) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowDaysNotActedOn)
+                        @Html.ValidationMessageFor(model => model.ShowDaysNotActedOn)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowLastActedOnBy) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowLastActedOnBy)
+                        @Html.ValidationMessageFor(model => model.ShowLastActedOnBy)
+                    </div>
+                </li>         
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowOrderType) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowOrderType)
+                        @Html.ValidationMessageFor(model => model.ShowOrderType)
+                    </div>
+                </li>       
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowOrderReceived) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowOrderReceived)
+                        @Html.ValidationMessageFor(model => model.ShowOrderReceived)
+                    </div>
+                </li>
+                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowOrderPaid) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowOrderPaid)
+                        @Html.ValidationMessageFor(model => model.ShowOrderPaid)
+                    </div>
+                </li>
+                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowFpdCompleted) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowFpdCompleted)
+                        @Html.ValidationMessageFor(model => model.ShowFpdCompleted)
+                    </div>
+                </li>
+                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowHasSplits) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowHasSplits)
+                        @Html.ValidationMessageFor(model => model.ShowHasSplits)
+                    </div>
+                </li>
+                
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.ShowApUser) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ShowApUser)
+                        @Html.ValidationMessageFor(model => model.ShowApUser)
+                    </div>
+                </li>
+
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.DisplayRows) 
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.DisplayRows)
+                        @Html.ValidationMessageFor(model => model.DisplayRows)
+                    </div>
+                </li>
+                                
+                @Html.HiddenFor(model => model.Id)
+                <li>
+
+                    <div class="editor-label">&nbsp;</div>
+                    <div class="editor-field">
+                        <input class="button" type="submit" value="Save column preferences" /> | @Html.ActionLink("Cancel", "Profile")
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+	
+    </section>
+}
+
+
+

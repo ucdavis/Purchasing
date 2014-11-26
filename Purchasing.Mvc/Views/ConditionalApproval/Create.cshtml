@@ -1,0 +1,103 @@
+﻿@using Purchasing.Web.Controllers
+@model Purchasing.Web.Controllers.ConditionalApprovalModifyModel
+
+@{
+	ViewBag.Title = "Create Conditional Approval";
+    var isWorkgroup = Model.ApprovalType == "Workgroup";
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+        @if (isWorkgroup)
+        {
+            <li>@Html.ActionLink("Back to List", "ByWorkgroup", "ConditionalApproval", new { id = ViewBag.WorkgroupId}, new { @class = "button" })</li>    
+        }
+        else
+        {
+            <li>@Html.ActionLink("Back to List", "ByOrg", "ConditionalApproval", new { id = ViewBag.OrganizationId}, new {@class = "button" })</li>
+        }
+		
+	</ul>
+}
+
+@section AdditionalScripts
+{
+    <style type="text/css">
+    
+        /* override the default width */
+        form section div.editor-label {width: 150px;}
+    
+    </style>
+}
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    <section class="ui-corner-all">
+	    <header class="ui-corner-top ui-widget-header">Conditional Approval</header>
+    
+            <div class="section-text">
+        
+	            <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.  Questions are posed as yes/no questions.  Answering "yes" will enforce this additional level of approval to the order request.</p>
+        
+            </div>
+
+
+        <div class="section-contents">
+	            <ul>
+                    
+                    <li>
+			            <div class="editor-label required">
+				            @Html.LabelFor(model => model.Question) <span class="required">*</span>
+			            </div>
+			            <div class="editor-field">
+				            @Html.EditorFor(model => model.Question)
+				            @Html.ValidationMessageFor(model => model.Question)
+			            </div>
+		            </li>
+                    <li>
+			            <div class="editor-label required">
+				            @Html.LabelFor(model => model.PrimaryApprover) <span class="required">*</span>
+			            </div>
+			            <div class="editor-field">
+                            @Html.TextBox("primaryapprover", null, new { data_val = "true", data_val_required = "Primary Approver is required", placeholder = "Kerberos or Email" })
+				            @Html.ValidationMessage("primaryapprover")
+			            </div>
+		            </li>
+                    <li>
+			            <div class="editor-label">
+				            @Html.LabelFor(model => model.SecondaryApprover) 
+			            </div>
+			            <div class="editor-field">
+                            @Html.TextBox("secondaryapprover", null, new { placeholder = "Kerberos or Email" })
+				            @Html.ValidationMessage("secondaryapprover")
+			            </div>
+		            </li>
+
+		            <li>
+			            @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+			            <div class="editor-label">&nbsp;</div>
+			            <div class="editor-field">
+			            <input class="button" type="submit" value="Save" /> | 
+                        @if(Model.ApprovalType == ConditionalApprovalController.WorkgroupType)
+                        {
+                            @Html.ActionLink("Cancel", "ByWorkgroup", "ConditionalApproval", new {id = ViewBag.WorkgroupId}, new {})
+                        }
+                        else if (Model.ApprovalType == ConditionalApprovalController.OrganizationType)
+                        {
+                            @Html.ActionLink("Cancel", "ByOrg", "ConditionalApproval", new {id = ViewBag.OrganizationId}, new {})
+                        }
+			            </div>
+		            </li>
+	            </ul>
+
+        </div>
+
+    </section>
+}
+
+
+
+

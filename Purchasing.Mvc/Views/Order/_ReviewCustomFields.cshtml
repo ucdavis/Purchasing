@@ -1,0 +1,27 @@
+﻿@model ReviewOrderViewModel
+
+@*@if (Model.Order.Workgroup.PrimaryOrganization.CustomFields.Count > 0)*@
+@if (Model.CustomFieldsAnswers.Any())
+{
+    var customFields = Model.CustomFieldsAnswers.Select(x => x.CustomField);
+<section id="customFields" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header showInNav">Custom Fields</header>
+
+    <div class="section-contents">
+    
+        <ul>
+            @foreach(var cf in customFields.OrderBy(a => a.Rank))
+            {
+                var answer = Model.CustomFieldsAnswers.Single(x => x.CustomField == cf);
+
+                <li><div class="display-label">@cf.Name</div>
+                    <div class="display-details">@(answer != null ? answer.Answer : "n/a")</div>
+                </li>    
+            }
+        </ul>
+
+    </div>
+
+</section>
+}

@@ -1,0 +1,89 @@
+﻿@model Purchasing.Core.Domain.Organization
+
+@{
+    ViewBag.Title = string.Format("Custom Fields for {0}", Model.Name);
+}
+
+@{
+    Bundles.Reference("scripts/public/single/jquery.tablednd_0_5.js");
+}
+
+@section SubNav
+{
+    <ul class="navigation">
+        <li>@Html.ActionLink("Create New", "Create", new { id = Model.Id }, new { @class = "button" })</li>
+        <li>@Html.ActionLink("Back to Org", "Details", "Organization", new { id = Model.Id }, new { @class = "button" })</li>
+    </ul>
+}
+
+@section AdditionalScripts
+{
+<style type="text/css">
+    #fields input[type='text'] { padding: .4em; min-width: 30px; width: 30px; }
+</style>
+
+<script type="text/javascript">
+    $(function () {
+
+        jQuery.ajaxSettings.traditional = true;
+        
+        $("#fields").tableDnD({
+            onDrop: function (table, row) {
+
+                var rows = $(table).find("tbody tr");
+                var data = $.map(rows, function (val, index) { return $(val).data("id"); });
+
+//                var data = [];
+//                $.each(rows, function (index, item) { data.push(parseInt($(item).data("id"))); });
+
+                var id = $("#id").val();
+                var antiforgery = $("input[name='__RequestVerificationToken']").val();
+
+                var url = '@Url.Action("UpdateOrder")';
+                
+                $.post(url, { id: id, customFieldIds: data, __RequestVerificationToken: antiforgery }, function (result) {
+
+                    if (result) { alert("successfully updated."); }
+                    else { alert("no update"); }
+
+                });
+            }
+        });
+    });
+</script>
+
+}
+
+    @Html.AntiForgeryToken()
+    @Html.Hidden("id", Model.Id)
+    
+    <table id="fields">
+        <thead>
+            <tr>
+                <td></td>
+                <td>Name</td>
+                <td>Is Required</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @{ var fields = Model.CustomFields.Where(a => a.IsActive).OrderBy(a => a.Rank).ToList(); }
+            @for (var i = 0; i < fields.Count(); i++ )
+            {
+                var field = fields[i];
+                <tr data-id="@field.Id">
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = @field.Id })" class="ui-icon ui-icon-pencil">
+                        </a>
+                    </td>
+                    <td>@field.Name</td>
+                    <td>@(field.IsRequired ? "Yes" : "No")</td>
+                    <td>
+                    <a href="@Url.Action("Delete", new { id = @field.Id })" class="ui-icon ui-icon-trash">
+                    </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>    

@@ -1,0 +1,177 @@
+﻿@model OrderModifyModel
+
+<section id="line-items-section" class="padded">
+    <header class="ui-widget-header ui-corner-top">@*<span style="float:left;">Line Items</span> </div>*@
+            <div class="col1">Line Items</div>
+            <div class="col2"><a href="#" title="Click here to learn all about entering line items" id="help-lineitems" data-tourid="lineitem-intro" class="ui-icon ui-icon-help tour-help"></a><div style="clear:both;"></div></div>
+    </header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>
+                Please enter information for each individual item that is being requested. Quantity, description and unit price are required. Click on the balloon to enter additional information such as url, comments or commodity code.
+            </p>
+            <p>
+                You can also click on the question mark icon in the upper-right corner of this section at any time to view an interactive tutorial explaining how to enter line items.
+            </p>
+        </div>
+            
+        <table id="line-items">
+            <thead>
+                <tr>
+                    <th width="40px">Quantity</th>
+                    <th>Unit</th>
+                    <th>Catalog #</th>
+                    <th>Description</th>
+                    <th>Unit $</th>
+                    <th>Line Total</th>
+                    <th>More</th>
+                </tr>
+            </thead>
+            <tbody id="line-items-body" data-bind="foreach: items, visible: showLines" style="display:none;">
+                <tr class="line-item-row">
+                    <td><input data-bind="value: quantity, 
+                        valueUpdate: 'afterkeydown',
+                        lineValid: desc,
+                        css: { 'invalid-number-warning': quantity.hasError },
+                        itemName: 'quantity'" type="text" autocomplete="off" placeholder="Qty." class="quantity" title="Number of Units for this line item. Will be multipled by price to calculate cost." /></td>
+                    @*<td><select data-bind="value: unit, itemName: 'units'" class="unit" id="units"><option value="CS">CASE</option><option value="CT">CARTON</option><option value="DA">DAY</option><option value="EA">EACH</option></select></td>*@
+                    <td data-bind="template: 'unit-of-measure-select-template'"></td>
+                    <td><input data-bind="value: catalogNumber, itemName: 'catalogNumber'" data-val="true"  data-val-length="Catalog can be up to 50 characters" data-val-length-max="50" maxlength="50" type="text" placeholder="Catalog #" class="catalog-num" title="Enter the vendor provided catalog number. Ex: NCC1701"></td>
+                    <td><input data-bind="value: desc, lineValid: desc, itemName: 'description'" type="text" placeholder="Description" class="description" title="Just a friendly description to remember the item by later. Model number where appropriate."></td>
+                    <td><input data-bind="value: price, lineValid: price, valueUpdate: 'afterkeydown', css: { 'invalid-number-warning': price.hasError }, itemName: 'price'" type="text" autocomplete="off" placeholder="Price" class="price" title="Price per unit." style="float:left;">             
+                    <span class="ui-state-default ui-corner-all ui-state-hover" style="float:right; margin:5px 0.1em 0;">                 
+                    <a href="#" class="ui-icon ui-icon-calculator price-calculator" title="Calculate unit price."></a></span></td>
+                    <td><span data-bind="text: total" class="line-total">$0.00</span></td>         
+                    <td><span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a data-bind="click: clearRow" href="#" class="ui-icon ui-icon-closethick" title="Clear Row."></a></span>
+                        <span class="ui-state-default ui-corner-all ui-state-hover" style="margin:0px .1em; float: right;"><a data-bind="click: toggleDetails" href="#" class="toggle-line-item-details ui-icon ui-icon-comment" title="Add additional information."></a></span>
+                    </td>
+                </tr>
+                <tr data-bind="visible: showDetails" class="line-item-details">
+                    <td colspan="7">
+                        <table class="sub-line-item">                            
+                            <tr>
+                                <td class="label">Commodity:</td>
+                                <td class="commcode">
+                                    <input data-bind="value: commodity, itemName: 'commodityCode'" type="text" placeholder="Commodity Code" class="search-commodity-code" />
+                                </td>
+                                <td class="label">URL:</td>
+                                <td><input data-bind="value: url, itemName: 'url'" class="url" data-val="true"  data-val-length="Url can be up to 2000 characters" data-val-length-max="2000" maxlength="2000" placeholder="http://www.your-url.com" title="Enter a Url like http://www.google.com" style="width: 395px;" /></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Notes:</td>
+                                <td colspan="3"><textarea data-bind="value: note, itemName: 'notes'" placeholder="Item Notes"></textarea></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr data-bind="visible: $root.showForSplit('Line')" class="line-item-splits">
+                    <td colspan="4">
+                        <input data-bind="value: id, itemName: 'id'" type="hidden" class="line-item-ids" />
+                        <table class="sub-line-item-split">
+                            <tbody data-bind="foreach: splits" class="sub-line-item-split-body">
+                                <tr class="sub-line-item-split-row">
+                                    <td>@Html.Partial("_AccountSelectTemplate")</td>
+                                    <td>
+                                        <div class="account-split-amounts">
+                                            <span>$</span>
+                                            <input 
+                                                data-bind="value: amountComputed, splitName: 'amount', valueUpdate: 'afterkeydown'"
+                                                autocomplete="off" placeholder="amt" class="line-item-split-account-amount" 
+                                                title="Dollar amount for this account. Will also auto-calculate a percentage. Press Ctrl+Enter to fill with remaining unaccounted $"/>
+                                            &nbsp;&nbsp;
+                                            <input data-bind="value: percentComputed, splitName: 'percent', valueUpdate: 'afterkeydown'" 
+                                                   autocomplete="off" placeholder="pct" class="line-item-split-account-percent" 
+                                                   title="Percentage of the total split amount that will be applied to this account.  Will auto-calculate amount."/>%
+                                        </div>
+                                        <input data-bind="value: lineId, splitName: 'lineItemId'" type="hidden" class="line-item-split-item-id" />
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                            <tfoot>
+                            <tr><td colspan="2"><a data-bind="click: addSplit" class="add-line-item-split biggify" style="float: right;" href="#" title="Add a new line item split." ><span class="biggify">+</span>Add Split</a></td></tr>
+                            </tfoot>
+                        </table>
+                    </td>
+                    <td colspan="3">
+                        <table class="line-item-splits-totals">
+                        <tr>
+                        <td>Split Total:</td>
+                        <td><span data-bind="text: splitTotal" class="add-line-item-split-total">$0.00</span></td>
+                        </tr>
+                        <tr>
+                        <td>Tax:</td>
+                        <td><span data-bind="text: lineTaxCost" class="add-line-item-split-tax-shipping">$0.00</span></td>
+                        </tr>
+                        <tr data-bind="css: { red: hasLineTotal() && hasUnaccounted(), green: hasLineTotal() && !hasUnaccounted() }">
+                        <td>Unaccounted:</td>
+                        <td><span data-bind="text: lineUnaccounted" class="add-line-item-split-difference amount-difference"></span></td>
+                        </tr>
+                        <tr>
+                        <td>Line Total:</td>
+                        <td><span data-bind="text: lineTotal" class="add-line-item-total">$0.00</span></td>
+                        </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>  
+                <tr class="item-footer">
+                    <td colspan="2"><a data-bind="click: addLine" href="#" id="add-line-item" class="biggify" title="Add a new line item." ><span class="biggify">+</span> Add New Item</a></td>
+                    <td colspan="3" style="text-align: right;">
+                        Subtotal:
+                    </td>
+                    <td style="text-align: left;">
+                        <em><span data-bind="text: subTotal" id="subtotal">$0.00</span></em>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="2" class="lineitemsplit"><a data-bind="click: cancelLineSplit, visible: showForSplit('Line')" href="#" id="cancel-split-by-line" class="biggify" style="display:none;"><span class="biggify">x</span> Cancel Split By Line</a><a data-bind="click: splitByLine, visible: showForSplit('None')" href="#" id="split-by-line" class="biggify"><span class="biggify">/</span> Split By Line</a></td>
+                    <td colspan="3" style="text-align: right;">
+                        Estimated Freight:
+                    </td>
+                    <td>
+                        <span><input data-bind="value: freight, valueUpdate: 'afterkeydown'" id="freight" name="freight" type="text" autocomplete="off" value="$@Model.Order.FreightAmount" title="Freight costs are not taxable"/></span>
+                    </td>
+                    <td></td>
+                </tr>                    
+                <tr class="item-footer">
+                    <td colspan="2" style="text-align: left;"><span data-bind="visible: !showForSplit('Order')" id="line-item-help-display"><a href="#" title="Click here to learn all about line splits" id="help-lineitems" data-tourid="lineitemsplit-intro" class="ui-icon ui-icon-help tour-help"></a>&nbsp; <em>About line splits</em></span></td>
+                    <td colspan="3" style="text-align: right;">
+                        Estimated Shipping & Handling:
+                    </td>
+                    <td>
+                        <span><input data-bind="value: shipping, valueUpdate: 'afterkeydown'" id="shipping" name="shipping" type="text" autocomplete="off" value="$@Model.Order.ShippingAmount" title="Shipping & Handling costs are taxable"/></span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="5" style="text-align: right;">
+                        Estimated Tax:
+                    </td>
+                    <td>
+                        <span><input data-bind="value: tax, valueUpdate: 'afterkeydown'" id="tax" name="tax" type="text" autocomplete="off" value="@Model.Order.EstimatedTax%"/></span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="item-footer">
+                    <td colspan="5" style="text-align: right;">
+                        <h3 style="margin-top: .25em;">Grand Total:</h3>
+                    </td>
+                    <td style="text-align: left;">
+                        <h2 style="margin-top: .25em;"><strong><span data-bind="text: grandTotal" id="grandtotal">$0.00</span></strong></h2>
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+                
+<!--    <footer>
+        <div class="col1"><div style="clear:both;"></div></div>
+        <div class="col2"></div>
+    </footer>-->
+</section>

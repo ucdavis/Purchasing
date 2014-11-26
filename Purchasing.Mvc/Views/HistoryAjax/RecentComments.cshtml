@@ -1,0 +1,45 @@
+﻿@model List<Purchasing.Core.Queries.CommentHistory>
+@if (Model.Count > 0)
+{
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    Order #
+                </th>
+                <th>
+                    Comment
+                </th>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="order-details">@Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { })
+                </td>
+                <td class="comment" rowspan="2">@item.Comment
+                </td>
+            </tr>
+            <tr>
+                <td class="requester">
+                    by @item.CreatedBy<br />
+                    on @string.Format("{0:MMMM d}", item.DateCreated)
+                </td>
+            </tr>
+        }
+@*        <tfoot>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <a href="#">View all comments &gt;</a>
+                </td>
+            </tr>
+        </tfoot>*@
+    </table>
+}
+else
+{
+    <div>
+        Looks like nothing has been said yet</div>
+}

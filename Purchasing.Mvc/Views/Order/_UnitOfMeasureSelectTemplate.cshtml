@@ -1,0 +1,13 @@
+﻿@using Purchasing.Core.Domain
+@model IEnumerable<UnitOfMeasure>
+<script id="unit-of-measure-select-template" type="text/x-jquery-tmpl">
+    @{
+        var extra = "units_" + "${index}";        
+    }
+    <select data-bind="value: unit" class="unit" id="@extra" name="items[${index}].units">
+        @foreach (UnitOfMeasure unit in Model)
+        {
+            <option value="@unit.Id">@unit.Name</option>
+        }
+    </select>
+</script>

@@ -1,0 +1,33 @@
+﻿<div id="search-vendor-dialog" title="Search KFS Vendor">
+    <form id="vendor-search-form">
+        <section class="section-contents">
+            <div class="section-text">
+                <p>
+                    Enter a vendor name and matching results from the campus financial system will be returned as you type.
+                    Choose the desired vendor and an address for that vendor from the drop down list, and then click 'Select Vendor'.
+                </p>
+            </div>
+            <ul>
+                <li>
+                    <div class="editor-label">
+                        Vendor Name:
+                    </div>
+                    <div class="editor-field">
+                        <input type="text" placeholder="Vendor Name" id="search-vendor-dialog-searchbox"/>
+                        <input type="hidden" id="search-vendor-dialog-selectedvendor"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label">
+                        Address:
+                    </div>
+                    <div class="editor-field">
+                        <select id="search-vendor-dialog-vendor-address" disabled="disabled">
+                            <option value="">--Select Address--</option>
+                        </select>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </form>
+</div>

@@ -1,0 +1,93 @@
+﻿@model Purchasing.Web.Controllers.ServiceMessageViewModel
+
+@{
+    ViewBag.Title = "Edit Service Message";
+}
+
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index", new {}, new {@class="button"})</li>
+	</ul>
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section class="ui-corner-all">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-corner-top"></header>
+
+	<div class="section-contents">
+
+		<div class="section-text">
+
+			@*<h4>Form Header</h4>*@
+			@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+
+		</div>
+
+		<ul>
+				<li>
+				<div class="editor-label required">
+					@Html.LabelFor(model => model.ServiceMessage.Message)<span>*</span> 
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.ServiceMessage.Message)
+					@Html.ValidationMessageFor(model => model.ServiceMessage.Message)
+				</div>
+			</li>
+				<li>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.ServiceMessage.BeginDisplayDate) 
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.ServiceMessage.BeginDisplayDate)
+					@Html.ValidationMessageFor(model => model.ServiceMessage.BeginDisplayDate)
+				</div>
+			</li>
+				<li>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.ServiceMessage.EndDisplayDate) 
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.ServiceMessage.EndDisplayDate)
+					@Html.ValidationMessageFor(model => model.ServiceMessage.EndDisplayDate)
+				</div>
+			</li>
+				<li>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.ServiceMessage.Critical) 
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.ServiceMessage.Critical)
+					@Html.ValidationMessageFor(model => model.ServiceMessage.Critical)
+				</div>
+			</li>
+				<li>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.ServiceMessage.IsActive) 
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.ServiceMessage.IsActive)
+					@Html.ValidationMessageFor(model => model.ServiceMessage.IsActive)
+				</div>
+			</li>
+				@Html.HiddenFor(model => model.ServiceMessage.Id)
+			<li>
+				<div class="editor-label"><label>&nbsp;</label></div>
+				<div class="editor-field"><input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Index")</div>
+			</li>
+		</ul>
+
+	</div>
+
+	<footer class="ui-corner-bottom"></footer>
+	
+</section>
+}
+
+

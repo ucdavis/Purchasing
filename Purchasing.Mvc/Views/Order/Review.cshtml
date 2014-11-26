@@ -1,0 +1,188 @@
+﻿@model ReviewOrderViewModel
+
+@{
+    ViewBag.Title = "Order Review";
+}
+
+@{
+    Bundles.Reference("~/Css/single/fileuploader/fileuploader.css");
+    
+    Bundles.Reference("scripts/public/single/fileuploader.js");
+    Bundles.Reference("scripts/public/single/OrderReview.js");
+    Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
+    Bundles.Reference("scripts/public/single/SausageCustom.js");
+    Bundles.Reference("scripts/public/single/jquery.stickyfloat.js");
+}
+
+@section SubNav
+{
+    <ul class="navigation">
+        @if (Model.CanEditOrder)
+        {
+            <li>@Html.ActionLink("Edit", "Edit", new { Model.Order.Id }, new { @class = "button" })</li>
+        }
+        @if (Model.IsRequesterInWorkgroup)
+        { 
+            <li>@Html.ActionLink("Duplicate", "Copy", new { id = Model.Order.Id }, new { @class = "button" })</li>    
+        }
+        <li>
+            <div>
+            @Html.ActionLink("Print", "Invoice", "Report", new { id = Model.Order.Id }, new { target = "invoice", id="print-btn"})
+            <button id="more-print" ></button>
+            </div>
+            <div id="print-menu" style="display:none;">
+                <ul>
+                    <li>@Html.ActionLink("Print +", "Invoice", "Report", new { id = Model.Order.Id, showOrderHistory = true }, new { target = "invoice", @class = "showTip", title = "Print order with <br /> Order History included." })</li> 
+                    <li>@Html.ActionLink("Print For Vendor", "Invoice", "Report", new { id = Model.Order.Id, forVendor = true }, new { target = "invoice", @class = "showTip" })</li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+}
+
+@section AdditionalScripts
+{
+    <style type="text/css">
+        .navigation li{ display:inline-block; width:auto; padding:0 0 0 10px;}
+        #orn {margin: 1em 0;}
+        #orn ul {padding: 0;}
+        #orn li {margin: 0;}
+        #order-details .col1, #order-details .col2, #kfs-section .col1, #kfs-section .col2 {width: 49.25%; vertical-align: top; text-align: left; display:inline-block;}
+        #kfs-section .col1 {margin-top:36px; padding-left:30px; width:46%;}
+        #order-details .col1 .display-form, #order-details .col2 .display-form {height: 140px; margin-bottom: 0;}
+        #order-details .col1 ul {padding:50px 0 0 30px;}
+        #order-details .col1 ul span, #accounts .acct-info span, #order-details .col1 ul strong, #accounts .acct-info strong, #kfs .col1 ul span  {display:inline-block; vertical-align:top;}
+        #order-details .col1 ul span, #kfs .col1 ul span, #kfs .col2 ul span {width:150px;}
+        #accounts .acct-info span  {width:auto; min-width:650px;}
+        #order-details .col1 ul strong {width:250px;}
+        #accounts .acct-info strong  {width:150px;}
+        
+        #order-details .col2 section#vendor {margin-bottom:20px;}
+        
+        .item-footer {background-color:#FFF; color: #000; }
+        .item-footer .label {text-align: right;}
+        
+        .extra-info .line-url, .extra-info .line-notes {display:inline-block; width: 49%; text-align: left;}
+        .extra-info .line-url {margin-right: 10px;}
+        
+        .row-even {background-color:#EEEEEE;}
+        .row-odd {}
+        .row-split {width: 400px; border: 1px solid lightgray; background-color: lightgreen;}
+        .row-split-prob {background-color: lightcoral;}
+        .row-split table {border: none;}
+        .row-total-value, .row-total-grandtotal {font-weight:bold;}
+        .row-total-label, .row-total-value {background-color:#014A81; color:#FFFFFF;}
+        #history table, #notes table, #approvals table { border: none; }
+        #history table tr, #notes table tr, #approvals table tr {border-bottom: 1px solid lightgray;}
+        #history table tr > td:first-child, #notes table tr > td:first-child, #approvals table tr > td:first-child { width: 150px;}
+        #history table tr > td:last-child, #notes table tr > td:last-child #approvals table tr > td:last-child { width: 150px;}
+        
+        .acct-info .account, .acct-info .subaccount, .acct-info .project {margin-right: 20px;}
+        
+        .approval-complete { background-color: #dafcc9;}
+        
+        .row-bottom {border-bottom:1px solid #666;}
+        
+        form section ul, .display-form ul {padding:0;}
+        #accounts .section-contents, #attachments .section-contents, #notes .section-contents, .vcard {font-size:1.2em; line-height:1.5em;}
+        .even:hover, .odd:hover {box-shadow: 0 1px 5px #BBBBBB; border: 1px solid #fff; background-color: transparent;} 
+
+        .ui-buttonset .ui-button#print-btn {margin-right: -.5em; border-right: 1px solid #033366;}
+        button#more-print {height: 27px; width: 26px; vertical-align: bottom;} 
+        #print-menu {z-index: 20; position: absolute;}
+        #print-menu ul {background: #033366; padding-bottom: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; margin-left: 5px;}
+        #print-menu li a {display: block; font-size: .6em; font-weight: bold; background: #033366; color: #fff !important; padding: 10px 6px 6px; width: 55px; text-align: center;}
+        #print-menu li a:hover {background: #427ba5;}
+        nav.col2 #print-menu li {display: block; padding: 0px;}
+    </style>
+
+    <script type="text/javascript">
+        
+        $(function () {
+            purchasing.options({
+                AddCommentUrl: "@Url.Action("AddComment", "Order", new { id = Model.Order.Id })",
+                UpdateReferenceNumberUrl: '@Url.Action("UpdateReferenceNumber", "Order", new { id = Model.Order.Id })',
+                UpdatePoNumberUrl: '@Url.Action("UpdatePoNumber", "Order", new { id = Model.Order.Id })',
+                UpdateTagUrl: '@Url.Action("UpdateTag", "Order", new { id = Model.Order.Id })',
+                ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new { id = Model.Order.Id })",
+                FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
+                KfsStatusUrl: '@Url.Action("GetKfsStatus", "Order", new { id = Model.Order.Id})',
+                UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
+                PeepsUrl: '@Url.Action("GetPeeps", "Order", new { id = Model.Order.Id })',
+                AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
+                CanEdit: '@Model.CanEditOrder' === 'True',
+                CanCancel: '@Model.CanCancelOrder' === 'True',
+                CanCancelCompletedOrder: '@Model.CanCancelCompletedOrder' === 'True',
+                CanComplete: '@Model.IsPurchaser' === 'True',
+                IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
+                IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True',
+                UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new { id = Model.Order.Id })',
+                AttachmentCategorySource: ["Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],
+                ViewAttachment: '@Url.Action("ViewFile")'
+            });
+
+            purchasing.init();
+        });
+        
+    </script>
+    
+    <script type="text/javascript">
+    	$(function () {
+    	    $("#print-btn").button()
+    		    .next().button({
+				    text: false,
+				    icons: {
+				        primary: "ui-icon-triangle-1-s"
+				    }
+			    })
+			    .click(function () {
+				    $("#print-menu").toggle();
+			    })
+			    .parent()
+			    .buttonset();
+    	});
+	</script>
+}
+
+
+<div id="forgery-token">
+    @Html.AntiForgeryToken()
+</div>
+
+<nav class="orders-nav" style="left: -200px;"></nav>
+
+@Html.Partial("_ReviewMessage")
+
+@Html.Partial("_ReviewOrderDetails")
+
+@if (Model.Order.IsValidKfs())
+{
+    @Html.Partial("_ReviewKfs")   
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Order.BusinessPurpose))
+{
+    @Html.Partial("_ReviewBusinessPurpose")
+}
+
+@Html.Partial("_ReviewLineItems")
+
+@Html.Partial("_ReviewLineSplits")
+
+@Html.Partial("_ReviewControlledSubstances")
+
+@Html.Partial("_ReviewCustomFields")
+
+@Html.Partial("_ReviewNotes")
+
+@Html.Partial("_ReviewAttachments")
+
+@Html.Partial("_ReviewApprovals")
+
+@Html.Partial("_ReviewHistory")
+
+@Html.Partial("_ReviewCancel")
+
+@Html.Partial("_ReviewSubmit")
+
+@Html.Partial("_ReviewFpdComplete")

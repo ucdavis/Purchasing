@@ -1,0 +1,81 @@
+﻿@model Purchasing.Core.Domain.User
+
+
+@{
+	ViewBag.Title = "Edit Your Email";
+
+}
+
+
+@section SubNav
+{
+    <ul class="navigation">
+        <li>@Html.ActionLink("Back to Profile", "Profile", null , new {@class="button"})</li>
+    </ul>
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section class="ui-corner-all">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-corner-top">User</header>
+
+	<div class="section-contents">
+
+		<div class="section-text">
+
+			@*<h4>Form Header</h4>*@
+			@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+            <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+            <p>Please make sure a valid email for yourself is used.</p>
+
+		</div>
+
+		<ul>
+		
+				@Html.HiddenFor(model => model.Id)		
+		
+				<li>
+					<div class="editor-label">
+						@Html.Label("Name and Id")
+					</div>
+					<div class="editor-field">
+						@Html.DisplayFor(model => model.FullNameAndId)
+					</div>
+				</li>
+		
+				<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.Email)<span>*</span> 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.Email)
+						@Html.ValidationMessageFor(model => model.Email)
+					</div>
+				</li>
+		
+
+		
+		
+			<li>
+				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+				<div class="editor-label">&nbsp;</div>
+				<div class="editor-field">
+				<input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Profile")
+				</div>
+			</li>
+		</ul>
+
+	</div>
+
+	<footer class="ui-corner-bottom"></footer>
+	
+</section>
+}
+
+
+
+
+

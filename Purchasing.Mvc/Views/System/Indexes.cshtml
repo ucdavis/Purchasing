@@ -1,0 +1,36 @@
+﻿@model Dictionary<string,DateTime>
+
+@{
+	ViewBag.Title = "Index Modification Info";
+}
+
+@section SubNav
+{
+	<ul class='navigation'>
+		<li><span class="button">@Html.ActionLink("System Center", "Index")</span></li>
+	</ul>
+}
+
+<h2>Index Modification Info</h2>
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Last Modified</th>
+			<th>Number of Records</th>
+			<th>ReCreate Index</th>
+		</tr>
+	</thead>
+    <tbody>
+        @foreach (var index in @ViewBag.ModifiedDates)
+        {
+            <tr>
+                <td>@index.Key</td>
+                <td>@ViewBag.ModifiedDates[index.Key]</td>
+                <td>@ViewBag.NumRecords[index.Key]</td>
+                <td>@Html.ActionLink("Overwrite Index", "Overwrite", new { index = index.Key})</td>
+            </tr>
+        }
+    </tbody>
+</table>

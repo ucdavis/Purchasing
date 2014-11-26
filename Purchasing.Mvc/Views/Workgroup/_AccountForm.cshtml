@@ -1,0 +1,67 @@
+﻿@model Purchasing.Mvc.Models.WorkgroupAccountModel
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    @Html.Hidden("id", Model.Workgroup.Id)
+    @Html.Hidden("accountId", Model.WorkgroupAccount.Id)
+    <section class="padded">
+        <header class="ui-widget-header ui-corner-top">Account</header>
+
+        <div class="section-contents">
+
+            <div class="section-text">
+                <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+            </div>
+
+            <ul>
+                <li>
+		            <div class="editor-label required">
+                        @Html.LabelFor(x => x.WorkgroupAccount.Account)
+                        <span>*</span>
+					</div>
+					<div class="editor-field">
+						@*@Html.HiddenFor(x => x.WorkgroupAccount.Account, Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)*@
+                        @Html.Hidden("WorkgroupAccount.Account", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)
+                        @Html.TextBox("account_search", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty, new {placeholder="Account name or number"})
+                        @Html.ValidationMessageFor(x => x.WorkgroupAccount.Account)
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    @Html.LabelFor(x => x.WorkgroupAccount.Approver)
+					</div>
+					<div class="editor-field">
+                        @this.Select("WorkgroupAccount.Approver").Options(Model.Approvers, x=>x.Id, x=>x.FullName).FirstOption("--Select Approver--").Selected(Model.WorkgroupAccount.Approver != null ? Model.WorkgroupAccount.Approver.Id : string.Empty)
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    @Html.LabelFor(x => x.WorkgroupAccount.AccountManager)
+					</div>
+					<div class="editor-field">
+						@this.Select("WorkgroupAccount.AccountManager").Options(Model.AccountManagers, x => x.Id, x => x.FullName).FirstOption("--Select Account Manager--").Selected(Model.WorkgroupAccount.AccountManager != null ? Model.WorkgroupAccount.AccountManager.Id : string.Empty)
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    @Html.LabelFor(x => x.WorkgroupAccount.Purchaser)
+					</div>
+					<div class="editor-field">
+						@this.Select("WorkgroupAccount.Purchaser").Options(Model.Purchasers, x => x.Id, x => x.FullName).FirstOption("--Select Purchaser--").Selected(Model.WorkgroupAccount.Purchaser != null ? Model.WorkgroupAccount.Purchaser.Id : string.Empty)
+					</div>
+				</li>
+                <li>
+                    <div class="editor-label">&nbsp;</div>
+                    <div class="editor-field">
+                        <input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Accounts", new {id=@Model.Workgroup.Id})
+                    </div>
+			        
+		        </li>
+            </ul>
+
+        </div>
+
+    </section>
+}
