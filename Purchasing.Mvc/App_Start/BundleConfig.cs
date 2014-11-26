@@ -41,9 +41,14 @@ namespace Purchasing.Mvc
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+            bundles.Add(new StyleBundle("~/Css/main").Include(
+                      "~/Css/Site.css",
+                      "~/Css/jquery-ui-1.8.16.caes.css",
+                      "~/Css/jquery.qtip.min.css",
+                      "~/Css/jquery.tzCheckbox.css",
+                      "~/Css/Datatables.css",
+                      "~/Css/custom.css",
+                      "~/Css/icons.css"));
 
             // Set EnableOptimizations to false for debugging. For more information,
             // visit http://go.microsoft.com/fwlink/?LinkId=301862
