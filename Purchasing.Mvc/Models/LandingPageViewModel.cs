@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Purchasing.Core.Queries;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     public class LandingViewModel
     {

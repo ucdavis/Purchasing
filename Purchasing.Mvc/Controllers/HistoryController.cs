@@ -6,8 +6,8 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Mvc.Services;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Models;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Models;
 
 namespace Purchasing.Mvc.Controllers
 {

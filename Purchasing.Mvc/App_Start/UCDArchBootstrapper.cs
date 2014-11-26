@@ -4,7 +4,7 @@ using Microsoft.Practices.ServiceLocation;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc.Controllers;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.IoC;
 using UCDArch.Web.ModelBinder;

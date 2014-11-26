@@ -3,12 +3,12 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.SessionState;
 using Purchasing.Mvc.Utility;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 
-namespace Purchasing.Web.Controllers
+namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for AJAX service calls

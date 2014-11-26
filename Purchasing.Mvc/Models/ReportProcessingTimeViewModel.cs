@@ -4,7 +4,7 @@ using System.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using UCDArch.Core.Utils;
 
 namespace Purchasing.Mvc.Models

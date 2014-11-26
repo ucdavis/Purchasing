@@ -1,31 +1,319 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
+﻿@using System.Web.Configuration
+@using Purchasing.Mvc.Services
+@{
+    Layout = null;
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+    var roles = UserSecurityService.UserRoles(User.Identity.Name);
+} 
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Purchasing - @ViewBag.Title</title>
+
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<link rel="shortcut icon" href="@Url.Content("~/favicon.ico")">
+
+    @{
+        Bundles.Reference("css");
+    }
+    
+    @Bundles.RenderStylesheets()
+
+	<style type="text/css">
+		#branding
+		{
+			z-index: 0;
+		}
+		
+		#container, #browsers, #stats
+		{
+		    margin: auto auto 2em auto;
+		    display: block;
+		    width: 900px;
+		    text-align: center;
+		    padding: 1em;
+
+            border: 1px solid #CCCCCC;
+            border-radius: 5px 5px 5px 5px;
+            box-shadow: 5px 5px 5px #DDDDDD;
+		}
+
+        .stats-inner
+		{
+		    margin: auto auto 2em auto;
+		    display: inline-block;
+		    width: 250px;
+            height: 100px;
+		    text-align: center;
+		    padding: 1em;
+            vertical-align: top;
+
+            border: 1px solid #CCCCCC;
+            border-radius: 5px 5px 5px 5px;
+            box-shadow: 5px 5px 5px #DDDDDD;
+		}
+		
+		#container h2
+		{
+		    margin-top: 1em;
+		}
+		
+		#container p 
+		{
+		    margin-top: 1em;
+		}
+		
+		span.ui-button-text { font-size: 15px; }
+
+		
+		.browser { background-image: url('@Url.Content("~/Images/browser_logos-32.png")');width: 32px;height: 32px;display: inline-block;}
+		.chrome { background-position: 0px 0px; }
+		.firefox { background-position: 138px 0px; }
+		
+	</style>
+
+    @{
+        Bundles.Reference("scripts/external/jquery", pageLocation: "head");
+        Bundles.Reference("scripts/external/jquery-ui", pageLocation: "head");
+        Bundles.Reference("scripts/public/head", pageLocation: "head");
+        Bundles.AddPageData("Configuration",
+            new
+            {
+                AnalyticsKey = WebConfigurationManager.AppSettings["AnalyticsKey"],
+                ActiveIssuesCountUrl = Url.Action("GetActiveIssuesCount", "Help"),
+                DataTablesPageSize = ViewBag.DataTablesPageSize ?? 10,
+                LoadTableTools = ViewBag.LoadTableTools ?? false,
+                TableToolsSwf = Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf"),
+                LoadFixedHeaders = ViewBag.LoadFixedHeaders ?? false
+            }, "common");
+        Bundles.Reference("scripts/public/common", pageLocation: "common");
+    }
+    
+    @Bundles.RenderScripts("head")
+
+</head>
+<body>
+	<div class="wrapper">
+	
+		@Html.Partial("_ServiceMessages")
+	
+		<header id="branding">
+			
+			<!-- Application's Name -->
+			<span class="header">
+
+                <div class="col1-50">
+
+                <img src='@Url.Image("PrePurchasing-Logo.png")' alt="UCD PrePurchasing" style="height: 60px;"/>
+
+				</div>
+                
+                <div class="col2-50">
+                <ul id="personalbar">
+                    
+                    <li id="username"  class="navigation-list">Hello @User.Identity.Name</li>
+                    <li id="settings" class="navigation-list">
+                        @Html.ActionLink("Profile", "Profile", "User")
+                        <ul>
+                            <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User", new {id=User.Identity.Name}, new {})</li>
+                            <li>@Html.ActionLink("Away Status", "AwayStatus", "User")</li>
+                        </ul>    
+                    </li> 
+                    <li id="logout" class="navigation-list">@Html.ActionLink("Logout", "LogOut", "Account")</li>
+
+                </ul>
+                </div>
+			</span>
+				
+		</header>
+
+        <nav id="navigation-bar">
+  
+            <div class="col1-50">
+            <ul id="global-nav">
+            
+            </ul>
+            <div style="clear: both;"></div>
+            </div>
+
+            <div class="col2-50">
+            
+            </div>
+
+        </nav>
+        
+			
+		<div class="main">
+			
+			<header>
+				
+                <div id="browser-warning" style="display:none;">
+                    You are currently using a browser that is not supported.  
+                    Please check <a href="http://ucdavis.github.com/Purchasing/system.html">our system requirements page</a> and return to PrePurchasing using one of our recommended browsers.
+                </div>
+
+                @if(!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string)){ 
+				<div id="error-message">
+					@TempData["ErrorMessage"]
+				</div>
+				}
+                    				
+				@if (!string.IsNullOrWhiteSpace(TempData["Message"] as string)) { 
+				<div id="status-message">
+					@TempData["Message"]
+				</div>
+				}
+				
+				<div class="col1">
+					<h2>@ViewBag.Title</h2>
+					<h3>@ViewBag.SubTitle</h3>
+				</div>
+					
+				<nav class="col2">
+
+				</nav>
+				
+			</header>
+			
+			<div id="body">
+
+
+                <div id="container">
+                
+                    <h2>Welcome to the UC Davis PrePurchasing System</h2>
+                    
+                    <p>
+                        This application is designed to handle the departmental pre-purchasing process.  PrePurchasing allows users to submit any type of order request, including KFS, MyTravel, and other campus services. This application also aids in the departmental approval process associated with approving order requests. Seamless integration with KFS.
+                    </p>
+                    
+                    <p>
+                        For more information and how to obtain access, please refer to the <a href="http://ucdavis.github.com/Purchasing/index.html">PrePurchasing Application website</a> and fill out @Html.ActionLink("this request form.", "Create", "DepartmentalAdminRequest").
+                    </p>
+
+                    <p>
+                        <strong>You must have a valid kerberos login and password to access this system.  Please contact your department prepurchasing administrator for permissions.</strong>
+                    </p>
+                    
+                    <p>
+                        @Html.ActionLink("Enter the PrePurchasing System", "Landing", "Home", new {}, new {@class="button"})
+                    </p>
+
+                </div>
+                
+                
+                <div id="browsers">
+                    
+                    <p>For an updated list of system requirements please view this website <a href="http://ucdavis.github.com/Purchasing/system.html">here</a>.</p>
+
+                </div>
+
+                @*                <div id="browsers">
+                    
+                    <p>
+                        The PrePurchasing system uses many of the latest web technologies, for the best experience we recommend using Mozilla Firefox and Google Chrome browsers.
+                    </p>
+
+                    <div class="browser chrome">&nbsp;</div>
+                    <div class="browser firefox">&nbsp;</div>
+
+                </div>*@
+                
+			    <div id="stats" >
+                    <img id="fireworks" style="display: none" src='@Url.Image("fireworksanimated.gif")' />
+			        <div id="stats-loader">			        
+			            <h4  ><img src='@Url.Image("ajax-loader.gif")'/> Loading Statistics</h4>
+                    </div>
+			        <div id="stats-show" style="display: none;">
+			            
+			            <div class="alert alert-info">
+			                Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.Now.ToShortTimeString()</span>
+			            </div>
+			            <div class="stats-inner">
+			                <h4><strong id="stats-total-orders">n</strong> orders placed totaling <strong id="stats-total-amount">$$$</strong> with <strong id="stats-attachments">n</strong> attached files and using <strong id="stats-accounts">n</strong> different accounts. Of these <strong id="stats-total-orders-completed">n</strong> are completed for <strong id="stats-total-amount-completed"></strong>.</h4>
+			            </div>
+			            <div class="stats-inner">
+			                <h4>There are <strong id="stats-active-users">n</strong> active users having acted <strong id="stats-actions">n</strong> times across <strong id="stats-workgroups">n</strong> workgroups.</h4>
+			            </div>
+			            <div class="stats-inner"><h4>There are <strong id="stats-orgs">n</strong> different primary organizations that have placed orders and <strong id="stats-associated-orgs">n</strong> different organizations that have workgroups associated with them.</h4></div>
+			        </div>
+			    </div>
+
+            </div>
+				
+		</div>
+			
+		<footer id="footer">
+			<div id="footertext">
+				<nav class="col1-50">
+					
+					
+				</nav>
+				<div class="col2-50">
+					
+                    <span class="navigation-list">Version #@ViewBag.Version</span>
+					
+				</div>
+
+                <ul id="authorinfo">
+                    <li>Developed By <a href="@Url.Content("~/humans.txt")" target="_blank">A Team Of Programmers Across UC Davis</a></li>
+                    <li>Copyright The Regents of the University of California, Davis campus, 2005-13.</li>
+                    <li>All Rights Reserved.</li>
+                </ul>
+			</div>
+		</footer>
+	
+	</div>
+    
+    @Bundles.RenderScripts("common")
+
+    <script>
+
+        $(function () {
+            $(".button").button();
+        });
+
+        Modernizr.load({
+            test: Modernizr.input.placeholder,
+            nope: '@Url.Content("~/Scripts/jquery.placeholder.min.js")',
+            complete: function () {
+                if (!Modernizr.input.placeholder) {
+                    $('input').placeholder();
+                }
+            }
+        });
+    </script>
+    
+    <script type="text/javascript">
+        $(function () {
+            $.getJSON('@Url.Action("Overall", "Stats")', function (data) {
+                $("#stats-updated").html(new Date(data.LastUpdated).toLocaleString());
+                $("#stats-total-orders").html(data.TotalOrdersPlaced);
+                $("#stats-total-amount").html(data.TotalAmount);
+                $("#stats-total-orders-completed").html(data.TotalOrdersCompleted);
+                $("#stats-total-amount-completed").html(data.TotalAmountCompleted);
+                
+                $("#stats-attachments").html(data.Attachments);
+                $("#stats-accounts").html(data.Accounts);
+
+                $("#stats-active-users").html(data.ActiveUsersInWorkgroups);
+                $("#stats-actions").html(data.Actions);
+                $("#stats-workgroups").html(data.Workgroups);
+                
+                $("#stats-orgs").html(data.OrgsWithOrders);
+                $("#stats-associated-orgs").html(data.OrgsWithWorkgroups);
+                if (data.ShowFireworks) {
+                    $("#fireworks").show();
+                }
+
+                $("#stats-loader").hide();
+                $("#stats-show").show();
+            });
+        });
+    </script>
+	
+
+</body>
+</html>

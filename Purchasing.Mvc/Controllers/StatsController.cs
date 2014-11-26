@@ -3,11 +3,11 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.SessionState;
 using Dapper;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 
-namespace Purchasing.Web.Controllers
+namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for the Stats class

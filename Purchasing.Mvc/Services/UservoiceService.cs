@@ -7,7 +7,7 @@ using Purchasing.Web.Helpers;
 using System.Collections.Generic;
 using UCDArch.Core.Utils;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/suggestions.json?category=31579&sort=newest";
     //const string query = "https://ucdavis.uservoice.com/api/v1/forums/126891/categories/31577.json";

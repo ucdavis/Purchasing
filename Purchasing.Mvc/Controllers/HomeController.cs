@@ -4,9 +4,9 @@ using Dapper;
 using Microsoft.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Models;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Models;
+using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Attributes;
 

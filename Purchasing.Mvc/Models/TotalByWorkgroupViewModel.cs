@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     public class TotalByWorkgroupViewModel
     {

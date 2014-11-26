@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Services;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 

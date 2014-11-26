@@ -16,7 +16,7 @@ using Lucene.Net.Store;
 using Purchasing.Core.Queries;
 using UCDArch.Core.Utils;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     public interface IIndexService
     {

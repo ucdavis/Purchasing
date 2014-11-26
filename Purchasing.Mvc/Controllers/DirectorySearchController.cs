@@ -7,12 +7,12 @@ using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Utility;
 using Purchasing.Web.Attributes;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 
-namespace Purchasing.Web.Controllers
+namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for the DirectorySearch class

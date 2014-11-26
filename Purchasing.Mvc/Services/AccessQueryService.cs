@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Dapper;
 using Purchasing.Core.Queries;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 
 namespace Purchasing.Mvc.Services
 {

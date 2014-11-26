@@ -4,7 +4,7 @@ using NHibernate;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     public class AuditInterceptor : EmptyInterceptor
     {

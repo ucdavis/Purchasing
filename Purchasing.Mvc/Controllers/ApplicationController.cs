@@ -6,7 +6,7 @@ using Purchasing.Web.Helpers;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.Controller;
 
-namespace Purchasing.Web.Controllers
+namespace Purchasing.Mvc.Controllers
 {
     [Version(MajorVersion = 1)]
     [Profile]

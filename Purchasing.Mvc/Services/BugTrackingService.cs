@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Purchasing.Core.Domain;
-using Purchasing.Web.Models;
+using Purchasing.Mvc.Models;
 using UCDArch.Core.PersistanceSupport;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     public interface IBugTrackingService
     {

@@ -7,7 +7,7 @@ using Purchasing.Core;
 using Purchasing.Web.Attributes;
 using UCDArch.Web.Controller;
 
-namespace Purchasing.Web.Controllers
+namespace Purchasing.Mvc.Controllers
 {
     [AuthenticateListView]
     public class ListSyncController : SuperController

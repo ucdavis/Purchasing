@@ -2,7 +2,7 @@
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     public interface IEventService
     {

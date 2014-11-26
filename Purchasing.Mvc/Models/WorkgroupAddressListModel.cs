@@ -3,7 +3,7 @@ using System.Linq;
 using Purchasing.Core.Domain;
 using UCDArch.Core.Utils;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     public class WorkgroupAddressListModel
     {

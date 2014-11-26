@@ -6,8 +6,8 @@ using Microsoft.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 

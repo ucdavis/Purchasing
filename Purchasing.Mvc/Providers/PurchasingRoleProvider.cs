@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web.Security;
 using Dapper;
 using Microsoft.Practices.ServiceLocation;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 
 namespace Purchasing.Mvc.Providers
 {

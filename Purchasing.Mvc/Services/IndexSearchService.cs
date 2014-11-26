@@ -9,7 +9,7 @@ using Purchasing.Core.Queries;
 using Purchasing.Mvc.Utility;
 using Version = Lucene.Net.Util.Version;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     /// <summary>
     /// Searches using Lucene indexes

@@ -3,13 +3,13 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Controller;
 using System;
 
-namespace Purchasing.Web.Controllers
+namespace Purchasing.Mvc.Controllers
 {
     [HandleTransactionsManually]
     [Authorize(Roles = Role.Codes.Admin)]

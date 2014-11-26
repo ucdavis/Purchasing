@@ -2,7 +2,7 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Security;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     public interface IUserIdentity
     {

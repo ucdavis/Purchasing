@@ -12,10 +12,10 @@ using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
 using Purchasing.Web.Attributes;
-using Purchasing.Web.Models;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Models;
+using Purchasing.Mvc.Services;
 
-namespace Purchasing.Web.Controllers
+namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for the Report class

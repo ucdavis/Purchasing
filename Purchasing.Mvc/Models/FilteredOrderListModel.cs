@@ -7,7 +7,7 @@ using Purchasing.Core.Queries;
 using UCDArch.Core.PersistanceSupport;
 using System.Text;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     public class FilteredOrderListModelDto
     {

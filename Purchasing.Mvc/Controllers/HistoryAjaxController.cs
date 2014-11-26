@@ -5,7 +5,7 @@ using System.Web.SessionState;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc.Controllers;
 using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Mvc.Controllers

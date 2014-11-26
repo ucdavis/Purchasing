@@ -6,7 +6,7 @@ using Purchasing.Mvc.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     public class WorgroupPeopleCreateModel
     {

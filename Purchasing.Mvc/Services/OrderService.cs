@@ -4,7 +4,7 @@ using System.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using Purchasing.WS;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;

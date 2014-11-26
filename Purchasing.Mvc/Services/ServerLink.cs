@@ -2,7 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     public interface IServerLink
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Mvc.Services

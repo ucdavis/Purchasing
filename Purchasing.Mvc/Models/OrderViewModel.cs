@@ -1,6 +1,6 @@
 using System;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     public class OrderViewModel
     {

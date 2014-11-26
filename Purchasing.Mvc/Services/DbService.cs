@@ -2,7 +2,7 @@
 using System.Web.Configuration;
 using System.Data.SqlClient;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     public interface IDbService
     {

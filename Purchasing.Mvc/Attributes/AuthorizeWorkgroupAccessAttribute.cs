@@ -3,7 +3,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.ServiceLocation;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Web.Attributes

@@ -32,6 +32,9 @@ namespace Purchasing.Mvc
             bundles.Add(new ScriptBundle("~/bundles/common")
                 .IncludeDirectory("~/Scripts/public/common", "*.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/landing")
+                .Include("~/Scripts/public/single/Landing.js"));
+
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     public class ReportPurchaserWorkLoadViewModel
     {

@@ -7,7 +7,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using System.Linq.Expressions;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     /// <summary>
     /// ModifyModel for the Workgroup class

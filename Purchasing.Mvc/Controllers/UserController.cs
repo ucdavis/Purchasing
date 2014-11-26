@@ -5,7 +5,7 @@ using Microsoft.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Web.Attributes;
-using Purchasing.Web.Models;
+using Purchasing.Mvc.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
@@ -13,7 +13,7 @@ using UCDArch.Web.ActionResults;
 using MvcContrib;
 using UCDArch.Web.Helpers;
 
-namespace Purchasing.Web.Controllers
+namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for the User class

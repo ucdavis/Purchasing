@@ -7,7 +7,7 @@ using Purchasing.Core.Queries;
 using Purchasing.Mvc.Utility;
 using UCDArch.Data.NHibernate;
 
-namespace Purchasing.Web.Services
+namespace Purchasing.Mvc.Services
 {
     /// <summary>
     /// Service for full text search queries. Each query passes a list of OrderIds that should be searched

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core.Domain;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     public class ReviewOrderViewModel
     {

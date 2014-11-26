@@ -6,7 +6,7 @@ using UCDArch.Core.Utils;
 using System.Linq.Expressions;
 using System.Linq;
 
-namespace Purchasing.Web.Models
+namespace Purchasing.Mvc.Models
 {
     public class OrderReceiveModel
     {

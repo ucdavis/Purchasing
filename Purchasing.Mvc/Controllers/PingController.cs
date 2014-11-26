@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using UCDArch.Web.Controller;
 
-namespace Purchasing.Web.Controllers
+namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for the Ping class

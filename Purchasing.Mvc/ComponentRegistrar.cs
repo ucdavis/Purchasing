@@ -5,7 +5,7 @@ using NHibernate;
 using Purchasing.Core;
 using Purchasing.Mvc.Services;
 using Purchasing.Web.Helpers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using Purchasing.WS;
 using UCDArch.Core.CommonValidator;
 using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;

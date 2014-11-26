@@ -9,8 +9,8 @@ using Purchasing.Core.Queries;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
 using Purchasing.Web.Attributes;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Services;
 
 namespace Purchasing.Mvc.Controllers
 {
