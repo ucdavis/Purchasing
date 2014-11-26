@@ -15,14 +15,10 @@
 	<meta name="author" content="">
 
 	<link rel="shortcut icon" href="@Url.Content("~/favicon.ico")">
-
-    @{
-        Bundles.Reference("css");
-    }
     
-    @Bundles.RenderStylesheets()
-
-	<style type="text/css">
+    @Styles.Render("~/Css/main")
+    
+    <style type="text/css">
 		#branding
 		{
 			z-index: 0;
@@ -75,68 +71,52 @@
 		
 	</style>
 
-    @{
-        Bundles.Reference("scripts/external/jquery", pageLocation: "head");
-        Bundles.Reference("scripts/external/jquery-ui", pageLocation: "head");
-        Bundles.Reference("scripts/public/head", pageLocation: "head");
-        Bundles.AddPageData("Configuration",
-            new
-            {
-                AnalyticsKey = WebConfigurationManager.AppSettings["AnalyticsKey"],
-                ActiveIssuesCountUrl = Url.Action("GetActiveIssuesCount", "Help"),
-                DataTablesPageSize = ViewBag.DataTablesPageSize ?? 10,
-                LoadTableTools = ViewBag.LoadTableTools ?? false,
-                TableToolsSwf = Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf"),
-                LoadFixedHeaders = ViewBag.LoadFixedHeaders ?? false
-            }, "common");
-        Bundles.Reference("scripts/public/common", pageLocation: "common");
-    }
-    
-    @Bundles.RenderScripts("head")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/head")
 
 </head>
 <body>
-	<div class="wrapper">
+    <div class="wrapper">
 	
-		@Html.Partial("_ServiceMessages")
+        @Html.Partial("_ServiceMessages")
 	
-		<header id="branding">
+        <header id="branding">
 			
-			<!-- Application's Name -->
-			<span class="header">
+            <!-- Application's Name -->
+            <span class="header">
 
                 <div class="col1-50">
 
-                <img src='@Url.Image("PrePurchasing-Logo.png")' alt="UCD PrePurchasing" style="height: 60px;"/>
+                    <img src='@Url.Image("PrePurchasing-Logo.png")' alt="UCD PrePurchasing" style="height: 60px;"/>
 
-				</div>
+                </div>
                 
                 <div class="col2-50">
-                <ul id="personalbar">
+                    <ul id="personalbar">
                     
-                    <li id="username"  class="navigation-list">Hello @User.Identity.Name</li>
-                    <li id="settings" class="navigation-list">
-                        @Html.ActionLink("Profile", "Profile", "User")
-                        <ul>
-                            <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User", new {id=User.Identity.Name}, new {})</li>
-                            <li>@Html.ActionLink("Away Status", "AwayStatus", "User")</li>
-                        </ul>    
-                    </li> 
-                    <li id="logout" class="navigation-list">@Html.ActionLink("Logout", "LogOut", "Account")</li>
+                        <li id="username"  class="navigation-list">Hello @User.Identity.Name</li>
+                        <li id="settings" class="navigation-list">
+                            @Html.ActionLink("Profile", "Profile", "User")
+                            <ul>
+                                <li>@Html.ActionLink("Email Preferences", "EmailPreferences", "User", new {id=User.Identity.Name}, new {})</li>
+                                <li>@Html.ActionLink("Away Status", "AwayStatus", "User")</li>
+                            </ul>    
+                        </li> 
+                        <li id="logout" class="navigation-list">@Html.ActionLink("Logout", "LogOut", "Account")</li>
 
-                </ul>
+                    </ul>
                 </div>
-			</span>
+            </span>
 				
-		</header>
+        </header>
 
         <nav id="navigation-bar">
   
             <div class="col1-50">
-            <ul id="global-nav">
+                <ul id="global-nav">
             
-            </ul>
-            <div style="clear: both;"></div>
+                </ul>
+                <div style="clear: both;"></div>
             </div>
 
             <div class="col2-50">
@@ -146,9 +126,9 @@
         </nav>
         
 			
-		<div class="main">
+        <div class="main">
 			
-			<header>
+            <header>
 				
                 <div id="browser-warning" style="display:none;">
                     You are currently using a browser that is not supported.  
@@ -156,29 +136,29 @@
                 </div>
 
                 @if(!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string)){ 
-				<div id="error-message">
-					@TempData["ErrorMessage"]
-				</div>
-				}
+                    <div id="error-message">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
                     				
-				@if (!string.IsNullOrWhiteSpace(TempData["Message"] as string)) { 
-				<div id="status-message">
-					@TempData["Message"]
-				</div>
-				}
+                @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string)) { 
+                    <div id="status-message">
+                        @TempData["Message"]
+                    </div>
+                }
 				
-				<div class="col1">
-					<h2>@ViewBag.Title</h2>
-					<h3>@ViewBag.SubTitle</h3>
-				</div>
+                <div class="col1">
+                    <h2>@ViewBag.Title</h2>
+                    <h3>@ViewBag.SubTitle</h3>
+                </div>
 					
-				<nav class="col2">
+                <nav class="col2">
 
-				</nav>
+                </nav>
 				
-			</header>
+            </header>
 			
-			<div id="body">
+            <div id="body">
 
 
                 <div id="container">
@@ -221,53 +201,65 @@
 
                 </div>*@
                 
-			    <div id="stats" >
+                <div id="stats" >
                     <img id="fireworks" style="display: none" src='@Url.Image("fireworksanimated.gif")' />
-			        <div id="stats-loader">			        
-			            <h4  ><img src='@Url.Image("ajax-loader.gif")'/> Loading Statistics</h4>
+                    <div id="stats-loader">			        
+                        <h4  ><img src='@Url.Image("ajax-loader.gif")'/> Loading Statistics</h4>
                     </div>
-			        <div id="stats-show" style="display: none;">
+                    <div id="stats-show" style="display: none;">
 			            
-			            <div class="alert alert-info">
-			                Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.Now.ToShortTimeString()</span>
-			            </div>
-			            <div class="stats-inner">
-			                <h4><strong id="stats-total-orders">n</strong> orders placed totaling <strong id="stats-total-amount">$$$</strong> with <strong id="stats-attachments">n</strong> attached files and using <strong id="stats-accounts">n</strong> different accounts. Of these <strong id="stats-total-orders-completed">n</strong> are completed for <strong id="stats-total-amount-completed"></strong>.</h4>
-			            </div>
-			            <div class="stats-inner">
-			                <h4>There are <strong id="stats-active-users">n</strong> active users having acted <strong id="stats-actions">n</strong> times across <strong id="stats-workgroups">n</strong> workgroups.</h4>
-			            </div>
-			            <div class="stats-inner"><h4>There are <strong id="stats-orgs">n</strong> different primary organizations that have placed orders and <strong id="stats-associated-orgs">n</strong> different organizations that have workgroups associated with them.</h4></div>
-			        </div>
-			    </div>
+                        <div class="alert alert-info">
+                            Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.Now.ToShortTimeString()</span>
+                        </div>
+                        <div class="stats-inner">
+                            <h4><strong id="stats-total-orders">n</strong> orders placed totaling <strong id="stats-total-amount">$$$</strong> with <strong id="stats-attachments">n</strong> attached files and using <strong id="stats-accounts">n</strong> different accounts. Of these <strong id="stats-total-orders-completed">n</strong> are completed for <strong id="stats-total-amount-completed"></strong>.</h4>
+                        </div>
+                        <div class="stats-inner">
+                            <h4>There are <strong id="stats-active-users">n</strong> active users having acted <strong id="stats-actions">n</strong> times across <strong id="stats-workgroups">n</strong> workgroups.</h4>
+                        </div>
+                        <div class="stats-inner"><h4>There are <strong id="stats-orgs">n</strong> different primary organizations that have placed orders and <strong id="stats-associated-orgs">n</strong> different organizations that have workgroups associated with them.</h4></div>
+                    </div>
+                </div>
 
             </div>
 				
-		</div>
+        </div>
 			
-		<footer id="footer">
-			<div id="footertext">
-				<nav class="col1-50">
+        <footer id="footer">
+            <div id="footertext">
+                <nav class="col1-50">
 					
 					
-				</nav>
-				<div class="col2-50">
+                </nav>
+                <div class="col2-50">
 					
                     <span class="navigation-list">Version #@ViewBag.Version</span>
 					
-				</div>
+                </div>
 
                 <ul id="authorinfo">
                     <li>Developed By <a href="@Url.Content("~/humans.txt")" target="_blank">A Team Of Programmers Across UC Davis</a></li>
                     <li>Copyright The Regents of the University of California, Davis campus, 2005-13.</li>
                     <li>All Rights Reserved.</li>
                 </ul>
-			</div>
-		</footer>
+            </div>
+        </footer>
 	
-	</div>
+    </div>
     
-    @Bundles.RenderScripts("common")
+    <script type="text/javascript">
+    (function (w) {
+        var d = w['Configuration'] || (w['Configuration'] = {});
+        d.AnalyticsKey = '@WebConfigurationManager.AppSettings["AnalyticsKey"]';
+        d.ActiveIssuesCountUrl = "/Help/GetActiveIssuesCount";
+        d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
+        d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
+        d.TableToolsSwf = '@Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")';
+        d.LoadFixedHeaders = @(ViewBag.LoadFixedHeaders == null ? "false" : ViewBag.LoadFixedHeaders.ToString().ToLower());
+    }(window));
+    </script>
+    
+    @Scripts.Render("~/bundles/common")
 
     <script>
 

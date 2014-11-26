@@ -1,5 +1,4 @@
 ﻿@using System.Web.Configuration
-@using FluentNHibernate.Utils
 @using Purchasing.Core.Domain
 <!DOCTYPE html>
 <html lang="en" class="no-js">
@@ -245,9 +244,9 @@
         d.AnalyticsKey = '@WebConfigurationManager.AppSettings["AnalyticsKey"]';
         d.ActiveIssuesCountUrl = "/Help/GetActiveIssuesCount";
         d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
-        d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : Extensions.ToLowerInvariantString	(ViewBag.LoadTableTools.ToString()));
+        d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
         d.TableToolsSwf = '@Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")';
-        d.LoadFixedHeaders = @(ViewBag.LoadFixedHeaders == null ? "false" : Extensions.ToLowerInvariantString(ViewBag.LoadFixedHeaders.ToString()));
+        d.LoadFixedHeaders = @(ViewBag.LoadFixedHeaders == null ? "false" : ViewBag.LoadFixedHeaders.ToString().ToLower());
     }(window));
     </script>
     
