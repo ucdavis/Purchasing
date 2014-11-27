@@ -15,14 +15,17 @@ namespace Purchasing.Mvc
                         "~/Scripts/jquery.validate*"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryui")
-                .Include("~/Scripts/jquery-1.7.1.min.js")
-                .Include("~/Scripts/jquery-ui-1.8.17.min.js"));
+                .Include("~/Scripts/external/jquery/jquery-1.7.1.js")
+                .Include("~/Scripts/external/jquery-ui/jquery-ui-1.8.17.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/head")
                 .IncludeDirectory("~/Scripts/public/head", "*.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/common")
                 .IncludeDirectory("~/Scripts/public/common", "*.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/order")
+                .IncludeDirectory("~/Scripts/public/order", "*.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/landing")
                 .Include("~/Scripts/public/single/Landing.js"));
@@ -56,8 +59,11 @@ namespace Purchasing.Mvc
         {
             //css
             bundles.Add(new StyleBundle("~/Css/single/chosen").Include("~/Css/single/chosen.css"));
+            bundles.Add(new StyleBundle("~/Css/single/fileuploader/fileuploader").Include("~/Css/single/fileuploader/fileuploader.css"));
+            bundles.Add(new StyleBundle("~/Css/single/orderrequest").Include("~/Css/single/orderrequest.css"));
 
             //scripts
+            bundles.Add(new ScriptBundle("~/bundles/single/chosen").Include("~/Scripts/public/single/chosen.jquery.js"));
             bundles.Add(new ScriptBundle("~/bundles/single/chosen").Include("~/Scripts/public/single/chosen.jquery.js"));
         }
     }

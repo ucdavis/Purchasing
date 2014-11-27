@@ -66,7 +66,7 @@
                         <ul>
                             @foreach (var file in Model.Order.Attachments)
                             {
-                                var filename = @file.FileName;
+                                var filename = file.FileName;
                                 if (filename != null && filename.Length > 30)
                                 {
                                     filename = filename.Substring(0, 19) + "..." + filename.Substring(filename.Length - 8, 8);

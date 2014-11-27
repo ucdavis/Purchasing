@@ -5,15 +5,15 @@
     ViewBag.ShowTour = true;
 }
 
-@{
-    Bundles.Reference("~/Css/single/fileuploader/fileuploader.css");
-    Bundles.Reference("~/Css/single/chosen.css");
-    Bundles.Reference("~/Css/single/orderrequest.css", pageLocation: "special");
-    
-    Bundles.Reference("scripts/public/order");
+@section AdditionalStyles
+{
+    @Styles.Render("~/Css/single/fileuploader/fileuploader")
+    @Styles.Render("~/Css/single/chosen")
+    @Styles.Render("~/Css/single/orderrequest")
 }
 
 @section AdditionalScripts{
+    @Scripts.Render("~/bundles/order")
     
     <script type="text/javascript">
 
@@ -28,7 +28,6 @@
         });
 
     </script>
-
 
 }
 
