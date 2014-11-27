@@ -13,22 +13,21 @@
 }
 
 @section AdditionalScripts{
-    @Scripts.Render("~/bundles/order")
-    
-    <script type="text/javascript">
+     <script type="text/javascript">
 
         $(function () {
             @Html.Partial("_Options")
-            
+
             purchasing.init();
-            
+
             purchasing.initLocalStorage();
 
             purchasing.initSaveOrderRequest('@Url.Action("SaveOrderRequest")');
         });
 
     </script>
-
+    
+    @Scripts.Render("~/bundles/order")
 }
 
 @Html.Partial("_SideNavigation")
