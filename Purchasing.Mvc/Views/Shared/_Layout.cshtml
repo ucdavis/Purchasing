@@ -24,11 +24,13 @@
     @Styles.Render("~/Css/main")
 
     <style type="text/css">
-		#branding
-		{
-			z-index: 0;
-		}
-	</style>
+        #branding
+        {
+            z-index: 0;
+        }
+    </style>
+    
+    @RenderSection("AdditionalStyles", false)
     
     @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/bundles/head")
