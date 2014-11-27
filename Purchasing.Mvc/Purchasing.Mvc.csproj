@@ -618,7 +618,7 @@
     <Content Include="Scripts\public\order\chosen.jquery.js" />
     <Content Include="Scripts\public\order\fileuploader.js" />
     <Content Include="Scripts\public\order\jquery.stickyfloat.js" />
-    <Content Include="Scripts\public\order\jquery.tmpl.min.js" />
+    <Content Include="Scripts\public\order\jquery.tmpl.js" />
     <Content Include="Scripts\public\order\jquery.unserializeform.js" />
     <Content Include="Scripts\public\order\knockout-2.0.0.0.js" />
     <Content Include="Scripts\public\order\Order.js" />
