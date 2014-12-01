@@ -665,8 +665,6 @@
     <Content Include="Views\Home\Landing.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
-    <Content Include="Views\Home\_Orders.cshtml" />
     <Content Include="Views\Account\LogOn.cshtml" />
     <Content Include="Views\Admin\_RemoveUserForm.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
