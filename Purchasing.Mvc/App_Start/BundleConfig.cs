@@ -37,9 +37,6 @@ namespace Purchasing.Mvc
                     "~/Scripts/public/single/jquery.stickyfloat.js")
                 );
 
-            bundles.Add(new ScriptBundle("~/bundles/landing")
-                .Include("~/Scripts/public/single/Landing.js"));
-
             bundles.Add(new ScriptBundle("~/bundles/history")
                 .Include("~/Scripts/public/single/TableTools.js")
                 .Include("~/Scripts/public/single/ZeroClipboard.js")
@@ -47,12 +44,6 @@ namespace Purchasing.Mvc
                 .Include("~/Scripts/public/single/FixedHeader.js")
                 );
             
-            bundles.Add(new ScriptBundle("~/bundles/multiselector") //Has a CSS
-                .Include("~/Scripts/public/single/jquery.multiselector.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/customField")
-                .Include("~/Scripts/public/single/jquery.tablednd_0_5.js"));
-
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -71,8 +62,7 @@ namespace Purchasing.Mvc
                       "~/Css/custom.css",
                       "~/Css/icons.css"));
 
-            bundles.Add(new StyleBundle("~/Css/multiselector")
-                .Include("~/Css/single/jquery.multiselector.css"));
+
 
             RegisterIndividualAssets(bundles);
             
@@ -87,10 +77,13 @@ namespace Purchasing.Mvc
             bundles.Add(new StyleBundle("~/Css/single/chosen").Include("~/Css/single/chosen.css"));
             bundles.Add(new StyleBundle("~/Css/single/fileuploader/fileuploader").Include("~/Css/single/fileuploader/fileuploader.css"));
             bundles.Add(new StyleBundle("~/Css/single/orderrequest").Include("~/Css/single/orderrequest.css"));
-
+            bundles.Add(new StyleBundle("~/Css/multiselector").Include("~/Css/single/jquery.multiselector.css"));
             //scripts
             bundles.Add(new ScriptBundle("~/bundles/single/chosen").Include("~/Scripts/public/single/chosen.jquery.js"));
             bundles.Add(new ScriptBundle("~/bundles/single/chosen").Include("~/Scripts/public/single/chosen.jquery.js"));
+            bundles.Add(new ScriptBundle("~/bundles/multiselector").Include("~/Scripts/public/single/jquery.multiselector.js")); //Has css
+            bundles.Add(new ScriptBundle("~/bundles/customField").Include("~/Scripts/public/single/jquery.tablednd_0_5.js"));
+            bundles.Add(new ScriptBundle("~/bundles/landing").Include("~/Scripts/public/single/Landing.js"));
         }
     }
 }
