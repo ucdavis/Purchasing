@@ -39,6 +39,13 @@ namespace Purchasing.Mvc
 
             bundles.Add(new ScriptBundle("~/bundles/landing")
                 .Include("~/Scripts/public/single/Landing.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/history")
+                .Include("~/Scripts/public/single/TableTools.js")
+                .Include("~/Scripts/public/single/ZeroClipboard.js")
+                .Include("~/Scripts/public/single/RearrangeDataTable.js")
+                .Include("~/Scripts/public/single/FixedHeader.js")
+                );
             
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.

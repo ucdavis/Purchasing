@@ -11,10 +11,6 @@
     ViewBag.LastRefresh = string.Format("Results current as of {0}", @ViewBag.IndexLastModified.ToString("dddd h:mm:ss tt"));
     ViewBag.LoadTableTools = true;
 
-    Bundles.Reference("scripts/public/single/TableTools.js");
-    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
-    Bundles.Reference("scripts/public/single/RearrangeDataTable.js");
-    Bundles.Reference("Scripts/public/single/FixedHeader.js");
 }
 
 @section SubNav
@@ -30,7 +26,7 @@
 
 @section AdditionalScripts
 {
-
+    @Scripts.Render("~/bundles/history")
     <script type="text/javascript">
         $(function () {
             $("#filterToggle").click(function () {
