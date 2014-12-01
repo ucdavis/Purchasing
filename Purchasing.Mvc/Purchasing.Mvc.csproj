@@ -856,7 +856,7 @@
     <Content Include="Views\Workgroup\WhoHasAccessToWorkgroup.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\Indexes\OrderHistory\" />
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
