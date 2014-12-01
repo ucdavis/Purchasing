@@ -701,7 +701,6 @@
     <Content Include="Views\DepartmentalAdminRequest\Details.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Index.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Instructions.cshtml" />
-    <Content Include="Views\EmailQueueV2\Index.cshtml" />
     <Content Include="Views\Error\FileNotFound.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Error\NotAuthorized.cshtml" />
