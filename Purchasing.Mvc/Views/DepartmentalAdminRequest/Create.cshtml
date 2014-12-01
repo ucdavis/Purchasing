@@ -1,23 +1,20 @@
-﻿@model Purchasing.Web.Controllers.DepartmentalAdminRequestViewModel
+﻿@model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
 
 @{
 	ViewBag.Title = "Create";
 }
 
 
-
-@{
-    Bundles.Reference("css/single/jquery.multiselector.css");
-    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
-}
-
-@section AdditionalScripts{
+@section AdditionalScripts
+{
+    @Scripts.Render("~/bundles/multiselector")
+    @Styles.Render("~/Css/multiselector")
  
     <script type="text/javascript">
 
-        $(function () {
-            var userUrl = "@Url.Action("SearchOrgs", "DepartmentalAdminRequest")";            
-            $("#User_Organizations").multiSelector({dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true});
+        $(function() {
+            var userUrl = "@Url.Action("SearchOrgs", "DepartmentalAdminRequest")";
+            $("#User_Organizations").multiSelector({ dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true });
         })
 
     </script>
