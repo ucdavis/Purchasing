@@ -212,6 +212,7 @@
     <Compile Include="Attributes\AuthorizeWorkgroupRoleAttribute.cs" />
     <Compile Include="Attributes\IpFilter.cs" />
     <Compile Include="Attributes\VersionAttribute.cs" />
+    <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="ComponentRegistrar.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />

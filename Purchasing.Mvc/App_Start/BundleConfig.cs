@@ -46,11 +46,12 @@ namespace Purchasing.Mvc
                 .Include("~/Scripts/public/single/RearrangeDataTable.js")
                 .Include("~/Scripts/public/single/FixedHeader.js")
                 );
-
-
+            
             bundles.Add(new ScriptBundle("~/bundles/multiselector") //Has a CSS
                 .Include("~/Scripts/public/single/jquery.multiselector.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/customField")
+                .Include("~/Scripts/public/single/jquery.tablednd_0_5.js"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.

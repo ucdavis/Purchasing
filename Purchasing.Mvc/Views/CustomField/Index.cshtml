@@ -4,9 +4,6 @@
     ViewBag.Title = string.Format("Custom Fields for {0}", Model.Name);
 }
 
-@{
-    Bundles.Reference("scripts/public/single/jquery.tablednd_0_5.js");
-}
 
 @section SubNav
 {
@@ -18,7 +15,9 @@
 
 @section AdditionalScripts
 {
-<style type="text/css">
+    @Scripts.Render("~/bundles/customField")
+
+    <style type="text/css">
     #fields input[type='text'] { padding: .4em; min-width: 30px; width: 30px; }
 </style>
 
