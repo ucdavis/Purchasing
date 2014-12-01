@@ -1,4 +1,4 @@
-﻿@model Purchasing.Web.Controllers.DepartmentalAdminModel
+﻿@model Purchasing.Mvc.Controllers.DepartmentalAdminModel
 
 @{
 	ViewBag.Title = "Create Departmental Admin";
@@ -6,8 +6,7 @@
 }
 
 @{
-    Bundles.Reference("css/single/jquery.multiselector.css");
-    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
+    @Styles.Render("~/Css/multiselector")
 }
 
 @section SubNav
@@ -23,6 +22,8 @@
 
 @section AdditionalScripts{
  
+    @Scripts.Render("~/bundles/multiselector")
+
     <script type="text/javascript">
 
         $(function () {

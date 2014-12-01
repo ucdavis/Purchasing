@@ -46,7 +46,12 @@ namespace Purchasing.Mvc
                 .Include("~/Scripts/public/single/RearrangeDataTable.js")
                 .Include("~/Scripts/public/single/FixedHeader.js")
                 );
-            
+
+
+            bundles.Add(new ScriptBundle("~/bundles/multiselector") //Has a CSS
+                .Include("~/Scripts/public/single/jquery.multiselector.js"));
+
+
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -64,6 +69,9 @@ namespace Purchasing.Mvc
                       "~/Css/Datatables.css",
                       "~/Css/custom.css",
                       "~/Css/icons.css"));
+
+            bundles.Add(new StyleBundle("~/Css/multiselector")
+                .Include("~/Css/single/jquery.multiselector.css"));
 
             RegisterIndividualAssets(bundles);
             
