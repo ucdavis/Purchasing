@@ -25,7 +25,7 @@
                 
                 @{
                     
-                    var shipping = @Model.Order.ShippingType.Name;
+                    var shipping = Model.Order.ShippingType.Name;
                     if (shipping != null && shipping.Length > 13)
                     {
                         shipping = string.Format("<abbr title='{0}'>{1}</abbr>", Model.Order.ShippingType.Name, shipping.Substring(0, 13) + "...");

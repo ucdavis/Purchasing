@@ -9,10 +9,10 @@
         {
             <span class="attachments-not-found">There Are No Files Attached To This Order</span>
         }
-        <ul>            
+        <ul>
             @foreach (var attachment in Model.Attachments)
             {
-                var filename = @attachment.FileName;
+                var filename = attachment.FileName;
                 if (filename != null && filename.Length > 30)
                 {
                     filename = filename.Substring(0, 19) + "..." + filename.Substring(filename.Length - 8, 8);

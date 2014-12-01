@@ -29,6 +29,14 @@ namespace Purchasing.Mvc
             bundles.Add(new ScriptBundle("~/bundles/order")
                 .IncludeDirectory("~/Scripts/public/order", "*.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/orderreview").Include(
+                    "~/Scripts/public/single/fileuploader.js",
+                    "~/Scripts/public/single/OrderReview.js",
+                    "~/Scripts/public/single/jquery.tmpl.min.js",
+                    "~/Scripts/public/single/SausageCustom.js",
+                    "~/Scripts/public/single/jquery.stickyfloat.js")
+                );
+
             bundles.Add(new ScriptBundle("~/bundles/landing")
                 .Include("~/Scripts/public/single/Landing.js"));
             
