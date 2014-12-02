@@ -2,7 +2,7 @@
 @model WorkgroupVendorViewModel
 
 @{
-    Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
+   @Scripts.Render("~/bundles/jquery.tmpl")
 }
 @using (Html.BeginForm())
 {

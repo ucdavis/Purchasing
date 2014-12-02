@@ -5,16 +5,15 @@
 	ViewBag.Title = "Edit";
 }
 
-@{
-	Bundles.Reference("css/single/jquery.multiselector.css");
-	Bundles.Reference("scripts/public/single/jquery.multiselector.js");
-    Bundles.Reference("Css/single/chosen.css");
-    Bundles.Reference("scripts/public/single/chosen.jquery.js");
-    Bundles.Reference("Scripts/public/common/jquery.qtip.js");
-}
-
 @section AdditionalScripts
 {
+    @Styles.Render("~/Css/multiselector")
+    @Scripts.Render("~/bundles/multiselector")
+    @Styles.Render("~/Css/single/chosen")
+    @Scripts.Render("~/bundles/single/chosen")
+    @Scripts.Render("~/bundles/jquery.qtip")
+
+    
 	<script type="text/javascript">
 
 		$(function () {

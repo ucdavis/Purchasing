@@ -9,13 +9,10 @@
     ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
 }
 
-@{
-    Bundles.Reference("css/single/jquery.multiselector.css");
-    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
-}
-
 @section AdditionalScripts
 {
+    @Styles.Render("~/Css/multiselector")
+    @Scripts.Render("~/bundles/multiselector")
     <script type="text/javascript">
 
         $(function () {
