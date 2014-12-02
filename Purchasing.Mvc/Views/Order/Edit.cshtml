@@ -4,12 +4,15 @@
     ViewBag.Title = "Edit";
 }
 
+@section AdditionalStyles{
+    @Styles.Render("~/Css/order") 
+}
 
 
 @section AdditionalScripts{
     @Scripts.Render("~/bundles/order")
 
-    @Styles.Render("~/Css/order") 
+    
 }
 
     <script type="text/javascript">
