@@ -11,7 +11,7 @@ using Purchasing.Core.Queries;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
-using Purchasing.Web.Attributes;
+using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
 

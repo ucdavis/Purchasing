@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Caching;
 
-namespace Purchasing.Web.Attributes
+namespace Purchasing.Mvc.Attributes
 {
     /// <summary>
     /// Sets the ViewData["Version"] to a version number corresponding to the last build date.

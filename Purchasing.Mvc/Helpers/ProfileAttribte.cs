@@ -4,7 +4,7 @@ using System.Web;
 using System.Web.Mvc;
 using StackExchange.Profiling;
 
-namespace Purchasing.Web.Helpers
+namespace Purchasing.Mvc.Helpers
 {
     /// <summary>
     /// Instrumenting controller actions. See: http://samsaffron.com/archive/2011/07/25/Automatically+instrumenting+an+MVC3+app

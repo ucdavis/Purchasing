@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
-using Purchasing.Web.Attributes;
-using Purchasing.Web.Helpers;
+using Purchasing.Mvc.Attributes;
+using Purchasing.Mvc.Helpers;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.Controller;
 

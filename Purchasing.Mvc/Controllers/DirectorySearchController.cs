@@ -6,7 +6,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Utility;
-using Purchasing.Web.Attributes;
+using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;

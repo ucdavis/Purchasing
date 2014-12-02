@@ -3,7 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Attributes;
-using Purchasing.Web.Attributes;
+using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;

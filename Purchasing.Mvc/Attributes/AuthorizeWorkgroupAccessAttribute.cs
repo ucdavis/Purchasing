@@ -6,7 +6,7 @@ using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 
-namespace Purchasing.Web.Attributes
+namespace Purchasing.Mvc.Attributes
 {
     public class AuthorizeWorkgroupAccessAttribute : AuthorizeAttribute
     {
