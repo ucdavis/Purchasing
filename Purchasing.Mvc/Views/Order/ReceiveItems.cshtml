@@ -7,9 +7,6 @@
     ViewBag.HideEditDialogue = true;
 }
 
-@{
-    Bundles.Reference("scripts/public/single/jquery.tmpl.min.js");
-}
 
 @section SubNav
 {
@@ -20,6 +17,8 @@
 
 @section AdditionalScripts
 {
+    @Scripts.Render("~/bundles/jquery.tmpl")
+    
     <style type="text/css">
         .navigation li{ display:inline-block; width:auto; padding:0 0 0 10px;}
         #orn {margin: 1em 0;}

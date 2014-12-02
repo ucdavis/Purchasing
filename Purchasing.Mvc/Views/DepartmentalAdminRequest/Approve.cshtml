@@ -1,16 +1,18 @@
-﻿@model Purchasing.Web.Controllers.DepartmentalAdminRequestViewModel
+﻿@model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
 
 @{
     ViewBag.Title = "Approve";
 
 }
 
-@{
-    Bundles.Reference("css/single/jquery.multiselector.css");
-    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
+@section AdditionalStyles{
+    @Styles.Render("~/Css/multiselector")
 }
 
-@section AdditionalScripts{
+@section AdditionalScripts
+{
+    @Scripts.Render("~/bundles/multiselector")
+    
  
     <script type="text/javascript">
 

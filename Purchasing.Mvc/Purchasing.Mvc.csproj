@@ -212,6 +212,7 @@
     <Compile Include="Attributes\AuthorizeWorkgroupRoleAttribute.cs" />
     <Compile Include="Attributes\IpFilter.cs" />
     <Compile Include="Attributes\VersionAttribute.cs" />
+    <Compile Include="AutomapperConfig.asax.cs" />
     <Compile Include="ComponentRegistrar.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
@@ -660,12 +661,8 @@
     <Content Include="Views\Shared\_PeepsDialog.cshtml" />
     <Content Include="Views\Shared\_ServiceMessages.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Home\Sample.cshtml" />
     <Content Include="Views\Home\Landing.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\_OrdersNoDataTable.cshtml" />
-    <Content Include="Views\Home\_Orders.cshtml" />
     <Content Include="Views\Account\LogOn.cshtml" />
     <Content Include="Views\Admin\_RemoveUserForm.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
@@ -700,7 +697,6 @@
     <Content Include="Views\DepartmentalAdminRequest\Details.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Index.cshtml" />
     <Content Include="Views\DepartmentalAdminRequest\Instructions.cshtml" />
-    <Content Include="Views\EmailQueueV2\Index.cshtml" />
     <Content Include="Views\Error\FileNotFound.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Error\NotAuthorized.cshtml" />
