@@ -6,12 +6,13 @@
     ViewBag.Title = "Reroute Account Manager";
     ViewBag.HideEditDialogue = true;
 }
-@{
-    Bundles.Reference("Css/single/chosen.css");    
-    Bundles.Reference("scripts/public/single/chosen.jquery.js");
+
+@section AdditionalStyles{
+    @Styles.Render("~/Css/single/chosen") 
 }
 
 @section AdditionalScripts{
+    @Scripts.Render("~/bundles/single/chosen")
     <script type="text/javascript">
         $(document).ready(function () {
             $(".chzn-select").chosen({ no_results_text: "No results matched", search_contains: true });
