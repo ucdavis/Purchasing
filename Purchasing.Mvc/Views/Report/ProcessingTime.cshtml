@@ -6,21 +6,19 @@
     ViewBag.LoadTableTools = true;
     ViewBag.LoadFixedHeaders = true;
 
-    Bundles.Reference("scripts/public/single/TableTools.js");
-    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
-    Bundles.Reference("scripts/public/single/RearrangeDataTable.js");
-    Bundles.Reference("scripts/public/single/FixedHeader.js");
+    
 }
 
 @section AdditionalScripts
 {
+    @Scripts.Render("~/bundles/history")
     <script type="text/javascript">
         $(function () {
             $('.year-month').datepicker({
                 changeMonth: true,
                 changeYear: true,
                 showButtonPanel: true,
-                dateFormat: 'MM yy',
+                dateFormat: "MM yy",
                 onClose: function (dateText, inst) {
                     var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                     var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
@@ -65,7 +63,8 @@
                             @Html.LabelFor(model => model.Month)
                         </div>
                         <div class="editor-field">
-                            @Html.TextBoxFor(model => model.Month, new { @class = "year-month" })
+                            
+                            @Html.TextBoxFor(model => model.Month, new Dictionary<string, object> { { "data-val", false }, {"class", "year-month"} })
                         </div>
                     </li>
                     <li>
