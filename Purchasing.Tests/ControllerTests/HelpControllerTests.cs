@@ -102,10 +102,10 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsFalse(data.HasIssues);
-            Assert.AreEqual(0, data.IssuesCount);
-            Assert.AreEqual(DateTime.Now.Date, new DateTime(data.TimeStamp).Date);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsFalse(data.HasIssues.Value);
+            Assert.AreEqual(0, data.IssuesCount.Value);
+            Assert.AreEqual(DateTime.Now.Date, new DateTime(data.TimeStamp.Value).Date);
             #endregion Assert		
         }
 
@@ -122,10 +122,10 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsTrue(data.HasIssues);
-            Assert.AreEqual(2, data.IssuesCount);
-            Assert.AreEqual(DateTime.Now.Date, new DateTime(data.TimeStamp).Date);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsTrue((bool)data.HasIssues);
+            Assert.AreEqual(2, (int)data.IssuesCount);
+            Assert.AreEqual(DateTime.Now.Date, new DateTime(data.TimeStamp.Value).Date);
             #endregion Assert
         }
         #endregion GetActiveIssuesCount Tests

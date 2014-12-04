@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
@@ -1540,12 +1541,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(false, data.success);
-            Assert.AreEqual("Error", data.message);
-            Assert.AreEqual(string.Empty, data.rtApprover);
-            Assert.AreEqual(string.Empty, data.rtAccountManager);
-            Assert.AreEqual(string.Empty, data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(false, data.success.Value);
+            Assert.AreEqual("Error", data.message.Value);
+            Assert.AreEqual(string.Empty, data.rtApprover.Value);
+            Assert.AreEqual(string.Empty, data.rtAccountManager.Value);
+            Assert.AreEqual(string.Empty, data.rtPurchaser.Value);
             #endregion Assert		
         }
 
@@ -1568,12 +1569,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(false, data.success);
-            Assert.AreEqual("Error", data.message);
-            Assert.AreEqual(string.Empty, data.rtApprover);
-            Assert.AreEqual(string.Empty, data.rtAccountManager);
-            Assert.AreEqual(string.Empty, data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(false, data.success.Value);
+            Assert.AreEqual("Error", data.message.Value);
+            Assert.AreEqual(string.Empty, data.rtApprover.Value);
+            Assert.AreEqual(string.Empty, data.rtAccountManager.Value);
+            Assert.AreEqual(string.Empty, data.rtPurchaser.Value);
             #endregion Assert
         }
 
@@ -1599,12 +1600,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(true, data.success);
-            Assert.AreEqual("Done", data.message);
-            Assert.AreEqual(string.Empty, data.rtApprover);
-            Assert.AreEqual(string.Empty, data.rtAccountManager);
-            Assert.AreEqual(string.Empty, data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(true, data.success.Value);
+            Assert.AreEqual("Done", data.message.Value);
+            Assert.AreEqual(string.Empty, data.rtApprover.Value);
+            Assert.AreEqual(string.Empty, data.rtAccountManager.Value);
+            Assert.AreEqual(string.Empty, data.rtPurchaser.Value);
             #endregion Assert
         }
 
@@ -1631,12 +1632,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(true, data.success);
-            Assert.AreEqual("Done", data.message);
-            Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover);
-            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager);
-            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(true, data.success.Value);
+            Assert.AreEqual("Done", data.message.Value);
+            Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover.Value);
+            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager.Value);
+            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser.Value);
             WorkgroupAccountRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
             #endregion Assert
         }
@@ -1664,12 +1665,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(true, data.success);
-            Assert.AreEqual("Done", data.message);
-            Assert.AreEqual("", data.rtApprover);
-            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager);
-            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(true, data.success.Value);
+            Assert.AreEqual("Done", data.message.Value);
+            Assert.AreEqual("", data.rtApprover.Value);
+            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager.Value);
+            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser.Value);
             WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
             var args = (WorkgroupAccount) WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0]; 
             Assert.IsNotNull(result);
@@ -1704,12 +1705,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(true, data.success);
-            Assert.AreEqual("Done", data.message);
-            Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover);
-            Assert.AreEqual("", data.rtAccountManager);
-            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(true, data.success.Value);
+            Assert.AreEqual("Done", data.message.Value);
+            Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover.Value);
+            Assert.AreEqual("", data.rtAccountManager.Value);
+            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser.Value);
             WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
             var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
             Assert.IsNotNull(result);
@@ -1744,12 +1745,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(true, data.success);
-            Assert.AreEqual("Done", data.message);
-            Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover);
-            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager);
-            Assert.AreEqual("", data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(true, data.success.Value);
+            Assert.AreEqual("Done", data.message.Value);
+            Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover.Value);
+            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager.Value);
+            Assert.AreEqual("", data.rtPurchaser.Value);
             WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
             var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
             Assert.IsNotNull(result);
@@ -1784,12 +1785,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(true, data.success);
-            Assert.AreEqual("Done", data.message);
-            Assert.AreEqual("", data.rtApprover);
-            Assert.AreEqual("", data.rtAccountManager);
-            Assert.AreEqual("", data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(true, data.success.Value);
+            Assert.AreEqual("Done", data.message.Value);
+            Assert.AreEqual("", data.rtApprover.Value);
+            Assert.AreEqual("", data.rtAccountManager.Value);
+            Assert.AreEqual("", data.rtPurchaser.Value);
             WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
             var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
             Assert.IsNotNull(result);
@@ -1824,12 +1825,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(true, data.success);
-            Assert.AreEqual("Done", data.message);
-            Assert.AreEqual("FirstName3 LastName3 (3)", data.rtApprover);
-            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager);
-            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(true, data.success.Value);
+            Assert.AreEqual("Done", data.message.Value);
+            Assert.AreEqual("FirstName3 LastName3 (3)", data.rtApprover.Value);
+            Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager.Value);
+            Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser.Value);
             WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
             var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
             Assert.IsNotNull(result);
@@ -1864,12 +1865,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(true, data.success);
-            Assert.AreEqual("Done", data.message);
-            Assert.AreEqual("FirstName3 LastName3 (3)", data.rtApprover);
-            Assert.AreEqual("FirstName5 LastName5 (5)", data.rtAccountManager);
-            Assert.AreEqual("FirstName7 LastName7 (7)", data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(true, data.success.Value);
+            Assert.AreEqual("Done", data.message.Value);
+            Assert.AreEqual("FirstName3 LastName3 (3)", data.rtApprover.Value);
+            Assert.AreEqual("FirstName5 LastName5 (5)", data.rtAccountManager.Value);
+            Assert.AreEqual("FirstName7 LastName7 (7)", data.rtPurchaser.Value);
             WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
             var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
             Assert.IsNotNull(result);
@@ -1904,12 +1905,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.AreEqual(false, data.success);
-            Assert.AreEqual("Error", data.message);
-            Assert.AreEqual(string.Empty, data.rtApprover);
-            Assert.AreEqual(string.Empty, data.rtAccountManager);
-            Assert.AreEqual(string.Empty, data.rtPurchaser);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.AreEqual(false, data.success.Value);
+            Assert.AreEqual("Error", data.message.Value);
+            Assert.AreEqual(string.Empty, data.rtApprover.Value);
+            Assert.AreEqual(string.Empty, data.rtAccountManager.Value);
+            Assert.AreEqual(string.Empty, data.rtPurchaser.Value);
             #endregion Assert
         }
         #endregion UpdateAccount Tests

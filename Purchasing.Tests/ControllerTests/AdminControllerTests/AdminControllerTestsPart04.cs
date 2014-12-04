@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc;
@@ -78,9 +79,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsFalse(data.success);
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: source", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsFalse(data.success.Value);
+            Assert.AreEqual("Value cannot be null.\r\nParameter name: source", data.message.Value);
             WorkgroupService.AssertWasNotCalled(a => a.AddRelatedAdminUsers(Arg<Workgroup>.Is.Anything));
             #endregion Assert		
         }
@@ -111,9 +112,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsFalse(data.success);
-            Assert.AreEqual("Sequence contains no matching element", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsFalse(data.success.Value);
+            Assert.AreEqual("Sequence contains no matching element", data.message.Value);
             WorkgroupService.AssertWasNotCalled(a => a.AddRelatedAdminUsers(Arg<Workgroup>.Is.Anything));
             #endregion Assert
         }
@@ -144,9 +145,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsFalse(data.success);
-            Assert.AreEqual("Precondition failed.", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsFalse(data.success.Value);
+            Assert.AreEqual("Precondition failed.", data.message.Value);
             WorkgroupService.AssertWasNotCalled(a => a.AddRelatedAdminUsers(Arg<Workgroup>.Is.Anything));
             #endregion Assert
         }
@@ -177,9 +178,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsFalse(data.success);
-            Assert.AreEqual("Precondition failed.", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsFalse(data.success.Value);
+            Assert.AreEqual("Precondition failed.", data.message.Value);
             WorkgroupService.AssertWasNotCalled(a => a.AddRelatedAdminUsers(Arg<Workgroup>.Is.Anything));
             #endregion Assert
         }
@@ -210,9 +211,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsTrue(data.success);
-            Assert.AreEqual("Updated", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsTrue(data.success.Value);
+            Assert.AreEqual("Updated", data.message.Value);
             WorkgroupService.AssertWasCalled(a => a.AddRelatedAdminUsers(RepositoryFactory.WorkgroupRepository.Queryable.Single(b => b.Id == 5)));
             #endregion Assert
         }
@@ -232,9 +233,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsFalse(data.success);
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: source", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsFalse(data.success.Value);
+            Assert.AreEqual("Value cannot be null.\r\nParameter name: source", data.message.Value);
             WorkgroupService.AssertWasNotCalled(a => a.GetChildWorkgroups(Arg<int>.Is.Anything));
             #endregion Assert
         }
@@ -265,9 +266,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsFalse(data.success);
-            Assert.AreEqual("Precondition failed.", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsFalse(data.success.Value);
+            Assert.AreEqual("Precondition failed.", data.message.Value);
             WorkgroupService.AssertWasNotCalled(a => a.GetChildWorkgroups(Arg<int>.Is.Anything));
             #endregion Assert
         }
@@ -297,9 +298,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsFalse(data.success);
-            Assert.AreEqual("Precondition failed.", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsFalse(data.success.Value);
+            Assert.AreEqual("Precondition failed.", data.message.Value);
             WorkgroupService.AssertWasNotCalled(a => a.GetChildWorkgroups(Arg<int>.Is.Anything));
             #endregion Assert
         }
@@ -331,9 +332,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsTrue(data.success);
-            Assert.AreEqual(" 2 5 6 7", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsTrue(data.success.Value);
+            Assert.AreEqual(" 2 5 6 7", data.message.Value);
             WorkgroupService.AssertWasCalled(a => a.GetChildWorkgroups(5));
             #endregion Assert
         }
@@ -365,9 +366,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsTrue(data.success);
-            Assert.AreEqual("None", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsTrue(data.success.Value);
+            Assert.AreEqual("None", data.message.Value);
             WorkgroupService.AssertWasCalled(a => a.GetChildWorkgroups(5));
             #endregion Assert
         }
@@ -399,9 +400,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            dynamic data = result.Data;
-            Assert.IsTrue(data.success);
-            Assert.AreEqual("None", data.message);
+            dynamic data = JObject.FromObject(result.Data);
+            Assert.IsTrue(data.success.Value);
+            Assert.AreEqual("None", data.message.Value);
             WorkgroupService.AssertWasCalled(a => a.GetChildWorkgroups(5));
             #endregion Assert
         }
