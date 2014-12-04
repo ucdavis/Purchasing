@@ -68,6 +68,8 @@
     <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="SchemaCompares" />
     <Folder Include="dbo\User Defined Types\" />
+    <Folder Include="DataSync\" />
+    <Folder Include="DataSync\User Defined Types\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\ShippingTypes.sql" />
@@ -148,6 +150,41 @@
     <Build Include="dbo\Functions\udf_GetOrderHistoryForOrderIds.sql" />
     <Build Include="dbo\User Defined Types\OrderIdsTableType.sql" />
     <Build Include="dbo\Functions\udf_GetPendingOrdersForLogin.sql" />
+    <Build Include="dbo\Tables\WorkgroupVendors_copy.sql" />
+    <Build Include="dbo\Tables\vVendors_sync.sql" />
+    <Build Include="dbo\Tables\vVendors_copy.sql" />
+    <Build Include="dbo\Tables\vVendors.sql" />
+    <Build Include="dbo\Tables\vVendorAddresses_sync.sql" />
+    <Build Include="dbo\Tables\vVendorAddresses_copy.sql" />
+    <Build Include="dbo\Tables\vVendorAddresses.sql" />
+    <Build Include="dbo\Tables\vSubAccounts_sync.sql" />
+    <Build Include="dbo\Tables\vSubAccounts.sql" />
+    <Build Include="dbo\Tables\vOrganizations_sync.sql" />
+    <Build Include="dbo\Tables\vOrganizations.sql" />
+    <Build Include="dbo\Tables\vCommodityGroups_sync.sql" />
+    <Build Include="dbo\Tables\vCommodityGroups.sql" />
+    <Build Include="dbo\Tables\vCommodities_sync.sql" />
+    <Build Include="dbo\Tables\vCommodities.sql" />
+    <Build Include="dbo\Tables\vBuildings_sync.sql" />
+    <Build Include="dbo\Tables\vBuildings.sql" />
+    <Build Include="dbo\Tables\vAccounts_sync.sql" />
+    <Build Include="dbo\Tables\vAccounts.sql" />
+    <Build Include="dbo\Tables\UnitOfMeasures_sync.sql" />
+    <Build Include="dbo\Tables\UnitOfMeasures.sql" />
+    <Build Include="dbo\Tables\PurCommodity.sql" />
+    <Build Include="dbo\Tables\ParamNameAndValue.sql" />
+    <Build Include="dbo\Functions\udf_GetApprovalsForLogin.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Update_vVendors_From_vVendorsSync.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Update_vVendorAddresses_From_vVendorAddressesSync.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Update_vSubAccounts_From_vSubAccountsSync.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Update_vOrganizations_From_vOrganizationsSync.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Update_vCommodities_From_vCommoditiesSync.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Update_vBuildings_From_vBuildingsSync.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Update_vAccounts_From_vAccountsSync.sql" />
+    <Build Include="dbo\Stored Procedures\usp_Update_UnitOfMeasures_From_UnitOfMeasures_sync.sql" />
+    <Build Include="DataSync\User Defined Types\vBuildings_dss_BulkType_fc56ecf1-61c5-4593-80c0-47ccf467ce70.sql" />
+    <Build Include="DataSync\User Defined Types\vCommodities_dss_BulkType_fc56ecf1-61c5-4593-80c0-47ccf467ce70.sql" />
+    <Build Include="Security\DataSync.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
