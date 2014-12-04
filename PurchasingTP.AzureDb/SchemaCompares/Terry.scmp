@@ -9,7 +9,7 @@
   </SourceModelProvider>
   <TargetModelProvider>
     <ConnectionBasedModelProvider>
-      <ConnectionString>Data Source=Terry;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</ConnectionString>
+      <ConnectionString>Data Source=.\SQLExpress;Initial Catalog=PrePurchasing;Integrated Security=True;Pooling=False</ConnectionString>
     </ConnectionBasedModelProvider>
   </TargetModelProvider>
   <SchemaCompareSettingsService>
@@ -303,6 +303,10 @@
       <PropertyElementName>
         <Name>VerifyDeployment</Name>
         <Value>True</Value>
+      </PropertyElementName>
+      <PropertyElementName>
+        <Name>RunDeploymentPlanExecutors</Name>
+        <Value>False</Value>
       </PropertyElementName>
       <PropertyElementName>
         <Name>AllowDropBlockingAssemblies</Name>

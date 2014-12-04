@@ -2,6 +2,7 @@
 
 
 
+
 -- =============================================
 -- Author:		Ken Taylor
 -- Create date: February 13, 2014
@@ -15,6 +16,8 @@
 	select * from udf_GetOrderHistoryForOrderIds(@OrderIds)
 */
 -- Modifications:
+--	2014-02-18 by kjt: Revised final inner join to return only one order lastusername if there
+--		were multiple max(datecreated) for the same order.
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetOrderHistoryForOrderIds]
 (
@@ -201,12 +204,13 @@ BEGIN
 			) ipaid on rorders.id = ipaid.liorderid
 		) opaid on o.id = opaid.orderid
 		inner join (
-			select max(oot.id) otid, oot.orderid, oot.DateCreated, users.FirstName + ' ' + users.LastName lastuser
+			select max(oot.id) otid, oot.orderid, oot.DateCreated, max(users.FirstName + ' ' + users.LastName)  lastuser
 			from ordertracking oot
 			inner join (select orderid, max(datecreated) maxdatecreated from ordertracking iot group by orderid) iot
 					on iot.orderid = oot.OrderId and iot.maxdatecreated = oot.DateCreated
 			inner join users on oot.userid = users.id
-			group by oot.orderid, oot.DateCreated, users.FirstName, users.LastName
+			where oot.orderid in (SELECT * FROM @OrderIds)
+			group by oot.orderid, oot.DateCreated --, users.FirstName, users.LastName
 		) lastaction on lastaction.orderid = o.id
 		WHERE o.id IN (SELECT * FROM @OrderIds)
 	
