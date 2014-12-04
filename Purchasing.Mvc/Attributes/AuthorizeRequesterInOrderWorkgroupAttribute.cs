@@ -5,7 +5,7 @@ using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
 using Microsoft.Practices.ServiceLocation;
 
-namespace Purchasing.Web.Attributes
+namespace Purchasing.Mvc.Attributes
 {
     public class AuthorizeRequesterInOrderWorkgroupAttribute : AuthorizeAttribute
     {

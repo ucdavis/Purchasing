@@ -1,13 +1,13 @@
-﻿@using Purchasing.Mvc.Models
-@model WorgroupPeopleCreateModel
+﻿@model WorgroupPeopleCreateModel
 
-@{
-    Bundles.Reference("css/single/jquery.multiselector.css");
-    Bundles.Reference("scripts/public/single/jquery.multiselector.js");
+@section AdditionalStyles
+{
+    @Styles.Render("~/Css/multiselector")
 }
 
 @section AdditionalScripts
 {
+    @Scripts.Render("~/bundles/multiselector")
     <script type="text/javascript">
 
         $(function () {

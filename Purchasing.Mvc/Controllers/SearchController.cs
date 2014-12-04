@@ -8,7 +8,7 @@ using Purchasing.Core;
 using Purchasing.Core.Queries;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
-using Purchasing.Web.Attributes;
+using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
 

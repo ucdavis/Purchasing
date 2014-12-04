@@ -23,7 +23,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
-namespace Purchasing.Web.Helpers
+namespace Purchasing.Mvc.Helpers
 {
     /// <summary>
     ///   A class to manage OAuth interactions.  This works with

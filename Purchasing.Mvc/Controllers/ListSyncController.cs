@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Purchasing.Core;
-using Purchasing.Web.Attributes;
+using Purchasing.Mvc.Attributes;
 using UCDArch.Web.Controller;
 
 namespace Purchasing.Mvc.Controllers

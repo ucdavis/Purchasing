@@ -43,6 +43,10 @@ namespace Purchasing.Mvc
                 .Include("~/Scripts/public/single/RearrangeDataTable.js")
                 .Include("~/Scripts/public/single/FixedHeader.js")
                 );
+
+            bundles.Add(new ScriptBundle("~/bundles/highlight")
+                .Include("~/Scripts/public/single/jquery.highlight.js")
+                );
             
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
@@ -62,9 +66,6 @@ namespace Purchasing.Mvc
                       "~/Css/custom.css",
                       "~/Css/icons.css"));
 
-            //Bundles.Reference("~/Css/single/fileuploader/fileuploader.css");
-            //Bundles.Reference("~/Css/single/chosen.css");
-            //Bundles.Reference("~/Css/single/orderrequest.css", pageLocation: "special"); //Not sure what this pageLocation did, putting here for now
             bundles.Add(new StyleBundle("~/Css/order").Include(
                   "~/Css/single/fileuploader/fileuploader.css",
                   "~/Css/single/chosen.css",
@@ -91,6 +92,7 @@ namespace Purchasing.Mvc
             bundles.Add(new ScriptBundle("~/bundles/customField").Include("~/Scripts/public/single/jquery.tablednd_0_5.js"));
             bundles.Add(new ScriptBundle("~/bundles/landing").Include("~/Scripts/public/single/Landing.js"));
             bundles.Add(new ScriptBundle("~/bundles/jquery.tmpl").Include("~/Scripts/public/single/jquery.tmpl.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/jquery.qtip").Include("~/Scripts/public/common/jquery.qtip.js"));
 
         }
     }

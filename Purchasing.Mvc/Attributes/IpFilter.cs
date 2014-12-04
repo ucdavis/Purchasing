@@ -4,7 +4,7 @@ using System.Net.Mail;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Purchasing.Web.Attributes
+namespace Purchasing.Mvc.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class IpFilter : FilterAttribute, IAuthorizationFilter

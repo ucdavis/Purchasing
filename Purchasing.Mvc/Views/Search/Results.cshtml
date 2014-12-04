@@ -1,15 +1,13 @@
-﻿@model Purchasing.Web.Controllers.SearchResultModel
+﻿@model Purchasing.Mvc.Controllers.SearchResultModel
 
 @{
     ViewBag.Title = "Search Results";
 }
 
-@{
-    Bundles.Reference("scripts/public/single/jquery.highlight.js");
-}
 
 @section AdditionalScripts
 {
+    @Scripts.Render("~/bundles/highlight")
     <style type="text/css">
      h2 {margin-bottom: 0px;}
     #body form {text-align: center;}

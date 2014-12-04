@@ -4,7 +4,7 @@ using System.Net;
 using System.Web;
 using System.Web.Security;
 
-namespace Purchasing.Web.Helpers
+namespace Purchasing.Mvc.Helpers
 {
     public static class CasHelper
     {

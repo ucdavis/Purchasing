@@ -5,7 +5,7 @@ using System.Web;
 using Purchasing.Core.Domain;
 using UCDArch.Core.Utils;
 
-namespace Purchasing.Web.Helpers
+namespace Purchasing.Mvc.Helpers
 {
     public interface IWorkgroupAddressService
     {

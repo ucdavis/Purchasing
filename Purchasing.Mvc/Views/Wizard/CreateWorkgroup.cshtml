@@ -9,7 +9,10 @@
     ViewBag.IsAccountSync = false;
 }
 
-@Styles.Render("~/Css/single/chosen")
+@section AdditionalStyles
+{
+    @Styles.Render("~/Css/single/chosen")
+}
 
 @section AdditionalScripts{
     

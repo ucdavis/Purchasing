@@ -6,11 +6,12 @@
 
     ViewBag.LoadTableTools = true;
     ViewBag.LoadFixedHeaders = true;
+    
+}
 
-    Bundles.Reference("scripts/public/single/TableTools.js");
-    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
-    Bundles.Reference("scripts/public/single/RearrangeDataTable.js");
-    Bundles.Reference("scripts/public/single/FixedHeader.js");   
+@section AdditionalScripts
+{
+    @Scripts.Render("~/bundles/history")
 }
 
 @section SubNav

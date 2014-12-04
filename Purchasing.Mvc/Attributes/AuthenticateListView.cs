@@ -3,7 +3,7 @@ using System.Text;
 using System.Web.Configuration;
 using System.Web.Mvc;
 
-namespace Purchasing.Web.Attributes
+namespace Purchasing.Mvc.Attributes
 {
     public class AuthenticateListView : ActionFilterAttribute
     {

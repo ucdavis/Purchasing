@@ -6,14 +6,16 @@
     ViewBag.SingleColumn = false;
     ViewBag.LoadTableTools = true;
     ViewBag.LoadFixedHeaders = true;
-    
-    Bundles.Reference("scripts/public/single/TableTools.js");
-    Bundles.Reference("scripts/public/single/ZeroClipboard.js");
-    Bundles.Reference("scripts/public/single/RearrangeDataTable.js");
-    Bundles.Reference("scripts/public/single/FixedHeader.js");
+
+    ViewBag.LoadFixedHeaders = true;
 
 }
 
+@section AdditionalScripts
+{
+    @Scripts.Render("~/bundles/history")
+
+}
 <div class="">
     <div class="dt-table-filter-header display-form">
         <!--<header class="ui-widget-header ui-corner-top"></header>-->

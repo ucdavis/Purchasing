@@ -4,7 +4,7 @@ using Castle.Windsor;
 using NHibernate;
 using Purchasing.Core;
 using Purchasing.Mvc.Services;
-using Purchasing.Web.Helpers;
+using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Services;
 using Purchasing.WS;
 using UCDArch.Core.CommonValidator;

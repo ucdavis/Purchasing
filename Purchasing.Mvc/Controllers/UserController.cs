@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using Microsoft.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Mvc.Attributes;
-using Purchasing.Web.Attributes;
+using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;

@@ -1,4 +1,4 @@
-﻿@model Purchasing.Web.Controllers.UpdateMultipleAccountsViewModel
+﻿@model Purchasing.Mvc.Controllers.UpdateMultipleAccountsViewModel
 
 
 @{
@@ -14,8 +14,7 @@
 }
 
 @{
-    Bundles.Reference("Scripts/public/common/jquery.qtip.js");
-    
+    @Scripts.Render("~/bundles/jquery.qtip")
     <script type="text/javascript">
         $(document).ready(function () {
             $(".showTip").qtip({

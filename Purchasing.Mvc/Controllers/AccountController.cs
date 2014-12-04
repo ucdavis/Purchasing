@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Security;
 using Purchasing.Core.Domain;
-using Purchasing.Web.Helpers;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Controllers
 {
