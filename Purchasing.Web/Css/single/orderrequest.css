@@ -1,9 +1,0 @@
-.single-column {width: 1215px;}
-.orders-right {width: 995px;}
-
-form input.quantity[type="text"] {width: 50px;}
-form input.description[type="text"] {min-width: 300px; width: 90%;}
-form input.price[type="text"], #shipping, #tax, #freight {width: 60px;}
-form input.catalog-num[type="text"] { width: 106px;}
-        
-#order-account-section .details-option {width: 30%;}

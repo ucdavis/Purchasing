@@ -1,7 +1,0 @@
-﻿Site.css
-jquery-ui-1.8.16.caes.css
-jquery.qtip.min.css
-jquery.tzCheckbox.css
-Datatables.css
-custom.css
-icons.css

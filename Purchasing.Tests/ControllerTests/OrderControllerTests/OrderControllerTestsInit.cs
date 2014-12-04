@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Routing;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
-using Purchasing.Web;
+using Purchasing.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
@@ -110,7 +111,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
         protected override void RegisterRoutes()
         {
-            new RouteConfigurator().RegisterRoutes(); //Try this one if below doesn't work
+            RouteConfig.RegisterRoutes(RouteTable.Routes);//Try this one if below doesn't work
             //RouteRegistrar.RegisterRoutes(RouteTable.Routes);
         }
 

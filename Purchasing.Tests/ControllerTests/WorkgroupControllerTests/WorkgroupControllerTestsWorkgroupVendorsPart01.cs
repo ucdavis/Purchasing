@@ -4,8 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Models;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
 

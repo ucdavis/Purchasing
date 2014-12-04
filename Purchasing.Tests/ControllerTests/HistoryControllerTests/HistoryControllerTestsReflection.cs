@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Web.Mvc;
 using Castle.Windsor;
-using Purchasing.Web;
-using Purchasing.Web.Attributes;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc;
+using Purchasing.Mvc.Attributes;
+using Purchasing.Mvc.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Purchasing.Web.Helpers;
+using Purchasing.Mvc.Helpers;
 using UCDArch.Testing;
 using UCDArch.Web.Attributes;
 
@@ -103,7 +103,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<Web.Attributes.VersionAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<Mvc.Attributes.VersionAttribute>();
             #endregion Act
 
             #region Assert

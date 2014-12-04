@@ -5,9 +5,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Purchasing.Web.App_GlobalResources;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.App_GlobalResources;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Testing;
 

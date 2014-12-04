@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using Castle.Windsor;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc;
+using Purchasing.Mvc.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;

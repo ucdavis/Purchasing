@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Castle.Windsor;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc;
+using Purchasing.Mvc.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Web.Helpers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Helpers;
+using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
@@ -46,7 +47,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
         protected override void RegisterRoutes()
         {
-            new RouteConfigurator().RegisterRoutes();
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)

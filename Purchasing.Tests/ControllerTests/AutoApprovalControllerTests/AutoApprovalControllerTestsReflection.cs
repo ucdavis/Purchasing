@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Purchasing.Web.Attributes;
-using Purchasing.Web.Helpers;
+using Purchasing.Mvc.Attributes;
+using Purchasing.Mvc.Helpers;
 using UCDArch.Web.Attributes;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
@@ -97,7 +97,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<Web.Attributes.VersionAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<Mvc.Attributes.VersionAttribute>();
             #endregion Act
 
             #region Assert

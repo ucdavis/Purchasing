@@ -2,7 +2,7 @@
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc.Controllers;
 using Rhino.Mocks;
 using UCDArch.Testing.Fakes;
 

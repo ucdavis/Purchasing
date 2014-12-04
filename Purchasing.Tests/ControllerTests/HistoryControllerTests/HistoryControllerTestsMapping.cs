@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Tests.Core;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc.Controllers;
 
 
 namespace Purchasing.Tests.ControllerTests.HistoryControllerTests

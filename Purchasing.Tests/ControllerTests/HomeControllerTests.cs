@@ -10,10 +10,10 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Helpers;
-using Purchasing.Web.Models;
+using Purchasing.Mvc;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Helpers;
+using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
@@ -53,7 +53,7 @@ namespace Purchasing.Tests.ControllerTests
 
         //protected override void RegisterRoutes()
         //{
-        //    new RouteConfigurator().RegisterRoutes();
+        //    RouteConfig.RegisterRoutes(RouteTable.Routes);
         //}
 
         //protected override void RegisterAdditionalServices(IWindsorContainer container)
@@ -308,7 +308,7 @@ namespace Purchasing.Tests.ControllerTests
         //    #endregion Arrange
 
         //    #region Act
-        //    var result = controllerClass.GetCustomAttributes(true).OfType<Web.Attributes.VersionAttribute>();
+        //    var result = controllerClass.GetCustomAttributes(true).OfType<Mvc.Attributes.VersionAttribute>();
         //    #endregion Act
 
         //    #region Assert
