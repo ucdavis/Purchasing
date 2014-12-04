@@ -7,6 +7,7 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
+using Newtonsoft.Json.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
@@ -255,10 +256,11 @@ namespace Purchasing.Tests.ControllerTests
                 .AssertResultIs<JsonNetResult>();
             #endregion Act
 
+            dynamic data = JObject.FromObject(results.Data);
+
             #region Assert
-            dynamic data = results.Data;
-            Assert.AreEqual(5, data.deniedThisMonth);
-            Assert.AreEqual(3, data.completedThisMonth);
+            Assert.AreEqual(5, (int)data.deniedThisMonth);
+            Assert.AreEqual(3, (int)data.completedThisMonth);
             OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                                        new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null));
             OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
