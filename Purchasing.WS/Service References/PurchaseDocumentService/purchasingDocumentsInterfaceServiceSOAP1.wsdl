@@ -7,6 +7,8 @@
       <xs:element name="getPurchasingDocumentUrl" type="tns:getPurchasingDocumentUrl" />
       <xs:element name="getPurchasingDocumentUrlResponse" type="tns:getPurchasingDocumentUrlResponse" />
       <xs:element name="uploadRequisition" type="tns:uploadRequisition" />
+      <xs:element name="uploadRequisitionExtend" type="tns:uploadRequisitionExtend" />
+      <xs:element name="uploadRequisitionExtendResponse" type="tns:uploadRequisitionExtendResponse" />
       <xs:element name="uploadRequisitionResponse" type="tns:uploadRequisitionResponse" />
       <xs:complexType name="getPurchaseRequisitionStatus">
         <xs:sequence>
@@ -44,7 +46,10 @@
       </xs:complexType>
       <xs:complexType name="purchaseRequisitionInfo">
         <xs:sequence>
+          <xs:element minOccurs="0" name="agreementNumber" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="belowTheLineItems" nillable="true" type="tns:purchasingBelowTheLineItemInfo" />
           <xs:element minOccurs="0" name="chartOfAccountsCode" type="xs:string" />
+          <xs:element minOccurs="0" name="customerNumber" type="xs:string" />
           <xs:element minOccurs="0" name="deliveryAddress" type="tns:purchasingAddressInfo" />
           <xs:element minOccurs="0" name="deliveryInstructionText" type="xs:string" />
           <xs:element minOccurs="0" name="documentInfo" type="tns:documentInfo" />
@@ -61,8 +66,33 @@
           <xs:element minOccurs="0" name="shippingAndHandlingDescription" type="xs:string" />
           <xs:element minOccurs="0" name="sourceSystemOrderId" type="xs:string" />
           <xs:element minOccurs="0" name="vendorAddressNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="vendorContactName" type="xs:string" />
+          <xs:element minOccurs="0" name="vendorContactPhoneNumber" type="xs:string" />
           <xs:element minOccurs="0" name="vendorDetailId" type="xs:string" />
           <xs:element minOccurs="0" name="vendorHeaderId" type="xs:string" />
+          <xs:element minOccurs="0" name="vendorPaymentTermsCode" type="xs:string" />
+          <xs:element minOccurs="0" name="vendorShippingPaymentTermsCode" type="xs:string" />
+          <xs:element minOccurs="0" name="vendorShippingTitleCode" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="purchasingBelowTheLineItemInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="belowItemAmount" type="xs:string" />
+          <xs:element minOccurs="0" name="belowItemDescription" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="belowItemPurchasingAccountingLines" nillable="true" type="tns:purchasingAccountingInfo" />
+          <xs:element minOccurs="0" name="belowItemTaxAmount" type="xs:string" />
+          <xs:element minOccurs="0" name="itemTypeCode" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="purchasingAccountingInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="accountNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="chartOfAccountsCode" type="xs:string" />
+          <xs:element minOccurs="0" name="distributionPercent" type="xs:string" />
+          <xs:element minOccurs="0" name="objectCode" type="xs:string" />
+          <xs:element minOccurs="0" name="projectCode" type="xs:string" />
+          <xs:element minOccurs="0" name="subAccountNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="subObjectCode" type="xs:string" />
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="purchasingAddressInfo">
@@ -90,17 +120,6 @@
           <xs:element minOccurs="0" name="organizationTrackingNumber" type="xs:string" />
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="purchasingAccountingInfo">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="accountNumber" type="xs:string" />
-          <xs:element minOccurs="0" name="chartOfAccountsCode" type="xs:string" />
-          <xs:element minOccurs="0" name="distributionPercent" type="xs:string" />
-          <xs:element minOccurs="0" name="objectCode" type="xs:string" />
-          <xs:element minOccurs="0" name="projectCode" type="xs:string" />
-          <xs:element minOccurs="0" name="subAccountNumber" type="xs:string" />
-          <xs:element minOccurs="0" name="subObjectCode" type="xs:string" />
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="purchasingItemInfo">
         <xs:sequence>
           <xs:element minOccurs="0" maxOccurs="unbounded" name="accountingLines" nillable="true" type="tns:purchasingAccountingInfo" />
@@ -111,6 +130,9 @@
           <xs:element minOccurs="0" name="quantity" type="xs:string" />
           <xs:element minOccurs="0" name="unitOfMeasureCode" type="xs:string" />
           <xs:element minOccurs="0" name="unitPrice" type="xs:string" />
+          <xs:element minOccurs="0" name="userDefineField1" type="xs:string" />
+          <xs:element minOccurs="0" name="userDefineField2" type="xs:string" />
+          <xs:element minOccurs="0" name="userDefineField3" type="xs:string" />
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="uploadRequisitionResponse">
@@ -132,6 +154,18 @@
           <xs:element minOccurs="0" name="severity" type="xs:string" />
         </xs:sequence>
       </xs:complexType>
+      <xs:complexType name="uploadRequisitionExtend">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="orderInfo" type="tns:purchaseRequisitionInfo" />
+          <xs:element minOccurs="0" name="securityToken" type="xs:string" />
+          <xs:element minOccurs="0" name="feedOriginationCode" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="uploadRequisitionExtendResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="tns:documentCreationResult" />
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="getPurchasingDocumentUrl">
         <xs:sequence>
           <xs:element minOccurs="0" name="arg0" type="xs:string" />
@@ -150,11 +184,17 @@
   <wsdl:message name="getPurchasingDocumentUrlResponse">
     <wsdl:part name="parameters" element="ns1:getPurchasingDocumentUrlResponse" />
   </wsdl:message>
+  <wsdl:message name="uploadRequisitionExtend">
+    <wsdl:part name="parameters" element="ns1:uploadRequisitionExtend" />
+  </wsdl:message>
   <wsdl:message name="uploadRequisitionResponse">
     <wsdl:part name="parameters" element="ns1:uploadRequisitionResponse" />
   </wsdl:message>
   <wsdl:message name="getPurchaseRequisitionStatus">
     <wsdl:part name="parameters" element="ns1:getPurchaseRequisitionStatus" />
+  </wsdl:message>
+  <wsdl:message name="uploadRequisitionExtendResponse">
+    <wsdl:part name="parameters" element="ns1:uploadRequisitionExtendResponse" />
   </wsdl:message>
   <wsdl:message name="getPurchaseRequisitionStatusResponse">
     <wsdl:part name="parameters" element="ns1:getPurchaseRequisitionStatusResponse" />
@@ -170,6 +210,10 @@
     <wsdl:operation name="uploadRequisition">
       <wsdl:input name="uploadRequisition" message="ns1:uploadRequisition" />
       <wsdl:output name="uploadRequisitionResponse" message="ns1:uploadRequisitionResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="uploadRequisitionExtend">
+      <wsdl:input name="uploadRequisitionExtend" message="ns1:uploadRequisitionExtend" />
+      <wsdl:output name="uploadRequisitionExtendResponse" message="ns1:uploadRequisitionExtendResponse" />
     </wsdl:operation>
     <wsdl:operation name="getPurchasingDocumentUrl">
       <wsdl:input name="getPurchasingDocumentUrl" message="ns1:getPurchasingDocumentUrl" />
