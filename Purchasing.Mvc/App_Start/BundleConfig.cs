@@ -66,9 +66,6 @@ namespace Purchasing.Mvc
                       "~/Css/custom.css",
                       "~/Css/icons.css"));
 
-            //Bundles.Reference("~/Css/single/fileuploader/fileuploader.css");
-            //Bundles.Reference("~/Css/single/chosen.css");
-            //Bundles.Reference("~/Css/single/orderrequest.css", pageLocation: "special"); //Not sure what this pageLocation did, putting here for now
             bundles.Add(new StyleBundle("~/Css/order").Include(
                   "~/Css/single/fileuploader/fileuploader.css",
                   "~/Css/single/chosen.css",
