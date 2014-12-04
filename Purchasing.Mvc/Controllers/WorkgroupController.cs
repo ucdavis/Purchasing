@@ -149,7 +149,7 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult Edit(int id)
         {
             var user = _userRepository.Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
-            var workgroup = _workgroupRepository.GetNullableById(id);
+            var workgroup = _workgroupRepository.Queryable.Fetch(x => x.Accounts).Single(x => x.Id == id);
 
             var model = WorkgroupModifyModel.Create(user, _queryRepositoryFactory, workgroup);
 
