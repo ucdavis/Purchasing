@@ -1,0 +1,40 @@
+﻿@model OrderModifyModel
+
+@Html.AntiForgeryToken()
+
+<input data-bind="value: splitType" id="splitType" name="splitType" type="hidden" value="None">
+@Html.Hidden("workgroup", @Model.Workgroup.Id)
+@Html.Hidden("formSaveId", @Guid.NewGuid().ToString())
+
+<select id="defaultAccounts" style="display:none;">
+    @foreach(var account in @Model.Accounts)
+    {
+        <option value="@account.Id" title="@account.Name">@account.Id</option>
+    }
+</select>
+@Html.Partial("_Justification")
+
+@Html.Partial("_BusinessPurpose")    
+
+@Html.Partial("_Vendor")
+    
+@Html.Partial("_ShippingAddress")
+
+@Html.Partial("_LineItems")
+
+@Html.Partial("_OrderDetails")
+    
+@Html.Partial("_OrderSplits")
+
+@Html.Partial("_ConditionalApprovals")
+    
+@if (Model.Workgroup.AllowControlledSubstances)
+{
+    @Html.Partial("_RestrictedInfo")
+}
+
+@Html.Partial("_CustomFields")
+    
+@Html.Partial("_OrderPreferences")
+    
+@Html.Partial("_Submit")

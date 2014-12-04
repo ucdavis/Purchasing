@@ -1,0 +1,111 @@
+﻿@model WorgroupPeopleCreateModel
+
+@section AdditionalStyles
+{
+    @Styles.Render("~/Css/multiselector")
+
+    <style type="text/css">
+        .selector {
+            margin: 2em 0;
+        }
+
+        .selector h3 {
+            margin-bottom: .5em;
+        }
+
+        header.title {
+            border-top: 1px solid #DDDDDD;
+            border-bottom: 1px solid #DDDDDD;
+            font-size: large;
+            padding: 1em;
+        }
+
+        .ac-optionsbox ul {
+            margin-top: 10px;
+        }
+    </style>
+}
+
+@section AdditionalScripts
+{
+    @Scripts.Render("~/bundles/multiselector")
+    <script type="text/javascript">
+
+        $(function () {
+        
+            var userUrl = "@Url.Action("SearchUsers")";
+            
+            $("#users").multiSelector({autoComplete: false, dataUrl: userUrl, placeholder: "Email, Kerb or Name", showOptions: true});
+           
+        })
+
+    </script>
+}
+
+@{
+	ViewBag.Title = Model.Workgroup.Name;
+}
+
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "People", new { id = Model.Workgroup.Id, roleFilter = ViewBag.roleFilter }, new { @class = "button" })</li>
+	</ul>
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+<section>
+	<header class="ui-corner-top ui-widget-header">Add People</header>
+    
+		<div class="section-text">
+	
+			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+	
+		</div>
+	<div class="section-contents">
+
+
+		<ul>
+        <li>           
+            <div class="editor-label required">
+                @Html.Label("Select Role:") <span>*</span>
+            </div>
+            <div class="editor-field">
+                @this.Select("Role").Options(Model.Roles, x=> x.Id, x=> x.Name).FirstOption("--Select Role--").Selected(Model.Role != null ? Model.Role.Id.ToString() : string.Empty)   
+                @Html.ValidationMessageFor(x=> x.Role)             
+            </div>
+        </li>
+         <li>
+            <div class="selector editor-label">
+                <label style="font-weight: bold">Users(s): <span class="red">*</span></label> 
+                <select id="users" name="users" multiple="">
+                    @if (Model.Users != null) 
+                    {
+                    foreach (var a in Model.Users)
+                    {
+                        <option selected="" value="@a.Id">@a.Name</option>
+                    }  
+                    }
+                </select>
+                @Html.ValidationMessageFor(a=> a.Users)
+            </div>
+        </li>
+					<li>
+				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+				<div class="editor-label">&nbsp;</div>
+				<div class="editor-field">
+				<input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "People", new {id = Model.Workgroup.Id, roleFilter = ViewBag.roleFilter})
+				</div>
+			</li>
+		</ul>
+
+	</div>
+
+
+</section>
+}
+
+

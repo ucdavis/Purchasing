@@ -1,0 +1,99 @@
+﻿@using Purchasing.Core.Domain
+@using Purchasing.Mvc.Services
+@model Purchasing.Core.Domain.EmailPreferences
+@{
+    ViewBag.Title = "Email Preferences";
+    var roles = UserSecurityService.UserRoles(User.Identity.Name);
+}
+@section SubNav
+{
+    <ul class="navigation">
+        <li>@Html.ActionLink("Back to Profile", "Profile", "", new {@class="button"})</li>
+    </ul>
+}
+
+@section AdditionalScripts{
+
+    <style>
+    
+        /* override the default width */
+        form section div.editor-label {width: 200px;}
+    
+    </style>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            
+            $(".showTip").qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+    </script>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+        if (roles.Contains(Role.Codes.Requester))
+        {
+            @Html.Partial("_RequesterPreferences")     
+        }
+
+        if (roles.Contains(Role.Codes.Approver) || ViewBag.IsConditionalApprover)
+        {
+            @Html.Partial("_ApproverPreferences")
+        }
+
+        if (roles.Contains(Role.Codes.AccountManager))
+        {
+            @Html.Partial("_AccountManagerPreferences")
+        }
+
+        if (roles.Contains(Role.Codes.Purchaser))
+        {
+            @Html.Partial("_PurchaserPreferences")
+        }
+        @Html.Partial("_GeneralEmailPreferences")
+        <section>
+    
+        <div class="section-contents">
+            <ul>
+                @Html.HiddenFor(model => model.Id)
+            
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.NotificationType)
+                    </div>
+                    <div class="editor-field showTip" title="">
+                        @this.Select("NotificationType").Options(Enum.GetNames(typeof(EmailPreferences.NotificationTypes)).ToList()).Selected(Model.NotificationType.ToString())
+                        @Html.ValidationMessageFor(model => model.NotificationType)
+                    </div>
+                </li>
+
+                <li>@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+                    <div class="editor-label">
+                        &nbsp;</div>
+                    <div class="editor-field">
+                        <input class="button" type="submit" value="Save email preferences" />
+                        | @Html.ActionLink("Cancel", "Profile")
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        </section>
+} 

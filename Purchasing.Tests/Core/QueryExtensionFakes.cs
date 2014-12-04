@@ -13,6 +13,12 @@ namespace Purchasing.Tests.Core
             return queryable;
         }
 
+        public IQueryable<TOriginal> Fetch<TOriginal, TRelated>(IQueryable<TOriginal> queryable, Expression<Func<TOriginal, TRelated>> relationshipProperty,
+            params Expression<Func<TRelated, object>>[] thenFetchRelationship)
+        {
+            return queryable;
+        }
+
         public IQueryable<TOriginal> Fetch<TOriginal, TRelated>(IQueryable<TOriginal> queryable, Expression<Func<TOriginal, TRelated>> relationshipProperty, params Expression<Func<TRelated, TRelated>>[] thenFetchRelationship)
         {
             return queryable;

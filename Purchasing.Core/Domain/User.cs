@@ -55,7 +55,6 @@ namespace Purchasing.Core.Domain
         [Email]
         public virtual string Email { get; set; }
 
-        [Date]
         [Display(Name = "Away Until")]
         public virtual DateTime? AwayUntil { get; set; }
         [Display(Name = "Is Active")]

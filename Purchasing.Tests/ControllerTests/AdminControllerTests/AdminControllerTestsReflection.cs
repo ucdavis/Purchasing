@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Purchasing.Web.Helpers;
+using Purchasing.Mvc.Helpers;
 using UCDArch.Web.Attributes;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
@@ -94,7 +94,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<Web.Attributes.VersionAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<Mvc.Attributes.VersionAttribute>();
             #endregion Act
 
             #region Assert

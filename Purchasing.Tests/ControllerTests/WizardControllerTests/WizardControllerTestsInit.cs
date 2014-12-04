@@ -9,13 +9,13 @@ using Castle.Windsor;
 using Purchasing.Core;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc;
+using Purchasing.Mvc.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Web.Helpers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Helpers;
+using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
@@ -91,7 +91,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
         protected override void RegisterRoutes()
         {
-            new RouteConfigurator().RegisterRoutes(); //Try this one if below doesn't work
+            RouteConfig.RegisterRoutes(RouteTable.Routes);//Try this one if below doesn't work
             //RouteRegistrar.RegisterRoutes(RouteTable.Routes);
         }
 

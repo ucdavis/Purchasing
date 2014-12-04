@@ -7,7 +7,7 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.WS;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using Purchasing.Tests;

@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Helpers;
+using Purchasing.Mvc;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Web.Models;
+using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;

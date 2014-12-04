@@ -6,8 +6,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Purchasing.Web.App_GlobalResources;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc.App_GlobalResources;
+using Purchasing.Mvc.Controllers;
 using Rhino.Mocks;
 using UCDArch.Testing;
 

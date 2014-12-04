@@ -1,0 +1,58 @@
+﻿@model Purchasing.Mvc.Models.WorkgroupAddressViewModel
+
+@{
+	ViewBag.Title = "Add Address";
+}
+
+
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Addresses", new { id = @Model.Workgroup.Id }, new { @class = "button" })</li>
+	</ul>
+}
+
+@section AdditionalScripts
+{
+
+	<script type="text/javascript">
+
+        var url = '@Url.Action("SearchBuilding", "Ajax")';
+
+	    $(function () {
+
+	        $("#WorkgroupAddress_Building").autocomplete({
+	                source: url, 
+	                minLength: 2,
+	                select: function (event, ui) {
+
+	                    $("#WorkgroupAddress_BuildingCode").val(ui.item.id);
+	                    $("#building-code-display").html("Building Code: " + ui.item.id);
+	                    $("#building-code-display").removeClass("red");
+	                    $("#building-code-display").addClass("green");
+	                    
+	                },
+	                change: function(event, ui) {
+
+	                    if (ui.item == null) {
+	                        $("#WorkgroupAddress_BuildingCode").val("");
+	                        $("#building-code-display").html("Warning Not a Valid Building");
+	                        $("#building-code-display").removeClass("green");
+	                        $("#building-code-display").addClass("red");
+	                    } else {
+	                        $("#building-code-display").html("Building Code: " + ui.item.id);
+	                        $("#building-code-display").removeClass("red");
+	                        $("#building-code-display").addClass("green");
+	                    }
+	                }
+	            });
+
+	    });
+
+	</script>
+
+}
+
+@Html.Partial("_AddressForm")
+

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc;
+using Purchasing.Mvc.Controllers;
 
 namespace Purchasing.Tests.ControllerTests
 {
@@ -17,7 +18,7 @@ namespace Purchasing.Tests.ControllerTests
         #region Init
         public AccountControllerTests()
         {
-            new RouteConfigurator().RegisterRoutes();
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
         #endregion Init

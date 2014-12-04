@@ -1,0 +1,74 @@
+﻿@model Purchasing.Mvc.Models.CustomFieldViewModel
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+    @Html.ValidationSummary(false)
+
+    @Html.HiddenFor(model => model.CustomField.Rank)
+    
+<section class="ui-corner-all">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-corner-top ui-widget-header">Custom Field</header>
+
+		<div class="section-text">
+	
+			@*<h4>Form Header</h4>*@
+			@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+	
+		</div>
+
+	<div class="section-contents">
+
+		<ul>
+						<li>
+					<div class="editor-label required">
+						@Html.LabelFor(model => model.CustomField.Name)<span>*</span> 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.CustomField.Name)
+						@Html.ValidationMessageFor(model => model.CustomField.Name)
+					</div>
+				</li>
+@*						<li>
+					<div class="editor-label">
+						@Html.LabelFor(model => model.CustomField.Rank) 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.CustomField.Rank)
+						@Html.ValidationMessageFor(model => model.CustomField.Rank)
+					</div>
+				</li>*@
+						<li>
+					<div class="editor-label">
+						@Html.LabelFor(model => model.CustomField.IsActive) 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.CustomField.IsActive)
+						@Html.ValidationMessageFor(model => model.CustomField.IsActive)
+					</div>
+				</li>
+						<li>
+					<div class="editor-label">
+						@Html.LabelFor(model => model.CustomField.IsRequired) 
+					</div>
+					<div class="editor-field">
+						@Html.EditorFor(model => model.CustomField.IsRequired)
+						@Html.ValidationMessageFor(model => model.CustomField.IsRequired)
+					</div>
+				</li>
+					<li>
+				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+				<div class="editor-label">&nbsp;</div>
+				<div class="editor-field">
+				<input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Index", new { id = Model.Organization.Id })
+				</div>
+			</li>
+		</ul>
+
+	</div>
+
+
+</section>
+}

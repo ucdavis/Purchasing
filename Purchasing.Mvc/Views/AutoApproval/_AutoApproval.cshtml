@@ -1,0 +1,102 @@
+﻿@using Purchasing.Mvc.Models
+@model AutoApprovalViewModel
+
+
+@using(Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <section class="ui-corner-all">
+@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+Example: Dinosaur 1  *@
+	<header class="ui-corner-top ui-widget-header">Auto Approval</header>
+
+		<div class="section-text">
+
+			@*<h4>Form Header</h4>*@
+			@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+			<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+
+		</div>
+
+	<div class="section-contents">
+
+		<ul>
+				<li>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.AutoApproval.MaxAmount) 
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.AutoApproval.MaxAmount)
+					@Html.ValidationMessageFor(model => model.AutoApproval.MaxAmount)
+				</div>
+			</li>
+				<li>
+				<div class="editor-label">
+                    <label>Operator</label> 
+				</div>
+                @{
+    var equalCheck = Model.AutoApproval != null && Model.AutoApproval.Equal ? "checked=checked" : string.Empty;
+    var lessThanCheck = equalCheck == string.Empty ? "checked=checked" : string.Empty;
+                }
+				<div class="editor-field">
+                    <ul>
+                    <li><input type="radio" name="AutoApproval.LessThan" value="true" @lessThanCheck class="move10down"> Less Than</li>
+                    <li><input type="radio" name="AutoApproval.LessThan" value="false" @equalCheck class="move10down"> Equal</li>
+                    </ul>
+                    @Html.ValidationMessageFor(model => model.AutoApproval.LessThan)
+				</div>
+			</li>
+            @if(!ViewBag.IsCreate)
+            { 
+				<li>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.AutoApproval.IsActive) 
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.AutoApproval.IsActive)
+					@Html.ValidationMessageFor(model => model.AutoApproval.IsActive)
+				</div>
+			</li>
+            }
+				<li>
+				<div class="editor-label">
+					@Html.LabelFor(model => model.AutoApproval.Expiration) 
+				</div>
+				<div class="editor-field">
+					@Html.EditorFor(model => model.AutoApproval.Expiration)
+					@Html.ValidationMessageFor(model => model.AutoApproval.Expiration)
+				</div>
+			</li>
+			<li>
+				<div class="editor-label required">
+					@Html.LabelFor(model => model.AutoApproval.Account)*<br /><br />
+                    <span style="display:block; padding-left:1em; color:#000;"> (or) </span>
+				</div>
+				<div class="editor-field">
+					@this.Select("AutoApproval.Account").Options(Model.Accounts, x => x.Id, x => x.NameAndId).FirstOption("--Select Account--").Selected(Model.AutoApproval != null && Model.AutoApproval.Account != null ? Model.AutoApproval.Account.Id : string.Empty)
+					@Html.ValidationMessageFor(model => model.AutoApproval.Account)
+				</div>
+			</li>
+			<li>
+				<div class="editor-label required">
+					@Html.LabelFor(model => model.AutoApproval.TargetUser)*
+				</div>
+				<div class="editor-field">
+                    @this.Select("AutoApproval.TargetUser").Options(Model.Users, x => x.Id, x => x.FullNameAndId).FirstOption("--Select Target User--").Selected(Model.AutoApproval != null && Model.AutoApproval.TargetUser != null ? Model.AutoApproval.TargetUser.Id : string.Empty)
+					@*@Html.TextBoxFor(x=>x.AutoApproval.TargetUser) [KerbID, no lookup yet]*@
+					@Html.ValidationMessageFor(model => model.AutoApproval.TargetUser)
+				</div>
+			</li>
+			<li>
+				@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+				<div class="editor-label"><label>&nbsp;</label></div>
+				<div class="editor-field"><input class="button" type="submit" value="Save" /> | @Html.ActionLink("Cancel", "Index", new { showAll = @ViewBag.ShowAll })</div>
+			</li>
+		</ul>
+	</div>
+
+	
+	</section>
+}

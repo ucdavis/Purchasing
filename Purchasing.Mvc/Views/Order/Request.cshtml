@@ -1,0 +1,42 @@
+﻿@model OrderModifyModel
+           
+@{
+    ViewBag.Title = "Request";
+    ViewBag.ShowTour = true;
+}
+
+@section AdditionalStyles
+{
+    @Styles.Render("~/Css/order")
+}
+
+@section AdditionalScripts{
+     <script type="text/javascript">
+
+        $(function () {
+            @Html.Partial("_Options")
+
+            purchasing.init();
+
+            purchasing.initLocalStorage();
+
+            purchasing.initSaveOrderRequest('@Url.Action("SaveOrderRequest")');
+        });
+
+    </script>
+    
+    @Scripts.Render("~/bundles/order")
+}
+
+@Html.Partial("_SideNavigation")
+
+<div class="orders-right">
+@using (Html.BeginForm("Request", "Order", new { Model.Workgroup.Id }, FormMethod.Post, new { id = "order-form" }))
+{
+    @Html.Partial("_OrderForm")
+}
+</div>
+
+@Html.Partial("_OrderTemplates")
+
+@Html.Partial("_OrderDialogs")

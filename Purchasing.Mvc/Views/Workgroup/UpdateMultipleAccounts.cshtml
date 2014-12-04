@@ -1,0 +1,219 @@
+﻿@model Purchasing.Mvc.Controllers.UpdateMultipleAccountsViewModel
+
+
+@{
+    ViewBag.Title = "Update Multiple Accounts";
+}
+
+@section SubNav
+{
+    <ul class="navigation">
+        <li><a href='@Url.Action("Accounts", new { id = Model.Workgroup.Id })' class="ui-button button ui-state-default">Back to Accounts</a></li>
+        <li><a href="@Url.Action("Details", new {id=Model.Workgroup.Id})" class="ui-button button ui-state-default">Back to Workgroup</a></li>
+    </ul>
+}
+
+@{
+    @Scripts.Render("~/bundles/jquery.qtip")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".showTip").qtip({
+                overwrite: false,
+                show: {
+                    event: 'mouseenter focus',
+                    ready: false
+                },
+                hide: {
+                    event: 'mouseleave blur'
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center'
+                }
+            });
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#updateAll").click(function () {
+                var toProcess = $("#account-to-process-count");
+                var toProcessCount = toProcess.html();
+                if (toProcessCount != 0) {
+                    alert("Please wait for all account to update before updating again");
+                } else {
+                    toProcessCount = $("#account-total-count").html();
+                    toProcess.html(toProcessCount);
+                    var selectedApprover = $("#SelectedApprover :selected")[0].value;
+                    var selectedAccountManager = $("#SelectedAccountManager :selected")[0].value;
+                    var selectedPurchaser = $("#SelectedPurchaser :selected")[0].value;
+
+                    var url = '@Url.Action("UpdateAccount", new { id = Model.Workgroup.Id })';
+                    $(".update-row").each(function () {
+                        var waId = this.id;
+                        var status = $("#" + waId + " .update-status");
+                        var approver = $("#" + waId + " .update-approver");
+                        var accountManager = $("#" + waId + " .update-accountmanager");
+                        var purchaser = $("#" + waId + " .update-purchaser");
+                        var antiforgery = $("input[name='__RequestVerificationToken']").val();
+
+                        status.html("Processing");
+                        status.removeClass("green");
+                        status.addClass("red");
+                        $.post(url, { workgroupAccountId: waId, approver: selectedApprover, accountManager: selectedAccountManager, purchaser: selectedPurchaser, __RequestVerificationToken: antiforgery }, function (result) {
+                            if (result) {
+                                if (result.success == true) {
+                                    status.html(result.message);
+                                    status.removeClass("red");
+                                    status.addClass("green");
+
+                                    approver.html(result.rtApprover);
+                                    accountManager.html(result.rtAccountManager);
+                                    purchaser.html(result.rtPurchaser);
+                                    toProcessCount--;
+                                    toProcess.html(toProcessCount);
+                                } else {
+                                    status.html("Error :" + result.message);
+                                }
+                            } else {
+                                alert("There was a problem updating");
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+    @Html.Hidden("id", Model.Workgroup.Id)
+
+    <section class="display-form ui-corner-all box-shadow">
+        <header class="ui-widget-header ui-corner-top">Default Values For Accounts</header>
+
+        <div class="section-contents">
+
+            <div class="section-text">
+                <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+            </div>
+
+            <ul>
+                <li>
+		            <div class="editor-label">
+					    @Html.Label("Approver")
+					</div>
+					<div class="editor-field">
+                        @Html.DropDownListFor(model => model.SelectedApprover, new SelectList(Model.ApproverChoices, "Item1", "Item2"))
+                        <div class="editor-label">
+                            @Html.Label("Default for new account")
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.DefaultSelectedApprover)                            
+                        </div>
+                        <div style="display: inline-block;">@Html.ValidationMessageFor(model => model.DefaultSelectedApprover, null , new {style="display: inline-block; padding-top: 6px; margin-top: -27px;"})</div>
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    @Html.Label("Account Manager")
+					</div>
+					<div class="editor-field">
+						@Html.DropDownListFor(model => model.SelectedAccountManager, new SelectList(Model.AccountManagerChoices, "Item1", "Item2"))
+                        <div class="editor-label">
+                            @Html.Label("Default for new account")
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.DefaultSelectedAccountManager)
+                        </div>
+                        <div style="display: inline-block;">@Html.ValidationMessageFor(model => model.DefaultSelectedAccountManager, null , new {style="display: inline-block; padding-top: 6px; margin-top: -27px;"})</div>
+					</div>
+				</li>
+                <li>
+		            <div class="editor-label">
+					    @Html.Label("Purchaser")
+					</div>
+					<div class="editor-field">
+						@Html.DropDownListFor(model => model.SelectedPurchaser, new SelectList(Model.PurchaserChoices, "Item1", "Item2"))
+                        <div class="editor-label">
+                            @Html.Label("Default for new account")
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.DefaultSelectedPurchaser)
+                        </div>
+                        <div style="display: inline-block;">@Html.ValidationMessageFor(model => model.DefaultSelectedPurchaser, null , new {style="display: inline-block; padding-top: 6px; margin-top: -27px;"})</div>
+					</div>
+				</li>
+                <li>
+                    <div class="editor-label">&nbsp;</div>
+                    <div class="editor-field">
+                            <input class="button showTip" type="submit" value="Update Defaults"  title="Save your defaults above for newly created or sync'd accounts" /> <a id="updateAll" href="#" class="button showTip" title="Update the accounts below with these choices.">Update Existing</a> | @Html.ActionLink("Cancel", "Accounts", new { id = @Model.Workgroup.Id })
+                    </div>
+			        
+		        </li>
+            </ul>
+
+        </div>
+
+    </section>
+}
+
+
+<section class="display-form ui-corner-all box-shadow">
+    <header class="ui-widget-header ui-corner-top">Accounts to process  <div id="account-to-process-count" style="display: inline-block">0</div> / <div id="account-total-count" style="display: inline-block">@Model.Workgroup.Accounts.Count()</div></header>
+
+    <div class="section-contents">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>
+                        Approver
+                    </th>
+
+                    <th>
+                        Account Manager
+                    </th>
+                    <th>
+                        Purchaser
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ var odd = false; }
+                @foreach (var item in Model.Workgroup.Accounts)
+                {
+                    <tr id="@item.Id" class="@(odd ? "odd" : "even") update-row">
+        
+                        <td>@item.Account.NameAndId</td>
+                        <td class="update-approver">
+                            @(item.Approver != null ? @item.Approver.FullNameAndId : string.Empty)
+                        </td>
+
+                        <td class="update-accountmanager">
+                            @(item.AccountManager != null ? @item.AccountManager.FullNameAndId : string.Empty)
+                        </td>	
+                        
+                        <td class="update-purchaser">
+                            @(item.Purchaser != null ? @item.Purchaser.FullNameAndId : string.Empty)
+                        </td>	
+
+                        <td  class="update-status">
+				
+                        </td>
+                    </tr>
+                    odd = !odd;
+                }
+            </tbody>
+        </table>
+
+    </div>
+</section>

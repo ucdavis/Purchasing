@@ -1,0 +1,101 @@
+﻿@model OrderModifyModel
+           
+<section id="order-preferences-section">
+    <header class="ui-widget-header ui-corner-top">Order Preferences</header>
+
+    <div class="section-contents">
+        
+        <div class="section-text">
+            <p>
+                Please specify additional preferences for this order. You can also add a comment and upload files if desired.
+            </p>
+            <p><strong id="shipping-warning" class="field-validation-error"></strong></p>
+        </div>
+
+        <ul id="order-preferences-list">
+            <li>
+			    <div class="editor-label required">
+				    <label>Date Needed<span class="required">*</span>:</label>
+			    </div>
+			    <div class="editor-field">
+                    <input name="dateNeeded" type="text" class="datepicker" title="Specify a date when the delivery needs to arrive by." value="@(Model.Order.DateNeeded == DateTime.MinValue ? string.Empty : Model.Order.DateNeeded.ToString("d"))" 
+                           data-val="true" data-val-required="Date Needed is required" data-val-date="Date Format Not Recognized" />
+                    <span data-valmsg-for="dateNeeded" data-valmsg-replace="true"></span>
+			    </div>
+		    </li>
+            <li>
+                <div class="editor-label">
+				    <label>Shipping Type:</label>
+			    </div>
+			    <div class="editor-field">
+                    <select id="shippingType" name="shippingType" title="Shipping Types may have additional charges. Specify in the comments if there is a limit to the cost for shipping." aria-describedby="ui-tooltip-0" class="valid">
+                        @foreach (var shipType in Model.ShippingTypes)
+                        {
+                            var selectedShipType = Model.Order.ShippingType != null ? Model.Order.ShippingType.Id : "ST";
+                            
+                            <option value="@shipType.Id" data-warning="@shipType.Warning" @(selectedShipType == shipType.Id ? "selected='selected" : string.Empty) >@shipType.Name</option>
+                        }
+                    </select>
+                </div>
+            </li>
+            <li>
+			    <div class="editor-label">
+				    <label>Allow Backorder?</label>
+			    </div>
+			    <div class="editor-field">
+                    @*@this.CheckBox("backorder").Checked(Model.Order.AllowBackorder)*@
+                    @*<input name="backorder" type="checkbox" />*@
+                    <input id="checkbox" name="backorder" type="checkbox" value="true" @(Model.Order.AllowBackorder ? "checked='checked'" : "") />
+			    </div>
+		    </li>
+            <li>
+                <div class="editor-label">
+                    <label>Comments and/or special instructions:</label>
+                </div>
+                <div class="editor-field">
+                    <textarea name="comments"></textarea>
+                </div>
+            </li>
+            @if (Model.Order.Attachments.Count > 0)
+            {
+                <li>
+                    <div class="editor-label">
+                        <label>Existing Attachments:</label>
+                    </div>
+                    <div class="editor-field">
+                        <ul>
+                            @foreach (var file in Model.Order.Attachments)
+                            {
+                                var filename = file.FileName;
+                                if (filename != null && filename.Length > 30)
+                                {
+                                    filename = filename.Substring(0, 19) + "..." + filename.Substring(filename.Length - 8, 8);
+                                }
+                                <li>
+                                    <div class="ui-widget" style="display: inline-block"><select id="combobox" data-id="@file.Id" class="qq-upload-file-category jcs-combobox" value="@file.Category"><option value="@file.Category">@file.Category</option><option value="Order Confirmation">Order Confirmation</option><option value="Invoice">Invoice</option><option value="Shipping Notification">Shipping Notification</option><option value="Packing Slip">Packing Slip</option><option value="Licenses and Agreements">Licenses and Agreements</option><option value="Miscellaneous">Miscellaneous</option></select><div class="qq-upload-file-category-message" style="display: inline-block; margin-left: 33px;"></div> </div>
+                                    <a href="@Url.Action("ViewFile", new { fileId = @file.Id })" title="@file.FileName">@filename</a>  
+                                    <input type="hidden" class="qq-upload-file-id" name="fileIds" value="@file.Id" />                                                                                                                                            
+                                </li>                                
+                            }
+                        </ul>
+                    </div>
+                </li>
+            }
+            <li>
+			    <div class="editor-label">
+				    <label>Add Attachments:</label>
+			    </div>
+                <div class="editor-field">
+                    <div id="file-uploader">
+                        <noscript>
+                            <p>Please enable JavaScript to use file uploader.</p>
+                            <!-- or put a simple form for upload here -->
+                        </noscript>
+                    </div>
+                </div>
+		    </li>
+        </ul>
+
+    </div>
+
+</section>

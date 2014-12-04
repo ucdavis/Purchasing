@@ -1,0 +1,56 @@
+﻿@using Purchasing.Core.Domain
+@model OrderReRoutePurchaserModel
+
+
+@{
+    ViewBag.Title = "Assign Purchaser";
+    ViewBag.HideEditDialogue = true;
+}
+@section AdditionalStyles{
+    @Styles.Render("~/Css/single/chosen")
+}
+@section AdditionalScripts{
+    @Scripts.Render("~/bundles/single/chosen")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".chzn-select").chosen({ no_results_text: "No results matched", search_contains: true });
+        });
+    </script>
+}
+
+@section SubNav
+{
+    <ul class="navigation">
+        <li><a href="@Url.Action("Review", new {id=Model.OrderId})" class="ui-button button ui-state-default">Back to Order</a></li>
+    </ul>
+}
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.Hidden("id", Model.OrderId)
+    <section class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Choose Available Purchaser for Order # @Model.Order.RequestNumber</header>
+    
+        <ul>
+            <li>
+                <div class="editor-label required">
+                    <label>Purchaser to Reroute to:</label><span>*</span>
+                </div>
+                <div class="editor-field">                                      
+                    @this.Select("PurchaserId").Options(Model.PurchaserPeeps, x => x.Id, x => x.FullName).Selected("--Select Purchaser--").Class("chzn-select")                    
+                </div>
+            </li>
+            <li>				
+				<div class="editor-label">&nbsp;</div>
+				<div class="editor-field">
+				<input class="button" type="submit" value="Save" /> | <a href="@Url.Action("Review", new {id=Model.OrderId})" >Cancel</a>
+				</div>
+			</li>
+        </ul>
+    </section>
+}

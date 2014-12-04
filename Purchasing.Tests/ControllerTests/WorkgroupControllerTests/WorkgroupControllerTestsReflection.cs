@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Purchasing.Web.Attributes;
-using Purchasing.Web.Helpers;
+using Purchasing.Mvc.Attributes;
+using Purchasing.Mvc.Helpers;
 using UCDArch.Web.Attributes;
-using VersionAttribute = Purchasing.Web.Attributes.VersionAttribute;
+using VersionAttribute = Purchasing.Mvc.Attributes.VersionAttribute;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {

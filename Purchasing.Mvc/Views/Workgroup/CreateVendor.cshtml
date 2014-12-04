@@ -1,0 +1,159 @@
+﻿@using Purchasing.Mvc.Models
+@model WorkgroupVendorViewModel
+
+@{
+    ViewBag.Title = "Create Workgroup Vendor";
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "VendorList", new { Id = Model.WorkgroupVendor.Workgroup.Id }, new { @class = "button" })</li>
+	</ul>
+}
+
+@section AdditionalScripts
+{
+    <script type="text/javascript">
+
+        var addressUrl = '@Url.Action("GetVendorAddresses")';
+
+        $(function () {
+
+            // what to do when a kfs vendor is selected
+            $("#VendorSearch").change(function () {
+
+                
+                var $addressSelect = $("#WorkgroupVendor_VendorAddressTypeCode");
+                $addressSelect.find("option:gt(0)").remove();
+
+                if ($(this).val() != "") {
+
+                    $.getJSON(addressUrl, { vendorId: $("#WorkgroupVendor_VendorId").val() }, function (result) {
+
+                        // perform work if any results come back
+                        if (result.length > 0) {
+
+                            $.each(result, function (index, item) {
+
+                                var option = $("<option>").val(item.TypeCode).html(item.Name);
+                                $addressSelect.append(option);
+
+                            });
+                            $addressSelect.removeAttr("disabled");
+
+                        } else {
+                            select.attr("disabled", "disabled");
+                        }
+                    });
+                }
+            });
+
+            // selecting a type of vendor
+            $(".vendorType").click(function () {
+
+                // new vendor
+                if ($(this).val() == "true") {
+                    $("#kfsVendorForm").hide();
+                    $("#newVendorForm").show();
+                }
+                // existing vendor
+                else {
+                    $("#kfsVendorForm").show();
+                    $("#newVendorForm").hide();
+                }
+
+            });
+
+
+        });
+
+        $(function () {
+            $("#WorkgroupVendor_Name").change(function () {
+                checkDuplicates($("#loader-name"));
+            });
+            $("#WorkgroupVendor_Line1").change(function () {
+                checkDuplicates($("#loader-line1"));
+            });
+        });
+
+        function checkDuplicates(loader) {
+            var id = '@Model.WorkgroupVendor.Workgroup.Id';
+            var name = $("#WorkgroupVendor_Name").val();
+            var line1 = $("#WorkgroupVendor_Line1").val();
+            var url = '@Url.Action("CheckDuplicateVendor")';
+            loader.toggle();
+            $.get(url, { workgrougpId: id, name: name, line1: line1 }, function(result) {
+                loader.toggle();
+                if (result) {
+                    $("#duplicateCheck").html(result.message);
+                } else {
+                    alert("There was a problem checking for duplicate vendors");
+                }
+            });
+        }
+
+        $(function () {
+            $("#toggle-address").click(function () {
+
+                var buttonSpan = $(this).children();
+                var addressSet = $("#vendor-address-fieldset");
+
+                if (addressSet.data("enabled")) {
+                    $("#skipAddress").val(true);
+                    $("#WorkgroupVendor_Line1", addressSet).val("N/A");
+                    $("#WorkgroupVendor_City", addressSet).val("N/A");
+                    $("#WorkgroupVendor_State", addressSet).val("CA");
+                    $("#WorkgroupVendor_Zip", addressSet).val("95616");
+                    $("#WorkgroupVendor_CountryCode", addressSet).val("US");
+
+                    $("input", addressSet).prop("disabled", true);
+
+                    buttonSpan.html("Needs Address?");
+                    addressSet.data("enabled", false);
+                } else {
+                    $("#skipAddress").val(false);
+                    $("input", addressSet).val("");
+                    $("#WorkgroupVendor_CountryCode", addressSet).val("US");
+                    $("input", addressSet).prop("disabled", false);
+
+                    buttonSpan.html("No Address?");
+                    addressSet.data("enabled", true);
+                }
+
+            });
+        });
+
+    </script>
+
+    <style type="text/css">
+    form select {width: 600px;}
+    </style>
+}
+
+<section class="ui-corner-all display-form">
+    
+    <header class="ui-corner-top ui-widget-header">Type of Vendor to Add</header>
+
+    <div class="section-text">
+        <p>Please select the type of vendor you would like to add to the workgroup.</p>
+    </div>
+
+    <ul>
+        <li><input type="radio" name="newVendor" value="false" class="vendorType" @(Model.NewVendor.HasValue && !Model.NewVendor.Value ? @"checked" : string.Empty)/> Existing Kfs Vendor</li>
+        <li><input type="radio" name="newVendor" value="true"  class="vendorType" @(Model.NewVendor.HasValue && Model.NewVendor.Value ? @"checked" : string.Empty)/> New Vendor</li>
+    </ul>
+
+</section>
+
+<div id="kfsVendorForm" @(Model.NewVendor.HasValue && !Model.NewVendor.Value ? "style=display:block;" : "style=display:none;")>
+
+    @Html.Partial("_ExistingWorkgroupVendor")
+
+</div>
+
+<div id="newVendorForm" @(Model.NewVendor.HasValue && Model.NewVendor.Value ? "style=display:block;" : "style=display:none;")>
+
+    @Html.Partial("_NewWorkgroupVendor")
+
+</div>

@@ -2,15 +2,15 @@
 using System.Linq;
 using System.Web.Mvc;
 using Castle.Windsor;
-using Purchasing.Web;
+using Purchasing.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
-using Purchasing.Web.Attributes;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Helpers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc.Attributes;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Helpers;
+using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
@@ -109,7 +109,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<Web.Attributes.VersionAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<Mvc.Attributes.VersionAttribute>();
             #endregion Act
 
             #region Assert

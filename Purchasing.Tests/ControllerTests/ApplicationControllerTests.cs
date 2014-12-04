@@ -5,7 +5,7 @@ using System.Text;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Castle.Windsor;
-using Purchasing.Web.Controllers;
+using Purchasing.Mvc.Controllers;
 //using Purchasing.Controllers.Filters;
 using Purchasing.Core.Domain;
 //using Purchasing.Services;
@@ -116,12 +116,12 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<Web.Attributes.VersionAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<Mvc.Attributes.VersionAttribute>();
             #endregion Act
 
             #region Assert
             var element = result.ElementAt(0);
-            Assert.IsTrue(result.Count() > 0, "Web.Attributes.VersionAttribute not found.");
+            Assert.IsTrue(result.Count() > 0, "Mvc.Attributes.VersionAttribute not found.");
             Assert.AreEqual(1, element.MajorVersion);
             Assert.AreEqual("Version", element.VersionKey);
             #endregion Assert

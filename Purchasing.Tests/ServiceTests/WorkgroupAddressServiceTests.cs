@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Purchasing.Web.Helpers;
+using Purchasing.Mvc.Helpers;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
 

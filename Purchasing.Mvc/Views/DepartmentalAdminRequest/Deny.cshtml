@@ -1,0 +1,50 @@
+﻿@model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
+
+@{
+    ViewBag.Title = "Deny";
+
+}
+
+@section AdditionalStyles{
+    @Styles.Render("~/Css/multiselector")
+}
+
+@section AdditionalScripts{
+    
+    @Scripts.Render("~/bundles/multiselector")
+ 
+    <script type="text/javascript">
+
+        $(function () {
+            var userUrl = "@Url.Action("SearchOrgs", "DepartmentalAdminRequest")";            
+            $("#User_Organizations").multiSelector({dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true});
+            $("#Existing_Organizations").multiSelector({dataUrl: userUrl, placeholder: "Org Name or Id", showOptions: true});
+        })
+
+    </script>
+
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index", new { }, new { @class = "button" })</li>
+	</ul>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(x => x.DepartmentalAdminRequest.Id)
+    @Html.HiddenFor(x => x.DepartmentalAdminRequest.FirstName)
+    @Html.HiddenFor(x => x.DepartmentalAdminRequest.LastName)
+    @Html.HiddenFor(x => x.DepartmentalAdminRequest.Email)
+
+    @Html.Partial("_daRequest")
+}
+
+
+
+
+

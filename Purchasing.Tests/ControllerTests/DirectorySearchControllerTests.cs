@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Purchasing.Web;
-using Purchasing.Web.Attributes;
-using Purchasing.Web.Controllers;
-using Purchasing.Web.Helpers;
-using Purchasing.Web.Services;
+using Purchasing.Mvc;
+using Purchasing.Mvc.Attributes;
+using Purchasing.Mvc.Controllers;
+using Purchasing.Mvc.Helpers;
+using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -42,7 +43,7 @@ namespace Purchasing.Tests.ControllerTests
 
         protected override void RegisterRoutes()
         {
-            new RouteConfigurator().RegisterRoutes(); 
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
@@ -331,7 +332,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<Web.Attributes.VersionAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<Mvc.Attributes.VersionAttribute>();
             #endregion Act
 
             #region Assert

@@ -1,0 +1,82 @@
+﻿@model WorkgroupModifyModel
+
+@{
+	ViewBag.Title = "Create";
+}
+
+@section AdditionalStyles
+{
+    @Styles.Render("~/Css/multiselector")
+
+    <style type="text/css">
+        .selector {
+            margin: 2em 0;
+        }
+
+        .selector h3 {
+            margin-bottom: .5em;
+        }
+
+        header.title {
+            border-top: 1px solid #DDDDDD;
+            border-bottom: 1px solid #DDDDDD;
+            font-size: large;
+            padding: 1em;
+        }
+    </style>
+}
+
+@section AdditionalScripts
+{
+    @Scripts.Render("~/bundles/multiselector")
+	<script type="text/javascript">
+
+		$(function () {
+
+			$("#SelectedOrganizations").multiSelector({placeholder: "Search Organizations", showOptions: true });
+			
+		})
+
+	</script>
+}
+
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index")</li>
+	</ul>
+}
+
+@using (Html.BeginForm()) {
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+	<section>
+	@* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
+	Example: Dinosaur 1  *@
+		<header class="ui-corner-all ui-widget-header">Workgroup</header>
+
+		<div class="section-contents">
+	
+			<div class="section-text">
+				@*<h4>Form Header</h4>*@
+				@*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
+				<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>        
+			</div>
+
+			<ul>
+				@Html.Partial("_WorkgroupForm")
+				<li>
+					@* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
+					<div class="editor-label">&nbsp;</div>
+					<div class="editor-field">
+					<input class="button" type="submit" value="Create" /> | @Html.ActionLink("Cancel", "Index")
+					</div>
+				</li>
+			</ul>
+
+		</div>
+
+
+
+	</section>
+}

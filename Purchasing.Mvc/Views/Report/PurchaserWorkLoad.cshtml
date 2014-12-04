@@ -1,0 +1,88 @@
+﻿@model ReportPurchaserWorkLoadViewModel
+
+@{
+    ViewBag.Title = "Purchaser Workload Report " + Model.ReportDate.Value.Date.ToShortDateString();
+    ViewBag.SingleColumn = false;
+    ViewBag.LoadTableTools = true;
+    ViewBag.LoadFixedHeaders = true;
+   
+}
+
+@section AdditionalScripts
+{
+    @Scripts.Render("~/bundles/history")
+
+}
+@section SubNav
+{
+	<ul class="navigation">
+		<li>@Html.ActionLink("Back to List", "Index", null, new { @class = "button" })</li>
+	</ul>
+}
+
+<div class="">
+    <div class="dt-table-filter-header display-form">
+        <!--<header class="ui-widget-header ui-corner-top"></header>-->
+        <div class="section-text">
+            <p> Warning, this report may be slow. </p>
+            <p> The Currently Pending column is for the current date. </p>
+            <p> The Completed on Date column is for the Report Date filter.</p>
+        </div>
+        <div class="section-contents">
+            @using (Html.BeginForm("PurchaserWorkLoad", "Report", FormMethod.Get))
+            {
+                <ul>
+                    <li class="datepicker">
+                        <div class="editor-label">
+                            @Html.Label("Report Date")
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.ReportDate)
+                        </div>
+                    </li>
+                    <li class="apply" >
+                        <div class="editor-field" style="display:inline">
+                            <input class="button" type="submit" value="Apply" />
+                        </div>
+                    </li>
+                </ul>
+            }
+        </div>
+    </div>
+
+</div>
+
+<table class="datatable no-icon-table">
+    <thead>
+        <tr>
+            <th>
+                Purchaser
+            </th>
+            <th>
+                Completed on Date
+            </th>
+            <th>
+                Currently Pending
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ var odd = false; }
+        @foreach (var item in Model.Items)
+        {
+            <tr class="@(odd ? "odd" : "even")">
+                <td>
+                    @item.UserName
+                </td>
+                <td>
+                    @item.CompletedCount
+                </td>
+                <td>
+                    @item.PendingCount
+                </td>
+                
+            </tr>
+            odd = !odd;
+        }
+    </tbody>
+</table>
