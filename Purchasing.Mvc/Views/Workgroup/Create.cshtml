@@ -1,13 +1,33 @@
-﻿@using Purchasing.Mvc.Models
-@model WorkgroupModifyModel
+﻿@model WorkgroupModifyModel
 
 @{
 	ViewBag.Title = "Create";
 }
 
-@section AdditionalScripts
+@section AdditionalStyles
 {
     @Styles.Render("~/Css/multiselector")
+
+    <style type="text/css">
+        .selector {
+            margin: 2em 0;
+        }
+
+        .selector h3 {
+            margin-bottom: .5em;
+        }
+
+        header.title {
+            border-top: 1px solid #DDDDDD;
+            border-bottom: 1px solid #DDDDDD;
+            font-size: large;
+            padding: 1em;
+        }
+    </style>
+}
+
+@section AdditionalScripts
+{
     @Scripts.Render("~/bundles/multiselector")
 	<script type="text/javascript">
 
@@ -18,21 +38,6 @@
 		})
 
 	</script>
-
-	<style type="text/css">
-	
-		.selector {margin: 2em 0;}
-		.selector h3 {margin-bottom: .5em;}
-	
-		header.title
-		{
-			border-top: 1px solid #DDDDDD; 
-			border-bottom: 1px solid #DDDDDD; 
-			font-size: large; 
-			padding: 1em;
-		}
-	
-	</style>
 }
 
 @section SubNav

@@ -9,6 +9,19 @@
     
 }
 
+@section AdditionalStyles
+{
+    <style type="text/css">
+        .ui-datepicker-calendar {
+            display: none;
+        }
+
+        .year-month {
+            min-width: 110px;
+        }
+    </style>
+}
+
 @section AdditionalScripts
 {
     @Scripts.Render("~/bundles/history")
@@ -27,15 +40,6 @@
             });
         });
     </script>
-
-    <style type="text/css">
-        .ui-datepicker-calendar {
-            display: none;
-        }
-        .year-month {
-            min-width: 110px;
-        }
-    </style>
 }
 
 @section SubNav

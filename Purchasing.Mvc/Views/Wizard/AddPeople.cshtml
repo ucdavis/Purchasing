@@ -1,11 +1,12 @@
-﻿@using System.Web.UI.WebControls
-@using Purchasing.Mvc.Models
-@model WorgroupPeopleCreateModel
+﻿@model WorgroupPeopleCreateModel
 
+@section AdditionalStyles
+{
+    @Styles.Render("~/Css/multiselector")
+}
 
 @section AdditionalScripts
 {
-    @Styles.Render("~/Css/multiselector")
     @Scripts.Render("~/bundles/multiselector")
     <script type="text/javascript">
 

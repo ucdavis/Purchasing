@@ -5,11 +5,33 @@
 	ViewBag.Title = "Edit";
 }
 
-@section AdditionalScripts
+@section AdditionalStyles
 {
     @Styles.Render("~/Css/multiselector")
-    @Scripts.Render("~/bundles/multiselector")
     @Styles.Render("~/Css/single/chosen")
+
+
+    <style type="text/css">
+        .selector {
+            margin: 2em 0;
+        }
+
+        .selector h3 {
+            margin-bottom: .5em;
+        }
+
+        header.title {
+            border-top: 1px solid #DDDDDD;
+            border-bottom: 1px solid #DDDDDD;
+            font-size: large;
+            padding: 1em;
+        }
+    </style>
+}
+
+@section AdditionalScripts
+{
+    @Scripts.Render("~/bundles/multiselector")
     @Scripts.Render("~/bundles/single/chosen")
     @Scripts.Render("~/bundles/jquery.qtip")
 
@@ -24,21 +46,6 @@
 
 	</script>
 
-    <style type="text/css">
-	
-        .selector {margin: 2em 0;}
-        .selector h3 {margin-bottom: .5em;}
-	
-        header.title
-        {
-            border-top: 1px solid #DDDDDD; 
-            border-bottom: 1px solid #DDDDDD; 
-            font-size: large; 
-            padding: 1em;
-        }
-	
-    </style>
-    
     <script type="text/javascript">
         $(document).ready(function () {
             $(".chzn-select").chosen({ no_results_text: "No results matched", search_contains: true });
@@ -71,9 +78,6 @@
 
             });
         });
-
-
-        
 
     </script>
 }

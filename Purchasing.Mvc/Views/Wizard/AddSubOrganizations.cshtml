@@ -9,9 +9,42 @@
     ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
 }
 
-@section AdditionalScripts
+@section AdditionalStyles
 {
     @Styles.Render("~/Css/multiselector")
+
+    <style type="text/css">
+        .selector {
+            margin: 2em 0;
+        }
+
+        .selector h3 {
+            margin-bottom: .5em;
+        }
+
+        form section div.editor-field {
+            width: 680px;
+            margin-left: 1em;
+        }
+
+        .editor-field .selector .ac-selectedContainer span.ac-gradientbackground {
+            border: 1px solid #bbb;
+            border-radius: 8px;
+            padding: .5em;
+        }
+
+
+        header.title {
+            border-top: 1px solid #DDDDDD;
+            border-bottom: 1px solid #DDDDDD;
+            font-size: large;
+            padding: 1em;
+        }
+    </style>
+}
+
+@section AdditionalScripts
+{
     @Scripts.Render("~/bundles/multiselector")
     <script type="text/javascript">
 
@@ -22,25 +55,6 @@
         })
 
     </script>
-
-    <style type="text/css">
-    
-        .selector {margin: 2em 0;}
-        .selector h3 {margin-bottom: .5em;}
-        form section div.editor-field {width: 680px; margin-left: 1em;}
-    
-        .editor-field .selector .ac-selectedContainer span.ac-gradientbackground {border: 1px solid #bbb; border-radius: 8px; padding: .5em;}
-        
-    
-        header.title
-        {
-            border-top: 1px solid #DDDDDD; 
-            border-bottom: 1px solid #DDDDDD; 
-            font-size: large; 
-            padding: 1em;
-        }
-    
-    </style>
 }
 
 @Html.Partial("_StatusBar", Model.Workgroup.Id)
