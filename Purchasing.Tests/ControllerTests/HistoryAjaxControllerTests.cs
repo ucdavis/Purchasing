@@ -255,10 +255,10 @@ namespace Purchasing.Tests.ControllerTests
             var results = Controller.RecentlyCompleted()
                 .AssertResultIs<JsonNetResult>();
             #endregion Act
-
-            dynamic data = JObject.FromObject(results.Data);
+            
 
             #region Assert
+            dynamic data = JObject.FromObject(results.Data);
             Assert.AreEqual(5, (int)data.deniedThisMonth);
             Assert.AreEqual(3, (int)data.completedThisMonth);
             OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
