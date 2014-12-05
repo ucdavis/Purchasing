@@ -1468,7 +1468,6 @@ namespace Purchasing.Tests.RepositoryTests
             var expectedFields = new List<NameAndType>();
             expectedFields.Add(new NameAndType("AwayUntil", "System.Nullable`1[System.DateTime]", new List<string>
             {
-                 "[DataAnnotationsExtensions.DateAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Away Until\")]"
             }));
             expectedFields.Add(new NameAndType("Email", "System.String", new List<string>
