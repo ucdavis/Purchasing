@@ -105,8 +105,8 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Show Accounts Payable User")]
         public virtual bool ShowApUser { get; set; }
         //PostStatus in Order model
-        [Display(Name = "Show Order Substatus")]
-        public virtual bool ShowSubStatus { get; set; }
+        [Display(Name = "Show Order Post Status")]
+        public virtual bool ShowPostStatus { get; set; }
         [Display(Name = "Show Order Note")]
         public virtual bool ShowOrderNote  { get; set; }
 
@@ -151,7 +151,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowFpdCompleted);
             Map(x => x.ShowApUser);
 
-            Map(x => x.ShowSubStatus);
+            Map(x => x.ShowPostStatus);
             Map(x => x.ShowOrderNote);
         }
     }
