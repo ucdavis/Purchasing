@@ -15,6 +15,8 @@ select row_number() over (order by o.id) Id, o.id OrderId,  o.RequestNumber, o.R
 	, creator.id CreatorId
 	, o.DateCreated
 	, osc.id StatusId, osc.name [Status], osc.IsComplete
+	, o.PostStatus
+	, o.OrderNote
 	, totals.totalamount TotalAmount
 	, o.LineItemSummary as LineItems
 	, accounts.accountsubaccountsummary AccountSummary

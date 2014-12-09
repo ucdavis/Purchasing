@@ -32,6 +32,8 @@
     [ShowFpdCompleted]        BIT          DEFAULT ((0)) NOT NULL,
     [ShowOrderPaid]           BIT          DEFAULT ((0)) NOT NULL,
     [ShowApUser] BIT NOT NULL DEFAULT ((0)), 
+    [ShowSubStatus] BIT NOT NULL DEFAULT ((0)), 
+    [ShowOrderNote] BIT NOT NULL DEFAULT ((0)), 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
