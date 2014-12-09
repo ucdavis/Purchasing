@@ -93,21 +93,10 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Show Order Type")]
         public virtual bool ShowOrderType { get; set; }
 
-        /* not needed anymore */
-        //[Display(Name = "Show Organization")]
-        //public virtual bool ShowOrganization { get; set; }
+       
         [Display(Name = "Show Has Splits")]
         public virtual bool ShowHasSplits { get; set; }
-        //[Display(Name = "Show Has Attachments")]
-        //public virtual bool ShowHasAttachments { get; set; }
-        //[Display(Name = "Show # Of Lines")]
-        //public virtual bool ShowNumberOfLines { get; set; }
-        //[Display(Name = "Show People Pending Action")]
-        //public virtual bool ShowPeoplePendingAction { get; set; }
-        //[Display(Name = "Show Date Ordered")]
-        //public virtual bool ShowOrderedDate { get; set; }
-        //[Display(Name = "Show Last You Acted On Date")]
-        //public virtual bool ShowLastYouActedOnDate { get; set; }
+       
         [Display(Name = "Show Shipping Cost")]
         public virtual bool ShowShippingCost { get; set; }
         [Display(Name = "Show FPD Completed")]
@@ -115,6 +104,11 @@ namespace Purchasing.Core.Domain
 
         [Display(Name = "Show Accounts Payable User")]
         public virtual bool ShowApUser { get; set; }
+        //PostStatus in Order model
+        [Display(Name = "Show Order Substatus")]
+        public virtual bool ShowSubStatus { get; set; }
+        [Display(Name = "Show Order Note")]
+        public virtual bool ShowOrderNote  { get; set; }
 
     }
 
@@ -152,18 +146,13 @@ namespace Purchasing.Core.Domain
             Map(x => x.ShowOrderPaid);
             Map(x => x.ShowOrderType);
             Map(x => x.DisplayRows);
-
-            //Map(x => x.ShowOrganization);
-            //Map(x => x.ShowLastYouActedOnDate);
-            //Map(x => x.ShowOrderedDate);
-            //Map(x => x.ShowPeoplePendingAction);
             Map(x => x.ShowHasSplits);
-            //Map(x => x.ShowHasAttachments);
-            //Map(x => x.ShowNumberOfLines);
             Map(x => x.ShowShippingCost);
             Map(x => x.ShowFpdCompleted);
-
             Map(x => x.ShowApUser);
+
+            Map(x => x.ShowSubStatus);
+            Map(x => x.ShowOrderNote);
         }
     }
 }
