@@ -46,6 +46,9 @@ namespace Purchasing.Core.Queries
         public virtual string FpdCompleted { get; set; }
         public virtual string ApUserAssigned { get; set; } //First and last name
         public virtual string ApUser { get; set; } // Id
+        public virtual string PostStatus { get; set; }
+        public virtual string OrderNote { get; set; }
+
     }
 
     public class OrderHistoryMap : ClassMap<OrderHistory>
@@ -99,6 +102,8 @@ namespace Purchasing.Core.Queries
             Map(x => x.Paid);
             Map(x => x.ApUserAssigned);
             Map(x => x.ApUser);
+            Map(x => x.PostStatus);
+            Map(x => x.OrderNote);
         }
     }
 }

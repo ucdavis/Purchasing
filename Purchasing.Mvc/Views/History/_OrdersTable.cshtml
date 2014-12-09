@@ -250,6 +250,30 @@
         }
     }
 
+    if (Model.ColumnPreferences.ShowSubStatus)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Poststatus</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.PostStatus + "</td>");
+        }
+    }
+
+    if (Model.ColumnPreferences.ShowOrderNote)
+    {
+        if (tableHeader)
+        {
+            result.Append("<th>Order Note</th>");
+        }
+        else
+        {
+            result.Append("<td>" + item.OrderNote + "</td>");
+        }
+    }
+    
     if(Model.ColumnPreferences.ShowNeededDate)
     {
         if(tableHeader)
