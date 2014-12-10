@@ -59,7 +59,8 @@ namespace Purchasing.Mvc.Services
             _dbService = dbService;
 
             var settings =
-                
+                new ConnectionSettings(new Uri("https://ekgrfdtq8y:o4jy2eyhdu@caesdo-8165237795.us-west-2.bonsai.io"),
+                    "prepurchasing");
             _client = new ElasticClient(settings);
         }
 
@@ -70,29 +71,29 @@ namespace Purchasing.Mvc.Services
 
         public void CreateAccountsIndex()
         {
-            RecreateIndex<Account>("SELECT [Id], [Name] FROM vAccounts WHERE [IsActive] = 1", Indexes.Accounts);
+            WriteIndex<Account>("SELECT [Id], [Name] FROM vAccounts WHERE [IsActive] = 1", Indexes.Accounts);
         }
 
         public void CreateBuildingsIndex()
         {
-            RecreateIndex<Building>("SELECT [Id], [BuildingName] Name FROM vBuildings", Indexes.Buildings);
+            WriteIndex<Building>("SELECT [Id], [BuildingName] Name FROM vBuildings", Indexes.Buildings);
         }
 
         public void CreateCommentsIndex()
         {
-            RecreateIndex<SearchResults.CommentResult>(
+            WriteIndex<SearchResults.CommentResult>(
                 "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults",
                 Indexes.Comments);
         }
 
         public void CreateCommoditiesIndex()
         {
-            RecreateIndex<Commodity>("SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1", Indexes.Commodities);
+            WriteIndex<Commodity>("SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1", Indexes.Commodities);
         }
 
         public void CreateCustomAnswersIndex()
         {
-            RecreateIndex<SearchResults.CustomFieldResult>(
+            WriteIndex<SearchResults.CustomFieldResult>(
                 "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults",
                 Indexes.CustomAnswers);
         }
@@ -106,12 +107,12 @@ namespace Purchasing.Mvc.Services
                 orderHistoryEntries = conn.Query<OrderHistory>("SELECT * FROM vOrderHistory");
             }
 
-            RecreateIndex(orderHistoryEntries, Indexes.OrderHistory);
+            WriteIndex(orderHistoryEntries, Indexes.OrderHistory);
         }
 
         public void CreateLineItemsIndex()
         {
-            RecreateIndex<SearchResults.LineResult>(
+            WriteIndex<SearchResults.LineResult>(
                 "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults",
                 Indexes.LineItems
             );
@@ -119,12 +120,49 @@ namespace Purchasing.Mvc.Services
 
         public void CreateVendorsIndex()
         {
-            RecreateIndex<Vendor>("SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1", Indexes.Vendors);
+            WriteIndex<Vendor>("SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1", Indexes.Vendors);
         }
 
         public void UpdateOrderIndexes()
         {
-            throw new NotImplementedException();
+            var lastUpdate = DateTime.Now.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
+
+            IEnumerable<OrderHistory> orderHistoryEntries = null;
+            IEnumerable<SearchResults.LineResult> lineItems = null;
+            IEnumerable<SearchResults.CustomFieldResult> customAnswers = null;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                var updatedOrderIds = conn.Query<int>("select DISTINCT OrderId from OrderTracking where DateCreated > @lastUpdate", new { lastUpdate }).ToArray();
+
+                if (updatedOrderIds.Any())
+                {
+                    var updatedOrderIdsParameter = new StringBuilder();
+                    foreach (var updatedOrderId in updatedOrderIds)
+                    {
+                        updatedOrderIdsParameter.AppendFormat("({0}),", updatedOrderId);
+                    }
+                    updatedOrderIdsParameter.Remove(updatedOrderIdsParameter.Length - 1, 1); //take off the last comma
+
+                    orderHistoryEntries =
+                        conn.Query<OrderHistory>(string.Format(@"DECLARE @OrderIds OrderIdsTableType
+                                                INSERT INTO @OrderIds VALUES {0}
+                                                select * from udf_GetOrderHistoryForOrderIds(@OrderIds)", updatedOrderIdsParameter));
+
+                    lineItems =
+                        conn.Query<SearchResults.LineResult>(
+                            "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @updatedOrderIds",
+                            new { updatedOrderIds });
+                    customAnswers =
+                        conn.Query<SearchResults.CustomFieldResult>(
+                            "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @updatedOrderIds",
+                            new { updatedOrderIds });
+                }
+            }
+
+            WriteIndex(orderHistoryEntries, Indexes.OrderHistory, recreate: false);
+            WriteIndex(lineItems, Indexes.LineItems, recreate: false);
+            WriteIndex(customAnswers, Indexes.CustomAnswers, recreate: false);
         }
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
@@ -153,10 +191,21 @@ namespace Purchasing.Mvc.Services
 
         public void UpdateCommentsIndex()
         {
-            throw new NotImplementedException();
+            var lastUpdate = DateTime.Now.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
+
+            IEnumerable<SearchResults.CommentResult> comments;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                comments =
+                    conn.Query<SearchResults.CommentResult>(
+                        "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults where DateCreated > @lastUpdate", new { lastUpdate });
+            }
+
+            WriteIndex(comments, Indexes.Comments, recreate: false);
         }
 
-        void RecreateIndex<T>(string sqlSelect, Indexes indexes) where T : class
+        void WriteIndex<T>(string sqlSelect, Indexes indexes, bool recreate = true) where T : class
         {
             IEnumerable<T> entities;
 
@@ -165,16 +214,25 @@ namespace Purchasing.Mvc.Services
                 entities = conn.Query<T>(sqlSelect);
             }
 
-            RecreateIndex(entities, indexes);
+            WriteIndex(entities, indexes, recreate);
         }
 
-        void RecreateIndex<T>(IEnumerable<T> entities, Indexes indexes) where T : class
+        void WriteIndex<T>(IEnumerable<T> entities, Indexes indexes, bool recreate = true) where T : class
         {
+            if (entities == null)
+            {
+                return;
+            }
+
             entities = entities.Take(10); //TODO: remove, just updating first 10 for testing
 
             var index = GetIndexName(indexes);
-            _client.DeleteIndex(index);
-            _client.CreateIndex(index);
+            
+            if (recreate) //TODO: might have to check to see if index exists first time
+            {
+                _client.DeleteIndex(index);
+                _client.CreateIndex(index);
+            }
 
             var batches = entities.Partition(500).ToArray(); //split into batches of up to 500
 
