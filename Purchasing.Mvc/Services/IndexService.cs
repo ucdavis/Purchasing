@@ -131,9 +131,11 @@ namespace Purchasing.Mvc.Services
             IEnumerable<SearchResults.LineResult> lineItems = null;
             IEnumerable<SearchResults.CustomFieldResult> customAnswers = null;
 
+            int[] updatedOrderIds;
+
             using (var conn = _dbService.GetConnection())
             {
-                var updatedOrderIds = conn.Query<int>("select DISTINCT OrderId from OrderTracking where DateCreated > @lastUpdate", new { lastUpdate }).ToArray();
+                updatedOrderIds = conn.Query<int>("select DISTINCT OrderId from OrderTracking where DateCreated > @lastUpdate", new { lastUpdate }).ToArray();
 
                 if (updatedOrderIds.Any())
                 {
@@ -147,24 +149,34 @@ namespace Purchasing.Mvc.Services
                     orderHistoryEntries =
                         conn.Query<OrderHistory>(string.Format(@"DECLARE @OrderIds OrderIdsTableType
                                                 INSERT INTO @OrderIds VALUES {0}
-                                                select * from udf_GetOrderHistoryForOrderIds(@OrderIds)", updatedOrderIdsParameter));
+                                                select * from udf_GetOrderHistoryForOrderIds(@OrderIds)", updatedOrderIdsParameter)).ToList();
 
                     lineItems =
                         conn.Query<SearchResults.LineResult>(
                             "SELECT [Id], [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @updatedOrderIds",
-                            new { updatedOrderIds });
+                            new { updatedOrderIds }).ToList();
                     customAnswers =
                         conn.Query<SearchResults.CustomFieldResult>(
                             "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @updatedOrderIds",
-                            new { updatedOrderIds });
+                            new { updatedOrderIds }).ToList();
                 }
             }
 
-            //TODO: I think we should remove existing line items and custom answers for orders we are about to update
+            if (updatedOrderIds.Any())
+            {
+                //Clear out existing lines and custom fields for the orders we are about to recreate
+                _client.DeleteByQuery<SearchResults.LineResult>(
+                    q => q.Index(GetIndexName(Indexes.LineItems)).Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
 
-            WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
-            WriteIndex(lineItems, Indexes.LineItems, recreate: false);
-            WriteIndex(customAnswers, Indexes.CustomAnswers, recreate: false);
+                _client.DeleteByQuery<SearchResults.CustomFieldResult>(
+                    q =>
+                        q.Index(GetIndexName(Indexes.CustomAnswers))
+                            .Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
+
+                WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
+                WriteIndex(lineItems, Indexes.LineItems, recreate: false);
+                WriteIndex(customAnswers, Indexes.CustomAnswers, recreate: false);
+            }
         }
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
