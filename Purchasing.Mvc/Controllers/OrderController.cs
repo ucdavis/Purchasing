@@ -1062,6 +1062,26 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(new { success = true, tag });
         }
 
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdateNote(int id, string orderNote)
+        {
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+
+            var priorValue = order.OrderNote;
+
+            order.OrderNote = orderNote;
+
+            _eventService.OrderUpdated(order, string.Format("Order Note Updated. Prior Value: {0}", priorValue));
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new { success = true, orderNote });
+
+        }
+
         [AuthorizeReadOrEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {

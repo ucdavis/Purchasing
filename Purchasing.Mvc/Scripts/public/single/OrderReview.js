@@ -41,6 +41,7 @@
             attachReferenceNumberEvents();
             attachPoNumberEvents();
             attachTagEvents();
+            attachOrderNotesEvents();
         }
         attachNav();
         
@@ -163,6 +164,42 @@
             e.preventDefault();
 
             $("#modify-tag-dialog").dialog("open");
+        });
+    }
+
+    function attachOrderNotesEvents() {
+        $("#modify-ordernotes-dialog").dialog({
+            modal: true,
+            autoOpen: false,
+            width: 400,
+            buttons: {
+                "Assign Note": function () {
+                    var note = $("#new-ordernote").val();
+
+                    var url = options.UpdateNoteUrl;
+
+                    console.log(options.AntiForgeryToken);
+
+                    $.post(url, { orderNote: note, __RequestVerificationToken: options.AntiForgeryToken },
+                            function (result) {
+                                if (result.success === false) {
+                                    alert("There was a problem updating the order note.");
+                                }
+                                else {
+                                    $("#orderNote").html(note).effect('highlight', 'slow');
+                                }
+                            }
+                        );
+                    $(this).dialog("close");
+                },
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+
+        $("#edit-ordernotes").click(function (e) {
+            e.preventDefault();
+
+            $("#modify-ordernotes-dialog").dialog("open");
         });
     }
     
