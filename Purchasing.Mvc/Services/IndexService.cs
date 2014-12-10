@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Web;
 using Dapper;
 using FluentNHibernate.Utils;
 using Lucene.Net.Documents;
@@ -14,8 +12,7 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Nest;
-using Newtonsoft.Json;
-using NPOI.SS.Formula.Functions;
+using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Mvc.Helpers;
 using UCDArch.Core.Utils;
@@ -61,7 +58,8 @@ namespace Purchasing.Mvc.Services
         {
             _dbService = dbService;
 
-            
+            var settings =
+               
             _client = new ElasticClient(settings);
         }
 
@@ -72,35 +70,35 @@ namespace Purchasing.Mvc.Services
 
         public void CreateAccountsIndex()
         {
-            throw new NotImplementedException();
+            RecreateIndex<Account>("SELECT [Id], [Name] FROM vAccounts WHERE [IsActive] = 1", Indexes.Accounts);
         }
 
         public void CreateBuildingsIndex()
         {
-            throw new NotImplementedException();
+            RecreateIndex<Building>("SELECT [Id], [BuildingName] Name FROM vBuildings", Indexes.Buildings);
         }
 
         public void CreateCommentsIndex()
         {
-            throw new NotImplementedException();
+            RecreateIndex<SearchResults.CommentResult>(
+                "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults",
+                Indexes.Comments);
         }
 
         public void CreateCommoditiesIndex()
         {
-            throw new NotImplementedException();
+            RecreateIndex<Commodity>("SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1", Indexes.Commodities);
         }
 
         public void CreateCustomAnswersIndex()
         {
-            throw new NotImplementedException();
+            RecreateIndex<SearchResults.CustomFieldResult>(
+                "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults",
+                Indexes.CustomAnswers);
         }
 
         public void CreateHistoricalOrderIndex()
         {
-            var index = GetIndexName(Indexes.OrderHistory);
-            _client.DeleteIndex(index);
-            _client.CreateIndex(index);
-
             IEnumerable<OrderHistory> orderHistoryEntries;
 
             using (var conn = _dbService.GetConnection())
@@ -108,29 +106,20 @@ namespace Purchasing.Mvc.Services
                 orderHistoryEntries = conn.Query<OrderHistory>("SELECT * FROM vOrderHistory");
             }
 
-            var batches = orderHistoryEntries.Partition(25).ToArray(); //split into batches of up to 500
-
-            foreach (var batch in batches)
-            {
-                var bulkOperation = new BulkDescriptor();
-
-                foreach (var item in batch)
-                {
-                    bulkOperation.Index<OrderHistory>(b => b.Document(item).Index(index));
-                }
-
-                _client.Bulk(_ => bulkOperation);
-            }
+            RecreateIndex(orderHistoryEntries, Indexes.OrderHistory);
         }
 
         public void CreateLineItemsIndex()
         {
-            throw new NotImplementedException();
+            RecreateIndex<SearchResults.LineResult>(
+                "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults",
+                Indexes.LineItems
+            );
         }
 
         public void CreateVendorsIndex()
         {
-            throw new NotImplementedException();
+            RecreateIndex<Vendor>("SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1", Indexes.Vendors);
         }
 
         public void UpdateOrderIndexes()
@@ -163,6 +152,40 @@ namespace Purchasing.Mvc.Services
             throw new NotImplementedException();
         }
 
+        void RecreateIndex<T>(string sqlSelect, Indexes indexes) where T : class
+        {
+            IEnumerable<T> entities;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                entities = conn.Query<T>(sqlSelect);
+            }
+
+            RecreateIndex(entities, indexes);
+        }
+
+        void RecreateIndex<T>(IEnumerable<T> entities, Indexes indexes) where T : class
+        {
+            entities = entities.Take(10); //TODO: remove, just updating first 10 for testing
+
+            var index = GetIndexName(indexes);
+            _client.DeleteIndex(index);
+            _client.CreateIndex(index);
+
+            var batches = entities.Partition(500).ToArray(); //split into batches of up to 500
+
+            foreach (var batch in batches)
+            {
+                var bulkOperation = new BulkDescriptor();
+
+                foreach (var item in batch)
+                {
+                    bulkOperation.Index<T>(b => b.Document(item).Index(index));
+                }
+
+                _client.Bulk(_ => bulkOperation);
+            }
+        }
         string GetIndexName(Indexes indexes)
         {
             return string.Format("opp-{0}", indexes.ToLowerInvariantString());

@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using FluentNHibernate.Mapping;
+using Newtonsoft.Json;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
+    [JsonObject]
     public class Account : DomainObjectWithTypedId<string>
     {
         public Account()
