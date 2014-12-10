@@ -181,7 +181,14 @@ namespace Purchasing.Mvc.Services
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
         {
-            throw new NotImplementedException();
+            var orders = _client.Search<OrderHistory>(
+                s => s.Index(GetIndexName(Indexes.OrderHistory)).Query(q => q.Terms(o => o.OrderId, orderids)));
+
+            return new IndexedList<OrderHistory>
+            {
+                Results = orders.Hits.Select(h => h.Source).ToList(),
+                LastModified = DateTime.Now.AddMinutes(-3)
+            };
         }
 
         public DateTime LastModified(Indexes index)
