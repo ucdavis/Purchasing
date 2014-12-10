@@ -59,7 +59,7 @@ namespace Purchasing.Mvc.Services
             _dbService = dbService;
 
             var settings =
-               
+                
             _client = new ElasticClient(settings);
         }
 
@@ -134,12 +134,16 @@ namespace Purchasing.Mvc.Services
 
         public DateTime LastModified(Indexes index)
         {
-            throw new NotImplementedException();
+            //TODO: no idea if this will work
+            var indexName = GetIndexName(index);
+            return
+                Convert.ToDateTime(_client.IndicesStats(i => i.Index(indexName)).Indices[indexName].Total.Indexing.Time);
         }
 
         public int NumRecords(Indexes index)
         {
-            throw new NotImplementedException();
+            var indexName = GetIndexName(index);
+            return (int) _client.Status(i => i.Index(indexName)).Indices[indexName].IndexDocs.NumberOfDocs;
         }
 
         public IndexSearcher GetIndexSearcherFor(Indexes index)
