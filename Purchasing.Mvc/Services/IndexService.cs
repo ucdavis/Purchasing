@@ -7,14 +7,19 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using Dapper;
-using Lucene.Net.Analysis.Standard;
+using FluentNHibernate.Utils;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using Nest;
+using Newtonsoft.Json;
+using NPOI.SS.Formula.Functions;
 using Purchasing.Core.Queries;
+using Purchasing.Mvc.Helpers;
 using UCDArch.Core.Utils;
+using StandardAnalyzer = Lucene.Net.Analysis.Standard.StandardAnalyzer;
 
 namespace Purchasing.Mvc.Services
 {
@@ -39,6 +44,129 @@ namespace Purchasing.Mvc.Services
         IndexSearcher GetIndexSearcherFor(Indexes index);
 
         void UpdateCommentsIndex();
+    }
+    public class Person
+    {
+        public string Id { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public virtual string Middle { get; set; }
+    }
+    public class ElasticSearchIndexService : IIndexService
+    {
+        private readonly IDbService _dbService;
+        private ElasticClient _client;
+
+        public ElasticSearchIndexService(IDbService dbService)
+        {
+            _dbService = dbService;
+
+            
+            _client = new ElasticClient(settings);
+        }
+
+        public void SetIndexRoot(string root)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateAccountsIndex()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateBuildingsIndex()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateCommentsIndex()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateCommoditiesIndex()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateCustomAnswersIndex()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateHistoricalOrderIndex()
+        {
+            var index = GetIndexName(Indexes.OrderHistory);
+            _client.DeleteIndex(index);
+            _client.CreateIndex(index);
+
+            IEnumerable<OrderHistory> orderHistoryEntries;
+
+            using (var conn = _dbService.GetConnection())
+            {
+                orderHistoryEntries = conn.Query<OrderHistory>("SELECT * FROM vOrderHistory");
+            }
+
+            var batches = orderHistoryEntries.Partition(25).ToArray(); //split into batches of up to 500
+
+            foreach (var batch in batches)
+            {
+                var bulkOperation = new BulkDescriptor();
+
+                foreach (var item in batch)
+                {
+                    bulkOperation.Index<OrderHistory>(b => b.Document(item).Index(index));
+                }
+
+                _client.Bulk(_ => bulkOperation);
+            }
+        }
+
+        public void CreateLineItemsIndex()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateVendorsIndex()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateOrderIndexes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime LastModified(Indexes index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int NumRecords(Indexes index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IndexSearcher GetIndexSearcherFor(Indexes index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateCommentsIndex()
+        {
+            throw new NotImplementedException();
+        }
+
+        string GetIndexName(Indexes indexes)
+        {
+            return string.Format("opp-{0}", indexes.ToLowerInvariantString());
+        }
     }
 
     public class IndexService : IIndexService
