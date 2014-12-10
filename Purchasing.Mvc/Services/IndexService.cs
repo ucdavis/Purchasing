@@ -94,7 +94,7 @@ namespace Purchasing.Mvc.Services
         public void CreateCustomAnswersIndex()
         {
             WriteIndex<SearchResults.CustomFieldResult>(
-                "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults",
+                "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults",
                 Indexes.CustomAnswers);
         }
 
@@ -107,13 +107,13 @@ namespace Purchasing.Mvc.Services
                 orderHistoryEntries = conn.Query<OrderHistory>("SELECT * FROM vOrderHistory");
             }
 
-            WriteIndex(orderHistoryEntries, Indexes.OrderHistory);
+            WriteIndex(orderHistoryEntries, Indexes.OrderHistory, o => o.OrderId);
         }
 
         public void CreateLineItemsIndex()
         {
             WriteIndex<SearchResults.LineResult>(
-                "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults",
+                "SELECT [Id], [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults",
                 Indexes.LineItems
             );
         }
@@ -151,16 +151,18 @@ namespace Purchasing.Mvc.Services
 
                     lineItems =
                         conn.Query<SearchResults.LineResult>(
-                            "SELECT [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @updatedOrderIds",
+                            "SELECT [Id], [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @updatedOrderIds",
                             new { updatedOrderIds });
                     customAnswers =
                         conn.Query<SearchResults.CustomFieldResult>(
-                            "SELECT [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @updatedOrderIds",
+                            "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @updatedOrderIds",
                             new { updatedOrderIds });
                 }
             }
 
-            WriteIndex(orderHistoryEntries, Indexes.OrderHistory, recreate: false);
+            //TODO: I think we should remove existing line items and custom answers for orders we are about to update
+
+            WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
             WriteIndex(lineItems, Indexes.LineItems, recreate: false);
             WriteIndex(customAnswers, Indexes.CustomAnswers, recreate: false);
         }
@@ -205,7 +207,7 @@ namespace Purchasing.Mvc.Services
             WriteIndex(comments, Indexes.Comments, recreate: false);
         }
 
-        void WriteIndex<T>(string sqlSelect, Indexes indexes, bool recreate = true) where T : class
+        void WriteIndex<T>(string sqlSelect, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
         {
             IEnumerable<T> entities;
 
@@ -214,10 +216,10 @@ namespace Purchasing.Mvc.Services
                 entities = conn.Query<T>(sqlSelect);
             }
 
-            WriteIndex(entities, indexes, recreate);
+            WriteIndex(entities, indexes, idAccessor, recreate);
         }
 
-        void WriteIndex<T>(IEnumerable<T> entities, Indexes indexes, bool recreate = true) where T : class
+        void WriteIndex<T>(IEnumerable<T> entities, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
         {
             if (entities == null)
             {
@@ -242,7 +244,25 @@ namespace Purchasing.Mvc.Services
 
                 foreach (var item in batch)
                 {
-                    bulkOperation.Index<T>(b => b.Document(item).Index(index));
+                    T localItem = item;
+
+                    if (idAccessor == null) //if null let elasticsearch set the id
+                    {
+                        bulkOperation.Index<T>(b => b.Document(localItem).Index(index));
+                    }
+                    else
+                    {
+                        var id = idAccessor(localItem); //Be tricky so we can handle number and string ids
+
+                        if (id is int)
+                        {
+                            bulkOperation.Index<T>(b => b.Document(localItem).Id((int) id).Index(index));
+                        }
+                        else
+                        {
+                            bulkOperation.Index<T>(b => b.Document(localItem).Id(id.ToString()).Index(index));
+                        }
+                    }
                 }
 
                 _client.Bulk(_ => bulkOperation);
