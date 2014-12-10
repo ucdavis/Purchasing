@@ -1,9 +1,12 @@
 ﻿using System;
 using FluentNHibernate.Mapping;
+using Newtonsoft.Json;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Queries
 {
+    [JsonObject]
+    [Serializable]
     public class OrderHistory : DomainObject
     {
         // ids
