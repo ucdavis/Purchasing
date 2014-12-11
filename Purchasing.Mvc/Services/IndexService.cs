@@ -77,7 +77,7 @@ namespace Purchasing.Mvc.Services
 
         public void CreateBuildingsIndex()
         {
-            WriteIndex<Building>("SELECT [Id], [BuildingName] Name FROM vBuildings", Indexes.Buildings);
+            WriteIndex<Building>("SELECT [Id], [BuildingName] FROM vBuildings", Indexes.Buildings);
         }
 
         public void CreateCommentsIndex()
