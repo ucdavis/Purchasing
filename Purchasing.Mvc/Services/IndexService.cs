@@ -251,8 +251,6 @@ namespace Purchasing.Mvc.Services
                 return;
             }
 
-            entities = entities.Take(10); //TODO: remove, just updating first 10 for testing
-
             var index = IndexHelper.GetIndexName(indexes);
             
             if (recreate) //TODO: might have to check to see if index exists first time
