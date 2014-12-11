@@ -76,6 +76,8 @@ namespace Purchasing.Core.Queries
             Map(x => x.RequestType);
             Map(x => x.PoNumber);
             Map(x => x.Tag);
+            Map(x => x.Justification);
+            Map(x => x.BusinessPurpose);
             Map(x => x.WorkgroupName);
             Map(x => x.Vendor);
             Map(x => x.CreatedBy);
@@ -88,6 +90,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.AccountSummary);
             Map(x => x.HasAccountSplit);
             Map(x => x.ShipTo);
+            Map(x => x.ShipToEmail);
             Map(x => x.AllowBackorder);
             Map(x => x.Restricted);
             Map(x => x.DateNeeded);
