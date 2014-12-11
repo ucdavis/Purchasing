@@ -22,7 +22,8 @@ namespace Purchasing.Mvc
 
             container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
 
-            container.Register(Component.For<ISearchService>().ImplementedBy<IndexSearchService>().Named("searchService"));
+            //container.Register(Component.For<ISearchService>().ImplementedBy<IndexSearchService>().Named("searchService"));
+            container.Register(Component.For<ISearchService>().ImplementedBy<ElasticSearchService>().Named("searchService"));
 
             //Register the index service and pass along the current App_Data/Indexes path location if HttpContext is available
             //TODO: Maybe make it a singleton so we don't have to keep opening the indexreader

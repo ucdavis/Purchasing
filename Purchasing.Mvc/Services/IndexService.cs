@@ -41,6 +41,7 @@ namespace Purchasing.Mvc.Services
         IndexSearcher GetIndexSearcherFor(Indexes index);
 
         void UpdateCommentsIndex();
+        ElasticClient GetIndexClient();
     }
     public class Person
     {
@@ -166,11 +167,11 @@ namespace Purchasing.Mvc.Services
             {
                 //Clear out existing lines and custom fields for the orders we are about to recreate
                 _client.DeleteByQuery<SearchResults.LineResult>(
-                    q => q.Index(GetIndexName(Indexes.LineItems)).Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
+                    q => q.Index(IndexHelper.GetIndexName(Indexes.LineItems)).Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
 
                 _client.DeleteByQuery<SearchResults.CustomFieldResult>(
                     q =>
-                        q.Index(GetIndexName(Indexes.CustomAnswers))
+                        q.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers))
                             .Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
 
                 WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
@@ -182,7 +183,7 @@ namespace Purchasing.Mvc.Services
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
         {
             var orders = _client.Search<OrderHistory>(
-                s => s.Index(GetIndexName(Indexes.OrderHistory)).Query(q => q.Terms(o => o.OrderId, orderids)));
+                s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory)).Query(q => q.Terms(o => o.OrderId, orderids)));
 
             return new IndexedList<OrderHistory>
             {
@@ -194,20 +195,25 @@ namespace Purchasing.Mvc.Services
         public DateTime LastModified(Indexes index)
         {
             //TODO: no idea if this will work
-            var indexName = GetIndexName(index);
+            var indexName = IndexHelper.GetIndexName(index);
             return
                 Convert.ToDateTime(_client.IndicesStats(i => i.Index(indexName)).Indices[indexName].Total.Indexing.Time);
         }
 
         public int NumRecords(Indexes index)
         {
-            var indexName = GetIndexName(index);
+            var indexName = IndexHelper.GetIndexName(index);
             return (int) _client.Status(i => i.Index(indexName)).Indices[indexName].IndexDocs.NumberOfDocs;
         }
 
         public IndexSearcher GetIndexSearcherFor(Indexes index)
         {
             throw new NotImplementedException();
+        }
+
+        public ElasticClient GetIndexClient()
+        {
+            return _client;
         }
 
         public void UpdateCommentsIndex()
@@ -247,7 +253,7 @@ namespace Purchasing.Mvc.Services
 
             entities = entities.Take(10); //TODO: remove, just updating first 10 for testing
 
-            var index = GetIndexName(indexes);
+            var index = IndexHelper.GetIndexName(indexes);
             
             if (recreate) //TODO: might have to check to see if index exists first time
             {
@@ -286,10 +292,6 @@ namespace Purchasing.Mvc.Services
 
                 _client.Bulk(_ => bulkOperation);
             }
-        }
-        string GetIndexName(Indexes indexes)
-        {
-            return string.Format("opp-{0}", indexes.ToLowerInvariantString());
         }
     }
 
@@ -407,6 +409,11 @@ namespace Purchasing.Mvc.Services
             }
 
             ModifyAnaylizedIndex(comments, Indexes.Comments, IndexOptions.UpdateItem, SearchResults.CommentResult.SearchableFields);
+        }
+
+        public ElasticClient GetIndexClient()
+        {
+            throw new NotImplementedException();
         }
 
         public void CreateCustomAnswersIndex()
@@ -681,6 +688,14 @@ namespace Purchasing.Mvc.Services
                           "Index Root (File Path Root) Must Be Set Before Using Indexes.");
 
             return new DirectoryInfo(Path.Combine(_indexRoot, index.ToString()));
+        }
+    }
+
+    public static class IndexHelper
+    {
+        public static string GetIndexName(Indexes indexes)
+        {
+            return string.Format("opp-{0}", indexes.ToLowerInvariantString());
         }
     }
 

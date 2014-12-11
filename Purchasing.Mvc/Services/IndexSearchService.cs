@@ -1,16 +1,82 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
+using Nest;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Mvc.Utility;
+using StandardAnalyzer = Lucene.Net.Analysis.Standard.StandardAnalyzer;
 using Version = Lucene.Net.Util.Version;
 
 namespace Purchasing.Mvc.Services
 {
+    public class ElasticSearchService : ISearchService
+    {
+        private readonly IIndexService _indexService;
+        private ElasticClient _client;
+
+        public ElasticSearchService(IIndexService indexService)
+        {
+            _indexService = indexService;
+            _client = indexService.GetIndexClient();
+        }
+
+        public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds)
+        {
+            var index = IndexHelper.GetIndexName(Indexes.LineItems);
+
+            var results = _client.Search<SearchResults.LineResult>(
+                s =>
+                    s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
+                        .Filter(f => f.Terms(x => x.OrderId, allowedIds)));
+
+            return results.Hits.Select(h => h.Source).ToList();
+        }
+
+        public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, int[] allowedIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<SearchResults.CommentResult> SearchComments(string searchTerm, int[] allowedIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<IdAndName> SearchCommodities(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<IdAndName> SearchVendors(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<IdAndName> SearchAccounts(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<IdAndName> SearchBuildings(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// Searches using Lucene indexes
     /// TODO: MUST filter orders by user
