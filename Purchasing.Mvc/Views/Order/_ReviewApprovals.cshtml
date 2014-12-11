@@ -22,6 +22,10 @@
                                 {
                                     <a class='workgroupDetails showTip ui-icon ui-icon-person' data-role='@approval.StatusCode.Id' title='Lookup all the people who have workgroup access to this order at this Status.'></a>
                                 }
+                                else
+                                {
+                                    <a class="showTip ui-icon ui-icon-info" href="http://ucdavis.edu/search/directory_results.shtml?filter=@approval.User.Email" target="_blank" title='Opens a new window to the campus directory performing a search for this person.'></a>
+                                }
                             </td>
                             <td>@(approval.Completed ? "Approved" : "Pending")</td>
                             @if (Model.CanEditOrder)

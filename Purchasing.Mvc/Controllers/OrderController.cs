@@ -1635,7 +1635,7 @@ namespace Purchasing.Mvc.Controllers
                //         b.OrderStatusCodeId == orderStatusCodeId).Select(c=> c.Fullname).Distinct().ToList();
 
                 //Get all normal and full featured users at this level
-                peeps = order.Workgroup.Permissions.Where(a => a.Role.Id == orderStatusCodeId && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(b => b.User).Distinct().Select(c => c.FullName).ToList();
+                peeps = order.Workgroup.Permissions.Where(a => a.Role.Id == orderStatusCodeId && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(b => b.User).Distinct().Select(c => c.FullName + " <a target='_blank' href='http://ucdavis.edu/search/directory_results.shtml?filter=" + c.Email + "'><span style='color: blue; text-decoration: underline;'><i>[Lookup]</i></span></a>" ).ToList();
 
             }
             catch (Exception)
