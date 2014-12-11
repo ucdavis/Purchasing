@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Queries;
 using Purchasing.Mvc.Controllers;
 
 namespace Purchasing.Mvc
@@ -45,6 +46,12 @@ namespace Purchasing.Mvc
 
             CreateMap<ServiceMessage, ServiceMessage>()
                 .ForMember(x => x.Id, x => x.Ignore());
+
+            CreateMap<OrderHistory, SearchResults.OrderResult>()
+                .ForMember(x => x.Id, x => x.MapFrom(o => o.OrderId))
+                .ForMember(x => x.DeliverTo, x => x.MapFrom(o => o.ShipTo))
+                .ForMember(x => x.DeliverToEmail, x => x.MapFrom(o => o.ShipToEmail)
+                );
         }
     }
 }

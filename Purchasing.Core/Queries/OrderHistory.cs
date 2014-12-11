@@ -19,6 +19,8 @@ namespace Purchasing.Core.Queries
         public virtual string RequestType { get; set; }
         public virtual string PoNumber { get; set; }
         public virtual string Tag { get; set; }
+        public virtual string Justification { get; set; }
+        public virtual string BusinessPurpose { get; set; }
 
         public virtual string WorkgroupName { get; set; }
         public virtual string Vendor { get; set; }
@@ -32,6 +34,7 @@ namespace Purchasing.Core.Queries
         public virtual string AccountSummary { get; set; }
         public virtual bool HasAccountSplit { get; set; }
         public virtual string ShipTo { get; set; }
+        public virtual string ShipToEmail { get; set; }
         public virtual string AllowBackorder { get; set; }
         public virtual string Restricted { get; set; }
         public virtual DateTime DateNeeded { get; set; }

@@ -26,7 +26,14 @@ namespace Purchasing.Mvc.Services
 
         public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds)
         {
-            throw new NotImplementedException();
+            var index = IndexHelper.GetIndexName(Indexes.OrderHistory);
+
+            var results = _client.Search<OrderHistory>(
+                s =>
+                    s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
+                        .Filter(f => f.Terms(x => x.OrderId, allowedIds)));
+
+            return results.Hits.Select(h => AutoMapper.Mapper.Map<SearchResults.OrderResult>(h.Source)).ToList();
         }
 
         public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds)
