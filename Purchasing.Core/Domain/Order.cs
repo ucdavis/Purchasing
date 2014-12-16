@@ -118,6 +118,10 @@ namespace Purchasing.Core.Domain
 
         public virtual User ApUser { get; set; } //If not null, the user who is assigned to do Accounts payable stuff. (Receive Items and Pay Invoices)
 
+        [StringLength(50)]
+        public virtual string PostStatus { get; set; }
+        [StringLength(140)]
+        public virtual string OrderNote { get; set; }
 
         private IList<ControlledSubstanceInformation> ControlledSubstances { get; set; }
 
@@ -530,6 +534,9 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.CompletionReason).Length(int.MaxValue);
             Map(x => x.FpdCompleted);
+
+            Map(x => x.PostStatus);
+            Map(x => x.OrderNote);
 
             References(x => x.ApUser).Column("ApUser");
 

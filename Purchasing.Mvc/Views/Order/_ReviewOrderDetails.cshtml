@@ -66,7 +66,18 @@
                     <li>
                         <span>Order Type:</span><strong>@Model.Order.OrderType.Name @(!string.IsNullOrEmpty(Model.Order.KfsDocType) ? string.Format("({0})", Model.Order.KfsDocType) : string.Empty)</strong>
                     </li>
+                    <li>
+                        <span>Post Order Status</span><strong>@Model.Order.PostStatus</strong>
+                    </li>
+                    <li>
+                        <span>Order Notes:</span><strong id="orderNote" style="width:auto;">@(string.IsNullOrWhiteSpace(Model.Order.OrderNote) ? "[None]" : Model.Order.OrderNote)</strong>
+                        <a id="edit-ordernotes" href="#" class="ui-icon ui-icon-pencil" title="Edit Order Notes"></a>
+                        
+                        <a href="#" class="ui-icon ui-icon-help" title="Order Notes is a free text field that can be used for short notes to track order after placed by the purchaser. Limited to 140 charactors, it can be shown on the order history page and filtered/sorted on." style="float:inherit"></a>
+
+                    </li>
                 }
+                
                 <li><span>Justification:</span><strong>@Model.Order.Justification</strong></li>
 
             </ul>
@@ -244,6 +255,27 @@
                     </li>
                 </ul>
             </div> 
+        </section>
+    </form>
+</div>
+
+<div id="modify-ordernotes-dialog" title="Modify Order Notes" style="display: none;">
+    <form>
+        <section>
+            <div class="section-text">
+                <p>Assign this order a new note and then click 'Assign Note'</p>
+                <p>Order Notes is a free text field that can be used for short notes to track order after placed by the purchaser. Limited to 140 charactors, it can be shown on the order history page and filtered/sorted on.</p>
+            </div>
+            <div class="section-contents">
+                <ul>
+                    <li>
+                        <div class="editor-label required">Order Note: <span class="required">*</span></div>
+                        <div class="editor-field">
+                            <input type="text" id="new-ordernote" placeholder="order note" maxlength="140" value="@Model.Order.OrderNote" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </section>
     </form>
 </div>

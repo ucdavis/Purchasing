@@ -32,6 +32,8 @@
     [Tag]                     VARCHAR (256) NULL,
     [FpdCompleted]            BIT           DEFAULT ((0)) NOT NULL,
     [ApUser] VARCHAR(10) NULL, 
+    [PostStatus] VARCHAR(50) NULL, 
+    [OrderNote] VARCHAR(140) NULL, 
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
     CONSTRAINT [FK_Orders_OrderTypes] FOREIGN KEY ([OrderTypeId]) REFERENCES [dbo].[OrderTypes] ([Id]),
