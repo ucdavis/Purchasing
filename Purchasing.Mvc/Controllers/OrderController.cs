@@ -1624,18 +1624,19 @@ namespace Purchasing.Mvc.Controllers
         public JsonNetResult GetPeeps (int id, string orderStatusCodeId)
         {
             var success = true;
-            List<string> peeps = null;
+            dynamic peeps = null;
             try
             {
                 var order = _repositoryFactory.OrderRepository.Queryable.Single(a=> a.Id==id);
-               //peeps =
-               //     _queryRepository.OrderPeepRepository.Queryable.Where(
-               //         b =>
-               //         b.OrderId == id && b.WorkgroupId == order.Workgroup.Id &&
-               //         b.OrderStatusCodeId == orderStatusCodeId).Select(c=> c.Fullname).Distinct().ToList();
-
+               
                 //Get all normal and full featured users at this level
-                peeps = order.Workgroup.Permissions.Where(a => a.Role.Id == orderStatusCodeId && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(b => b.User).Distinct().Select(c => c.FullName + " <a target='_blank' href='http://ucdavis.edu/search/directory_results.shtml?filter=" + c.Email + "'><span style='color: blue; text-decoration: underline;'><i>[Lookup]</i></span></a>" ).ToList();
+                peeps =
+                    order.Workgroup.Permissions.Where(
+                        a => a.Role.Id == orderStatusCodeId && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured)))
+                        .Select(b => b.User)
+                        .Distinct()
+                        .Select(u => new {u.FullName, u.Email})
+                        .ToList();
 
             }
             catch (Exception)
