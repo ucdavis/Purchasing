@@ -1285,7 +1285,10 @@ namespace Purchasing.Mvc.Controllers
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, payInvoice);
             viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+            viewModel.ReviewOrderViewModel.Attachments = _repositoryFactory.AttachmentRepository.Queryable.Where(x => x.Order.Id == id).ToList();
             viewModel.ReviewOrderViewModel.CurrentUser = CurrentUser.Identity.Name;
+            viewModel.ReviewOrderViewModel.Complete = order.StatusCode.IsComplete;
+
             if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
             {
                 viewModel.Locked = true;

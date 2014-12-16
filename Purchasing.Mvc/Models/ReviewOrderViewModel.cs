@@ -11,6 +11,7 @@ namespace Purchasing.Mvc.Models
             ExternalApprovals = new List<Approval>();
             SubAccounts = new List<SubAccount>();
             ReRouteAbleAccountManagerApprovals = new List<Approval>();
+            Attachments = new List<Attachment>();
         }
 
         public Order Order { get; set; }
