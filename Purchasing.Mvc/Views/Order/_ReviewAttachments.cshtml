@@ -3,8 +3,14 @@
 <section id="attachments" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header showInNav">Attachments</header>
+    @if (Model.Complete && !Model.Order.OrderReceived)
+    {
+        <div class="section-text">
+            <p>Please receive or pay for all items before uploading an order invoice.</p>
+        </div>
+    }
+       <div class="section-contents">
 
-    <div class="section-contents">
         @if (!Model.Attachments.Any())
         {
             <span class="attachments-not-found">There Are No Files Attached To This Order</span>
