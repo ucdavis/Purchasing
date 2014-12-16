@@ -1,8 +1,10 @@
 using FluentNHibernate.Mapping;
+using Newtonsoft.Json;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
+    [JsonObject]
     public class Commodity : DomainObjectWithTypedId<string>
     {
         public virtual string Name { get; set; }

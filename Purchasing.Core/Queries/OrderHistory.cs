@@ -1,9 +1,12 @@
 ﻿using System;
 using FluentNHibernate.Mapping;
+using Newtonsoft.Json;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Queries
 {
+    [JsonObject]
+    [Serializable]
     public class OrderHistory : DomainObject
     {
         // ids
@@ -16,6 +19,8 @@ namespace Purchasing.Core.Queries
         public virtual string RequestType { get; set; }
         public virtual string PoNumber { get; set; }
         public virtual string Tag { get; set; }
+        public virtual string Justification { get; set; }
+        public virtual string BusinessPurpose { get; set; }
 
         public virtual string WorkgroupName { get; set; }
         public virtual string Vendor { get; set; }
@@ -29,6 +34,7 @@ namespace Purchasing.Core.Queries
         public virtual string AccountSummary { get; set; }
         public virtual bool HasAccountSplit { get; set; }
         public virtual string ShipTo { get; set; }
+        public virtual string ShipToEmail { get; set; }
         public virtual string AllowBackorder { get; set; }
         public virtual string Restricted { get; set; }
         public virtual DateTime DateNeeded { get; set; }
@@ -73,6 +79,8 @@ namespace Purchasing.Core.Queries
             Map(x => x.RequestType);
             Map(x => x.PoNumber);
             Map(x => x.Tag);
+            Map(x => x.Justification);
+            Map(x => x.BusinessPurpose);
             Map(x => x.WorkgroupName);
             Map(x => x.Vendor);
             Map(x => x.CreatedBy);
@@ -85,6 +93,7 @@ namespace Purchasing.Core.Queries
             Map(x => x.AccountSummary);
             Map(x => x.HasAccountSplit);
             Map(x => x.ShipTo);
+            Map(x => x.ShipToEmail);
             Map(x => x.AllowBackorder);
             Map(x => x.Restricted);
             Map(x => x.DateNeeded);

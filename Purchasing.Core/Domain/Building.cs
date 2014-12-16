@@ -1,9 +1,11 @@
 ﻿using System;
 using FluentNHibernate.Mapping;
+using Newtonsoft.Json;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
+    [JsonObject]
     public class Building : DomainObjectWithTypedId<string>
     {
         public virtual string CampusCode { get; set; }

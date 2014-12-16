@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
+using Newtonsoft.Json;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
 {
+    [JsonObject]
     public class Vendor : DomainObjectWithTypedId<string>
     {
         public Vendor()
