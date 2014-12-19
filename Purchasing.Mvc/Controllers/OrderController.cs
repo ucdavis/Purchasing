@@ -1273,17 +1273,17 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [AuthorizeReadOrEditOrder]
-        public ActionResult ReceiveItems(int id, bool payInvoice = false)
+        public ActionResult ReceiveItems(int id)
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
 
             if(!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
-                Message = string.Format("Order must be complete before {0} line items.", payInvoice == false ? "receiving":"paying for");
+                Message = "Order must be complete before receiving line items.";
                 return this.RedirectToAction(a => a.Review(id));
             }
 
-            var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, payInvoice);
+            var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, false);
             viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
             viewModel.ReviewOrderViewModel.Attachments = _repositoryFactory.AttachmentRepository.Queryable.Where(x => x.Order.Id == id).ToList();
             viewModel.ReviewOrderViewModel.CurrentUser = CurrentUser.Identity.Name;
@@ -1298,22 +1298,49 @@ namespace Purchasing.Mvc.Controllers
                 viewModel.Locked = false;
             }
 
-            if (payInvoice)
-            {
-                foreach (var lineItem in viewModel.LineItems.Where(a => a.Quantity == 0 && a.QuantityPaid == null))
-                {
-                    lineItem.QuantityPaid = 0;
-                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
-                }
-            }
-            else
-            {                
+                   
                 foreach (var lineItem in viewModel.LineItems.Where(a => a.Quantity == 0 && a.QuantityReceived == null))
                 {
                     lineItem.QuantityReceived = 0;
                     _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
                 }
+            
+            return View(viewModel);
+
+        }
+
+        [AuthorizeReadOrEditOrder]
+        public ActionResult PayInvoice(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+
+            if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
+            {
+                Message = "Order must be complete before paying for line items.";
+                return this.RedirectToAction(a => a.Review(id));
             }
+
+            var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, true);
+            viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+            viewModel.ReviewOrderViewModel.Attachments = _repositoryFactory.AttachmentRepository.Queryable.Where(x => x.Order.Id == id).ToList();
+            viewModel.ReviewOrderViewModel.CurrentUser = CurrentUser.Identity.Name;
+            viewModel.ReviewOrderViewModel.Complete = order.StatusCode.IsComplete;
+
+            if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
+            {
+                viewModel.Locked = true;
+            }
+            else
+            {
+                viewModel.Locked = false;
+            }
+            
+            foreach (var lineItem in viewModel.LineItems.Where(a => a.Quantity == 0 && a.QuantityPaid == null))
+            {
+                lineItem.QuantityPaid = 0;
+                _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+            }
+            
             return View(viewModel);
 
         }
@@ -1371,7 +1398,8 @@ namespace Purchasing.Mvc.Controllers
                 _repositoryFactory.OrderRepository.EnsurePersistent(order);
             }
 
-            return this.RedirectToAction(a => a.ReceiveItems(id, payInvoice));
+            //return this.RedirectToAction(a => a.ReceiveItems(id, payInvoice));
+            return this.RedirectToAction(a => a.ReceiveItems(id));
         }
 
         [HttpPost]
