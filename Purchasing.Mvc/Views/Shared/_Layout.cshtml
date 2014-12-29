@@ -241,15 +241,15 @@
 	</div>
     
     <script type="text/javascript">
-    (function (w) {
-        var d = w['Configuration'] || (w['Configuration'] = {});
-        d.AnalyticsKey = '@WebConfigurationManager.AppSettings["AnalyticsKey"]';
-        d.ActiveIssuesCountUrl = "/Help/GetActiveIssuesCount";
-        d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
-        d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
-        d.TableToolsSwf = '@Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")';
-        d.LoadFixedHeaders = @(ViewBag.LoadFixedHeaders == null ? "false" : ViewBag.LoadFixedHeaders.ToString().ToLower());
-    }(window));
+        (function (w) {
+            var d = w['Configuration'] || (w['Configuration'] = {});
+            d.AnalyticsKey = '@WebConfigurationManager.AppSettings["AnalyticsKey"]';
+            d.ActiveIssuesCountUrl = "/Help/GetActiveIssuesCount";
+            d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
+            d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
+            d.TableToolsSwf = '@Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")';
+            d.LoadFixedHeaders = @(ViewBag.LoadFixedHeaders == null ? "false" : ViewBag.LoadFixedHeaders.ToString().ToLower());
+        }(window));
     </script>
     
     @Scripts.Render("~/bundles/common")
@@ -269,7 +269,7 @@
     @Scripts.Render("~/bundles/signalr")
     <script src="@Url.Content("~/signalr/hubs")"></script>
     @Scripts.Render("~/bundles/signalrclient")
-
+    
     <script type="text/javascript">
         if (window.Configuration.AnalyticsKey) {
             var _gaq = _gaq || [];

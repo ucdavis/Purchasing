@@ -28,6 +28,7 @@ namespace Purchasing.Mvc
             );
 
             bundles.Add(new ScriptBundle("~/bundles/signalr")
+                .Include("~/Scripts/toastr.js")
                 .Include("~/Scripts/jquery.signalR-2.1.2.js")
             );
 
@@ -73,6 +74,7 @@ namespace Purchasing.Mvc
                       "~/Css/jquery.tzCheckbox.css",
                       "~/Css/Datatables.css",
                       "~/Css/custom.css",
+                      "~/Css/toastr.css",
                       "~/Css/icons.css"));
 
             bundles.Add(new StyleBundle("~/Css/order").Include(

@@ -474,6 +474,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Css\toastr.css" />
     <Content Include="Css\Bundle.txt" />
     <Content Include="Css\custom.css" />
     <Content Include="Css\Datatables.css" />
@@ -674,6 +675,8 @@
     <Content Include="Scripts\public\single\ZeroClipboard.js" />
     <Content Include="Scripts\qunit.js" />
     <Content Include="Scripts\slider.js" />
+    <Content Include="Scripts\toastr.js" />
+    <Content Include="Scripts\toastr.min.js" />
     <Content Include="Signalr\jquery-1.10.2.min.js" />
     <Content Include="Signalr\jquery.color-2.1.2.min.js" />
     <Content Include="Signalr\SignalR.StockTicker.js" />
