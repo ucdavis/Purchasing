@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Dapper;
+using Microsoft.AspNet.SignalR.StockTicker;
 using Microsoft.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
@@ -30,6 +31,7 @@ namespace Purchasing.Mvc.Controllers
         [HandleTransactionsManually]
         public ActionResult Index()
         {
+            PurchaseInfo.Instance.BroadcastOrderUpdate(1234);
             return View();
         }
 

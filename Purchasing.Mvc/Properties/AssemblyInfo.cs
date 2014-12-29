@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+using Microsoft.Owin;
+using Purchasing.Mvc;
+
 [assembly: AssemblyTitle("Purchasing.Mvc")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
@@ -18,6 +21,9 @@ using System.Runtime.InteropServices;
 // to COM components.  If you need to access a type in this assembly from
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+
+// Startup for owin
+[assembly: OwinStartup(typeof(OwinStartupConfig), "Configuration")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("32f73c00-5451-496b-9c5c-1b20a6cd265b")]
