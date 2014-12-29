@@ -31,7 +31,6 @@ namespace Purchasing.Mvc.Controllers
         [HandleTransactionsManually]
         public ActionResult Index()
         {
-            PurchaseInfo.Instance.BroadcastOrderUpdate(1234);
             return View();
         }
 

@@ -3,15 +3,16 @@
 /// <reference path="~/Scripts/toastr.js" />
 $(function () {
 
-    window.purchaseInfo = $.connection.purchaseInfo;
+    var orderNotification = $.connection.orderNotification;
 
     toastr.options.timeOut = 60 * 1000; //60 seconds
     toastr.options.closeButton = true;
 
     // Add client-side hub methods that the server will call
-    $.extend(window.purchaseInfo.client, {
-        orderUpdate: function (info) {
-            toastr.info("<h3><a href='http://google.com' target='_blank'>Click here to review order #ABSC-123SFG2</a><h3>", "Order Status Changed");
+    $.extend(orderNotification.client, {
+        orderUpdate: function (order) {
+            var url = window.Configuration.ReviewUrl + '/' + order.Id;
+            toastr.info("<h3><a href='" + url + "' target='_blank'>Click here to review order #" + order.RequestNumber + "</a><h3>", "New Order Requires Your Approval");
         },
     });
 

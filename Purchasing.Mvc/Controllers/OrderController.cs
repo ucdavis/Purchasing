@@ -15,6 +15,7 @@ using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
+using Purchasing.Mvc.Signalr;
 using Purchasing.WS;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -567,6 +568,9 @@ namespace Purchasing.Mvc.Controllers
                                   .Fetch(x => x.Workgroup)
                                   .Fetch(x => x.Organization)
                                   .Single();
+
+            //TODO: just for testing
+            OrderNotificationManager.Instance.BroadcastOrderUpdate(orderQuery);
 
             var model = new ReviewOrderViewModel
                 {

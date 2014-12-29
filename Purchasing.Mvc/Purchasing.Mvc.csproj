@@ -325,8 +325,8 @@
     <Compile Include="Services\UserIdentity.cs" />
     <Compile Include="Services\UservoiceService.cs" />
     <Compile Include="Services\WorkgroupService.cs" />
-    <Compile Include="Signalr\PurchaseInfo.cs" />
-    <Compile Include="Signalr\PurchaseInfoHub.cs" />
+    <Compile Include="Signalr\OrderNotificationManager.cs" />
+    <Compile Include="Signalr\OrderNotificationHub.cs" />
     <Compile Include="Utility\IdAndName.cs" />
     <Compile Include="Utility\WorkgroupPermissionActions.cs" />
   </ItemGroup>
@@ -677,11 +677,6 @@
     <Content Include="Scripts\slider.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
-    <Content Include="Signalr\jquery-1.10.2.min.js" />
-    <Content Include="Signalr\jquery.color-2.1.2.min.js" />
-    <Content Include="Signalr\SignalR.StockTicker.js" />
-    <Content Include="Signalr\StockTicker.css" />
-    <Content Include="Signalr\StockTicker.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -889,7 +884,6 @@
     <Content Include="Views\Workgroup\UpdateMultipleAccounts.cshtml" />
     <Content Include="Views\Workgroup\VendorList.cshtml" />
     <Content Include="Views\Workgroup\WhoHasAccessToWorkgroup.cshtml" />
-    <Content Include="Signalr\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
