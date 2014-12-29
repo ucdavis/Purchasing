@@ -669,6 +669,7 @@
     <Content Include="Scripts\public\single\OrderReview.js" />
     <Content Include="Scripts\public\single\RearrangeDataTable.js" />
     <Content Include="Scripts\public\single\SausageCustom.js" />
+    <Content Include="Scripts\public\single\SignalrClient.js" />
     <Content Include="Scripts\public\single\TableTools.js" />
     <Content Include="Scripts\public\single\ZeroClipboard.js" />
     <Content Include="Scripts\qunit.js" />

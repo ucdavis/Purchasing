@@ -264,7 +264,11 @@
                 $('input[placeholder], textarea[placeholder]').placeholder();
             })
         </script>
-	<![endif]-->
+    <![endif]-->
+    
+    @Scripts.Render("~/bundles/signalr")
+    <script src="@Url.Content("~/signalr/hubs")"></script>
+    @Scripts.Render("~/bundles/signalrclient")
 
     <script type="text/javascript">
         if (window.Configuration.AnalyticsKey) {

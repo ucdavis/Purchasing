@@ -24,7 +24,16 @@ namespace Purchasing.Mvc
                 .IncludeDirectory("~/Scripts/public/head", "*.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/common")
-                .IncludeDirectory("~/Scripts/public/common", "*.js"));
+                .IncludeDirectory("~/Scripts/public/common", "*.js")
+            );
+
+            bundles.Add(new ScriptBundle("~/bundles/signalr")
+                .Include("~/Scripts/jquery.signalR-2.1.2.js")
+            );
+
+            bundles.Add(new ScriptBundle("~/bundles/signalrclient")
+                .Include("~/Scripts/public/single/SignalrClient.js")
+            );
 
             bundles.Add(new ScriptBundle("~/bundles/order")
                 .IncludeDirectory("~/Scripts/public/order", "*.js"));
