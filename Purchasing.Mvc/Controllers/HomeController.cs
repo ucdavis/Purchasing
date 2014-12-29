@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Dapper;
-using Microsoft.AspNet.SignalR.StockTicker;
 using Microsoft.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
+using Purchasing.Mvc.Signalr;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Attributes;
 
