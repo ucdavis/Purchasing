@@ -44,23 +44,21 @@
                             alert("Must be a number");
                         } else {
 
-                            var lineItemId = $(this).data("id");
                             var id = $("#id").val();
                             var antiforgery = $("input[name='__RequestVerificationToken']").val();
                             var url = '@Url.Action("ReceiveItems")';
                             var loader = $("#" + lineItemId + " .quantity-loader");
                             var outstanding = $("#" + lineItemId + " .unaccounted");
-                            var payInvoice = '@Model.PayInvoice';
-
-
+                           
                             $("#" + lineItemId + " .quantity-update-message").html("Updating...");
                             loader.show();
-                            $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function (result) {
+                            $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: false, __RequestVerificationToken: antiforgery }, function (result) {
                                 loader.hide();
                                 if (result) {
                                     $("#" + lineItemId + " .receiveQuantity").html(result.receivedQuantityReturned);
                                     if (result.success == true) {
                                         $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                                        $("#original" + lineItemId).val(receiveVal);
                                         outstanding.html(result.unaccounted);
                                         $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
                                         $("#" + lineItemId + " .update-date").html("Just Now");
@@ -95,11 +93,9 @@
             var updateMessage = $("#notesLineId" + lineItemId + " .notes-update-message");
             var loader = $("#notesLineId" + lineItemId + " .notes-loader");
 
-            var payInvoice = '@Model.PayInvoice';
-
             loader.show();
             updateMessage.html("Updating...");
-            $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function (result) {
+            $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, payInvoice: false, __RequestVerificationToken: antiforgery }, function (result) {
                 loader.hide();
                 if (result) {
                     if (result.success == true) {
@@ -131,13 +127,11 @@
             var lineItemId = temp.data("id");
             var url = '@Url.Action("GetReceiveHistory")';
             var dialogList = $("#historyBody");
-
-            var payInvoice = '@Model.PayInvoice';
-
+            
             dialogList.empty();
             $("#peepsDialog").dialog("open");
             $("#peepsLoaderId").show();
-            $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: payInvoice }, function (result) {
+            $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: false }, function (result) {
                 $("#peepsLoaderId").hide();
                 if (result == null || result.success == false) {
                     alert("There was a problem getting the list of users.");
@@ -354,11 +348,6 @@
     </script>
 
     
-
-
-    
-
-    
     <script type="text/javascript">
         $(document).ready(function() {
             $("#peepsDialog").dialog({
@@ -435,8 +424,8 @@
         
             @Html.Hidden("id", Model.OrderId)
             @{
-                var headerName = Model.PayInvoice ? "Pay Qty" : "Receive Qty";
-                var allButtoneName = Model.PayInvoice ? "Pay All" : "Receive All";
+                var headerName = "Receive Qty";
+                var allButtoneName = "Receive All";
             }
             @{
                 var disabled = string.Empty;
@@ -448,7 +437,7 @@
         
             @using (Html.BeginForm("ReceiveAll", "Order", new {id = Model.OrderId}, FormMethod.Post))
             {
-                @Html.Hidden("payInvoice", Model.PayInvoice)
+                @Html.Hidden("payInvoice", false)
                 @Html.Hidden("id", Model.OrderId)
                 <div id="forgery-token">
                     @Html.AntiForgeryToken()
@@ -493,29 +482,28 @@
                         count++;
                         notesLineId = "notesLineId" + item.Id;
 
-                        displayNotes = (Model.PayInvoice && string.IsNullOrWhiteSpace(item.PaidNotes)) || (Model.PayInvoice == false && string.IsNullOrWhiteSpace(item.ReceivedNotes)) ? "display: none;" : string.Empty;
+                        displayNotes = (string.IsNullOrWhiteSpace(item.ReceivedNotes)) ? "display: none;" : string.Empty;
 
                         if (!Model.LastChangedBy.TryGetValue(item.Id, out by))
                         {
                             by = null;
                         }
-                        var titleName = Model.PayInvoice ? "Number of Units paid for this line item. Amount will be added to the current number of paid items." : "Number of Units received for this line item. Amount will be added to the current number of received items.";
-                        var notes = Model.PayInvoice == true ? item.PaidNotes : item.ReceivedNotes;
-                        var toggleTittle = Model.PayInvoice ? "Show/Hide Pay Invoice Comments" : "Show/Hide Received Comments";
+                        var titleName = "Number of Units received for this line item.";
+                        var notes = item.ReceivedNotes;
+                        var toggleTittle = "Show/Hide Received Comments";
 
                         <tr id="@item.Id" class="@(odd ? "odd" : "even")">
                             <td class="lineitem">@count</td>               
                             <td class="receiveLineItemCell">
                                 <input class="receiveLineItem showTip" type="number" value="@(item.QuantityReceived!=null ? item.QuantityReceived : 0)" data-id="@item.Id" title="@titleName" @disabled/>
                                 <input type="hidden" id="@string.Format("original{0}", item.Id)" data-id="@item.Id" value="@(item.QuantityReceived!=null ? item.QuantityReceived : 0)" />
-                                @*<div class="receiveQuantity">@string.Format("{0:0.###}", Model.PayInvoice ? item.QuantityPaid : item.QuantityReceived)</div>*@
-                                @*<span class="quantity-loader" style="display: none;">
-                                    <img src='@Url.Image("ajax-loader.gif")'/>
+                                <span class="quantity-loader" style="display: none;">
+                                    <img src='@Url.Image("ajax-loader.gif")' />
                                 </span>
-                                <span class="quantity-update-message"></span>*@
+
                             </td>
                             <td>@string.Format("{0:0.###}", item.Quantity)</td>
-                            @UnaccountedAmount(item.Quantity, Model.PayInvoice ? item.QuantityPaid : item.QuantityReceived)
+                            @UnaccountedAmount(item.Quantity, item.QuantityReceived)
                             <td>@item.Unit</td>
                             <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
                             <td>@item.Description</td>
