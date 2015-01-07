@@ -1,5 +1,5 @@
-﻿$(function() {
-    $(".receiveLineItem").change(function() {
+﻿$(function () {
+    $(".receiveLineItem").change(function () {
         var receiveVal = $(this).val();
 
         if (!$.isNumeric(receiveVal)) {
@@ -17,7 +17,7 @@
 
             $("#" + lineItemId + " .quantity-update-message").html("Updating...");
             loader.show();
-            $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function(result) {
+            $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function (result) {
                 loader.hide();
                 if (result) {
                     $("#" + lineItemId + " .receiveLineItem").val("");
@@ -45,7 +45,7 @@
         }
     });
 
-    $(".receiveNotes").change(function() {
+    $(".receiveNotes").change(function () {
         var id = $("#id").val();
         var notesVal = $(this).val();
         var lineItemId = $(this).data("id");
@@ -59,7 +59,7 @@
 
         loader.show();
         updateMessage.html("Updating...");
-        $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function(result) {
+        $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function (result) {
             loader.hide();
             if (result) {
                 if (result.success == true) {
@@ -76,7 +76,7 @@
         });
     });
 
-    $(".toggle-line-item-details").click(function() {
+    $(".toggle-line-item-details").click(function () {
         var data = $(this).data("id");
         var idToToggle = "#notesLineId" + data;
         $(idToToggle).toggle();
@@ -85,8 +85,8 @@
 });
 
 
-$(function() {
-    $(".userDetails").click(function() {
+$(function () {
+    $(".userDetails").click(function () {
         var temp = $(this);
         var orderId = $("#id").val();
         var lineItemId = temp.data("id");
@@ -98,13 +98,13 @@ $(function() {
         dialogList.empty();
         $("#peepsDialog").dialog("open");
         $("#peepsLoaderId").show();
-        $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: payInvoice }, function(result) {
+        $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: payInvoice }, function (result) {
             $("#peepsLoaderId").hide();
             if (result == null || result.success == false) {
                 alert("There was a problem getting the list of users.");
             } else {
 
-                $(result.history).each(function() {
+                $(result.history).each(function () {
                     dialogList.append("<tr>" + "<td>" + this.FullName + "</td><td>" + this.updateDate + "</td><td>" + this.whatWasUpdated + "</td></tr>");
                 });
             }
@@ -112,7 +112,7 @@ $(function() {
     });
 });
 
-$(function() {
+$(function () {
     function attachFileEvents() {
         var uploader = new qq.FileUploader({
             // pass the dom node (ex. $(selector)[0] for jQuery users)
@@ -128,7 +128,7 @@ $(function() {
                 '<div class="ui-widget" style="display: inline-block"><select id="combobox" class="qq-upload-file-category jcs-combobox"><option value="">Select one...</option><option value="Order Confirmation">Order Confirmation</option><option value="Invoice">Invoice</option><option value="Shipping Notification">Shipping Notification</option><option value="Packing Slip">Packing Slip</option><option value="Licenses and Agreements">Licenses and Agreements</option><option value="Miscellaneous">Miscellaneous</option></select><div class="qq-upload-file-category-message" style="display: inline-block; margin-left: 33px;"></vid></div>' +
                 '</li>',
             sizeLimit: 4194304, //TODO: add configuration instead of hardcoding to 4MB
-            onComplete: function(id, fileName, response) {
+            onComplete: function (id, fileName, response) {
                 if (response.success) {
                     var newFileContainer = $(uploader._getItemByFileId(id));
                     var viewAttachmentUrl = options.ViewAttachment + "?fileId=" + response.id;
@@ -296,14 +296,14 @@ $(function() {
     attachFileEvents();
 });
 
-$(function() {
-    $("#add-note").click(function() {
+$(function () {
+    $("#add-note").click(function () {
         $("#notes-dialog").dialog({
             modal: true,
             autoOpen: true,
             width: 400,
             buttons: {
-                "Confirm": function() {
+                "Confirm": function () {
 
                     var note = $("#notes-box").val();
                     $("#notes-box").val("");
@@ -315,7 +315,7 @@ $(function() {
 
 
                     $.post(url, { id: orderid, comment: note, __RequestVerificationToken: antiforgery },
-                        function(result) {
+                        function (result) {
 
                             if (result == false) {
                                 alert("There was a problem adding the comment.");
@@ -330,11 +330,11 @@ $(function() {
 
                     $(this).dialog("close");
                 },
-                "Cancel": function() { $(this).dialog("close"); }
+                "Cancel": function () { $(this).dialog("close"); }
             }
         });
 
-        $("#add-note").click(function() {
+        $("#add-note").click(function () {
             $("#notes-dialog").dialog("open");
             return false;
         });

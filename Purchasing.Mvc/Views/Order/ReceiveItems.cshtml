@@ -31,53 +31,60 @@
     @* //TODO Move to bundle *@
     <script type="text/javascript">
 
-    $(function () {
-        $(".receiveLineItem").change(function () {
-            var receiveVal = $(this).val();
 
-            if (!$.isNumeric(receiveVal)) {
-                alert("Must be a number");
-            } else {
+        $(function () {
 
-                var lineItemId = $(this).data("id");
-                var id = $("#id").val();
-                var antiforgery = $("input[name='__RequestVerificationToken']").val();
-                var url = '@Url.Action("ReceiveItems")';
-                var loader = $("#" + lineItemId + " .quantity-loader");
-                var outstanding = $("#" + lineItemId + " .unaccounted");
-                var payInvoice = '@Model.PayInvoice';
-
-
-                $("#" + lineItemId + " .quantity-update-message").html("Updating...");
-                loader.show();
-                $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function (result) {
-                    loader.hide();
-                    if (result) {
-                        $("#" + lineItemId + " .receiveLineItem").val("");
-                        $("#" + lineItemId + " .receiveQuantity").html(result.receivedQuantityReturned);
-                        if (result.success == true) {
-                            $("#" + lineItemId + " .quantity-update-message").html(result.message);
-                            outstanding.html(result.unaccounted);
-                            $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
-                            $("#" + lineItemId + " .update-date").html("Just Now");
-                            if (result.showRed) {
-                                outstanding.removeClass("green");
-                                outstanding.addClass("red");
-                            } else {
-                                outstanding.removeClass("red");
-                                outstanding.addClass("green");
-                            }
+            $("#RecordButton").click(function() {
+                $(".receiveLineItem").each(function() {
+                    var receiveVal = $(this).val();
+                    var lineItemId = $(this).data("id");
+                    var initial = $("#original" + lineItemId).val();
+                    if (initial != receiveVal) {
+                        if (!$.isNumeric(receiveVal)) {
+                            alert("Must be a number");
                         } else {
-                            $("#" + lineItemId + " .quantity-update-message").html(result.message);
+
+                            var lineItemId = $(this).data("id");
+                            var id = $("#id").val();
+                            var antiforgery = $("input[name='__RequestVerificationToken']").val();
+                            var url = '@Url.Action("ReceiveItems")';
+                            var loader = $("#" + lineItemId + " .quantity-loader");
+                            var outstanding = $("#" + lineItemId + " .unaccounted");
+                            var payInvoice = '@Model.PayInvoice';
+
+
+                            $("#" + lineItemId + " .quantity-update-message").html("Updating...");
+                            loader.show();
+                            $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function (result) {
+                                loader.hide();
+                                if (result) {
+                                    $("#" + lineItemId + " .receiveQuantity").html(result.receivedQuantityReturned);
+                                    if (result.success == true) {
+                                        $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                                        outstanding.html(result.unaccounted);
+                                        $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
+                                        $("#" + lineItemId + " .update-date").html("Just Now");
+                                        if (result.showRed) {
+                                            outstanding.removeClass("green");
+                                            outstanding.addClass("red");
+                                        } else {
+                                            outstanding.removeClass("red");
+                                            outstanding.addClass("green");
+                                        }
+                                    } else {
+                                        $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                                    }
+                                } else {
+                                    alert("There was a problem updating the received quantity.");
+                                }
+
+                            });
                         }
-                    } else {
-                        alert("There was a problem updating the received quantity.");
                     }
-
                 });
-            }
-        });
 
+            });
+            
         $(".receiveNotes").change(function () {
             var id = $("#id").val();
             var notesVal = $(this).val();
@@ -116,7 +123,6 @@
         });
 
     });
-
 
     $(function () {
         $(".userDetails").click(function () {
@@ -215,27 +221,6 @@
                                             };
                                     }));
                                 },
-                                //                            select: function (event, ui) {
-                                //                                ui.item.option.selected = true;
-                                //                                self._trigger("selected", event, {
-                                //                                    item: ui.item.option
-                                //                                });
-                                //                                var fileContainer = $(this).parent().parent();
-                                //                                var categeoryText = $(this).val();
-                                //                                var attachmentGuid = fileContainer.find("#combobox").data("id");
-                                //                                var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
-
-                                //                                categoryMessage.html("Updating...");
-
-                                //                                $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
-                                //                                    if (result) {
-                                //                                        categoryMessage.html(result.message);
-                                //                                    } else {
-                                //                                        alert("There was a problem updating the Attachment's Category");
-                                //                                    }
-
-                                //                                });
-                                //                            },
                                 change: function (event, ui) {
                                     if (!ui.item) {
                                         var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex($(this).val()) + "$", "i"),
@@ -246,15 +231,6 @@
                                                 return false;
                                             }
                                         });
-
-                                        //Commented out so any value can be entered
-                                        //                                    if (!valid) {
-                                        //                                        // remove invalid value, as it didn't match anything
-                                        //                                        $(this).val("");
-                                        //                                        select.val("");
-                                        //                                        input.data("autocomplete").term = "";
-                                        //                                        return false;
-                                        //                                    }
                                     }
                                     var fileContainer = $(this).parent().parent();
                                     var categeoryText = $(this).val();
@@ -375,9 +351,9 @@
     });
 
 
-</script>
+    </script>
 
-
+    
 
 
     
@@ -530,7 +506,8 @@
                         <tr id="@item.Id" class="@(odd ? "odd" : "even")">
                             <td class="lineitem">@count</td>               
                             <td class="receiveLineItemCell">
-                                <input class="receiveLineItem showTip" type="number" data-id="@item.Id" title="@titleName" @disabled/>
+                                <input class="receiveLineItem showTip" type="number" value="@(item.QuantityReceived!=null ? item.QuantityReceived : 0)" data-id="@item.Id" title="@titleName" @disabled/>
+                                <input type="hidden" id="@string.Format("original{0}", item.Id)" data-id="@item.Id" value="@(item.QuantityReceived!=null ? item.QuantityReceived : 0)" />
                                 @*<div class="receiveQuantity">@string.Format("{0:0.###}", Model.PayInvoice ? item.QuantityPaid : item.QuantityReceived)</div>*@
                                 @*<span class="quantity-loader" style="display: none;">
                                     <img src='@Url.Image("ajax-loader.gif")'/>
@@ -558,7 +535,6 @@
                         <tr id="@notesLineId" class="@(odd ? "odd" : "even")" style="@displayNotes">
                             <td colspan="13">
                                 <table class="sub-line-item">
-                                    <th></th>                           
                                     <tr>
                                         <td class="label">Notes:</td>
                                         <td>
@@ -579,6 +555,12 @@
                 </tbody>
             </table>
 
+            <ul>
+                <li class="apply">
+                    <label>&nbsp;</label>
+                    <input class="button" id="RecordButton" type="button" value="Record Items" />
+                </li>
+            </ul>
         </div>
 
 

@@ -1536,7 +1536,7 @@ namespace Purchasing.Mvc.Controllers
                     }
                     else
                     {                     
-                        lineItem.QuantityReceived =  lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity: receivedQuantity;
+                        lineItem.QuantityReceived = receivedQuantity;
                     }
                     _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
                     if (history.NewReceivedQuantity != history.OldReceivedQuantity)
