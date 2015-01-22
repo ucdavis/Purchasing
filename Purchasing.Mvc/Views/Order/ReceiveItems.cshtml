@@ -437,7 +437,6 @@
         
             @using (Html.BeginForm("ReceiveAll", "Order", new {id = Model.OrderId}, FormMethod.Post))
             {
-                @Html.Hidden("payInvoice", false)
                 @Html.Hidden("id", Model.OrderId)
                 <div id="forgery-token">
                     @Html.AntiForgeryToken()

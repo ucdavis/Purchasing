@@ -18,175 +18,7 @@
 @section AdditionalStyles
 {
     @Styles.Render("~/Css/single/fileuploader/fileuploader")
-
-    <style type="text/css">
-        .navigation li {
-            display: inline-block;
-            width: auto;
-            padding: 0 0 0 10px;
-        }
-
-        #orn {
-            margin: 1em 0;
-        }
-
-            #orn ul {
-                padding: 0;
-            }
-
-            #orn li {
-                margin: 0;
-            }
-
-        #order-details .col1, #order-details .col2, #kfs-section .col1, #kfs-section .col2 {
-            width: 49.25%;
-            vertical-align: top;
-            text-align: left;
-            display: inline-block;
-        }
-
-        #kfs-section .col1 {
-            margin-top: 36px;
-            padding-left: 30px;
-            width: 46%;
-        }
-
-        #order-details .col1 .display-form, #order-details .col2 .display-form {
-            height: 140px;
-            margin-bottom: 0;
-        }
-
-        #order-details .col1 ul {
-            padding: 50px 0 0 30px;
-        }
-
-            #order-details .col1 ul span, #accounts .acct-info span, #order-details .col1 ul strong, #accounts .acct-info strong, #kfs .col1 ul span {
-                display: inline-block;
-                vertical-align: top;
-            }
-
-            #order-details .col1 ul span, #kfs .col1 ul span, #kfs .col2 ul span {
-                width: 150px;
-            }
-
-        #accounts .acct-info span {
-            width: auto;
-            min-width: 650px;
-        }
-
-        #order-details .col1 ul strong {
-            width: 250px;
-        }
-
-        #accounts .acct-info strong {
-            width: 150px;
-        }
-
-        #order-details .col2 section#vendor {
-            margin-bottom: 20px;
-        }
-
-        .item-footer {
-            background-color: #FFF;
-            color: #000;
-        }
-
-            .item-footer .label {
-                text-align: right;
-            }
-
-        .extra-info .line-url, .extra-info .line-notes {
-            display: inline-block;
-            width: 49%;
-            text-align: left;
-        }
-
-        .extra-info .line-url {
-            margin-right: 10px;
-        }
-
-        .row-even {
-            background-color: #EEEEEE;
-        }
-
-        .row-odd {
-        }
-
-        .row-split {
-            width: 400px;
-            border: 1px solid lightgray;
-            background-color: lightgreen;
-        }
-
-        .row-split-prob {
-            background-color: lightcoral;
-        }
-
-        .row-split table {
-            border: none;
-        }
-
-        .row-total-value, .row-total-grandtotal {
-            font-weight: bold;
-        }
-
-        .row-total-label, .row-total-value {
-            background-color: #014A81;
-            color: #FFFFFF;
-        }
-
-        #history table, #notes table, #approvals table {
-            border: none;
-        }
-
-            #history table tr, #notes table tr, #approvals table tr {
-                border-bottom: 1px solid lightgray;
-            }
-
-                #history table tr > td:first-child, #notes table tr > td:first-child, #approvals table tr > td:first-child {
-                    width: 150px;
-                }
-
-                #history table tr > td:last-child, #notes table tr > td:last-child #approvals table tr > td:last-child {
-                    width: 150px;
-                }
-
-        .acct-info .account, .acct-info .subaccount, .acct-info .project {
-            margin-right: 20px;
-        }
-
-        .approval-complete {
-            background-color: #dafcc9;
-        }
-
-        .row-bottom {
-            border-bottom: 1px solid #666;
-        }
-
-        form section ul, .display-form ul {
-            padding: 0;
-        }
-
-        #accounts .section-contents, #attachments .section-contents, #notes .section-contents, .vcard {
-            font-size: 1.2em;
-            line-height: 1.5em;
-        }
-
-        .even:hover, .odd:hover {
-            box-shadow: 0 1px 5px #BBBBBB;
-            border: 1px solid #fff;
-            background-color: transparent;
-        }
-
-        .section-contents .no-icon-table tr .receiveLineItemCell {
-            width: 150px;
-        }
-
-        .section-contents .no-icon-table tr .receiveLineItem {
-            width: 140px;
-        }
-    </style>
-
+    @Styles.Render("~/Css/single/receive-payment")
 }
 
 @section AdditionalScripts
@@ -196,7 +28,55 @@
 
     <script type="text/javascript">
 
-    $(function() {
+        $(function () {
+            $("#RecordButton").click(function () {
+                $(".receiveLineItem").each(function () {
+                    var receiveVal = $(this).val();
+                    var lineItemId = $(this).data("id");
+                    var initial = $("#original" + lineItemId).val();
+                    if (initial != receiveVal) {
+                        if (!$.isNumeric(receiveVal)) {
+                            alert("Must be a number");
+                        } else {
+
+                            var id = $("#id").val();
+                            var antiforgery = $("input[name='__RequestVerificationToken']").val();
+                            var url = '@Url.Action("PayInvoice")';
+                            var loader = $("#" + lineItemId + " .quantity-loader");
+                            var outstanding = $("#" + lineItemId + " .unaccounted");
+
+                            $("#" + lineItemId + " .quantity-update-message").html("Updating...");
+                            loader.show();
+                            $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: true, __RequestVerificationToken: antiforgery }, function (result) {
+                                loader.hide();
+                                if (result) {
+                                    $("#" + lineItemId + " .receiveQuantity").html(result.receivedQuantityReturned);
+                                    if (result.success == true) {
+                                        $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                                        $("#original" + lineItemId).val(receiveVal);
+                                        outstanding.html(result.unaccounted);
+                                        $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
+                                        $("#" + lineItemId + " .update-date").html("Just Now");
+                                        if (result.showRed) {
+                                            outstanding.removeClass("green");
+                                            outstanding.addClass("red");
+                                        } else {
+                                            outstanding.removeClass("red");
+                                            outstanding.addClass("green");
+                                        }
+                                    } else {
+                                        $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                                    }
+                                } else {
+                                    alert("There was a problem updating the received quantity.");
+                                }
+
+                            });
+                        }
+                    }
+                });
+
+            });
         @*$(".receiveLineItem").change(function() {
             var receiveVal = $(this).val();
 
@@ -248,16 +128,14 @@
             var notesVal = $(this).val();
             var lineItemId = $(this).data("id");
             var antiforgery = $("input[name='__RequestVerificationToken']").val();
-            var url = '@Url.Action("ReceiveItems")';
+            var url = '@Url.Action("PayInvoice")';
 
             var updateMessage = $("#notesLineId" + lineItemId + " .notes-update-message");
             var loader = $("#notesLineId" + lineItemId + " .notes-loader");
 
-            var payInvoice = '@Model.PayInvoice';
-
             loader.show();
             updateMessage.html("Updating...");
-            $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function(result) {
+            $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, payInvoice: true, __RequestVerificationToken: antiforgery }, function(result) {
                 loader.hide();
                 if (result) {
                     if (result.success == true) {
@@ -291,12 +169,11 @@
             var url = '@Url.Action("GetReceiveHistory")';
             var dialogList = $("#historyBody");
 
-            var payInvoice = '@Model.PayInvoice';
-
+            
             dialogList.empty();
             $("#peepsDialog").dialog("open");
             $("#peepsLoaderId").show();
-            $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: payInvoice }, function(result) {
+            $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: true }, function(result) {
                 $("#peepsLoaderId").hide();
                 if (result == null || result.success == false) {
                     alert("There was a problem getting the list of users.");
@@ -380,27 +257,7 @@
                                                 };
                                         }));
                                     },
-                                    //                            select: function (event, ui) {
-                                    //                                ui.item.option.selected = true;
-                                    //                                self._trigger("selected", event, {
-                                    //                                    item: ui.item.option
-                                    //                                });
-                                    //                                var fileContainer = $(this).parent().parent();
-                                    //                                var categeoryText = $(this).val();
-                                    //                                var attachmentGuid = fileContainer.find("#combobox").data("id");
-                                    //                                var categoryMessage = fileContainer.find(".qq-upload-file-category-message");
-
-                                    //                                categoryMessage.html("Updating...");
-
-                                    //                                $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: options.AntiForgeryToken }, function (result) {
-                                    //                                    if (result) {
-                                    //                                        categoryMessage.html(result.message);
-                                    //                                    } else {
-                                    //                                        alert("There was a problem updating the Attachment's Category");
-                                    //                                    }
-
-                                    //                                });
-                                    //                            },
+                                   
                                     change: function (event, ui) {
                                         if (!ui.item) {
                                             var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex($(this).val()) + "$", "i"),
@@ -412,14 +269,7 @@
                                                 }
                                             });
 
-                                            //Commented out so any value can be entered
-                                            //                                    if (!valid) {
-                                            //                                        // remove invalid value, as it didn't match anything
-                                            //                                        $(this).val("");
-                                            //                                        select.val("");
-                                            //                                        input.data("autocomplete").term = "";
-                                            //                                        return false;
-                                            //                                    }
+                                          
                                         }
                                         var fileContainer = $(this).parent().parent();
                                         var categeoryText = $(this).val();
@@ -619,10 +469,7 @@
     <div class="section-contents">
 
         @Html.Hidden("id", Model.OrderId)
-        @{
-            var headerName = Model.PayInvoice ? "Pay Qty" : "Receive Qty";
-            var allButtoneName = Model.PayInvoice ? "Pay All" : "Receive All";
-        }
+       
         @{
             var disabled = string.Empty;
             if (Model.Locked == true)
@@ -631,10 +478,9 @@
             }
         }
 
-        @using (Html.BeginForm("ReceiveAll", "Order", new { id = Model.OrderId }, FormMethod.Post))
+        @using (Html.BeginForm("PayAll", "Order", new { id = Model.OrderId }, FormMethod.Post))
         {
-            @Html.Hidden("payInvoice", Model.PayInvoice)
-            @Html.Hidden("id", Model.OrderId)
+           @Html.Hidden("id", Model.OrderId)
             <div id="forgery-token">
                 @Html.AntiForgeryToken()
             </div>
@@ -642,7 +488,7 @@
 
                 <li class="apply">
                     <label>&nbsp;</label>
-                    <input class="button" type="submit" value="@allButtoneName" @disabled />
+                    <input class="button" type="submit" value="Pay All" @disabled />
                 </li>
             </ul>
         }
@@ -651,7 +497,7 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>@headerName</th>
+                    <th>Pay Qty</th>
                     <th>Ordered Qty</th>
                     <th>Outstanding Qty</th>
                     <th>Unit</th>
@@ -678,28 +524,25 @@
                     count++;
                     notesLineId = "notesLineId" + item.Id;
 
-                    displayNotes = (Model.PayInvoice && string.IsNullOrWhiteSpace(item.PaidNotes)) || (Model.PayInvoice == false && string.IsNullOrWhiteSpace(item.ReceivedNotes)) ? "display: none;" : string.Empty;
+                    displayNotes = (string.IsNullOrWhiteSpace(item.PaidNotes)) ? "display: none;" : string.Empty;
 
                     if (!Model.LastChangedBy.TryGetValue(item.Id, out by))
                     {
                         by = null;
                     }
-                    var titleName = Model.PayInvoice ? "Number of Units paid for this line item. Amount will be added to the current number of paid items." : "Number of Units received for this line item. Amount will be added to the current number of received items.";
-                    var notes = Model.PayInvoice == true ? item.PaidNotes : item.ReceivedNotes;
-                    var toggleTittle = Model.PayInvoice ? "Show/Hide Pay Invoice Comments" : "Show/Hide Received Comments";
-
+                    var quantityPaid = item.QuantityPaid != null ? item.QuantityPaid : 0;
+                    
                     <tr id="@item.Id" class="@(odd ? "odd" : "even")">
                         <td class="lineitem">@count</td>
                         <td class="receiveLineItemCell">
-                            <input class="receiveLineItem showTip" type="number" data-id="@item.Id" title="@titleName" @disabled />
-                            @*<div class="receiveQuantity">@string.Format("{0:0.###}", Model.PayInvoice ? item.QuantityPaid : item.QuantityReceived)</div>*@
-                            @*<span class="quantity-loader" style="display: none;">
-                                    <img src='@Url.Image("ajax-loader.gif")'/>
-                                </span>
-                                <span class="quantity-update-message"></span>*@
+                            <input class="receiveLineItem showTip" type="number" data-id="@item.Id" title="Number of Units paid for this line item. Amount will be added to the current number of paid items." @disabled value="@quantityPaid" />
+                            <input type="hidden" id="@string.Format("original{0}", item.Id)" data-id="@item.Id" value="@(item.QuantityReceived!=null ? item.QuantityReceived : 0)" />
+                            <span class="quantity-loader" style="display: none;">
+                                <img src='@Url.Image("ajax-loader.gif")' />
+                            </span>
                         </td>
                         <td>@string.Format("{0:0.###}", item.Quantity)</td>
-                        @UnaccountedAmount(item.Quantity, Model.PayInvoice ? item.QuantityPaid : item.QuantityReceived)
+                        @UnaccountedAmount(item.Quantity, item.QuantityPaid )
                         <td>@item.Unit</td>
                         <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
                         <td>@item.Description</td>
@@ -712,7 +555,7 @@
                         <td class="update-date">@(by != null ? by.UpdateDate.ToString("MM/dd/yyyy") : string.Empty)</td>
                         <td>
                             <span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin: 0px .1em; float: right;">
-                                <a class=" ui-icon ui-icon-comment showTip" title="@toggleTittle"></a>
+                                <a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Pay Invoice Comments"></a>
                             </span>
                         </td>
                     </tr>
@@ -723,7 +566,7 @@
                                 <tr>
                                     <td class="label">Notes:</td>
                                     <td>
-                                        <textarea class="receiveNotes showTip" data-id="@item.Id" title="<strong>Tip:</strong> Don't put things like serial numbers in here because this can be edited. <br/>Information like that should be added to the comments/notes of the review page." @disabled >@notes</textarea>
+                                        <textarea class="receiveNotes showTip" data-id="@item.Id" title="<strong>Tip:</strong> Don't put things like serial numbers in here because this can be edited. <br/>Information like that should be added to the comments/notes of the review page." @disabled >@item.PaidNotes</textarea>
                                     </td>
                                     <td>
                                         <span class="notes-loader" style="display: none;">
@@ -739,7 +582,12 @@
                 }
             </tbody>
         </table>
-
+        <ul>
+            <li class="apply">
+                <label>&nbsp;</label>
+                <input class="button" id="RecordButton" type="button" value="Record Items" />
+            </li>
+        </ul>
     </div>
 
 
