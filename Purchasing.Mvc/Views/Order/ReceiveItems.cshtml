@@ -52,7 +52,7 @@
                            
                             $("#" + lineItemId + " .quantity-update-message").html("Updating...");
                             loader.show();
-                            $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: false, __RequestVerificationToken: antiforgery }, function (result) {
+                            $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, __RequestVerificationToken: antiforgery }, function (result) {
                                 loader.hide();
                                 if (result) {
                                     $("#" + lineItemId + " .receiveQuantity").html(result.receivedQuantityReturned);
@@ -88,14 +88,14 @@
             var notesVal = $(this).val();
             var lineItemId = $(this).data("id");
             var antiforgery = $("input[name='__RequestVerificationToken']").val();
-            var url = '@Url.Action("ReceiveItems")';
+            var url = '@Url.Action("ReceiveItemsNotes", new {id = Model.OrderId})';
 
             var updateMessage = $("#notesLineId" + lineItemId + " .notes-update-message");
             var loader = $("#notesLineId" + lineItemId + " .notes-loader");
 
             loader.show();
             updateMessage.html("Updating...");
-            $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, updateNote: true, payInvoice: false, __RequestVerificationToken: antiforgery }, function (result) {
+            $.post(url, { id: id, lineItemId: lineItemId, note: notesVal, __RequestVerificationToken: antiforgery }, function (result) {
                 loader.hide();
                 if (result) {
                     if (result.success == true) {

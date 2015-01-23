@@ -1435,7 +1435,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
-        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal? receivedQuantity, bool updateNote, string note, bool payInvoice)
+        public JsonNetResult ReceiveItems(int id, int lineItemId, decimal? receivedQuantity)
         {
             var success = true;
             var message = "Succeeded";
@@ -1449,84 +1449,7 @@ namespace Purchasing.Mvc.Controllers
                 return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
             }
 
-            if(updateNote)
-            {
-                #region Notes                
-                var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
-                if(lineItem == null)
-                {
-                    success = false;
-                    message = "Line Item not found";
-                    return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
-                }
-
-                if(lineItem.Order.Id != id)
-                {
-                    success = false;
-                    message = "Order Id does not match";
-                    return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
-                }
-
-                if(!lineItem.Order.StatusCode.IsComplete)
-                {
-                    success = false;
-                    message = "Order is not complete";
-                    return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
-                }
-
-
-                try
-                {                    
-                    if (payInvoice)
-                    {
-                        var saveNote = lineItem.PaidNotes;
-                        lineItem.PaidNotes = note;
-                        _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
-                        var history = new HistoryReceivedLineItem();
-                        history.LineItem = lineItem;
-                        history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
-                        history.CommentsUpdated = true;
-                        history.OldReceivedQuantity = lineItem.QuantityPaid; //These don't matter because it is the note being updated.
-                        history.NewReceivedQuantity = lineItem.QuantityPaid;
-                        history.PayInvoice = payInvoice;
-                        if (lineItem.PaidNotes != saveNote)
-                        {
-                            _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
-                            lastUpdatedBy = history.User.FullName;
-                        }
-                    }
-                    else
-                    {
-                        var saveNote = lineItem.ReceivedNotes;
-                        lineItem.ReceivedNotes = note;
-                        _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
-                        var history = new HistoryReceivedLineItem();
-                        history.LineItem = lineItem;
-                        history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
-                        history.CommentsUpdated = true;
-                        history.OldReceivedQuantity = lineItem.QuantityReceived;
-                        history.NewReceivedQuantity = lineItem.QuantityReceived;
-                        history.PayInvoice = payInvoice;
-                        if (lineItem.ReceivedNotes != saveNote)
-                        {
-                            _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
-                            lastUpdatedBy = history.User.FullName;
-                        }
-                    }
-                    message = "Updated";
-                    success = true;
-                }
-                catch
-                {
-                    success = false;
-                    message = "There was a problem updating the notes."; //ex.Message;
-                }
-
-                return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
-                #endregion Notes
-            }
-            else
-            {
+           
                 var showRed = false;
                 var unaccounted = string.Empty;
                 var receivedQuantityReturned = receivedQuantity.HasValue ? receivedQuantity.Value.ToString() : string.Empty;
@@ -1557,18 +1480,13 @@ namespace Purchasing.Mvc.Controllers
                 {
                     var history = new HistoryReceivedLineItem();
                     history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
-                    history.OldReceivedQuantity = payInvoice ? lineItem.QuantityPaid : lineItem.QuantityReceived;
-                    history.NewReceivedQuantity = payInvoice ? (lineItem.QuantityPaid != null ? lineItem.QuantityPaid + receivedQuantity : receivedQuantity) : (lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity : receivedQuantity);
+                    history.OldReceivedQuantity = lineItem.QuantityReceived;
+                    history.NewReceivedQuantity = (lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity : receivedQuantity);
                     history.LineItem = lineItem;
-                    history.PayInvoice = payInvoice;
-                    if (payInvoice)
-                    {
-                        lineItem.QuantityPaid = lineItem.QuantityPaid != null ? lineItem.QuantityPaid + receivedQuantity : receivedQuantity;
-                    }
-                    else
-                    {                     
-                        lineItem.QuantityReceived = receivedQuantity;
-                    }
+                    history.PayInvoice = false;
+                                        
+                    lineItem.QuantityReceived = receivedQuantity;
+                    
                     _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
                     if (history.NewReceivedQuantity != history.OldReceivedQuantity)
                     {
@@ -1578,7 +1496,7 @@ namespace Purchasing.Mvc.Controllers
                     receivedQuantityReturned = string.Format("{0:0.###}", lineItem.QuantityReceived);
                     success = true;
                     message = "Updated";
-                    var diff = payInvoice ? (lineItem.Quantity - lineItem.QuantityPaid) : (lineItem.Quantity - lineItem.QuantityReceived);
+                    var diff = (lineItem.Quantity - lineItem.QuantityReceived);
                     if (diff > 0)
                     {
                         unaccounted = string.Format("({0})", string.Format("{0:0.###}", diff));
@@ -1589,14 +1507,9 @@ namespace Purchasing.Mvc.Controllers
                         unaccounted = string.Format("{0}", string.Format("{0:0.###}", (diff*-1)));
                         showRed = false;
                     }
-                    if (payInvoice)
-                    {
-                        _eventService.OrderPaid(lineItem.Order, lineItem, receivedQuantity.Value);
-                    }
-                    else
-                    {                     
-                        _eventService.OrderReceived(lineItem.Order, lineItem, receivedQuantity.Value);
-                    }
+                                    
+                    _eventService.OrderReceived(lineItem.Order, lineItem, receivedQuantity.Value);
+                   
 
                     _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
                 }
@@ -1606,12 +1519,83 @@ namespace Purchasing.Mvc.Controllers
                     message = "There was a problem updating the quantity."; //ex.Message;
                 }
                 return new JsonNetResult(new { success, lineItemId, receivedQuantityReturned, message, showRed, unaccounted, lastUpdatedBy });
-            }
+            
         }
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
-        public JsonNetResult PayInvoice(int id, int lineItemId, decimal? receivedQuantity, bool updateNote, string note)
+        public JsonNetResult ReceiveItemsNotes(int id, int lineItemId, string note)
+        {
+            var success = true;
+            var message = "Succeeded";
+            var lastUpdatedBy = string.Empty;
+
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
+            {
+                success = false;
+                message = "Permission Denied to update";
+                return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
+            }
+                
+                var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
+                if (lineItem == null)
+                {
+                    success = false;
+                    message = "Line Item not found";
+                    return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
+                }
+
+                if (lineItem.Order.Id != id)
+                {
+                    success = false;
+                    message = "Order Id does not match";
+                    return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
+                }
+
+                if (!lineItem.Order.StatusCode.IsComplete)
+                {
+                    success = false;
+                    message = "Order is not complete";
+                    return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
+                }
+
+
+                try
+                {
+                        var saveNote = lineItem.ReceivedNotes;
+                        lineItem.ReceivedNotes = note;
+                        _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                        var history = new HistoryReceivedLineItem();
+                        history.LineItem = lineItem;
+                        history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
+                        history.CommentsUpdated = true;
+                        history.OldReceivedQuantity = lineItem.QuantityPaid; //These don't matter because it is the note being updated.
+                        history.NewReceivedQuantity = lineItem.QuantityPaid;
+                        history.PayInvoice = false;
+                        if (lineItem.PaidNotes != saveNote)
+                        {
+                            _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                            lastUpdatedBy = history.User.FullName;
+                        }
+                    
+                    message = "Updated";
+                    success = true;
+                }
+                catch
+                {
+                    success = false;
+                    message = "There was a problem updating the notes."; //ex.Message;
+                }
+
+                return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
+                
+            
+        }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult PayInvoice(int id, int lineItemId, decimal? receivedQuantity)
         {
             var success = true;
             var message = "Succeeded";
@@ -1625,9 +1609,93 @@ namespace Purchasing.Mvc.Controllers
                 return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
             }
 
-            if (updateNote)
+                var showRed = false;
+                var unaccounted = string.Empty;
+                var receivedQuantityReturned = receivedQuantity.HasValue ? receivedQuantity.Value.ToString() : string.Empty;
+
+                var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
+                if (lineItem == null)
+                {
+                    success = false;
+                    message = "Line Item not found";
+                    return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted, lastUpdatedBy });
+                }
+
+                if (lineItem.Order.Id != id)
+                {
+                    success = false;
+                    message = "Order Id does not match";
+                    return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted, lastUpdatedBy });
+                }
+
+                if (!lineItem.Order.StatusCode.IsComplete)
+                {
+                    success = false;
+                    message = "Order is not complete";
+                    return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted, lastUpdatedBy });
+                }
+
+                try
+                {
+                    var history = new HistoryReceivedLineItem();
+                    history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
+                    history.OldReceivedQuantity = lineItem.QuantityPaid;
+                    history.NewReceivedQuantity = receivedQuantity;
+                    history.LineItem = lineItem;
+                    history.PayInvoice = true;
+
+                    lineItem.QuantityPaid = receivedQuantity;
+
+                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
+                    if (history.NewReceivedQuantity != history.OldReceivedQuantity)
+                    {
+                        _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
+                        lastUpdatedBy = history.User.FullName;
+                    }
+                    receivedQuantityReturned = string.Format("{0:0.###}", lineItem.QuantityReceived);
+                    success = true;
+                    message = "Updated";
+                    var diff = (lineItem.Quantity - lineItem.QuantityPaid);
+                    if (diff > 0)
+                    {
+                        unaccounted = string.Format("({0})", string.Format("{0:0.###}", diff));
+                        showRed = true;
+                    }
+                    else
+                    {
+                        unaccounted = string.Format("{0}", string.Format("{0:0.###}", (diff * -1)));
+                        showRed = false;
+                    }
+
+                    _eventService.OrderPaid(lineItem.Order, lineItem, receivedQuantity.Value);
+
+                    _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
+                }
+                catch
+                {
+                    success = false;
+                    message = "There was a problem updating the quantity."; //ex.Message;
+                }
+                return new JsonNetResult(new { success, lineItemId, receivedQuantityReturned, message, showRed, unaccounted, lastUpdatedBy });
+            
+        }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult PayInvoiceNote(int id, int lineItemId, string note)
+        {
+            var success = true;
+            var message = "Succeeded";
+            var lastUpdatedBy = string.Empty;
+
+            var order = _repositoryFactory.OrderRepository.Queryable.Single(a => a.Id == id);
+            if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
             {
-                #region Notes
+                success = false;
+                message = "Permission Denied to update";
+                return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
+            }
+            
                 var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
                 if (lineItem == null)
                 {
@@ -1681,79 +1749,9 @@ namespace Purchasing.Mvc.Controllers
                 }
 
                 return new JsonNetResult(new { success, lineItemId, message, lastUpdatedBy });
-                #endregion Notes
-            }
-            else
-            {
-                var showRed = false;
-                var unaccounted = string.Empty;
-                var receivedQuantityReturned = receivedQuantity.HasValue ? receivedQuantity.Value.ToString() : string.Empty;
-
-                var lineItem = _repositoryFactory.LineItemRepository.GetNullableById(lineItemId);
-                if (lineItem == null)
-                {
-                    success = false;
-                    message = "Line Item not found";
-                    return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted, lastUpdatedBy });
-                }
-
-                if (lineItem.Order.Id != id)
-                {
-                    success = false;
-                    message = "Order Id does not match";
-                    return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted, lastUpdatedBy });
-                }
-
-                if (!lineItem.Order.StatusCode.IsComplete)
-                {
-                    success = false;
-                    message = "Order is not complete";
-                    return new JsonNetResult(new { success, lineItemId, receivedQuantity, message, showRed, unaccounted, lastUpdatedBy });
-                }
-
-                try
-                {
-                    var history = new HistoryReceivedLineItem();
-                    history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
-                    history.OldReceivedQuantity =  lineItem.QuantityPaid;
-                    history.NewReceivedQuantity =  receivedQuantity ;
-                    history.LineItem = lineItem;
-                    history.PayInvoice = true;
-                   
-                        lineItem.QuantityPaid = receivedQuantity;
-                   
-                    _repositoryFactory.LineItemRepository.EnsurePersistent(lineItem);
-                    if (history.NewReceivedQuantity != history.OldReceivedQuantity)
-                    {
-                        _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
-                        lastUpdatedBy = history.User.FullName;
-                    }
-                    receivedQuantityReturned = string.Format("{0:0.###}", lineItem.QuantityReceived);
-                    success = true;
-                    message = "Updated";
-                    var diff = (lineItem.Quantity - lineItem.QuantityPaid) ;
-                    if (diff > 0)
-                    {
-                        unaccounted = string.Format("({0})", string.Format("{0:0.###}", diff));
-                        showRed = true;
-                    }
-                    else
-                    {
-                        unaccounted = string.Format("{0}", string.Format("{0:0.###}", (diff * -1)));
-                        showRed = false;
-                    }
-                   
-                        _eventService.OrderPaid(lineItem.Order, lineItem, receivedQuantity.Value);
-                    
-                    _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
-                }
-                catch
-                {
-                    success = false;
-                    message = "There was a problem updating the quantity."; //ex.Message;
-                }
-                return new JsonNetResult(new { success, lineItemId, receivedQuantityReturned, message, showRed, unaccounted, lastUpdatedBy });
-            }
+                
+            
+            
         }
 
         [HttpPost]
