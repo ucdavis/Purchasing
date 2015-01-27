@@ -2005,6 +2005,111 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion ShowRequestType Tests
 
+        #region ShowPostStatus Tests
+
+        /// <summary>
+        /// Tests the ShowPostStatus is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowPostStatusIsFalseSaves()
+        {
+            #region Arrange
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowPostStatus = false;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(columnPreferences.ShowPostStatus);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowPostStatus is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowPostStatusIsTrueSaves()
+        {
+            #region Arrange
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowPostStatus = true;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(columnPreferences.ShowPostStatus);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ShowPostStatus Tests
+
+        #region ShowOrderNote Tests
+
+        /// <summary>
+        /// Tests the ShowOrderNote is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowOrderNoteIsFalseSaves()
+        {
+            #region Arrange
+            ColumnPreferences columnPreferences = GetValid(9);
+            columnPreferences.ShowOrderNote = false;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(columnPreferences.ShowOrderNote);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the ShowOrderNote is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestShowOrderNoteIsTrueSaves()
+        {
+            #region Arrange
+            var columnPreferences = GetValid(9);
+            columnPreferences.ShowOrderNote = true;
+            #endregion Arrange
+
+            #region Act
+            ColumnPreferencesRepository.DbContext.BeginTransaction();
+            ColumnPreferencesRepository.EnsurePersistent(columnPreferences);
+            ColumnPreferencesRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(columnPreferences.ShowOrderNote);
+            Assert.IsFalse(columnPreferences.IsTransient());
+            Assert.IsTrue(columnPreferences.IsValid());
+            #endregion Assert
+        }
+
+        #endregion ShowOrderNote Tests
+
+
 
         #region Constructor Tests
 
@@ -2169,6 +2274,10 @@ namespace Purchasing.Tests.RepositoryTests
             //                                                             {
             //                                                                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show People Pending Action\")]"
             //                                                             }));
+            expectedFields.Add(new NameAndType("ShowOrderNote", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Order Note\")]"
+                                                                         }));
             expectedFields.Add(new NameAndType("ShowOrderPaid", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Order Paid\")]"
@@ -2180,6 +2289,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("ShowOrderType", "System.Boolean", new List<string>
                                                                          {
                                                                              "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Order Type\")]"
+                                                                         }));
+            expectedFields.Add(new NameAndType("ShowPostStatus", "System.Boolean", new List<string>
+                                                                         {
+                                                                             "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Order Post Status\")]"
                                                                          }));
             expectedFields.Add(new NameAndType("ShowPurchaseOrderNumber", "System.Boolean", new List<string>
                                                                          {

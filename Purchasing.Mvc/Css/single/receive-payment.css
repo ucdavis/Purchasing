@@ -1,0 +1,165 @@
+﻿ /*.navigation li {
+            display: inline-block;
+            width: auto;
+            padding: 0 0 0 10px;
+        }
+
+        #orn {
+            margin: 1em 0;
+        }
+
+        #orn ul {
+            padding: 0;
+        }
+
+        #orn li {
+            margin: 0;
+        }
+
+        #order-details .col1, #order-details .col2, #kfs-section .col1, #kfs-section .col2 {
+            width: 49.25%;
+            vertical-align: top;
+            text-align: left;
+            display: inline-block;
+        }
+
+        #kfs-section .col1 {
+            margin-top: 36px;
+            padding-left: 30px;
+            width: 46%;
+        }
+
+        #order-details .col1 .display-form, #order-details .col2 .display-form {
+            height: 140px;
+            margin-bottom: 0;
+        }
+
+        #order-details .col1 ul {
+            padding: 50px 0 0 30px;
+        }
+*/
+        #order-details .col1 ul span, #order-details .col2, #accounts .acct-info span, #order-details .col1 ul strong, #accounts .acct-info strong, #kfs .col1 ul span {
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        #order-details .col1 ul span, #kfs .col1 ul span, #kfs .col2 ul span {
+            width: 150px;
+        }
+
+        /*#accounts .acct-info span {
+            width: auto;
+            min-width: 650px;
+        }
+
+        #order-details .col1 ul strong {
+            width: 250px;
+        }
+
+        #accounts .acct-info strong {
+            width: 150px;
+        }*/
+
+        #order-details .col2 section#vendor {
+            margin-bottom: 20px;
+        }
+
+        /*.item-footer {
+            background-color: #FFF;
+            color: #000;
+        }
+
+        .item-footer .label {
+            text-align: right;
+        }*/
+
+        .extra-info .line-url, .extra-info .line-notes {
+            display: inline-block;
+            width: 49%;
+            text-align: left;
+        }
+
+        .extra-info .line-url {
+            margin-right: 10px;
+        }
+
+        .row-even {
+            background-color: #EEEEEE;
+        }
+
+        .row-odd {
+        }
+
+        .row-split {
+            width: 400px;
+            border: 1px solid lightgray;
+            background-color: lightgreen;
+        }
+
+        .row-split-prob {
+            background-color: lightcoral;
+        }
+
+        .row-split table {
+            border: none;
+        }
+
+        .row-total-value, .row-total-grandtotal {
+            font-weight: bold;
+        }
+
+        .row-total-label, .row-total-value {
+            background-color: #014A81;
+            color: #FFFFFF;
+        }
+
+        #history table, #notes table, #approvals table {
+            border: none;
+        }
+
+        #history table tr, #notes table tr, #approvals table tr {
+            border-bottom: 1px solid lightgray;
+        }
+
+        #history table tr > td:first-child, #notes table tr > td:first-child, #approvals table tr > td:first-child {
+            width: 150px;
+        }
+
+        #history table tr > td:last-child, #notes table tr > td:last-child #approvals table tr > td:last-child {
+            width: 150px;
+        }
+
+        .acct-info .account, .acct-info .subaccount, .acct-info .project {
+            margin-right: 20px;
+        }
+
+        .approval-complete {
+            background-color: #dafcc9;
+        }
+
+        .row-bottom {
+            border-bottom: 1px solid #666;
+        }
+
+        form section ul, .display-form ul {
+            padding: 0;
+        }
+
+        #accounts .section-contents, #attachments .section-contents, #notes .section-contents, .vcard {
+            font-size: 1.2em;
+            line-height: 1.5em;
+        }
+
+        .even:hover, .odd:hover {
+            box-shadow: 0 1px 5px #BBBBBB;
+            border: 1px solid #fff;
+            background-color: transparent;
+        }
+
+        .section-contents .no-icon-table tr .receiveLineItemCell {
+            width: 150px;
+        }
+
+        .section-contents .no-icon-table tr .receiveLineItem {
+            width: 140px;
+        }

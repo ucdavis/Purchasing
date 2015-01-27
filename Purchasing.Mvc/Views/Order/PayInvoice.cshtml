@@ -3,7 +3,7 @@
 
 
 @{
-    ViewBag.Title ="Receive Items";
+    ViewBag.Title = "Pay Invoice For Items";
     ViewBag.HideEditDialogue = true;
 }
 
@@ -19,76 +19,116 @@
 {
     @Styles.Render("~/Css/single/fileuploader/fileuploader")
     @Styles.Render("~/Css/single/receive-payment")
-
 }
 
 @section AdditionalScripts
 {
     @Scripts.Render("~/bundles/jquery.tmpl")
     @Scripts.Render("~/bundles/fileuploader.js")
-   
-    
-    @* //TODO Move to bundle *@
+
     <script type="text/javascript">
 
+    $(function () {
+        $("#RecordButton").click(function () {
+            $(".receiveLineItem").each(function () {
+                var receiveVal = $(this).val();
+                var lineItemId = $(this).data("id");
+                var initial = $("#original" + lineItemId).val();
+                if (initial != receiveVal) {
+                    if (!$.isNumeric(receiveVal)) {
+                        alert("Must be a number");
+                    } else {
 
-        $(function () {
+                        var id = $("#id").val();
+                        var antiforgery = $("input[name='__RequestVerificationToken']").val();
+                        var url = '@Url.Action("PayInvoice")';
+                        var loader = $("#" + lineItemId + " .quantity-loader");
+                        var outstanding = $("#" + lineItemId + " .unaccounted");
 
-            $("#RecordButton").click(function() {
-                $(".receiveLineItem").each(function() {
-                    var receiveVal = $(this).val();
-                    var lineItemId = $(this).data("id");
-                    var initial = $("#original" + lineItemId).val();
-                    if (initial != receiveVal) {
-                        if (!$.isNumeric(receiveVal)) {
-                            alert("Must be a number");
-                        } else {
-
-                            var id = $("#id").val();
-                            var antiforgery = $("input[name='__RequestVerificationToken']").val();
-                            var url = '@Url.Action("ReceiveItems")';
-                            var loader = $("#" + lineItemId + " .quantity-loader");
-                            var outstanding = $("#" + lineItemId + " .unaccounted");
-                           
-                            $("#" + lineItemId + " .quantity-update-message").html("Updating...");
-                            loader.show();
-                            $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, __RequestVerificationToken: antiforgery }, function (result) {
-                                loader.hide();
-                                if (result) {
-                                    $("#" + lineItemId + " .receiveQuantity").html(result.receivedQuantityReturned);
-                                    if (result.success == true) {
-                                        $("#" + lineItemId + " .quantity-update-message").html(result.message);
-                                        $("#original" + lineItemId).val(receiveVal);
-                                        outstanding.html(result.unaccounted);
-                                        $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
-                                        $("#" + lineItemId + " .update-date").html("Just Now");
-                                        if (result.showRed) {
-                                            outstanding.removeClass("green");
-                                            outstanding.addClass("red");
-                                        } else {
-                                            outstanding.removeClass("red");
-                                            outstanding.addClass("green");
-                                        }
+                        $("#" + lineItemId + " .quantity-update-message").html("Updating...");
+                        loader.show();
+                        $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, __RequestVerificationToken: antiforgery }, function (result) {
+                            loader.hide();
+                            if (result) {
+                                $("#" + lineItemId + " .receiveQuantity").html(result.receivedQuantityReturned);
+                                if (result.success == true) {
+                                    $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                                    $("#original" + lineItemId).val(receiveVal);
+                                    outstanding.html(result.unaccounted);
+                                    $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
+                                    $("#" + lineItemId + " .update-date").html("Just Now");
+                                    if (result.showRed) {
+                                        outstanding.removeClass("green");
+                                        outstanding.addClass("red");
                                     } else {
-                                        $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                                        outstanding.removeClass("red");
+                                        outstanding.addClass("green");
                                     }
                                 } else {
-                                    alert("There was a problem updating the received quantity.");
+                                    $("#" + lineItemId + " .quantity-update-message").html(result.message);
                                 }
+                            } else {
+                                alert("There was a problem updating the received quantity.");
+                            }
 
-                            });
-                        }
+                        });
                     }
-                });
-
+                }
             });
-            
+
+        });
+        @*$(".receiveLineItem").change(function() {
+            var receiveVal = $(this).val();
+
+            if (!$.isNumeric(receiveVal)) {
+                alert("Must be a number");
+            } else {
+
+                var lineItemId = $(this).data("id");
+                var id = $("#id").val();
+                var antiforgery = $("input[name='__RequestVerificationToken']").val();
+                var url = '@Url.Action("ReceiveItems")';
+                var loader = $("#" + lineItemId + " .quantity-loader");
+                var outstanding = $("#" + lineItemId + " .unaccounted");
+                var payInvoice = '@Model.PayInvoice';
+
+
+                $("#" + lineItemId + " .quantity-update-message").html("Updating...");
+                loader.show();
+                $.post(url, { id: id, lineItemId: lineItemId, receivedQuantity: receiveVal, updateNote: false, payInvoice: payInvoice, __RequestVerificationToken: antiforgery }, function(result) {
+                    loader.hide();
+                    if (result) {
+                        $("#" + lineItemId + " .receiveLineItem").val("");
+                        $("#" + lineItemId + " .receiveQuantity").html(result.receivedQuantityReturned);
+                        if (result.success == true) {
+                            $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                            outstanding.html(result.unaccounted);
+                            $("#" + lineItemId + " .user-name").html(result.lastUpdatedBy);
+                            $("#" + lineItemId + " .update-date").html("Just Now");
+                            if (result.showRed) {
+                                outstanding.removeClass("green");
+                                outstanding.addClass("red");
+                            } else {
+                                outstanding.removeClass("red");
+                                outstanding.addClass("green");
+                            }
+                        } else {
+                            $("#" + lineItemId + " .quantity-update-message").html(result.message);
+                        }
+                    } else {
+                        alert("There was a problem updating the received quantity.");
+                    }
+
+                });
+            }
+        });*@
+
         $(".receiveNotes").change(function () {
             var id = $("#id").val();
             var notesVal = $(this).val();
             var lineItemId = $(this).data("id");
             var antiforgery = $("input[name='__RequestVerificationToken']").val();
-            var url = '@Url.Action("ReceiveItemsNotes", new {id = Model.OrderId})';
+            var url = '@Url.Action("PayInvoiceNote", new { id = Model.OrderId })';
 
             var updateMessage = $("#notesLineId" + lineItemId + " .notes-update-message");
             var loader = $("#notesLineId" + lineItemId + " .notes-loader");
@@ -120,6 +160,7 @@
 
     });
 
+
     $(function () {
         $(".userDetails").click(function () {
             var temp = $(this);
@@ -127,11 +168,12 @@
             var lineItemId = temp.data("id");
             var url = '@Url.Action("GetReceiveHistory")';
             var dialogList = $("#historyBody");
-            
+
+
             dialogList.empty();
             $("#peepsDialog").dialog("open");
             $("#peepsLoaderId").show();
-            $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: false }, function (result) {
+            $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: true }, function (result) {
                 $("#peepsLoaderId").hide();
                 if (result == null || result.success == false) {
                     alert("There was a problem getting the list of users.");
@@ -215,6 +257,7 @@
                                             };
                                     }));
                                 },
+
                                 change: function (event, ui) {
                                     if (!ui.item) {
                                         var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex($(this).val()) + "$", "i"),
@@ -225,6 +268,8 @@
                                                 return false;
                                             }
                                         });
+
+
                                     }
                                     var fileContainer = $(this).parent().parent();
                                     var categeoryText = $(this).val();
@@ -347,7 +392,8 @@
 
     </script>
 
-    
+
+
     <script type="text/javascript">
         $(document).ready(function() {
             $("#peepsDialog").dialog({
@@ -383,178 +429,172 @@
     </script>
 }
 
-    @helper UnaccountedAmount(decimal total, decimal? received)
+@helper UnaccountedAmount(decimal total, decimal? received)
+{
+    var rtValue = string.Format("<td ");
+    if (received != null)
     {
-        var rtValue = string.Format("<td ");
-        if (received != null)
+        var diff = total - received;
+        if (diff > 0)
         {
-            var diff = total - received;
-            if (diff > 0)
-            {
-                rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", diff));
-            }
-            else
-            {
-                rtValue = string.Format("{0} class='unaccounted green bold'>{1}</td>", rtValue, string.Format("{0:0.###}", diff*-1));
-            }
+            rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", diff));
         }
         else
         {
-            rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", total));
+            rtValue = string.Format("{0} class='unaccounted green bold'>{1}</td>", rtValue, string.Format("{0:0.###}", diff * -1));
         }
-        @Html.Raw(rtValue)
+    }
+    else
+    {
+        rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", total));
+    }
+    @Html.Raw(rtValue)
+}
+
+
+
+@Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)
+
+
+<section id="line-items" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Line Items</header>
+    @if (Model.ReviewOrderViewModel.Order.ApUser != null)
+    {
+        <div class="section-text">
+            <p>Note! This order has been assigned to <strong>@Model.ReviewOrderViewModel.Order.ApUser.FullName</strong> for Accounts Payable. Only they will be able to edit these values.</p>
+        </div>
     }
 
+    <div class="section-contents">
 
-
-    @Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)
-
-
-    <section id="line-items" class="ui-corner-all display-form">
-
-        <header class="ui-corner-top ui-widget-header">Line Items</header>
-        @if (Model.ReviewOrderViewModel.Order.ApUser != null)
-        {
-            <div class="section-text">
-                <p>Note! This order has been assigned to <strong>@Model.ReviewOrderViewModel.Order.ApUser.FullName</strong> for Accounts Payable. Only they will be able to edit these values.</p>
-            </div>
+        @Html.Hidden("id", Model.OrderId)
+       
+        @{
+            var disabled = string.Empty;
+            if (Model.Locked == true)
+            {
+                disabled = "disabled='disabled'";
+            }
         }
 
-        <div class="section-contents">
-        
-            @Html.Hidden("id", Model.OrderId)
-            @{
-                var headerName = "Receive Qty";
-                var allButtoneName = "Receive All";
-            }
-            @{
-                var disabled = string.Empty;
-                if (Model.Locked == true)
-                {
-                    disabled = "disabled='disabled'";
-                }
-            }
-        
-            @using (Html.BeginForm("ReceiveAll", "Order", new {id = Model.OrderId}, FormMethod.Post))
-            {
-                @Html.Hidden("id", Model.OrderId)
-                <div id="forgery-token">
-                    @Html.AntiForgeryToken()
-                </div>
-                <ul>
-
-                    <li class="apply">
-                        <label>&nbsp;</label>
-                        <input class="button" type="submit" value="@allButtoneName" @disabled />
-                    </li>
-                </ul>
-            }
-
-            <table class="no-icon-table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>@headerName</th>
-                        <th>Ordered Qty</th>
-                        <th>Outstanding Qty</th>
-                        <th>Unit</th>
-                        <th>Catalog #</th>
-                        <th>Description</th>
-                        <th>Commodity</th>
-                        <th>Unit $</th>
-                        <th>Updated By</th>
-                        <th></th>
-                        <th>Updated</th>
-                        <th>More</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        var odd = false;
-                        var notesLineId = "";
-                        var displayNotes = "";
-                        var by = new HistoryReceivedLineItem();
-                        var count = 0;
-                    }
-                    @foreach (var item in Model.LineItems.Where(a => a.Quantity != 0))
-                    {
-                        count++;
-                        notesLineId = "notesLineId" + item.Id;
-
-                        displayNotes = (string.IsNullOrWhiteSpace(item.ReceivedNotes)) ? "display: none;" : string.Empty;
-
-                        if (!Model.LastChangedBy.TryGetValue(item.Id, out by))
-                        {
-                            by = null;
-                        }
-                        var titleName = "Number of Units received for this line item.";
-                        var notes = item.ReceivedNotes;
-                        var toggleTittle = "Show/Hide Received Comments";
-
-                        <tr id="@item.Id" class="@(odd ? "odd" : "even")">
-                            <td class="lineitem">@count</td>               
-                            <td class="receiveLineItemCell">
-                                <input class="receiveLineItem showTip" type="number" value="@(item.QuantityReceived!=null ? item.QuantityReceived : 0)" data-id="@item.Id" title="@titleName" @disabled/>
-                                <input type="hidden" id="@string.Format("original{0}", item.Id)" data-id="@item.Id" value="@(item.QuantityReceived!=null ? item.QuantityReceived : 0)" />
-                                <span class="quantity-loader" style="display: none;">
-                                    <img src='@Url.Image("ajax-loader.gif")' />
-                                </span>
-
-                            </td>
-                            <td>@string.Format("{0:0.###}", item.Quantity)</td>
-                            @UnaccountedAmount(item.Quantity, item.QuantityReceived)
-                            <td>@item.Unit</td>
-                            <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
-                            <td>@item.Description</td>
-                            <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
-                            <td>@item.UnitPrice</td>
-                            <td class="user-name">@(by != null ? by.User.FullName : string.Empty)</td>
-                            <td>
-                                <a class='userDetails showTip ui-icon ui-icon-person' data-id='@item.Id' title='Lookup all the people who have updated this line item.'></a>
-                            </td>
-                            <td class="update-date">@(by != null ? by.UpdateDate.ToString("MM/dd/yyyy") : string.Empty)</td>
-                            <td>
-                                <span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin: 0px .1em; float: right;">
-                                    <a class=" ui-icon ui-icon-comment showTip" title="@toggleTittle"></a>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr id="@notesLineId" class="@(odd ? "odd" : "even")" style="@displayNotes">
-                            <td colspan="13">
-                                <table class="sub-line-item">
-                                    <tr>
-                                        <td class="label">Notes:</td>
-                                        <td>
-                                            <textarea class="receiveNotes showTip" data-id="@item.Id" title="<strong>Tip:</strong> Don't put things like serial numbers in here because this can be edited. <br/>Information like that should be added to the comments/notes of the review page." @disabled >@notes</textarea>
-                                        </td>
-                                        <td>
-                                            <span class="notes-loader" style="display: none;">
-                                                <img src='@Url.Image("ajax-loader.gif")'/>
-                                            </span>
-                                            <span class="notes-update-message"></span>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        odd = !odd;
-                    }
-                </tbody>
-            </table>
-
+        @using (Html.BeginForm("PayAll", "Order", new { id = Model.OrderId }, FormMethod.Post))
+        {
+           @Html.Hidden("id", Model.OrderId)
+            <div id="forgery-token">
+                @Html.AntiForgeryToken()
+            </div>
             <ul>
+
                 <li class="apply">
                     <label>&nbsp;</label>
-                    <input class="button" id="RecordButton" type="button" value="Record Items" />
+                    <input class="button" type="submit" value="Pay All" @disabled />
                 </li>
             </ul>
-        </div>
+        }
+
+        <table class="no-icon-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Pay Qty</th>
+                    <th>Ordered Qty</th>
+                    <th>Outstanding Qty</th>
+                    <th>Unit</th>
+                    <th>Catalog #</th>
+                    <th>Description</th>
+                    <th>Commodity</th>
+                    <th>Unit $</th>
+                    <th>Updated By</th>
+                    <th></th>
+                    <th>Updated</th>
+                    <th>More</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var odd = false;
+                    var notesLineId = "";
+                    var displayNotes = "";
+                    var by = new HistoryReceivedLineItem();
+                    var count = 0;
+                }
+                @foreach (var item in Model.LineItems.Where(a => a.Quantity != 0))
+                {
+                    count++;
+                    notesLineId = "notesLineId" + item.Id;
+
+                    displayNotes = (string.IsNullOrWhiteSpace(item.PaidNotes)) ? "display: none;" : string.Empty;
+
+                    if (!Model.LastChangedBy.TryGetValue(item.Id, out by))
+                    {
+                        by = null;
+                    }
+                    var quantityPaid = item.QuantityPaid != null ? item.QuantityPaid : 0;
+                    
+                    <tr id="@item.Id" class="@(odd ? "odd" : "even")">
+                        <td class="lineitem">@count</td>
+                        <td class="receiveLineItemCell">
+                            <input class="receiveLineItem showTip" type="number" data-id="@item.Id" title="Number of Units paid for this line item. Amount will be added to the current number of paid items." @disabled value="@quantityPaid" />
+                            <input type="hidden" id="@string.Format("original{0}", item.Id)" data-id="@item.Id" value="@(item.QuantityReceived!=null ? item.QuantityReceived : 0)" />
+                            <span class="quantity-loader" style="display: none;">
+                                <img src='@Url.Image("ajax-loader.gif")' />
+                            </span>
+                        </td>
+                        <td>@string.Format("{0:0.###}", item.Quantity)</td>
+                        @UnaccountedAmount(item.Quantity, item.QuantityPaid )
+                        <td>@item.Unit</td>
+                        <td>@(string.IsNullOrWhiteSpace(item.CatalogNumber) ? "n/a" : item.CatalogNumber)</td>
+                        <td>@item.Description</td>
+                        <td>@(item.Commodity != null ? item.Commodity.Name : "n/a")</td>
+                        <td>@item.UnitPrice</td>
+                        <td class="user-name">@(by != null ? by.User.FullName : string.Empty)</td>
+                        <td>
+                            <a class='userDetails showTip ui-icon ui-icon-person' data-id='@item.Id' title='Lookup all the people who have updated this line item.'></a>
+                        </td>
+                        <td class="update-date">@(by != null ? by.UpdateDate.ToString("MM/dd/yyyy") : string.Empty)</td>
+                        <td>
+                            <span data-id="@item.Id" class="toggle-line-item-details ui-state-default ui-corner-all ui-state-hover" style="margin: 0px .1em; float: right;">
+                                <a class=" ui-icon ui-icon-comment showTip" title="Show/Hide Pay Invoice Comments"></a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr id="@notesLineId" class="@(odd ? "odd" : "even")" style="@displayNotes">
+                        <td colspan="13">
+                            <table class="sub-line-item">
+                                <th></th>
+                                <tr>
+                                    <td class="label">Notes:</td>
+                                    <td>
+                                        <textarea class="receiveNotes showTip" data-id="@item.Id" title="<strong>Tip:</strong> Don't put things like serial numbers in here because this can be edited. <br/>Information like that should be added to the comments/notes of the review page." @disabled >@item.PaidNotes</textarea>
+                                    </td>
+                                    <td>
+                                        <span class="notes-loader" style="display: none;">
+                                            <img src='@Url.Image("ajax-loader.gif")' />
+                                        </span>
+                                        <span class="notes-update-message"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    odd = !odd;
+                }
+            </tbody>
+        </table>
+        <ul>
+            <li class="apply">
+                <label>&nbsp;</label>
+                <input class="button" id="RecordButton" type="button" value="Record Items" />
+            </li>
+        </ul>
+    </div>
 
 
-    </section>
+</section>
 
-    @Html.Partial("_ReceivedItemsHistoryDialog")
+@Html.Partial("_ReceivedItemsHistoryDialog")
 
-    @Html.Partial("_ReviewAttachments", Model.ReviewOrderViewModel)
+@Html.Partial("_ReviewAttachments", Model.ReviewOrderViewModel)
 
-    @Html.Partial("_ReviewNotes", Model.ReviewOrderViewModel)
+@Html.Partial("_ReviewNotes", Model.ReviewOrderViewModel)
