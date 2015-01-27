@@ -96,7 +96,7 @@ namespace Purchasing.Mvc
             bundles.Add(new ScriptBundle("~/bundles/landing").Include("~/Scripts/public/single/Landing.js"));
             bundles.Add(new ScriptBundle("~/bundles/jquery.tmpl").Include("~/Scripts/public/single/jquery.tmpl.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/jquery.qtip").Include("~/Scripts/public/common/jquery.qtip.js"));
-            bundles.Add(new ScriptBundle("~/bundles/single/receive-payment").Include("~/Scripts/public/single/receive-payment.js"));
+            
         }
     }
 }
