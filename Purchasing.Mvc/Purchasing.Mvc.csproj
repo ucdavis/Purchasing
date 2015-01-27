@@ -643,7 +643,6 @@
     <Content Include="Scripts\public\single\jquery.stickyfloat.js" />
     <Content Include="Scripts\public\single\jquery.tablednd_0_5.js" />
     <Content Include="Scripts\public\single\jquery.tmpl.min.js" />
-    <Content Include="Scripts\public\single\receive-payment.js" />
     <Content Include="Scripts\public\single\Landing.js" />
     <Content Include="Scripts\public\single\OrderReview.js" />
     <Content Include="Scripts\public\single\RearrangeDataTable.js" />
