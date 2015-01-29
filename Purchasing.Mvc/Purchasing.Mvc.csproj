@@ -646,6 +646,7 @@
     <Content Include="Scripts\public\single\Landing.js" />
     <Content Include="Scripts\public\single\OrderReview.js" />
     <Content Include="Scripts\public\single\RearrangeDataTable.js" />
+    <Content Include="Scripts\public\single\receiveitems.js" />
     <Content Include="Scripts\public\single\SausageCustom.js" />
     <Content Include="Scripts\public\single\TableTools.js" />
     <Content Include="Scripts\public\single\ZeroClipboard.js" />
