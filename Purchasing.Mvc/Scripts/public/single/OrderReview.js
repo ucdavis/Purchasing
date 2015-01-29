@@ -37,10 +37,11 @@
             purchasing.loadKfsData();
         }
 
+        attachTagEvents();
+
         if (options.IsComplete) {
             attachReferenceNumberEvents();
             attachPoNumberEvents();
-            attachTagEvents();
             attachOrderNotesEvents();
         }
         attachNav();
