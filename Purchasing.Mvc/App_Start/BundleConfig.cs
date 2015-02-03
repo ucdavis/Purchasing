@@ -49,6 +49,10 @@ namespace Purchasing.Mvc
                 .Include("~/Scripts/public/single/receiveitems.js")
                 );
 
+            bundles.Add(new ScriptBundle("~/bundles/single/payInvoice")
+               .Include("~/Scripts/public/single/payinvoice.js")
+               );
+
             bundles.Add(new ScriptBundle("~/bundles/highlight")
                 .Include("~/Scripts/public/single/jquery.highlight.js")
                 );

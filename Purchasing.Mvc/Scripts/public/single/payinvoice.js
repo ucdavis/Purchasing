@@ -2,7 +2,7 @@
 (function (purchasing, $, undefined) {
     //Private Property
     var options = {};
-    
+
 
     //Public Method
     purchasing.options = function (o) {
@@ -10,14 +10,14 @@
     };
 
     purchasing.init = function () {
-       
+
         attachRecordEvents();
         attachHistoryEvents();
         attachFileEvents();
         attachNoteEvent();
     };
 
-    function attachRecordEvents () {
+    function attachRecordEvents() {
 
         $("#RecordButton").click(function () {
             $(".receiveLineItem").each(function () {
@@ -31,7 +31,7 @@
 
                         var id = $("#id").val();
                         var antiforgery = $("input[name='__RequestVerificationToken']").val();
-                        var url = options.ReceiveItemUrl;
+                        var url = options.payInvoice;
                         var loader = $("#" + lineItemId + " .quantity-loader");
                         var outstanding = $("#" + lineItemId + " .unaccounted");
 
@@ -105,7 +105,7 @@
 
     };
 
-    function attachHistoryEvents () {
+    function attachHistoryEvents() {
         $(".userDetails").click(function () {
             var temp = $(this);
             var orderId = $("#id").val();
@@ -217,7 +217,7 @@
 
                                 categoryMessage.html("Updating...");
 
-                                $.post( options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val() }, function (result) {
+                                $.post(options.UpdateAttachmentCategoryUrl, { guidId: attachmentGuid, category: categeoryText, __RequestVerificationToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val() }, function (result) {
                                     if (result) {
                                         categoryMessage.html(result.message);
                                     } else {
@@ -280,7 +280,7 @@
         });
     }
 
-    function attachNoteEvent () {
+    function attachNoteEvent() {
         $("#add-note").click(function () {
             $("#notes-dialog").dialog({
                 modal: true,
