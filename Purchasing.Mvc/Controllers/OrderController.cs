@@ -621,7 +621,7 @@ namespace Purchasing.Mvc.Controllers
                 _repositoryFactory.ApprovalRepository.Queryable.Fetch(x => x.StatusCode).Where(x => x.Order.Id == id).ToList();
 
             model.Comments =
-                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+                _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).OrderBy(x=> x.DateCreated).ToList();
             model.Attachments =
                 _repositoryFactory.AttachmentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).OrderBy(o => o.DateCreated).ToList();
 
@@ -1284,7 +1284,7 @@ namespace Purchasing.Mvc.Controllers
             }
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, false);
-            viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+            viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).OrderBy(x=> x.DateCreated).ToList();
             viewModel.ReviewOrderViewModel.Attachments = _repositoryFactory.AttachmentRepository.Queryable.Where(x => x.Order.Id == id).ToList();
             viewModel.ReviewOrderViewModel.CurrentUser = CurrentUser.Identity.Name;
             viewModel.ReviewOrderViewModel.Complete = order.StatusCode.IsComplete;
@@ -1321,7 +1321,7 @@ namespace Purchasing.Mvc.Controllers
             }
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, true);
-            viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).ToList();
+            viewModel.ReviewOrderViewModel.Comments = _repositoryFactory.OrderCommentRepository.Queryable.Fetch(x => x.User).Where(x => x.Order.Id == id).OrderBy(x => x.DateCreated).ToList();
             viewModel.ReviewOrderViewModel.Attachments = _repositoryFactory.AttachmentRepository.Queryable.Where(x => x.Order.Id == id).ToList();
             viewModel.ReviewOrderViewModel.CurrentUser = CurrentUser.Identity.Name;
             viewModel.ReviewOrderViewModel.Complete = order.StatusCode.IsComplete;
