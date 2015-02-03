@@ -116,7 +116,7 @@
             dialogList.empty();
             $("#peepsDialog").dialog("open");
             $("#peepsLoaderId").show();
-            $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: false }, function (result) {
+            $.getJSON(url, { id: orderId, lineItemId: lineItemId, payInvoice: true }, function (result) {
                 $("#peepsLoaderId").hide();
                 if (result == null || result.success == false) {
                     alert("There was a problem getting the list of users.");
