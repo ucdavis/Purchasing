@@ -1049,7 +1049,7 @@ namespace Purchasing.Mvc.Controllers
         {
             //Get the matching order, and only if the order is complete
             var order =
-                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id );
 
             var priorValue = order.Tag;
 
