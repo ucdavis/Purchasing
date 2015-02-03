@@ -1641,6 +1641,7 @@ namespace Purchasing.Mvc.Controllers
                     history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
                     history.OldReceivedQuantity = lineItem.QuantityPaid;
                     history.NewReceivedQuantity = receivedQuantity;
+                    history.CommentsUpdated = false;
                     history.LineItem = lineItem;
                     history.PayInvoice = true;
 
