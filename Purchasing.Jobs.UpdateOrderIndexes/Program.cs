@@ -6,7 +6,7 @@ namespace Purchasing.Jobs.UpdateOrderIndexes
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting v1 run at {0}", DateTime.Now);
+            Console.WriteLine("Starting v2 run at {0}", DateTime.Now);
         }
     }
 }
