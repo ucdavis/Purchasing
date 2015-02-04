@@ -521,6 +521,7 @@
     <Content Include="Images\Sample\search-icon.png" />
     <Content Include="Images\search.gif" />
     <Content Include="Images\top_blue_bar.jpg" />
+    <Content Include="Properties\WebJobs.xml" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
@@ -590,6 +591,8 @@
     <Content Include="Scripts\external\jquery\Bundle.txt" />
     <Content Include="Scripts\external\jquery\jquery-1.7.1.js" />
     <Content Include="Scripts\guider.js" />
+    <Content Include="Properties\ligershark.webjobs.targets" />
+    <Content Include="Properties\ligershark.webjobs.ext.targets" />
     <None Include="Scripts\jquery-1.7.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.min.js" />
@@ -860,6 +863,7 @@
     <Content Include="Views\Workgroup\VendorList.cshtml" />
     <Content Include="Views\Workgroup\WhoHasAccessToWorkgroup.cshtml" />
     <Content Include="Views\Order\PayInvoice.cshtml" />
+    <Content Include="webjobs.wpp.targets" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -884,6 +888,10 @@
     <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
       <Project>{B1C96724-966E-4481-89A7-DF4B1C26069D}</Project>
       <Name>Purchasing.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Purchasing.Jobs.UpdateOrderIndexes\Purchasing.Jobs.UpdateOrderIndexes.csproj">
+      <Project>{32D38E9E-2FC1-45CB-9067-87BB8D71057A}</Project>
+      <Name>Purchasing.Jobs.UpdateOrderIndexes</Name>
     </ProjectReference>
     <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj">
       <Project>{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}</Project>
