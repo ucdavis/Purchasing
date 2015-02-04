@@ -492,9 +492,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="AppSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="humans.txt" />
     <Content Include="Images\ajax-loader.gif" />
     <Content Include="Images\ajaxloader.png" />
