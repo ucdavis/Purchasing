@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Attributes;
@@ -37,26 +38,26 @@ namespace Purchasing.Mvc.Controllers
         {
             ViewBag.ModifiedDates = new Dictionary<string, DateTime>
                                     {
-                                        {"OrderHistory", _indexService.LastModified(Services.Indexes.OrderHistory)}
-                                        ,{"LineItems", _indexService.LastModified(Services.Indexes.LineItems)}
-                                        ,{"Comments", _indexService.LastModified(Services.Indexes.Comments)}
-                                        ,{"CustomAnswers", _indexService.LastModified(Services.Indexes.CustomAnswers)}
-                                        ,{"Accounts", _indexService.LastModified(Services.Indexes.Accounts)}
-                                        ,{"Buildings", _indexService.LastModified(Services.Indexes.Buildings)}
-                                        ,{"Commodities", _indexService.LastModified(Services.Indexes.Commodities)}
-                                        ,{"Vendors", _indexService.LastModified(Services.Indexes.Vendors)}
+                                        {"OrderHistory", _indexService.LastModified(Core.Services.Indexes.OrderHistory)}
+                                        ,{"LineItems", _indexService.LastModified(Core.Services.Indexes.LineItems)}
+                                        ,{"Comments", _indexService.LastModified(Core.Services.Indexes.Comments)}
+                                        ,{"CustomAnswers", _indexService.LastModified(Core.Services.Indexes.CustomAnswers)}
+                                        ,{"Accounts", _indexService.LastModified(Core.Services.Indexes.Accounts)}
+                                        ,{"Buildings", _indexService.LastModified(Core.Services.Indexes.Buildings)}
+                                        ,{"Commodities", _indexService.LastModified(Core.Services.Indexes.Commodities)}
+                                        ,{"Vendors", _indexService.LastModified(Core.Services.Indexes.Vendors)}
                                     };
 
             ViewBag.NumRecords = new Dictionary<string, int>
                                      {
-                                         {"OrderHistory", _indexService.NumRecords(Services.Indexes.OrderHistory)}
-                                         ,{"LineItems", _indexService.NumRecords(Services.Indexes.LineItems)}
-                                         ,{"Comments", _indexService.NumRecords(Services.Indexes.Comments)}
-                                         ,{"CustomAnswers", _indexService.NumRecords(Services.Indexes.CustomAnswers)}
-                                         ,{"Accounts", _indexService.NumRecords(Services.Indexes.Accounts)}
-                                        ,{"Buildings", _indexService.NumRecords(Services.Indexes.Buildings)}
-                                        ,{"Commodities", _indexService.NumRecords(Services.Indexes.Commodities)}
-                                        ,{"Vendors", _indexService.NumRecords(Services.Indexes.Vendors)}
+                                         {"OrderHistory", _indexService.NumRecords(Core.Services.Indexes.OrderHistory)}
+                                         ,{"LineItems", _indexService.NumRecords(Core.Services.Indexes.LineItems)}
+                                         ,{"Comments", _indexService.NumRecords(Core.Services.Indexes.Comments)}
+                                         ,{"CustomAnswers", _indexService.NumRecords(Core.Services.Indexes.CustomAnswers)}
+                                         ,{"Accounts", _indexService.NumRecords(Core.Services.Indexes.Accounts)}
+                                        ,{"Buildings", _indexService.NumRecords(Core.Services.Indexes.Buildings)}
+                                        ,{"Commodities", _indexService.NumRecords(Core.Services.Indexes.Commodities)}
+                                        ,{"Vendors", _indexService.NumRecords(Core.Services.Indexes.Vendors)}
                                      };
 
             return View();

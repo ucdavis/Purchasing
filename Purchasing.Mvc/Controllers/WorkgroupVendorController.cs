@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;

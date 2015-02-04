@@ -6,6 +6,7 @@ using System.Web.Security;
 using Dapper;
 using Microsoft.Practices.ServiceLocation;
 using NHibernate;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using UCDArch.Data.NHibernate;
 using Purchasing.Core.Domain;

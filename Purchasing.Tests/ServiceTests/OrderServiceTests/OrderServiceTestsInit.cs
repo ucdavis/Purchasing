@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
 using Purchasing.WS;
 using Purchasing.Mvc.Services;

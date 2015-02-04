@@ -8,6 +8,7 @@ using Lucene.Net.Search;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;

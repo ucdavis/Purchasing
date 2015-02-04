@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.SessionState;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.Utility;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
+using IdAndName = Purchasing.Core.Services.IdAndName;
 
 namespace Purchasing.Mvc.Controllers
 {

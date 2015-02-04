@@ -257,7 +257,6 @@
     <Compile Include="Helpers\DbHelper.cs" />
     <Compile Include="Helpers\OAuth.cs" />
     <Compile Include="Helpers\ProfileAttribte.cs" />
-    <Compile Include="Helpers\EnumerableExtensions.cs" />
     <Compile Include="Helpers\TimeSpanExtensions.cs" />
     <Compile Include="Helpers\WorkgroupAddressService.cs" />
     <Compile Include="Models\AccountSelectModel.cs" />
@@ -293,14 +292,10 @@
     <Compile Include="Services\AccessQueryService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\BugTrackingService.cs" />
-    <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\FileService.cs" />
-    <Compile Include="Services\IndexSearchService.cs" />
-    <Compile Include="Services\IndexService.cs" />
     <Compile Include="Services\IReportService.cs" />
-    <Compile Include="Services\ISearchService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\SecurityService.cs" />

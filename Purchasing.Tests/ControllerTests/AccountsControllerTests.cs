@@ -8,6 +8,7 @@ using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Attributes;
@@ -20,6 +21,7 @@ using UCDArch.Testing;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Purchasing.Mvc.Utility;
+using IdAndName = Purchasing.Core.Services.IdAndName;
 
 
 namespace Purchasing.Tests.ControllerTests

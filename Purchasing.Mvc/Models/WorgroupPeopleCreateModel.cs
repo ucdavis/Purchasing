@@ -5,6 +5,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Mvc.Utility;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using IdAndName = Purchasing.Core.Services.IdAndName;
 
 namespace Purchasing.Mvc.Models
 {

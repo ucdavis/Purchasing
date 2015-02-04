@@ -11,6 +11,7 @@ using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
+using IdAndName = Purchasing.Core.Services.IdAndName;
 
 namespace Purchasing.Mvc.Controllers
 {
