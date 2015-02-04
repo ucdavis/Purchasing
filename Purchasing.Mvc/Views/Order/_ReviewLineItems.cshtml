@@ -28,7 +28,7 @@
             @if (Model.CanReceiveItems)
             {
                 @Html.ActionLink("Receive Items", "ReceiveItems", new {id = Model.Order.Id}, new {@class = "button"})
-                @Html.ActionLink("Pay Invoice", "ReceiveItems", new {id = Model.Order.Id, payInvoice = true}, new {@class = "button"})
+                @Html.ActionLink("Pay Invoice", "PayInvoice", new { id = Model.Order.Id}, new { @class = "button" })
             }
 
         </div>

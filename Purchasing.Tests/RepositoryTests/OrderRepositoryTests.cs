@@ -7790,6 +7790,322 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion ApUser Tests
 
+        #region PostStatus Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the PostStatus with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestPostStatusWithTooLongValueDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.PostStatus = "x".RepeatTimes((50 + 1));
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(order);
+                Assert.AreEqual(50 + 1, order.PostStatus.Length);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "PostStatus", "50"));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the PostStatus with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPostStatusWithNullValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.PostStatus = null;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PostStatus with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPostStatusWithEmptyStringSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.PostStatus = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PostStatus with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPostStatusWithOneSpaceSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.PostStatus = " ";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PostStatus with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPostStatusWithOneCharacterSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.PostStatus = "x";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the PostStatus with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestPostStatusWithLongValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.PostStatus = "x".RepeatTimes(50);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(50, order.PostStatus.Length);
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion PostStatus Tests
+
+        #region OrderNote Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the OrderNote with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestOrderNoteWithTooLongValueDoesNotSave()
+        {
+            Order order = null;
+            try
+            {
+                #region Arrange
+                order = GetValid(9);
+                order.OrderNote = "x".RepeatTimes((140 + 1));
+                #endregion Arrange
+
+                #region Act
+                OrderRepository.DbContext.BeginTransaction();
+                OrderRepository.EnsurePersistent(order);
+                OrderRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(order);
+                Assert.AreEqual(140 + 1, order.OrderNote.Length);
+                var results = order.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "OrderNote", "140"));
+                Assert.IsTrue(order.IsTransient());
+                Assert.IsFalse(order.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the OrderNote with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrderNoteWithNullValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.OrderNote = null;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the OrderNote with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrderNoteWithEmptyStringSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.OrderNote = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the OrderNote with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrderNoteWithOneSpaceSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.OrderNote = " ";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the OrderNote with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrderNoteWithOneCharacterSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.OrderNote = "x";
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the OrderNote with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestOrderNoteWithLongValueSaves()
+        {
+            #region Arrange
+            var order = GetValid(9);
+            order.OrderNote = "x".RepeatTimes(140);
+            #endregion Arrange
+
+            #region Act
+            OrderRepository.DbContext.BeginTransaction();
+            OrderRepository.EnsurePersistent(order);
+            OrderRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(140, order.OrderNote.Length);
+            Assert.IsFalse(order.IsTransient());
+            Assert.IsTrue(order.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion OrderNote Tests
+
 
         #region Constructor Tests
 
@@ -7910,6 +8226,10 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("LineItems", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.LineItem]", new List<string>()));
             expectedFields.Add(new NameAndType("LineItemSummary", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("OrderComments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.OrderComment]", new List<string>()));
+            expectedFields.Add(new NameAndType("OrderNote", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)140)]"
+            }));
             expectedFields.Add(new NameAndType("OrderReceived", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("OrderTrackings", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.OrderTracking]", new List<string>()));
             expectedFields.Add(new NameAndType("OrderType", "Purchasing.Core.Domain.OrderType", new List<string>
@@ -7922,6 +8242,10 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("PeoplePendingAction", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("PoNumber", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
+            }));
+            expectedFields.Add(new NameAndType("PostStatus", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));

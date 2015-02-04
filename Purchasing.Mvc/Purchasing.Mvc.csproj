@@ -480,6 +480,7 @@
     <Content Include="Css\single\chosen.css" />
     <Content Include="Css\single\fileuploader\fileuploader.css" />
     <Content Include="Css\single\fileuploader\loading.gif" />
+    <Content Include="Css\single\receive-payment.css" />
     <Content Include="Css\single\guider.css" />
     <Content Include="Css\single\jquery.multiselector.css" />
     <Content Include="Css\single\orderrequest.css" />
@@ -644,7 +645,9 @@
     <Content Include="Scripts\public\single\jquery.tmpl.min.js" />
     <Content Include="Scripts\public\single\Landing.js" />
     <Content Include="Scripts\public\single\OrderReview.js" />
+    <Content Include="Scripts\public\single\payinvoice.js" />
     <Content Include="Scripts\public\single\RearrangeDataTable.js" />
+    <Content Include="Scripts\public\single\receiveitems.js" />
     <Content Include="Scripts\public\single\SausageCustom.js" />
     <Content Include="Scripts\public\single\TableTools.js" />
     <Content Include="Scripts\public\single\ZeroClipboard.js" />
@@ -857,6 +860,7 @@
     <Content Include="Views\Workgroup\UpdateMultipleAccounts.cshtml" />
     <Content Include="Views\Workgroup\VendorList.cshtml" />
     <Content Include="Views\Workgroup\WhoHasAccessToWorkgroup.cshtml" />
+    <Content Include="Views\Order\PayInvoice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

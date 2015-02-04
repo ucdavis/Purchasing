@@ -1,6 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
+
 namespace Purchasing.Mvc
 {
     public class BundleConfig
@@ -44,6 +45,14 @@ namespace Purchasing.Mvc
                 .Include("~/Scripts/public/single/FixedHeader.js")
                 );
 
+            bundles.Add(new ScriptBundle("~/bundles/single/receiveItems")
+                .Include("~/Scripts/public/single/receiveitems.js")
+                );
+
+            bundles.Add(new ScriptBundle("~/bundles/single/payInvoice")
+               .Include("~/Scripts/public/single/payinvoice.js")
+               );
+
             bundles.Add(new ScriptBundle("~/bundles/highlight")
                 .Include("~/Scripts/public/single/jquery.highlight.js")
                 );
@@ -86,6 +95,7 @@ namespace Purchasing.Mvc
             bundles.Add(new StyleBundle("~/Css/single/fileuploader/fileuploader").Include("~/Css/single/fileuploader/fileuploader.css"));
             bundles.Add(new StyleBundle("~/Css/single/orderrequest").Include("~/Css/single/orderrequest.css"));
             bundles.Add(new StyleBundle("~/Css/multiselector").Include("~/Css/single/jquery.multiselector.css"));
+            bundles.Add(new StyleBundle("~/Css/single/receive-payment").Include("~/Css/single/receive-payment.css"));
             //scripts
             bundles.Add(new ScriptBundle("~/bundles/single/chosen").Include("~/Scripts/public/single/chosen.jquery.js"));
             bundles.Add(new ScriptBundle("~/bundles/multiselector").Include("~/Scripts/public/single/jquery.multiselector.js")); //Has css
@@ -94,6 +104,7 @@ namespace Purchasing.Mvc
             bundles.Add(new ScriptBundle("~/bundles/landing").Include("~/Scripts/public/single/Landing.js"));
             bundles.Add(new ScriptBundle("~/bundles/jquery.tmpl").Include("~/Scripts/public/single/jquery.tmpl.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/jquery.qtip").Include("~/Scripts/public/common/jquery.qtip.js"));
+            
         }
     }
 }
