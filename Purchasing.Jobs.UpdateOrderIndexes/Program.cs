@@ -1,14 +1,29 @@
 ﻿using System;
-using System.Configuration;
+using Ninject;
+using Purchasing.Core.Services;
+using Purchasing.Jobs.Common;
 
 namespace Purchasing.Jobs.UpdateOrderIndexes
 {
-    class Program
+    class Program : WebJobBase
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting v2 run at {0}", DateTime.Now);
-            Console.WriteLine("Connecting using {0}", ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString);
+            var kernel = ConfigureServices();
+
+            var indexService = kernel.Get<IIndexService>();
+
+            try
+            {
+                indexService.UpdateOrderIndexes();
+                indexService.UpdateCommentsIndex();
+
+                Console.WriteLine("Indexes updated successfully at {0}", DateTime.Now);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("FAILED: Indexes failed because {0}", ex.Message);
+            }
         }
     }
 }

@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jobs", "Jobs", "{3201A95E-A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.UpdateOrderIndexes", "Purchasing.Jobs.UpdateOrderIndexes\Purchasing.Jobs.UpdateOrderIndexes.csproj", "{32D38E9E-2FC1-45CB-9067-87BB8D71057A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.Common", "Purchasing.Jobs.Common\Purchasing.Jobs.Common.csproj", "{CD0959A5-72D6-4F58-A730-24251C0F95FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,11 +102,22 @@ Global
 		{32D38E9E-2FC1-45CB-9067-87BB8D71057A}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
 		{32D38E9E-2FC1-45CB-9067-87BB8D71057A}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{32D38E9E-2FC1-45CB-9067-87BB8D71057A}.Test|Any CPU.Build.0 = Release|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.ReleaseAzure|Any CPU.ActiveCfg = Release|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.ReleaseAzure|Any CPU.Build.0 = Release|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.ReleaseCAES|Any CPU.ActiveCfg = Release|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{32D38E9E-2FC1-45CB-9067-87BB8D71057A} = {3201A95E-A908-42BC-9363-D8B5720F6881}
+		{CD0959A5-72D6-4F58-A730-24251C0F95FD} = {3201A95E-A908-42BC-9363-D8B5720F6881}
 	EndGlobalSection
 EndGlobal
