@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 
 namespace Purchasing.Jobs.UpdateOrderIndexes
 {
@@ -7,6 +8,7 @@ namespace Purchasing.Jobs.UpdateOrderIndexes
         static void Main(string[] args)
         {
             Console.WriteLine("Starting v2 run at {0}", DateTime.Now);
+            Console.WriteLine("Connecting using {0}", ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString);
         }
     }
 }
