@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AutoMapper.Internal;
 using Dapper;
-using FluentNHibernate.Utils;
 using Nest;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -281,7 +281,7 @@ namespace Purchasing.Core.Services
     {
         public static string GetIndexName(Indexes indexes)
         {
-            return string.Format("opp-{0}", indexes.ToLowerInvariantString());
+            return string.Format("opp-{0}", indexes.ToNullSafeString().ToLowerInvariant());
         }
     }
 
