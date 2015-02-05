@@ -3,7 +3,7 @@ using Ninject;
 using Purchasing.Core.Services;
 using Purchasing.Jobs.Common;
 
-namespace Purchasing.Jobs.UpdateOrderIndexes
+namespace Purchasing.Jobs.UpdateLookupIndexes
 {
     class Program : WebJobBase
     {
@@ -15,10 +15,12 @@ namespace Purchasing.Jobs.UpdateOrderIndexes
 
             try
             {
-                indexService.UpdateOrderIndexes();
-                indexService.UpdateCommentsIndex();
+                indexService.CreateAccountsIndex();
+                indexService.CreateBuildingsIndex();
+                indexService.CreateCommoditiesIndex();
+                indexService.CreateVendorsIndex();
 
-                Console.WriteLine("Order indexes updated successfully at {0}", DateTime.Now);
+                Console.WriteLine("Lookup indexes updated successfully at {0}", DateTime.Now);
             }
             catch (Exception ex)
             {
