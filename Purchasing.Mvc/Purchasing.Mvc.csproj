@@ -884,6 +884,10 @@
       <Project>{B1C96724-966E-4481-89A7-DF4B1C26069D}</Project>
       <Name>Purchasing.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Purchasing.Jobs.CreateOrderIndexes\Purchasing.Jobs.CreateOrderIndexes.csproj">
+      <Project>{59F67891-02FB-48D9-AF00-55DB86208272}</Project>
+      <Name>Purchasing.Jobs.CreateOrderIndexes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Purchasing.Jobs.UpdateLookupIndexes\Purchasing.Jobs.UpdateLookupIndexes.csproj">
       <Project>{BBFDC157-DC74-4261-8783-20EBF8DBC250}</Project>
       <Name>Purchasing.Jobs.UpdateLookupIndexes</Name>

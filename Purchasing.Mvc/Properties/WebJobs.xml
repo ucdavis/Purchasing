@@ -3,4 +3,5 @@
 <WebJobs>
   <WebJob Project="Purchasing.Jobs.UpdateOrderIndexes" RelativePath="..\Purchasing.Jobs.UpdateOrderIndexes\Purchasing.Jobs.UpdateOrderIndexes.csproj" Schedule="triggered" />
   <WebJob Project="Purchasing.Jobs.UpdateLookupIndexes" RelativePath="..\Purchasing.Jobs.UpdateLookupIndexes\Purchasing.Jobs.UpdateLookupIndexes.csproj" Schedule="triggered" />
+  <WebJob Project="Purchasing.Jobs.CreateOrderIndexes" RelativePath="..\Purchasing.Jobs.CreateOrderIndexes\Purchasing.Jobs.CreateOrderIndexes.csproj" Schedule="triggered" />
 </WebJobs>

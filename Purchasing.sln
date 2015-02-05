@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.Common", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.UpdateLookupIndexes", "Purchasing.Jobs.UpdateLookupIndexes\Purchasing.Jobs.UpdateLookupIndexes.csproj", "{BBFDC157-DC74-4261-8783-20EBF8DBC250}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.CreateOrderIndexes", "Purchasing.Jobs.CreateOrderIndexes\Purchasing.Jobs.CreateOrderIndexes.csproj", "{59F67891-02FB-48D9-AF00-55DB86208272}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +126,16 @@ Global
 		{BBFDC157-DC74-4261-8783-20EBF8DBC250}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
 		{BBFDC157-DC74-4261-8783-20EBF8DBC250}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{BBFDC157-DC74-4261-8783-20EBF8DBC250}.Test|Any CPU.Build.0 = Release|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.ReleaseAzure|Any CPU.ActiveCfg = Release|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.ReleaseAzure|Any CPU.Build.0 = Release|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.ReleaseCAES|Any CPU.ActiveCfg = Release|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{59F67891-02FB-48D9-AF00-55DB86208272}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,5 +144,6 @@ Global
 		{32D38E9E-2FC1-45CB-9067-87BB8D71057A} = {3201A95E-A908-42BC-9363-D8B5720F6881}
 		{CD0959A5-72D6-4F58-A730-24251C0F95FD} = {3201A95E-A908-42BC-9363-D8B5720F6881}
 		{BBFDC157-DC74-4261-8783-20EBF8DBC250} = {3201A95E-A908-42BC-9363-D8B5720F6881}
+		{59F67891-02FB-48D9-AF00-55DB86208272} = {3201A95E-A908-42BC-9363-D8B5720F6881}
 	EndGlobalSection
 EndGlobal
