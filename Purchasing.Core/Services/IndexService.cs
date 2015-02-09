@@ -174,7 +174,7 @@ namespace Purchasing.Core.Services
             var orders = _client.Search<OrderHistory>(
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
                     .Size(orderids.Length)
-                    .Query(q => q.Terms(o => o.OrderId, orderids)));
+                    .Filter(q => q.Terms(o => o.OrderId, orderids)));
 
             return new IndexedList<OrderHistory>
             {
