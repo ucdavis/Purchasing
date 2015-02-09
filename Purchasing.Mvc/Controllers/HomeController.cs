@@ -4,6 +4,7 @@ using Dapper;
 using Microsoft.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;

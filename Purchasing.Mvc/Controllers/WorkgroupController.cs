@@ -20,6 +20,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
+using IdAndName = Purchasing.Core.Services.IdAndName;
 
 namespace Purchasing.Mvc.Controllers
 {

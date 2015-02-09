@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Don't delete this file. It is used for publishing Windows Azure WebJobs.-->
+<WebJobs>
+  <WebJob Project="Purchasing.Jobs.UpdateOrderIndexes" RelativePath="..\Purchasing.Jobs.UpdateOrderIndexes\Purchasing.Jobs.UpdateOrderIndexes.csproj" Schedule="triggered" />
+  <WebJob Project="Purchasing.Jobs.UpdateLookupIndexes" RelativePath="..\Purchasing.Jobs.UpdateLookupIndexes\Purchasing.Jobs.UpdateLookupIndexes.csproj" Schedule="triggered" />
+  <WebJob Project="Purchasing.Jobs.CreateOrderIndexes" RelativePath="..\Purchasing.Jobs.CreateOrderIndexes\Purchasing.Jobs.CreateOrderIndexes.csproj" Schedule="triggered" />
+</WebJobs>

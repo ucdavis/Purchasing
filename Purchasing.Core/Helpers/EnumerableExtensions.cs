@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Purchasing.Mvc.Helpers
+namespace Purchasing.Core.Helpers
 {
     public static class EnumerableExtensions
     {

@@ -257,7 +257,6 @@
     <Compile Include="Helpers\DbHelper.cs" />
     <Compile Include="Helpers\OAuth.cs" />
     <Compile Include="Helpers\ProfileAttribte.cs" />
-    <Compile Include="Helpers\EnumerableExtensions.cs" />
     <Compile Include="Helpers\TimeSpanExtensions.cs" />
     <Compile Include="Helpers\WorkgroupAddressService.cs" />
     <Compile Include="Models\AccountSelectModel.cs" />
@@ -293,14 +292,10 @@
     <Compile Include="Services\AccessQueryService.cs" />
     <Compile Include="Services\AuditInterceptor.cs" />
     <Compile Include="Services\BugTrackingService.cs" />
-    <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\FileService.cs" />
-    <Compile Include="Services\IndexSearchService.cs" />
-    <Compile Include="Services\IndexService.cs" />
     <Compile Include="Services\IReportService.cs" />
-    <Compile Include="Services\ISearchService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\SecurityService.cs" />
@@ -521,6 +516,7 @@
     <Content Include="Images\Sample\search-icon.png" />
     <Content Include="Images\search.gif" />
     <Content Include="Images\top_blue_bar.jpg" />
+    <Content Include="Properties\WebJobs.xml" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
@@ -590,6 +586,8 @@
     <Content Include="Scripts\external\jquery\Bundle.txt" />
     <Content Include="Scripts\external\jquery\jquery-1.7.1.js" />
     <Content Include="Scripts\guider.js" />
+    <Content Include="Properties\ligershark.webjobs.targets" />
+    <Content Include="Properties\ligershark.webjobs.ext.targets" />
     <None Include="Scripts\jquery-1.7.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.min.js" />
@@ -860,6 +858,7 @@
     <Content Include="Views\Workgroup\VendorList.cshtml" />
     <Content Include="Views\Workgroup\WhoHasAccessToWorkgroup.cshtml" />
     <Content Include="Views\Order\PayInvoice.cshtml" />
+    <Content Include="webjobs.wpp.targets" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -884,6 +883,18 @@
     <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
       <Project>{B1C96724-966E-4481-89A7-DF4B1C26069D}</Project>
       <Name>Purchasing.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Purchasing.Jobs.CreateOrderIndexes\Purchasing.Jobs.CreateOrderIndexes.csproj">
+      <Project>{59F67891-02FB-48D9-AF00-55DB86208272}</Project>
+      <Name>Purchasing.Jobs.CreateOrderIndexes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Purchasing.Jobs.UpdateLookupIndexes\Purchasing.Jobs.UpdateLookupIndexes.csproj">
+      <Project>{BBFDC157-DC74-4261-8783-20EBF8DBC250}</Project>
+      <Name>Purchasing.Jobs.UpdateLookupIndexes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Purchasing.Jobs.UpdateOrderIndexes\Purchasing.Jobs.UpdateOrderIndexes.csproj">
+      <Project>{32D38E9E-2FC1-45CB-9067-87BB8D71057A}</Project>
+      <Name>Purchasing.Jobs.UpdateOrderIndexes</Name>
     </ProjectReference>
     <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj">
       <Project>{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}</Project>

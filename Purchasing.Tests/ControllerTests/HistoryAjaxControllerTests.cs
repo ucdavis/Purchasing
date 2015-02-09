@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;

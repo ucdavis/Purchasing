@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;

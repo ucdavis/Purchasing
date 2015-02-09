@@ -1,8 +1,8 @@
-﻿using System.Data.Common;
-using System.Web.Configuration;
+﻿using System.Configuration;
+using System.Data.Common;
 using System.Data.SqlClient;
 
-namespace Purchasing.Mvc.Services
+namespace Purchasing.Core.Services
 {
     public interface IDbService
     {
@@ -16,7 +16,7 @@ namespace Purchasing.Mvc.Services
             //If connection string is null, use the default sql ce connection
             if (connectionString == null)
             {
-                connectionString = WebConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
+                connectionString = ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
             }
 
             var connection = new SqlConnection(connectionString);

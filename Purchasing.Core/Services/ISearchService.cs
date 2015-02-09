@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using NHibernate;
-using NHibernate.Transform;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
-using Purchasing.Mvc.Utility;
-using UCDArch.Data.NHibernate;
 
-namespace Purchasing.Mvc.Services
+namespace Purchasing.Core.Services
 {
     /// <summary>
     /// Service for full text search queries. Each query passes a list of OrderIds that should be searched
