@@ -14,6 +14,7 @@
 }
 
     <script type="text/javascript">
+        $.validator.setDefaults({ ignore: ':hidden :not(.chzn-done)' }); //do not ignore hidden chosen select lists
 
         $(function () {
             @Html.Partial("_Options")
