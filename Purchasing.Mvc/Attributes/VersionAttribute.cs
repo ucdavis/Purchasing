@@ -17,7 +17,7 @@ namespace Purchasing.Mvc.Attributes
 
         public VersionAttribute()
         {
-            MajorVersion = 1;
+            MajorVersion = 2;
             VersionKey = "Version";
         }
 
