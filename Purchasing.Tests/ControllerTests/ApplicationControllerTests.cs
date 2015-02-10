@@ -122,7 +122,7 @@ namespace Purchasing.Tests.ControllerTests
             #region Assert
             var element = result.ElementAt(0);
             Assert.IsTrue(result.Count() > 0, "Mvc.Attributes.VersionAttribute not found.");
-            Assert.AreEqual(1, element.MajorVersion);
+            Assert.AreEqual(2, element.MajorVersion);
             Assert.AreEqual("Version", element.VersionKey);
             #endregion Assert
         }
