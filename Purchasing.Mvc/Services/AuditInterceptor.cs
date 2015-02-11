@@ -44,7 +44,7 @@ namespace Purchasing.Mvc.Services
 
             var audit = new Audit
             {
-                AuditDate = DateTime.Now,
+                AuditDate = DateTime.UtcNow,
                 ObjectName = entity.GetType().Name,
                 ObjectId = id == null ? null : id.ToString(),
                 Username = string.IsNullOrEmpty(Principal.Identity.Name) ? "NoUser" : Principal.Identity.Name
