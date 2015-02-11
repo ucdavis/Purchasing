@@ -9,7 +9,7 @@ namespace Purchasing.Core.Domain
     {
         public OrderTracking()
         {
-            DateCreated = DateTime.Now;
+            DateCreated = DateTime.UtcNow;
         }
         [Required]
         public virtual string Description { get; set; } //TODO: Enum?

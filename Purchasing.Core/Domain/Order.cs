@@ -30,7 +30,7 @@ namespace Purchasing.Core.Domain
             EmailQueuesV2 = new List<EmailQueueV2>();
             CustomFieldAnswers = new List<CustomFieldAnswer>();
 
-            DateCreated = DateTime.Now;
+            DateCreated = DateTime.UtcNow;
             HasControlledSubstance = false;
 
             EstimatedTax = 7.50m; //Default 7.50% UCD estimated tax

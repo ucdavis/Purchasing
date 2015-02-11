@@ -9,7 +9,7 @@ namespace Purchasing.Core.Domain
     {
         public OrderComment()
         {
-            DateCreated = DateTime.Now;
+            DateCreated = DateTime.UtcNow;
         }
 
         [Required]
