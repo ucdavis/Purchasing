@@ -8,6 +8,7 @@ using Elmah;
 using Microsoft.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
@@ -1907,7 +1908,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 var comment = new OrderComment
                 {
-                    DateCreated = DateTime.Now,
+                    DateCreated = DateTime.UtcNow.ToPacificTime(),
                     User = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
                     Text = model.Comments
                 };

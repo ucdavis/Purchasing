@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
@@ -636,7 +637,7 @@ namespace Purchasing.Mvc.Services
                     {
                         Text = "Prepared By " + savedForm.PreparedBy.FullNameAndId,
                         User = savedForm.PreparedBy,
-                        DateCreated = DateTime.Now
+                        DateCreated = DateTime.UtcNow.ToPacificTime()
                     });   
                 }
 
