@@ -68,6 +68,8 @@ RETURNS
     ,[FpdCompleted] varchar(3)
     ,[ApUserAssigned] varchar(101)
     ,[ApUser] varchar(10)
+    ,[PostStatus] varchar(50)
+    ,[OrderNote] varchar(140)
 )
 AS
 BEGIN
@@ -109,6 +111,8 @@ BEGIN
 		, case when o.FpdCompleted = 1 then 'Yes'else 'No' end FpdCompleted
 		, ApUser.FirstName + ' ' + ApUser.LastName ApUserAssigned
 		, ApUser.id ApUser
+		, o.PostStatus
+		, o.OrderNote
 	from orders o
 		inner join workgroups w on o.WorkgroupId = w.id
 		left outer join WorkgroupVendors wv on o.WorkgroupVendorId = wv.id
