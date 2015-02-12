@@ -115,7 +115,7 @@ namespace Purchasing.Core.Services
 
         public void UpdateOrderIndexes()
         {
-            var lastUpdate = DateTime.Now.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
+            var lastUpdate = DateTime.UtcNow.ToPacificTime().Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
 
             IEnumerable<OrderHistory> orderHistoryEntries = null;
             IEnumerable<SearchResults.LineResult> lineItems = null;
@@ -204,7 +204,7 @@ namespace Purchasing.Core.Services
 
         public void UpdateCommentsIndex()
         {
-            var lastUpdate = DateTime.Now.Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
+            var lastUpdate = DateTime.UtcNow.ToPacificTime().Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
 
             IEnumerable<SearchResults.CommentResult> comments;
 
