@@ -179,7 +179,7 @@ namespace Purchasing.Core.Services
             return new IndexedList<OrderHistory>
             {
                 Results = orders.Hits.Select(h => h.Source).ToList(),
-                LastModified = DateTime.UtcNow.AddMinutes(-5).ToLocalTime()
+                LastModified = DateTime.UtcNow.ToPacificTime().AddMinutes(-5).ToLocalTime()
             };
         }
 
