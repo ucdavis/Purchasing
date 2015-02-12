@@ -1,5 +1,6 @@
 ﻿using System;
 using Ninject;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
 using Purchasing.Jobs.Common;
 
@@ -20,7 +21,7 @@ namespace Purchasing.Jobs.UpdateLookupIndexes
                 indexService.CreateCommoditiesIndex();
                 indexService.CreateVendorsIndex();
 
-                Console.WriteLine("Lookup indexes updated successfully at {0}", DateTime.Now);
+                Console.WriteLine("Lookup indexes updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
             }
             catch (Exception ex)
             {

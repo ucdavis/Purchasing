@@ -1,5 +1,6 @@
 ﻿using System;
 using Ninject;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
 using Purchasing.Jobs.Common;
 
@@ -18,7 +19,7 @@ namespace Purchasing.Jobs.UpdateOrderIndexes
                 indexService.UpdateOrderIndexes();
                 indexService.UpdateCommentsIndex();
 
-                Console.WriteLine("Order indexes updated successfully at {0}", DateTime.Now);
+                Console.WriteLine("Order indexes updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
             }
             catch (Exception ex)
             {

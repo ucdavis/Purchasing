@@ -1003,7 +1003,7 @@ namespace Purchasing.Mvc.Controllers
 
             return
                 new JsonNetResult(
-                    new {Date = DateTime.Now.ToShortDateString(), Text = comment, User = orderComment.User.FullName});
+                    new {Date = DateTime.UtcNow.ToPacificTime().ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
 
         [HttpPost]
