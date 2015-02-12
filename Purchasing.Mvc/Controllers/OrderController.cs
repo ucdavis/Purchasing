@@ -531,6 +531,8 @@ namespace Purchasing.Mvc.Controllers
 
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
+            order.Tag = order.Workgroup.DefaultTag;
+
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             Check.Require(order.LineItems.Count > 0);
