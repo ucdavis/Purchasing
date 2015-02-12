@@ -2118,7 +2118,7 @@ namespace Purchasing.Mvc.Controllers
             requestSave.Workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
             requestSave.FormData = formData;
             requestSave.AccountData = accountData;
-            requestSave.LastUpdate = DateTime.Now;
+            requestSave.LastUpdate = DateTime.UtcNow.ToPacificTime();
 
             var version = ControllerContext.HttpContext.Cache["Version"] as string;
             requestSave.Version = version ?? "N/A";
