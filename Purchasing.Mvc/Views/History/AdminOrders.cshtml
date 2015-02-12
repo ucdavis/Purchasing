@@ -6,7 +6,7 @@
     ViewBag.GetMethod = "AdminOrders";
     ViewBag.LoadFixedHeaders = true;
     ViewBag.LastRefreshTitle = string.Format("The data on this page is current as of {0}-- recent changes make take up to five minutes to process. Press F5 to refresh.", @ViewBag.IndexLastModified.ToString("dddd h:mm:ss tt"));
-    ViewBag.LastRefresh = string.Format("Results current as of {0}", @ViewBag.IndexLastModified.ToString("dddd h:mm:ss tt"));
+    ViewBag.LastRefresh = string.Format("Results current as of {0}", @ViewBag.IndexLastModified.ToString("dddd h:mm tt"));
     ViewBag.LoadTableTools = true;
 
 }
