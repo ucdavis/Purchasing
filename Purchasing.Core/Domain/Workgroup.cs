@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
@@ -58,6 +59,10 @@ namespace Purchasing.Core.Domain
         public virtual IList<WorkgroupPermission> Permissions { get; set; }
         public virtual IList<ConditionalApproval> ConditionalApprovals { get; set; }
         public virtual IList<Order> Orders { get; set; }
+
+        [Display(Name="Default Tag")]
+        [StringLength(256)]
+        public virtual string DefaultTag { get; set; }
 
         [Required]
         [Display(Name = "Primary Organization")]
@@ -137,6 +142,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.NotificationEmailList);
             Map(x => x.RequireApproval);
             Map(x => x.DoNotInheritPermissions);
+            Map(x => x.DefaultTag);
 
             References(x => x.PrimaryOrganization).Column("PrimaryOrganizationId").Not.Nullable();
 
