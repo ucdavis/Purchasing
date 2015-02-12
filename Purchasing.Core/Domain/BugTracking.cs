@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -10,7 +11,7 @@ namespace Purchasing.Core.Domain
     {
         public BugTracking()
         {
-            DateTimeStamp = DateTime.Now;
+            DateTimeStamp = DateTime.UtcNow.ToPacificTime();
         }
 
         public virtual int OrderId { get; set; }

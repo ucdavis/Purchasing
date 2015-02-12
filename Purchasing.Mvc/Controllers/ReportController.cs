@@ -7,6 +7,7 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Attributes;
@@ -61,7 +62,7 @@ namespace Purchasing.Mvc.Controllers
         [AuthorizeWorkgroupAccess]
         public ActionResult PurchaserWorkLoad(DateTime? reportDate)
         {
-            reportDate = reportDate ?? DateTime.Now;
+            reportDate = reportDate ?? DateTime.UtcNow.ToPacificTime();
 
             var viewModel = new ReportPurchaserWorkLoadViewModel();
             viewModel.Items = new List<ReportPurchaserWorkLoadItem>();

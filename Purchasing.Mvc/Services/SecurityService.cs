@@ -439,7 +439,7 @@ namespace Purchasing.Mvc.Services
 
             // save the roles into the cache
             // var expiration = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day);
-            context.Session.Add(cacheId, roles);
+            context.Session.Add(cacheId, roles); //HEY SCOTT!!! Any issues with this when running on both web and cloud service? !!!
 
             return roles;
         }

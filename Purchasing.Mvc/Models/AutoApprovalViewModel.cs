@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -23,7 +24,7 @@ namespace Purchasing.Mvc.Models
 
             var viewModel = new AutoApprovalViewModel
                                 {
-                                    AutoApproval = new AutoApproval { IsActive = true, Expiration = DateTime.Now.AddYears(1) }
+                                    AutoApproval = new AutoApproval { IsActive = true, Expiration = DateTime.UtcNow.ToPacificTime().AddYears(1) }
                                 };
 
             var workgroups = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Role != null && a.Role.Id == Role.Codes.Approver && a.User != null && a.User.Id == userName && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(b => b.Workgroup).Distinct().ToList();

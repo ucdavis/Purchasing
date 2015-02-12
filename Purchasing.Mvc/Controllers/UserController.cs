@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Microsoft.Web.Mvc;
 using Purchasing.Core;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
@@ -183,7 +184,7 @@ namespace Purchasing.Mvc.Controllers
             user.AwayUntil = awayUntil;
             _userRepository.EnsurePersistent(user);
 
-            return new JsonNetResult(awayUntil.Date > DateTime.Now.Date);
+            return new JsonNetResult(awayUntil.Date > DateTime.UtcNow.ToPacificTime().Date);
         }
 
         /// <summary>

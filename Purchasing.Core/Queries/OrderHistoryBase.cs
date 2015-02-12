@@ -1,4 +1,5 @@
 using System;
+using Purchasing.Core.Helpers;
 
 namespace Purchasing.Core.Queries
 {
@@ -19,7 +20,7 @@ namespace Purchasing.Core.Queries
 
         public virtual TimeSpan TimeUntilDue()
         {
-            return DateNeeded.HasValue ? DateNeeded.Value - DateTime.Now : TimeSpan.MaxValue;
+            return DateNeeded.HasValue ? DateNeeded.Value - DateTime.UtcNow.ToPacificTime() : TimeSpan.MaxValue;
         }
 
         /// <summary>

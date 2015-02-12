@@ -1007,7 +1007,7 @@ namespace Purchasing.Mvc.Controllers
 
             return
                 new JsonNetResult(
-                    new {Date = DateTime.Now.ToShortDateString(), Text = comment, User = orderComment.User.FullName});
+                    new {Date = DateTime.UtcNow.ToPacificTime().ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
 
         [HttpPost]
@@ -1211,7 +1211,7 @@ namespace Purchasing.Mvc.Controllers
 
             var attachment = new Attachment
             {
-                DateCreated = DateTime.Now,
+                DateCreated = DateTime.UtcNow.ToPacificTime(),
                 User = GetCurrentUser(),
                 FileName = qqFile,
                 ContentType = request.Headers["X-File-Type"],
@@ -2122,7 +2122,7 @@ namespace Purchasing.Mvc.Controllers
             requestSave.Workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
             requestSave.FormData = formData;
             requestSave.AccountData = accountData;
-            requestSave.LastUpdate = DateTime.Now;
+            requestSave.LastUpdate = DateTime.UtcNow.ToPacificTime();
 
             var version = ControllerContext.HttpContext.Cache["Version"] as string;
             requestSave.Version = version ?? "N/A";

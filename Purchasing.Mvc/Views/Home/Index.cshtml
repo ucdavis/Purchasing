@@ -1,4 +1,5 @@
 ﻿@using System.Web.Configuration
+@using Purchasing.Core.Helpers
 @using Purchasing.Mvc.Services
 @{
     Layout = null;
@@ -209,7 +210,7 @@
                     <div id="stats-show" style="display: none;">
 			            
                         <div class="alert alert-info">
-                            Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.Now.ToShortTimeString()</span>
+                            Current PrePurchasing statistics as of <span id="stats-updated">@DateTime.UtcNow.ToPacificTime().ToShortTimeString()</span>
                         </div>
                         <div class="stats-inner">
                             <h4><strong id="stats-total-orders">n</strong> orders placed totaling <strong id="stats-total-amount">$$$</strong> with <strong id="stats-attachments">n</strong> attached files and using <strong id="stats-accounts">n</strong> different accounts. Of these <strong id="stats-total-orders-completed">n</strong> are completed for <strong id="stats-total-amount-completed"></strong>.</h4>
