@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -21,7 +22,7 @@ namespace Purchasing.Mvc.Models
             var temp = autoApprovalRepository.Queryable.Where(a => a.User != null && a.User.Id == userName);
             if (!showAll)
             {
-                temp = temp.Where(a => a.IsActive && (a.Expiration == null || a.Expiration >= DateTime.Now.Date));
+                temp = temp.Where(a => a.IsActive && (a.Expiration == null || a.Expiration >= DateTime.UtcNow.ToPacificTime().Date));
             }
 
             viewModel.AutoApprovals = temp.ToList();

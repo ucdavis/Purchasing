@@ -1,4 +1,5 @@
-﻿@model Purchasing.Core.Domain.AutoApproval
+﻿@using Purchasing.Core.Helpers
+@model Purchasing.Core.Domain.AutoApproval
 
 
 		<li>
@@ -23,7 +24,7 @@
 		<li>
             @{
                 var hasExpiredMessage = string.Empty;
-                if(Model.Expiration.HasValue && Model.Expiration.Value.Date < DateTime.Now.Date)
+                if(Model.Expiration.HasValue && Model.Expiration.Value.Date < DateTime.UtcNow.ToPacificTime().Date)
                 {
                     hasExpiredMessage = "  (Expired)";
                 }
