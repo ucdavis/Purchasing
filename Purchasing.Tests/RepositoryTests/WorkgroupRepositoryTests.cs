@@ -3034,6 +3034,165 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion NameAndAdmin Tests
 
+        #region DefaultTag Tests
+        #region Invalid Tests
+
+        /// <summary>
+        /// Tests the DefaultTag with too long value does not save.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ApplicationException))]
+        public void TestDefaultTagWithTooLongValueDoesNotSave()
+        {
+            Workgroup workgroup = null;
+            try
+            {
+                #region Arrange
+                workgroup = GetValid(9);
+                workgroup.DefaultTag = "x".RepeatTimes((256 + 1));
+                #endregion Arrange
+
+                #region Act
+                WorkgroupRepository.DbContext.BeginTransaction();
+                WorkgroupRepository.EnsurePersistent(workgroup);
+                WorkgroupRepository.DbContext.CommitTransaction();
+                #endregion Act
+            }
+            catch (Exception)
+            {
+                Assert.IsNotNull(workgroup);
+                Assert.AreEqual(256 + 1, workgroup.DefaultTag.Length);
+                var results = workgroup.ValidationResults().AsMessageList();
+                results.AssertErrorsAre(string.Format("The field {0} must be a string with a maximum length of {1}.", "Default Tag", "256"));
+                Assert.IsTrue(workgroup.IsTransient());
+                Assert.IsFalse(workgroup.IsValid());
+                throw;
+            }
+        }
+        #endregion Invalid Tests
+
+        #region Valid Tests
+
+        /// <summary>
+        /// Tests the DefaultTag with null value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDefaultTagWithNullValueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.DefaultTag = null;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DefaultTag with empty string saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDefaultTagWithEmptyStringSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.DefaultTag = string.Empty;
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DefaultTag with one space saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDefaultTagWithOneSpaceSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.DefaultTag = " ";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DefaultTag with one character saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDefaultTagWithOneCharacterSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.DefaultTag = "x";
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the DefaultTag with long value saves.
+        /// </summary>
+        [TestMethod]
+        public void TestDefaultTagWithLongValueSaves()
+        {
+            #region Arrange
+            var workgroup = GetValid(9);
+            workgroup.DefaultTag = "x".RepeatTimes(256);
+            #endregion Arrange
+
+            #region Act
+            WorkgroupRepository.DbContext.BeginTransaction();
+            WorkgroupRepository.EnsurePersistent(workgroup);
+            WorkgroupRepository.DbContext.CommitTransaction();
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(256, workgroup.DefaultTag.Length);
+            Assert.IsFalse(workgroup.IsTransient());
+            Assert.IsTrue(workgroup.IsValid());
+            #endregion Assert
+        }
+
+        #endregion Valid Tests
+        #endregion DefaultTag Tests
+
+
 
         #region Constructor Tests
 
@@ -3096,6 +3255,11 @@ namespace Purchasing.Tests.RepositoryTests
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Show Controlled Substances Fields\")]"
             }));
             expectedFields.Add(new NameAndType("ConditionalApprovals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.ConditionalApproval]", new List<string>()));
+            expectedFields.Add(new NameAndType("DefaultTag", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Default Tag\")]",
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)256)]"
+            }));
             expectedFields.Add(new NameAndType("Disclaimer", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.DataTypeAttribute((System.ComponentModel.DataAnnotations.DataType)9)]"
