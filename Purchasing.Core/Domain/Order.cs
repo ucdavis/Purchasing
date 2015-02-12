@@ -30,7 +30,7 @@ namespace Purchasing.Core.Domain
             EmailQueuesV2 = new List<EmailQueueV2>();
             CustomFieldAnswers = new List<CustomFieldAnswer>();
 
-            DateCreated = DateTime.Now;
+            DateCreated = DateTime.UtcNow.ToPacificTime();
             HasControlledSubstance = false;
 
             EstimatedTax = 7.50m; //Default 7.50% UCD estimated tax
@@ -305,7 +305,7 @@ namespace Purchasing.Core.Domain
                     return 0;
                 }
                 var lastDate = OrderTrackings.Max(a => a.DateCreated).Date;
-                var timeSpan = DateTime.Now.Date - lastDate;
+                var timeSpan = DateTime.UtcNow.ToPacificTime().Date - lastDate;
                 return timeSpan.Days;
 
             }
@@ -313,7 +313,7 @@ namespace Purchasing.Core.Domain
 
         public virtual TimeSpan TimeUntilDue()
         {
-            return DateNeeded - DateTime.Now;
+            return DateNeeded - DateTime.UtcNow.ToPacificTime();
         }
 
         /// <summary>

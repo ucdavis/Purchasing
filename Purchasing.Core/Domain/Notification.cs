@@ -12,7 +12,7 @@ namespace Purchasing.Core.Domain
     {
         [Required]
         public virtual User User { get; set; }
-        public virtual DateTime Created { get; set; }
+        public virtual DateTime Created { get; set; } //TODO: Change in DB?
         public virtual DateTime? Sent { get; set; }
         public virtual string Status { get; set; }
         public virtual bool Pending { get; set; }
