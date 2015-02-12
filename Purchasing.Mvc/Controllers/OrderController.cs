@@ -1207,7 +1207,7 @@ namespace Purchasing.Mvc.Controllers
 
             var attachment = new Attachment
             {
-                DateCreated = DateTime.Now,
+                DateCreated = DateTime.UtcNow.ToPacificTime(),
                 User = GetCurrentUser(),
                 FileName = qqFile,
                 ContentType = request.Headers["X-File-Type"],
