@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using FluentNHibernate.Mapping;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -9,7 +10,7 @@ namespace Purchasing.Core.Domain
     {
         public BackupLog()
         {
-            DateTimeCreated = DateTime.Now;
+            DateTimeCreated = DateTime.UtcNow.ToPacificTime();
             Completed = false;
             Deleted = false;
         }
