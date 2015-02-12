@@ -90,7 +90,7 @@ namespace Purchasing.Mvc.Controllers
 
             var ordersIndexed = _orderService.GetIndexedListofOrders(received, paid, isComplete, showPending, selectedOrderStatus, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
             //ViewBag.IndexLastModified = ordersIndexed.LastModified;
-            ViewBag.IndexLastModified = DateTime.UtcNow.ToPacificTime();
+            ViewBag.IndexLastModified = DateTime.UtcNow.ToPacificTime().AddMinutes(-5);
 
             var orders = ordersIndexed.Results.AsQueryable();
 
@@ -178,7 +178,7 @@ namespace Purchasing.Mvc.Controllers
 
             var ordersIndexed = _orderService.GetAdministrativeIndexedListofOrders(received, paid, isComplete, showPending, selectedOrderStatus, startDate, endDate, startLastActionDate, endLastActionDate);
             //ViewBag.IndexLastModified = ordersIndexed.LastModified;
-            ViewBag.IndexLastModified = DateTime.UtcNow.ToPacificTime(); 
+            ViewBag.IndexLastModified = DateTime.UtcNow.ToPacificTime().AddMinutes(-5); 
 
             var orders = ordersIndexed.Results.AsQueryable();
 
