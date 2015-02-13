@@ -115,7 +115,8 @@ namespace Purchasing.Core.Services
 
         public void UpdateOrderIndexes()
         {
-            var lastUpdate = DateTime.UtcNow.ToPacificTime().Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
+            var lastUpdate = DateTime.UtcNow.ToPacificTime().AddMinutes(-10); //10 minutes ago.
+            //var lastUpdate = DateTime.UtcNow.ToPacificTime().Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
 
             IEnumerable<OrderHistory> orderHistoryEntries = null;
             IEnumerable<SearchResults.LineResult> lineItems = null;
