@@ -6,6 +6,7 @@ using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Newtonsoft.Json.Linq;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Routing;
 using Castle.Windsor;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc;
 using Purchasing.Core.Domain;

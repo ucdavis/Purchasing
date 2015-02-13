@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NHibernate;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UCDArch.Core.PersistanceSupport;

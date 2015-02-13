@@ -10,6 +10,7 @@ using MvcContrib.TestHelper;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Tests.Core;

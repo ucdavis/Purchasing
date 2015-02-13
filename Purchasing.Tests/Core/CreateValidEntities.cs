@@ -1,5 +1,6 @@
 using System;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using UCDArch.Testing;
 
