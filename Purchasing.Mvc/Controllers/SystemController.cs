@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
@@ -38,7 +39,7 @@ namespace Purchasing.Mvc.Controllers
         {
             ViewBag.ModifiedDates = new Dictionary<string, DateTime>
                                     {
-                                        {"OrderHistory", _indexService.LastModified(Core.Services.Indexes.OrderHistory)}
+                                        {"OrderHistory", _indexService.LastOrderTrackingRunDate().HasValue ? _indexService.LastOrderTrackingRunDate().Value : DateTime.UtcNow.ToPacificTime().AddDays(-10)}
                                         ,{"LineItems", _indexService.LastModified(Core.Services.Indexes.LineItems)}
                                         ,{"Comments", _indexService.LastModified(Core.Services.Indexes.Comments)}
                                         ,{"CustomAnswers", _indexService.LastModified(Core.Services.Indexes.CustomAnswers)}

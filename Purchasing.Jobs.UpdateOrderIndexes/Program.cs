@@ -20,6 +20,7 @@ namespace Purchasing.Jobs.UpdateOrderIndexes
                 indexService.UpdateCommentsIndex();
 
                 Console.WriteLine("Order indexes updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
+                Console.WriteLine("Updated all orders after {0}", indexService.LastOrderDateCompare());
             }
             catch (Exception ex)
             {
