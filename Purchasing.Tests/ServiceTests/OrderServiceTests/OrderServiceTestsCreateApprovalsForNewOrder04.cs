@@ -222,7 +222,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals.Add(CreateValidEntities.AutoApproval(1));
             autoApprovals[0].User = CreateValidEntities.User(11);
             autoApprovals[0].IsActive = true;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(1);
             autoApprovals[0].TargetUser = null;
             autoApprovals[0].Account = workgroupAccounts[0].Account;
             new FakeAutoApprovals(0, AutoAprovalRepository, autoApprovals);

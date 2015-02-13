@@ -852,7 +852,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestLastUpdateDateWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             Building record = GetValid(99);
             record.LastUpdateDate = compareDate;
             #endregion Arrange
@@ -877,7 +877,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestLastUpdateDateWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.LastUpdateDate = compareDate;
             #endregion Arrange
@@ -902,7 +902,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestLastUpdateDateWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.LastUpdateDate = compareDate;
             #endregion Arrange

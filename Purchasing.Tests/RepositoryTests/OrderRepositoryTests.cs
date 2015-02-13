@@ -838,7 +838,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateNeededWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             Order record = GetValid(99);
             record.DateNeeded = compareDate;
             #endregion Arrange
@@ -863,7 +863,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateNeededWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.DateNeeded = compareDate;
             #endregion Arrange
@@ -888,7 +888,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateNeededWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.DateNeeded = compareDate;
             #endregion Arrange
@@ -1887,7 +1887,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             Order record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -1912,7 +1912,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -1937,7 +1937,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -1965,7 +1965,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateOrderedWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             Order record = GetValid(99);
             var orderTracking = new OrderTracking();
             orderTracking.StatusCode = new OrderStatusCode();
@@ -1994,7 +1994,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateOrderedWithNullDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             Order record = GetValid(99);
             var orderTracking = new OrderTracking();
             orderTracking.StatusCode = new OrderStatusCode();
@@ -2023,7 +2023,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateOrderedWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             var orderTracking = new OrderTracking();
             orderTracking.StatusCode = new OrderStatusCode();
@@ -2052,7 +2052,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateOrderedWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             var orderTracking = new OrderTracking();
             orderTracking.StatusCode = new OrderStatusCode();
@@ -4884,7 +4884,7 @@ namespace Purchasing.Tests.RepositoryTests
             var record = GetValid(9);
             record.AddTracking(CreateValidEntities.OrderTracking(1));
             record.OrderTrackings[0].StatusCode.IsComplete = true;
-            record.OrderTrackings[0].DateCreated = DateTime.Now.AddDays(-10);
+            record.OrderTrackings[0].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             #endregion Arrange
 
             #region Act
@@ -4904,7 +4904,7 @@ namespace Purchasing.Tests.RepositoryTests
             record.AddTracking(CreateValidEntities.OrderTracking(2));
             record.AddTracking(CreateValidEntities.OrderTracking(3));
             record.OrderTrackings[2].StatusCode.IsComplete = true;
-            record.OrderTrackings[2].DateCreated = DateTime.Now.AddDays(-10);
+            record.OrderTrackings[2].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             #endregion Arrange
 
             #region Act
@@ -4923,7 +4923,7 @@ namespace Purchasing.Tests.RepositoryTests
             record.AddTracking(CreateValidEntities.OrderTracking(1));
             record.AddTracking(CreateValidEntities.OrderTracking(2));
             record.AddTracking(CreateValidEntities.OrderTracking(3));
-            record.OrderTrackings[2].DateCreated = DateTime.Now.AddDays(-10);
+            record.OrderTrackings[2].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             #endregion Arrange
 
             #region Act
@@ -4942,9 +4942,9 @@ namespace Purchasing.Tests.RepositoryTests
             record.AddTracking(CreateValidEntities.OrderTracking(1));
             record.AddTracking(CreateValidEntities.OrderTracking(2));
             record.AddTracking(CreateValidEntities.OrderTracking(3));
-            record.OrderTrackings[0].DateCreated = DateTime.Now.AddDays(-5);
-            record.OrderTrackings[1].DateCreated = DateTime.Now.AddDays(-6);
-            record.OrderTrackings[2].DateCreated = DateTime.Now.AddDays(-7);
+            record.OrderTrackings[0].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(-5);
+            record.OrderTrackings[1].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(-6);
+            record.OrderTrackings[2].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(-7);
             #endregion Arrange
 
             #region Act
@@ -8139,7 +8139,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.IsNotNull(record.EmailQueues);
             Assert.AreEqual(0, record.EmailQueues.Count());
 
-            Assert.AreEqual(DateTime.Now.Date, record.DateCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, record.DateCreated.Date);
             Assert.IsFalse(record.HasControlledSubstance);
             Assert.AreEqual(7.5m, record.EstimatedTax);
 

@@ -28,7 +28,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             {
                 daRequest.Add(CreateValidEntities.DepartmentalAdminRequest(i + 1));
                 daRequest[i].Complete = false;
-                daRequest[i].DateCreated = DateTime.Now.Date.AddDays(-i);
+                daRequest[i].DateCreated = DateTime.UtcNow.ToPacificTime().Date.AddDays(-i);
             }
             daRequest[1].Complete = true;
             new FakeDepartmentalAdminRequests(0, DepartmentalAdminRequestRepository, daRequest, false);
@@ -286,7 +286,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual("FirstName", results.DepartmentalAdminRequest.FirstName);
             Assert.AreEqual("LastNasme", results.DepartmentalAdminRequest.LastName);
             Assert.AreEqual(null, results.DepartmentalAdminRequest.Email);
-            Assert.AreEqual(DateTime.Now.Date, results.DepartmentalAdminRequest.DateCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, results.DepartmentalAdminRequest.DateCreated.Date);
             Assert.AreEqual("1,3", results.DepartmentalAdminRequest.Organizations);
             Assert.AreEqual("333 321-1234", results.DepartmentalAdminRequest.PhoneNumber);
             Assert.AreEqual(true, results.DepartmentalAdminRequest.SharedOrCluster);
@@ -335,7 +335,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual("FirstName", results.DepartmentalAdminRequest.FirstName);
             Assert.AreEqual("LastNasme", results.DepartmentalAdminRequest.LastName);
             Assert.AreEqual(null, results.DepartmentalAdminRequest.Email);
-            Assert.AreEqual(DateTime.Now.Date, results.DepartmentalAdminRequest.DateCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, results.DepartmentalAdminRequest.DateCreated.Date);
             Assert.AreEqual("1,3", results.DepartmentalAdminRequest.Organizations);
             Assert.AreEqual("333 321-1234", results.DepartmentalAdminRequest.PhoneNumber);
             Assert.AreEqual(true, results.DepartmentalAdminRequest.SharedOrCluster);
@@ -387,7 +387,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual("FirstName", args.FirstName);
             Assert.AreEqual("LastNasme", args.LastName);
             Assert.AreEqual("me@testy.com", args.Email);
-            Assert.AreEqual(DateTime.Now.Date, args.DateCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, args.DateCreated.Date);
             Assert.AreEqual("1,3", args.Organizations);
             Assert.AreEqual("333 321-1234", args.PhoneNumber);
             Assert.AreEqual(true, args.SharedOrCluster);

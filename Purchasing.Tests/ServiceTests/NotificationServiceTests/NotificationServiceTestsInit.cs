@@ -243,7 +243,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
         public List<OrderTracking> SetupOrderTracking(Order order)
         {
-            var whenApproved = DateTime.Now.AddDays(-10);
+            var whenApproved = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             var orderTracking = new List<OrderTracking>();
 
             var tracking = new OrderTracking();

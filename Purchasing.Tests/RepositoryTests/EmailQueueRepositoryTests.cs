@@ -777,7 +777,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateTimeCreatedWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             EmailQueue record = GetValid(99);
             record.DateTimeCreated = compareDate;
             #endregion Arrange
@@ -802,7 +802,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateTimeCreatedWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.DateTimeCreated = compareDate;
             #endregion Arrange
@@ -827,7 +827,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateTimeCreatedWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.DateTimeCreated = compareDate;
             #endregion Arrange
@@ -876,7 +876,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateTimeSentWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             EmailQueue record = GetValid(99);
             record.DateTimeSent = compareDate;
             #endregion Arrange
@@ -901,7 +901,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateTimeSentWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.DateTimeSent = compareDate;
             #endregion Arrange
@@ -926,7 +926,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateTimeSentWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.DateTimeSent = compareDate;
             #endregion Arrange
@@ -958,7 +958,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(DateTime.Now.Date, record.DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, record.DateTimeCreated.Date);
             Assert.IsTrue(record.Pending);
             Assert.IsNull(record.Order);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, record.NotificationType);
@@ -979,7 +979,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(DateTime.Now.Date, record.DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, record.DateTimeCreated.Date);
             Assert.IsTrue(record.Pending);
             Assert.AreEqual(3, record.Order.Id);
             Assert.AreEqual(EmailPreferences.NotificationTypes.Daily, record.NotificationType);
@@ -1000,7 +1000,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(DateTime.Now.Date, record.DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, record.DateTimeCreated.Date);
             Assert.IsTrue(record.Pending);
             Assert.AreEqual(3, record.Order.Id);
             Assert.AreEqual(EmailPreferences.NotificationTypes.Weekly, record.NotificationType);
@@ -1021,7 +1021,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(DateTime.Now.Date, record.DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, record.DateTimeCreated.Date);
             Assert.IsTrue(record.Pending);
             Assert.AreEqual(3, record.Order.Id);
             Assert.AreEqual(EmailPreferences.NotificationTypes.Weekly, record.NotificationType);

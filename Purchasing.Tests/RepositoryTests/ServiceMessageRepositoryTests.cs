@@ -263,7 +263,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestBeginDisplayDateWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             ServiceMessage record = GetValid(99);
             record.BeginDisplayDate = compareDate;
             #endregion Arrange
@@ -288,7 +288,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestBeginDisplayDateWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.BeginDisplayDate = compareDate;
             #endregion Arrange
@@ -313,7 +313,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestBeginDisplayDateWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.BeginDisplayDate = compareDate;
             #endregion Arrange
@@ -341,7 +341,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestEndDisplayDateWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             ServiceMessage record = GetValid(99);
             record.EndDisplayDate = compareDate;
             #endregion Arrange
@@ -366,7 +366,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestEndDisplayDateWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.EndDisplayDate = compareDate;
             #endregion Arrange
@@ -391,7 +391,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestEndDisplayDateWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.EndDisplayDate = compareDate;
             #endregion Arrange
@@ -527,7 +527,7 @@ namespace Purchasing.Tests.RepositoryTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(DateTime.Now.Date, record.BeginDisplayDate.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, record.BeginDisplayDate.Date);
             Assert.IsNull(record.EndDisplayDate);
             Assert.IsFalse(record.Critical);
             Assert.IsTrue(record.IsActive);

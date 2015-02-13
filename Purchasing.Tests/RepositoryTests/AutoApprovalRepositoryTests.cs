@@ -647,7 +647,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestExpirationWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             AutoApproval record = GetValid(99);
             record.Expiration = compareDate;
             #endregion Arrange
@@ -672,7 +672,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestExpirationWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.Expiration = compareDate;
             #endregion Arrange
@@ -697,7 +697,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestExpirationWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.Expiration = compareDate;
             #endregion Arrange

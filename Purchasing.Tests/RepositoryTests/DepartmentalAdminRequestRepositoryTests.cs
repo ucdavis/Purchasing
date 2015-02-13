@@ -844,7 +844,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             DepartmentalAdminRequest record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -869,7 +869,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -894,7 +894,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -1209,7 +1209,7 @@ namespace Purchasing.Tests.RepositoryTests
             Assert.AreEqual("test", record.Id);
             Assert.IsFalse(record.SharedOrCluster);
             Assert.IsFalse(record.Complete);
-            Assert.AreEqual(DateTime.Now.Date, record.DateCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, record.DateCreated.Date);
             Assert.AreEqual(0, record.RequestCount);
             #endregion Assert
         }

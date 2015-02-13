@@ -941,7 +941,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Quantity = "0";
             orderViewModel.Items[0].Price = "0";
 
-            orderViewModel.DateNeeded = DateTime.Now.AddDays(3).Date;
+            orderViewModel.DateNeeded = DateTime.UtcNow.ToPacificTime().AddDays(3).Date;
             #endregion Arrange
 
             #region Act
@@ -954,7 +954,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
             var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
-            Assert.AreEqual(DateTime.Now.AddDays(3).Date, ((Order)orderServiceArgs1[0]).DateNeeded);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().AddDays(3).Date, ((Order)orderServiceArgs1[0]).DateNeeded);
             #endregion Assert
         }
 
@@ -1056,7 +1056,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Quantity = "0";
             orderViewModel.Items[0].Price = "0";
 
-            orderViewModel.DateNeeded = DateTime.Now.AddDays(3).Date;
+            orderViewModel.DateNeeded = DateTime.UtcNow.ToPacificTime().AddDays(3).Date;
             #endregion Arrange
 
             #region Act
@@ -1347,7 +1347,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
             Assert.AreEqual(1, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
-            Assert.AreEqual(DateTime.Now.Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
             Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).OrderComments[0].User.FirstName);
             #endregion Assert
         }
@@ -1391,7 +1391,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
-            //Assert.AreEqual(DateTime.Now.Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
+            //Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
             //Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).OrderComments[0].User.FirstName);
             #endregion Assert
         }
@@ -1434,7 +1434,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
-            //Assert.AreEqual(DateTime.Now.Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
+            //Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
             //Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).OrderComments[0].User.FirstName);
             #endregion Assert
         }
@@ -1478,7 +1478,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
-            //Assert.AreEqual(DateTime.Now.Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
+            //Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
             //Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).OrderComments[0].User.FirstName);
             #endregion Assert
         }

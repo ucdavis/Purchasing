@@ -554,7 +554,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             Attachment record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -579,7 +579,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -604,7 +604,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
