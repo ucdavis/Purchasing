@@ -31,8 +31,6 @@ namespace Purchasing.Core.Services
         int NumRecords(Indexes index);
         void UpdateCommentsIndex();
 
-        DateTime? LastOrderDateCompare();
-        DateTime? LastOrderTrackingRunDate();
         ElasticClient GetIndexClient();
     }
     public class Person
@@ -46,9 +44,6 @@ namespace Purchasing.Core.Services
     {
         private readonly IDbService _dbService;
         private ElasticClient _client;
-
-        public DateTime? OrderTrackingCompareDateTime;
-        public DateTime? OrderTrackingLastRunDate;
 
         public ElasticSearchIndexService(IDbService dbService)
         {
@@ -123,8 +118,6 @@ namespace Purchasing.Core.Services
         {
             var lastUpdate = DateTime.UtcNow.ToPacificTime().AddMinutes(-10); //10 minutes ago.
             //var lastUpdate = DateTime.UtcNow.ToPacificTime().Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
-            OrderTrackingCompareDateTime = lastUpdate;
-            OrderTrackingLastRunDate = DateTime.UtcNow.ToPacificTime();
 
             IEnumerable<OrderHistory> orderHistoryEntries = null;
             IEnumerable<SearchResults.LineResult> lineItems = null;
@@ -206,11 +199,6 @@ namespace Purchasing.Core.Services
             return (int) _client.Status(i => i.Index(indexName)).Indices[indexName].IndexDocs.NumberOfDocs;
         }
 
-        public DateTime? LastOrderTrackingRunDate()
-        {
-            return OrderTrackingLastRunDate;
-        }
-
         public ElasticClient GetIndexClient()
         {
             return _client;
@@ -232,10 +220,6 @@ namespace Purchasing.Core.Services
             WriteIndex(comments, Indexes.Comments, recreate: false);
         }
 
-        public DateTime? LastOrderDateCompare()
-        {
-            return OrderTrackingCompareDateTime;
-        }
 
         void WriteIndex<T>(string sqlSelect, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
         {

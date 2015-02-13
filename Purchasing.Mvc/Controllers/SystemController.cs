@@ -39,7 +39,7 @@ namespace Purchasing.Mvc.Controllers
         {
             ViewBag.ModifiedDates = new Dictionary<string, DateTime>
                                     {
-                                        {"OrderHistory", _indexService.LastOrderTrackingRunDate().HasValue ? _indexService.LastOrderTrackingRunDate().Value : DateTime.UtcNow.ToPacificTime().AddDays(-10)}
+                                        {"OrderHistory", _indexService.LastModified(Core.Services.Indexes.OrderHistory)}
                                         ,{"LineItems", _indexService.LastModified(Core.Services.Indexes.LineItems)}
                                         ,{"Comments", _indexService.LastModified(Core.Services.Indexes.Comments)}
                                         ,{"CustomAnswers", _indexService.LastModified(Core.Services.Indexes.CustomAnswers)}
