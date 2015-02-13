@@ -378,7 +378,7 @@
 //        public void TestDates1()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -413,7 +413,7 @@
 //        public void TestDates2()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -448,7 +448,7 @@
 //        public void TestDates3()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -483,7 +483,7 @@
 //        public void TestDates4()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -518,7 +518,7 @@
 //        public void TestDates5()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -553,7 +553,7 @@
 //        public void TestDates6()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -588,7 +588,7 @@
 //        public void TestDates7()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -623,7 +623,7 @@
 //        public void TestDates8()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -658,7 +658,7 @@
 //        public void TestDates9()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -693,7 +693,7 @@
 //        public void TestDates10()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -728,7 +728,7 @@
 //        public void TestDates11()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -763,7 +763,7 @@
 //        public void TestDates12()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -798,7 +798,7 @@
 //        public void TestDates13()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -833,7 +833,7 @@
 //        public void TestDates14()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();
@@ -868,7 +868,7 @@
 //        public void TestDates15()
 //        {
 //            #region Arrange
-//            var dateSeed = DateTime.Now.Date;
+//            var dateSeed = DateTime.UtcNow.ToPacificTime().Date;
 //            UserIdentity.Expect(a => a.Current).Return("hsimpson").Repeat.Any();
 //            SetupUsers1();
 //            SetupWorkgroupPermissions1();

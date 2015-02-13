@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Services;
@@ -243,7 +244,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
         public List<OrderTracking> SetupOrderTracking(Order order)
         {
-            var whenApproved = DateTime.Now.AddDays(-10);
+            var whenApproved = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             var orderTracking = new List<OrderTracking>();
 
             var tracking = new OrderTracking();

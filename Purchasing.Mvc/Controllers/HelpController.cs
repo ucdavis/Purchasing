@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
 using UCDArch.Web.ActionResults;
@@ -36,7 +37,7 @@ namespace Purchasing.Mvc.Controllers
         {
             var issuesCount = _uservoiceService.GetActiveIssuesCount();
 
-            return Json(new {HasIssues = issuesCount > 0, IssuesCount = issuesCount, TimeStamp = DateTime.Now.Ticks},
+            return Json(new {HasIssues = issuesCount > 0, IssuesCount = issuesCount, TimeStamp = DateTime.UtcNow.ToPacificTime().Ticks},
                         JsonRequestBehavior.AllowGet);
         }
 
