@@ -5,6 +5,7 @@ using System.Text;
 using AutoMapper.Internal;
 using Dapper;
 using Nest;
+using NHibernate.Hql.Ast.ANTLR;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
@@ -111,6 +112,46 @@ namespace Purchasing.Core.Services
         public void CreateVendorsIndex()
         {
             WriteIndex<Vendor>("SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1", Indexes.Vendors);
+        }
+
+        public void CreateTrackingIndex()
+        {
+            IList<OrderTrackingDto> orderTrackings;
+            using (var conn = _dbService.GetConnection())
+            {
+                orderTrackings =
+                    conn.Query<OrderTrackingDto>(@"select top 10 OrderTracking.Id, OrderTracking.OrderId, Description, OrderTracking.DateCreated as ActionDate, 
+                UserId, OrderTracking.OrderStatusCodeId as OrderStatusCode, Orders.WorkgroupId, Orders.DateCreated as OrderCreated 
+                from OrderTracking
+	            inner join Orders on OrderId = Orders.Id", Indexes.OrderTracking).ToList();
+
+                //do work
+                var ordersWithTracking = from o in orderTrackings
+                    group o by o.OrderId
+                    into orders
+                    select new {OrderId = orders.Key, TrackingInfo = orders.ToList()};
+
+                foreach (var order in ordersWithTracking)
+                {
+                    var orderCreated = order.TrackingInfo.First();
+                    var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.Description == "completed");
+
+                    var obj =
+                        new
+                        {
+                            order.OrderId,
+                            created = orderCreated.OrderCreated,
+                            minutesForCompletion =
+                                orderCompleted == null
+                                    ? 0
+                                    : (orderCompleted.ActionDate - orderCreated.OrderCreated).TotalMinutes
+                        };
+
+                    var i = 0;
+                }
+
+                //WriteIndex(entities, Indexes.OrderTracking);
+            }
         }
 
         public void UpdateOrderIndexes()
@@ -279,6 +320,19 @@ namespace Purchasing.Core.Services
         }
     }
 
+    public class OrderTrackingDto
+    {
+        public int Id { get; set; }
+        public int OrderId { get; set; }
+        public string Description { get; set; }
+        public DateTime ActionDate { get; set; }
+        public string UserId { get; set; }
+        public string OrderStatusCode { get; set; }
+        public int WorkgroupId { get; set; }
+        public DateTime OrderCreated { get; set; }
+        public long MinutesToCompletion { get; set; }
+    }
+
     public static class IndexHelper
     {
         public static string GetIndexName(Indexes indexes)
@@ -302,6 +356,7 @@ namespace Purchasing.Core.Services
         CustomAnswers,
         LineItems,
         OrderHistory,
+        OrderTracking,
         Vendors
     }
 

@@ -31,6 +31,9 @@ namespace Purchasing.Mvc.Controllers
         [HandleTransactionsManually]
         public ActionResult Index()
         {
+            var search = new ElasticSearchIndexService(_dbService);
+            search.CreateTrackingIndex();
+
             return View();
         }
 
