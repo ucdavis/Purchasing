@@ -187,8 +187,8 @@ namespace Purchasing.Tests.ControllerTests
         //        openOrders.Add(CreateValidEntities.OpenOrderByUser(i+11));
         //        pendingOrders[i].AccessUserId = "Me";
         //        openOrders[i].AccessUserId = "Me";
-        //        pendingOrders[i].LastActionDate = DateTime.Now.Date.AddDays(i + 1);
-        //        openOrders[i].LastActionDate = DateTime.Now.Date.AddDays(i + 1);
+        //        pendingOrders[i].LastActionDate = DateTime.UtcNow.ToPacificTime().Date.AddDays(i + 1);
+        //        openOrders[i].LastActionDate = DateTime.UtcNow.ToPacificTime().Date.AddDays(i + 1);
         //    }
 
         //    pendingOrders[3].AccessUserId = "NotMe";

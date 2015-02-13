@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
@@ -281,7 +282,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.MaxAmount = (decimal)765.32;
             autoApprovalToCreate.LessThan = true;
             autoApprovalToCreate.Equal = true;
-            autoApprovalToCreate.Expiration = DateTime.Now.Date;
+            autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date;
             #endregion Arrange
 
             #region Act
@@ -470,7 +471,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.MaxAmount = (decimal)765.32;
             autoApprovalToCreate.LessThan = false;
             autoApprovalToCreate.Equal = true;
-            autoApprovalToCreate.Expiration = DateTime.Now.Date.AddDays(6);
+            autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(6);
             #endregion Arrange
 
             #region Act
@@ -491,7 +492,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsTrue(args.Equal);
             Assert.AreEqual("LastName66", args.TargetUser.LastName);
             Assert.IsNull(args.Account);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(6), args.Expiration);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(6), args.Expiration);
             Assert.AreEqual("AutoApproval Created Successfully", Controller.Message);
             #endregion Assert
         }
@@ -509,7 +510,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.MaxAmount = (decimal)765.32;
             autoApprovalToCreate.LessThan = false;
             autoApprovalToCreate.Equal = true;
-            autoApprovalToCreate.Expiration = DateTime.Now.Date.AddDays(5);
+            autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(5);
             #endregion Arrange
 
             #region Act
@@ -530,7 +531,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsTrue(args.Equal);
             Assert.AreEqual("LastName66", args.TargetUser.LastName);
             Assert.IsNull(args.Account);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(5), args.Expiration);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(5), args.Expiration);
             Assert.AreEqual("AutoApproval Created Successfully Warning, will expire in 5 days or less", Controller.Message);
             #endregion Assert
         }
@@ -548,7 +549,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.MaxAmount = (decimal)765.32;
             autoApprovalToCreate.LessThan = false;
             autoApprovalToCreate.Equal = true;
-            autoApprovalToCreate.Expiration = DateTime.Now.Date.AddDays(1);
+            autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(1);
             #endregion Arrange
 
             #region Act
@@ -569,7 +570,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsTrue(args.Equal);
             Assert.AreEqual("LastName66", args.TargetUser.LastName);
             Assert.IsNull(args.Account);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(1), args.Expiration);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(1), args.Expiration);
             Assert.AreEqual("AutoApproval Created Successfully Warning, will expire in 5 days or less", Controller.Message);
             #endregion Assert
         }
