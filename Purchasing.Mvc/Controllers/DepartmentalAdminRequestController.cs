@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
@@ -132,7 +133,7 @@ namespace Purchasing.Mvc.Controllers
             requestToSave.FirstName = ldap.FirstName;
             requestToSave.LastName = ldap.LastName;
             requestToSave.Email = ldap.EmailAddress;
-            requestToSave.DateCreated = DateTime.Now;
+            requestToSave.DateCreated = DateTime.UtcNow.ToPacificTime();
             requestToSave.Organizations = string.Join(",", orgs);
             requestToSave.PhoneNumber = request.DepartmentalAdminRequest.PhoneNumber;
             requestToSave.SharedOrCluster = request.DepartmentalAdminRequest.SharedOrCluster;

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using FluentNHibernate.Mapping;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -12,7 +13,7 @@ namespace Purchasing.Core.Domain
     {
         public ServiceMessage()
         {
-            BeginDisplayDate = DateTime.Now;
+            BeginDisplayDate = DateTime.UtcNow.ToPacificTime();
             Critical = false;
             IsActive = true;
         }

@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
+using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;

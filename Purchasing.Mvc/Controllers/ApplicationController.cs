@@ -8,7 +8,7 @@ using UCDArch.Web.Controller;
 
 namespace Purchasing.Mvc.Controllers
 {
-    [Version(MajorVersion = 1)]
+    [Version(MajorVersion = 2)]
     [Profile]
     [Authorize]
     public abstract class ApplicationController : SuperController

@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.SessionState;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
 using UCDArch.Web.ActionResults;
@@ -47,10 +48,10 @@ namespace Purchasing.Mvc.Controllers
         {
             var deniedThisMonth =
                 _orderService.GetIndexedListofOrders(null, null,false, false, OrderStatusCode.Codes.Denied, null, null, true,
-                                              new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Results.Count();
+                                              new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null).Results.Count();
             var completedThisMonth =
                 _orderService.GetIndexedListofOrders(null, null,true, false, OrderStatusCode.Codes.Complete, null, null, true,
-                                  new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null).Results.Count();
+                                  new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null).Results.Count();
 
             return new JsonNetResult(new { deniedThisMonth, completedThisMonth });
         }

@@ -180,8 +180,12 @@
                     You are currently using a browser that is not supported.  
                     Please check <a href="http://ucdavis.github.com/Purchasing/system.html">our system requirements page</a> and return to PrePurchasing using one of our recommended browsers.
                 </div>
+                
+			    <div id="status-message">
+			        Welcome to PrePurchasing v2.0-beta!  All interactions use live, production data, just like <a href="http://prepurchasing.ucdavis.edu">http://prepurchasing.ucdavis.edu</a>.
+			    </div>
 
-                @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
+			    @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
                 { 
 				<div id="error-message">
 					@TempData["ErrorMessage"]
@@ -195,7 +199,7 @@
 				</div>
     }
 				
-				<div class="col1">
+			    <div class="col1">
 					<h2>@ViewBag.Title</h2>
 					<h3>@ViewBag.SubTitle</h3>
 				</div>
@@ -232,7 +236,7 @@
 
                 <ul id="authorinfo">
                     <li>Developed By <a href="@Url.Content("~/humans.txt")" target="_blank">A Team Of Programmers Across UC Davis</a></li>
-                    <li>Copyright The Regents of the University of California, Davis campus, 2005-13.</li>
+                    <li>Copyright The Regents of the University of California, Davis campus, 2005-15.</li>
                     <li>All Rights Reserved.</li>
                 </ul>
 			</div>

@@ -12,7 +12,7 @@ namespace Purchasing.Core.Domain
     {
         public HistoryReceivedLineItem()
         {
-            UpdateDate = DateTime.Now;
+            UpdateDate = DateTime.UtcNow.ToPacificTime();
             CommentsUpdated = false;
             PayInvoice = false;
         }

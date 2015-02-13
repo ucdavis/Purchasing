@@ -8,6 +8,7 @@ using Elmah;
 using Microsoft.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
@@ -353,6 +354,8 @@ namespace Purchasing.Mvc.Controllers
 
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
+            order.Tag = order.Workgroup.DefaultTag;
+
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             _orderService.HandleSavedForm(order, model.FormSaveId);
@@ -527,6 +530,8 @@ namespace Purchasing.Mvc.Controllers
             var order = new Order();
 
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
+
+            order.Tag = order.Workgroup.DefaultTag;
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
@@ -1002,7 +1007,7 @@ namespace Purchasing.Mvc.Controllers
 
             return
                 new JsonNetResult(
-                    new {Date = DateTime.Now.ToShortDateString(), Text = comment, User = orderComment.User.FullName});
+                    new {Date = DateTime.UtcNow.ToPacificTime().ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
 
         [HttpPost]
@@ -1049,7 +1054,7 @@ namespace Purchasing.Mvc.Controllers
         {
             //Get the matching order, and only if the order is complete
             var order =
-                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id );
 
             var priorValue = order.Tag;
 
@@ -1206,7 +1211,7 @@ namespace Purchasing.Mvc.Controllers
 
             var attachment = new Attachment
             {
-                DateCreated = DateTime.Now,
+                DateCreated = DateTime.UtcNow.ToPacificTime(),
                 User = GetCurrentUser(),
                 FileName = qqFile,
                 ContentType = request.Headers["X-File-Type"],
@@ -1573,7 +1578,7 @@ namespace Purchasing.Mvc.Controllers
                         history.OldReceivedQuantity = lineItem.QuantityPaid; //These don't matter because it is the note being updated.
                         history.NewReceivedQuantity = lineItem.QuantityPaid;
                         history.PayInvoice = false;
-                        if (lineItem.PaidNotes != saveNote)
+                        if (lineItem.ReceivedNotes != saveNote)
                         {
                             _repositoryFactory.HistoryReceivedLineItemRepository.EnsurePersistent(history);
                             lastUpdatedBy = history.User.FullName;
@@ -1641,6 +1646,7 @@ namespace Purchasing.Mvc.Controllers
                     history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
                     history.OldReceivedQuantity = lineItem.QuantityPaid;
                     history.NewReceivedQuantity = receivedQuantity;
+                    history.CommentsUpdated = false;
                     history.LineItem = lineItem;
                     history.PayInvoice = true;
 
@@ -1906,7 +1912,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 var comment = new OrderComment
                 {
-                    DateCreated = DateTime.Now,
+                    DateCreated = DateTime.UtcNow.ToPacificTime(),
                     User = _repositoryFactory.UserRepository.GetById(CurrentUser.Identity.Name),
                     Text = model.Comments
                 };
@@ -2116,7 +2122,7 @@ namespace Purchasing.Mvc.Controllers
             requestSave.Workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId);
             requestSave.FormData = formData;
             requestSave.AccountData = accountData;
-            requestSave.LastUpdate = DateTime.Now;
+            requestSave.LastUpdate = DateTime.UtcNow.ToPacificTime();
 
             var version = ControllerContext.HttpContext.Cache["Version"] as string;
             requestSave.Version = version ?? "N/A";

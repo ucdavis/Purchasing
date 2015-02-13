@@ -1,6 +1,7 @@
 ﻿@using System.Globalization
 @using System.Text
 @using Purchasing.Core.Domain
+@using Purchasing.Core.Helpers
 @using Purchasing.Core.Queries
 @model FilteredOrderListModelDto
 
@@ -378,7 +379,7 @@
             else
             {
                 var lastDate = item.LastActionDate;
-                var timeSpan = DateTime.Now.Date - lastDate;
+                var timeSpan = DateTime.UtcNow.ToPacificTime().Date - lastDate;
                 var daysNotActedOn = timeSpan.Days;
                 if(daysNotActedOn > 7)
                 {

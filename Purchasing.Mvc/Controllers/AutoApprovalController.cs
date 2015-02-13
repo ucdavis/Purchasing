@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Microsoft.Web.Mvc;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using UCDArch.Core.PersistanceSupport;
@@ -108,7 +109,7 @@ namespace Purchasing.Mvc.Controllers
             autoApproval.User = _userRepository.GetNullableById(CurrentUser.Identity.Name);            
             ModelState.Clear();
             autoApproval.TransferValidationMessagesTo(ModelState);
-            if(autoApproval.Expiration.HasValue && autoApproval.Expiration.Value.Date <= DateTime.Now.Date)
+            if(autoApproval.Expiration.HasValue && autoApproval.Expiration.Value.Date <= DateTime.UtcNow.ToPacificTime().Date)
             {
                 ModelState.AddModelError("AutoApproval.Expiration", "Expiration date has already passed");
             }
@@ -119,7 +120,7 @@ namespace Purchasing.Mvc.Controllers
                 _autoApprovalRepository.EnsurePersistent(autoApproval);
 
                 Message = "AutoApproval Created Successfully";
-                if(autoApproval.Expiration.HasValue && autoApproval.Expiration.Value.Date <= DateTime.Now.Date.AddDays(5))
+                if(autoApproval.Expiration.HasValue && autoApproval.Expiration.Value.Date <= DateTime.UtcNow.ToPacificTime().Date.AddDays(5))
                 {
                     Message = Message + " Warning, will expire in 5 days or less";
                 }

@@ -3,6 +3,7 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using NHibernate;
 using Purchasing.Core;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Services;

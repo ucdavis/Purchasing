@@ -1,6 +1,6 @@
 ﻿using System.Web;
 using System.Web.Optimization;
-using FluentNHibernate.Utils;
+
 
 namespace Purchasing.Mvc
 {
@@ -44,6 +44,14 @@ namespace Purchasing.Mvc
                 .Include("~/Scripts/public/single/RearrangeDataTable.js")
                 .Include("~/Scripts/public/single/FixedHeader.js")
                 );
+
+            bundles.Add(new ScriptBundle("~/bundles/single/receiveItems")
+                .Include("~/Scripts/public/single/receiveitems.js")
+                );
+
+            bundles.Add(new ScriptBundle("~/bundles/single/payInvoice")
+               .Include("~/Scripts/public/single/payinvoice.js")
+               );
 
             bundles.Add(new ScriptBundle("~/bundles/highlight")
                 .Include("~/Scripts/public/single/jquery.highlight.js")

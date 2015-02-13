@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using FluentNHibernate.Mapping;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
 
 namespace Purchasing.Core.Domain
@@ -24,8 +25,8 @@ namespace Purchasing.Core.Domain
 
         private void SetDefaults()
         {
-            DateCreated = DateTime.Now;
-            LastUpdate = DateTime.Now;
+            DateCreated = DateTime.UtcNow.ToPacificTime();
+            LastUpdate = DateTime.UtcNow.ToPacificTime();
         }
 
         [Required]

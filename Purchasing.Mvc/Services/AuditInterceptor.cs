@@ -2,6 +2,7 @@
 using System.Security.Principal;
 using NHibernate;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Mvc.Services
@@ -44,7 +45,7 @@ namespace Purchasing.Mvc.Services
 
             var audit = new Audit
             {
-                AuditDate = DateTime.Now,
+                AuditDate = DateTime.UtcNow.ToPacificTime(),
                 ObjectName = entity.GetType().Name,
                 ObjectId = id == null ? null : id.ToString(),
                 Username = string.IsNullOrEmpty(Principal.Identity.Name) ? "NoUser" : Principal.Identity.Name

@@ -100,3 +100,12 @@
         @Html.ValidationMessageFor(model => model.Workgroup.DoNotInheritPermissions)
     </div>
 </li>
+<li>
+    <div class="editor-label">
+        @Html.LabelFor(model=> model.Workgroup.DefaultTag)
+    </div>
+    <div class="editor-field">
+        <span class="showTip" title="Default Tag values to be added to all new orders created in this workgroup. Does not apply to admin workgroups.">@Html.EditorFor(model => model.Workgroup.DefaultTag)</span>
+        @Html.ValidationMessageFor(model => model.Workgroup.DefaultTag)
+    </div>
+</li>

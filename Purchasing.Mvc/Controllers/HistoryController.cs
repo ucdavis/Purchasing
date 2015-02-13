@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
@@ -46,7 +47,7 @@ namespace Purchasing.Mvc.Controllers
         {
             if (showPending == false && selectedOrderStatus == null && startDate == null && endDate == null && startLastActionDate == null && endLastActionDate == null)
             {
-                startLastActionDate = DateTime.Now.AddDays(-90);
+                startLastActionDate = DateTime.UtcNow.ToPacificTime().AddDays(-90);
             }
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             // var saveSelectedOrderStatus = selectedOrderStatus;
@@ -135,7 +136,7 @@ namespace Purchasing.Mvc.Controllers
         {
             if (showPending == false && selectedOrderStatus == null && startDate == null && endDate == null && startLastActionDate == null && endLastActionDate == null)
             {
-                startLastActionDate = DateTime.Now.AddDays(-31);
+                startLastActionDate = DateTime.UtcNow.ToPacificTime().AddDays(-31);
             }
             //TODO: Review even/odd display of table once Trish has look at it. (This page is a single, and the background color is the same as the even background color.
             if (selectedOrderStatus == "All")
@@ -214,7 +215,7 @@ namespace Purchasing.Mvc.Controllers
         {
             if (selectedOrderStatus == null && startDate == null && endDate == null && startLastActionDate == null && endLastActionDate == null)
             {
-                startLastActionDate = DateTime.Now.AddDays(-121);
+                startLastActionDate = DateTime.UtcNow.ToPacificTime().AddDays(-121);
             }
 
             if (selectedOrderStatus == "All")

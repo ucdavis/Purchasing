@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using Purchasing.WS;
 using UCDArch.Core.PersistanceSupport;
@@ -635,7 +637,7 @@ namespace Purchasing.Mvc.Services
                     {
                         Text = "Prepared By " + savedForm.PreparedBy.FullNameAndId,
                         User = savedForm.PreparedBy,
-                        DateCreated = DateTime.Now
+                        DateCreated = DateTime.UtcNow.ToPacificTime()
                     });   
                 }
 
@@ -737,7 +739,7 @@ namespace Purchasing.Mvc.Services
             //See if there are any automatic approvals for this user/account.
             var possibleAutomaticApprovals =
                 _repositoryFactory.AutoApprovalRepository.Queryable
-                    .Where(x => x.IsActive && x.Expiration > DateTime.Now) //valid only if it is active and isn't expired yet
+                    .Where(x => x.IsActive && x.Expiration > DateTime.UtcNow.ToPacificTime()) //valid only if it is active and isn't expired yet
                     .Where(x=> x.User.Id == approver.Id) //auto approval must have been created by the approver
                     .Where(x=> (x.TargetUser != null && x.TargetUser.Id == order.CreatedBy.Id) || x.Account.Id == accountId)//either applies to the order creator or account
                     .ToList();

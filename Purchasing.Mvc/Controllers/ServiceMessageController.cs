@@ -4,6 +4,7 @@ using System.Web.Caching;
 using System.Web.Mvc;
 using AutoMapper;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc.Controllers;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -43,9 +44,9 @@ namespace Purchasing.Mvc.Controllers
             {
                 using (var ts = new TransactionScope())
                 {
-                    var currentDate = DateTime.Now.Date;
+                    var currentDate = DateTime.UtcNow.ToPacificTime().Date;
                     var serviceMessageListToCache = _serviceMessageRepository.Queryable.Where(a => a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate == null || a.EndDisplayDate >= currentDate)).ToList();
-                    System.Web.HttpContext.Current.Cache.Insert(CacheKey, serviceMessageListToCache, null, DateTime.Now.Date.AddDays(1), Cache.NoSlidingExpiration);
+                    System.Web.HttpContext.Current.Cache.Insert(CacheKey, serviceMessageListToCache, null, DateTime.UtcNow.ToPacificTime().Date.AddDays(1), Cache.NoSlidingExpiration);
 
                     ts.CommitTransaction();
                 }
