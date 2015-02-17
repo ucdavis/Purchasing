@@ -129,10 +129,9 @@ namespace Purchasing.Core.Services
                 from OrderTracking
 	            inner join Orders on OrderId = Orders.Id
 				LEFT outer join Users ON OrderTracking.UserId = Users.Id
-				LEFT OUTER join Workgroups ON orders.WorkgroupId=workgroups.Id 
+				LEFT OUTER join Workgroups ON orders.WorkgroupId=workgroups.Id
 				inner join OrderStatusCodes ON orders.OrderStatusCodeId = OrderStatusCodes.Id
 				inner join OrderStatusCodes as TrackingStatusCodes ON OrderTracking.OrderStatusCodeId = TrackingStatusCodes.Id
-                WHERE orderid < 500
                 ORDER BY OrderTracking.DateCreated DESC", Indexes.OrderTracking).ToList();
 
                 //do work
@@ -147,7 +146,8 @@ namespace Purchasing.Core.Services
                     var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.TrackingStatusComplete);
                     var orderApprove = order.TrackingInfo.FirstOrDefault(x => x.Description == "approved" && x.TrackingStatusCode == "AP");
                     var orderAccountManager =
-                        order.TrackingInfo.FirstOrDefault(x => x.Description == "approved" && x.TrackingStatusCode == "AM");
+                        order.TrackingInfo.FirstOrDefault(
+                            x => x.Description == "approved" && x.TrackingStatusCode == "AM");
 
 
                     var obj =
@@ -341,7 +341,7 @@ namespace Purchasing.Core.Services
                 _client.CreateIndex(index);
             }
 
-            var batches = entities.Partition(500).ToArray(); //split into batches of up to 500
+            var batches = entities.Partition(5000).ToArray(); //split into batches of up to 5000
 
             foreach (var batch in batches)
             {
