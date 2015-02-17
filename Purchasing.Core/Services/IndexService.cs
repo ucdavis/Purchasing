@@ -32,6 +32,7 @@ namespace Purchasing.Core.Services
         int NumRecords(Indexes index);
         void UpdateCommentsIndex();
         ElasticClient GetIndexClient();
+        void CreateTrackingIndex();
     }
     public class Person
     {
@@ -116,94 +117,12 @@ namespace Purchasing.Core.Services
 
         public void CreateTrackingIndex()
         {
-            IList<OrderTrackingDto> orderTrackings;
             using (var conn = _dbService.GetConnection())
             {
-                orderTrackings =
-                    conn.Query<OrderTrackingDto>(@"select OrderTracking.Id, OrderTracking.OrderId, Description, OrderTracking.DateCreated as ActionDate, 
-                UserId, users.FirstName + ' ' + users.LastName as userName, OrderTracking.OrderStatusCodeId as TrackingStatusCode, 
-				TrackingStatusCodes.IsComplete as TrackingStatusComplete,
-				Orders.WorkgroupId, workgroups.Name as workgroupName, Orders.DateCreated as OrderCreated,
-				orders.OrderStatusCodeId as CurrentStatusCodeId, OrderStatusCodes.Name as CurrentStatusCode,
-				OrderStatusCodes.IsComplete
-                from OrderTracking
-	            inner join Orders on OrderId = Orders.Id
-				LEFT outer join Users ON OrderTracking.UserId = Users.Id
-				LEFT OUTER join Workgroups ON orders.WorkgroupId=workgroups.Id
-				inner join OrderStatusCodes ON orders.OrderStatusCodeId = OrderStatusCodes.Id
-				inner join OrderStatusCodes as TrackingStatusCodes ON OrderTracking.OrderStatusCodeId = TrackingStatusCodes.Id
-                ORDER BY OrderTracking.DateCreated DESC", Indexes.OrderTracking).ToList();
+                var orderTrackings =
+                    conn.Query<OrderTrackingDto>(@"select * from [vOrderTrackingIndex] ORDER BY OrderTracking.DateCreated DESC", Indexes.OrderTracking).ToList();
 
-                //do work
-                var ordersWithTracking = from o in orderTrackings
-                    group o by o.OrderId
-                    into orders
-                    select new {OrderId = orders.Key, TrackingInfo = orders.ToList()};
-                var entities = new List<OrderTrackingEntity>();
-                foreach (var order in ordersWithTracking)
-                {
-                    var lastTrackingItem = order.TrackingInfo.First();
-                    var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.TrackingStatusComplete);
-                    var orderApprove = order.TrackingInfo.FirstOrDefault(x => x.Description == "approved" && x.TrackingStatusCode == "AP");
-                    var orderAccountManager =
-                        order.TrackingInfo.FirstOrDefault(
-                            x => x.Description == "approved" && x.TrackingStatusCode == "AM");
-
-
-                    var obj =
-                        new OrderTrackingEntity
-                        {
-                            OrderId = order.OrderId,
-                            OrderCreated = lastTrackingItem.OrderCreated,
-                            WorkgroupId = lastTrackingItem.WorkgroupId,
-                            WorkgroupName = lastTrackingItem.WorkgroupName,
-                            IsComplete = lastTrackingItem.IsComplete ,
-                            StatusCode = lastTrackingItem.CurrentStatusCodeId,
-                            Status = lastTrackingItem.CurrentStatusCode,
-                            MinutesToCompletion =
-                                orderCompleted == null
-                                    ? (double?)null
-                                    : (orderCompleted.ActionDate - lastTrackingItem.OrderCreated).TotalMinutes,
-                            MinutesToApprove =
-                                orderApprove == null
-                                    ? (double?)null
-                                    : (orderApprove.ActionDate - lastTrackingItem.OrderCreated).TotalMinutes,
-                            ApproverName =
-                                orderApprove == null
-                                    ? ""
-                                    : orderApprove.UserName,
-                            ApproverId =
-                                orderApprove == null
-                                    ? ""
-                                    : orderApprove.UserId,
-                            MinutesToAccountManagerComplete =
-                                orderAccountManager == null || orderApprove == null
-                                    ? (double?)null
-                                    : (orderAccountManager.ActionDate - orderApprove.ActionDate).TotalMinutes,
-                            AccountManagerName =
-                                orderAccountManager == null
-                                    ? ""
-                                    : orderAccountManager.UserName,
-                            AccountManagerId =
-                                orderAccountManager == null
-                                    ? ""
-                                    : orderAccountManager.UserId,
-                            MinutesToPurchaserComplete =
-                                orderCompleted == null || orderAccountManager == null
-                                    ? (double?)null
-                                    : (orderCompleted.ActionDate - orderAccountManager.ActionDate).TotalMinutes,
-                            PurchaserName =
-                                orderCompleted == null
-                                    ? ""
-                                    : orderCompleted.UserName,
-                            PurchaserId =
-                                orderCompleted == null
-                                    ? ""
-                                    : orderCompleted.UserId
-                        };
-                    entities.Add(obj);
-                    
-                }
+                var entities = ProcessTrackingEntities(orderTrackings);
 
                 WriteIndex(entities, Indexes.OrderTracking);
             }
@@ -216,6 +135,7 @@ namespace Purchasing.Core.Services
             IEnumerable<OrderHistory> orderHistoryEntries = null;
             IEnumerable<SearchResults.LineResult> lineItems = null;
             IEnumerable<SearchResults.CustomFieldResult> customAnswers = null;
+            IEnumerable<OrderTrackingEntity> orderTrackingEntities = null;
 
             int[] updatedOrderIds;
 
@@ -245,6 +165,13 @@ namespace Purchasing.Core.Services
                         conn.Query<SearchResults.CustomFieldResult>(
                             "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @updatedOrderIds",
                             new { updatedOrderIds }).ToList();
+
+                    var orderInfo =
+                        conn.Query<OrderTrackingDto>(
+                            "select * from [vOrderTrackingIndex] WHERE orderid in @updatedOrderIds ORDER BY OrderTracking.DateCreated DESC",
+                            new {updatedOrderIds}).ToList();
+
+                    orderTrackingEntities = ProcessTrackingEntities(orderInfo);
                 }
             }
 
@@ -259,9 +186,15 @@ namespace Purchasing.Core.Services
                         q.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers))
                             .Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
 
+                _client.DeleteByQuery<OrderTrackingEntity>(
+                    q =>
+                        q.Index(IndexHelper.GetIndexName(Indexes.OrderTracking))
+                            .Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
+                
                 WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
                 WriteIndex(lineItems, Indexes.LineItems, recreate: false);
                 WriteIndex(customAnswers, Indexes.CustomAnswers, recreate: false);
+                WriteIndex(orderTrackingEntities, Indexes.OrderTracking, o => o.OrderId, recreate: false);
             }
         }
 
@@ -313,6 +246,82 @@ namespace Purchasing.Core.Services
 
             WriteIndex(comments, Indexes.Comments, recreate: false);
         }
+
+        private IEnumerable<OrderTrackingEntity> ProcessTrackingEntities(IEnumerable<OrderTrackingDto> orderTrackingDtos)
+        {
+            //do work
+            var ordersWithTracking = from o in orderTrackingDtos
+                                     group o by o.OrderId
+                                         into orders
+                                         select new { OrderId = orders.Key, TrackingInfo = orders.ToList() };
+            var entities = new List<OrderTrackingEntity>();
+            foreach (var order in ordersWithTracking)
+            {
+                var lastTrackingItem = order.TrackingInfo.First();
+                var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.TrackingStatusComplete);
+                var orderApprove = order.TrackingInfo.FirstOrDefault(x => x.Description == "approved" && x.TrackingStatusCode == "AP");
+                var orderAccountManager =
+                    order.TrackingInfo.FirstOrDefault(
+                        x => x.Description == "approved" && x.TrackingStatusCode == "AM");
+
+
+                var obj =
+                    new OrderTrackingEntity
+                    {
+                        OrderId = order.OrderId,
+                        OrderCreated = lastTrackingItem.OrderCreated,
+                        WorkgroupId = lastTrackingItem.WorkgroupId,
+                        WorkgroupName = lastTrackingItem.WorkgroupName,
+                        IsComplete = lastTrackingItem.IsComplete,
+                        StatusCode = lastTrackingItem.CurrentStatusCodeId,
+                        Status = lastTrackingItem.CurrentStatusCode,
+                        MinutesToCompletion =
+                            orderCompleted == null
+                                ? (double?)null
+                                : (orderCompleted.ActionDate - lastTrackingItem.OrderCreated).TotalMinutes,
+                        MinutesToApprove =
+                            orderApprove == null
+                                ? (double?)null
+                                : (orderApprove.ActionDate - lastTrackingItem.OrderCreated).TotalMinutes,
+                        ApproverName =
+                            orderApprove == null
+                                ? ""
+                                : orderApprove.UserName,
+                        ApproverId =
+                            orderApprove == null
+                                ? ""
+                                : orderApprove.UserId,
+                        MinutesToAccountManagerComplete =
+                            orderAccountManager == null || orderApprove == null
+                                ? (double?)null
+                                : (orderAccountManager.ActionDate - orderApprove.ActionDate).TotalMinutes,
+                        AccountManagerName =
+                            orderAccountManager == null
+                                ? ""
+                                : orderAccountManager.UserName,
+                        AccountManagerId =
+                            orderAccountManager == null
+                                ? ""
+                                : orderAccountManager.UserId,
+                        MinutesToPurchaserComplete =
+                            orderCompleted == null || orderAccountManager == null
+                                ? (double?)null
+                                : (orderCompleted.ActionDate - orderAccountManager.ActionDate).TotalMinutes,
+                        PurchaserName =
+                            orderCompleted == null
+                                ? ""
+                                : orderCompleted.UserName,
+                        PurchaserId =
+                            orderCompleted == null
+                                ? ""
+                                : orderCompleted.UserId
+                    };
+                entities.Add(obj);
+
+            }
+
+            return entities;
+        } 
 
         void WriteIndex<T>(string sqlSelect, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
         {
