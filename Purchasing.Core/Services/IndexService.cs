@@ -120,37 +120,90 @@ namespace Purchasing.Core.Services
             using (var conn = _dbService.GetConnection())
             {
                 orderTrackings =
-                    conn.Query<OrderTrackingDto>(@"select top 10 OrderTracking.Id, OrderTracking.OrderId, Description, OrderTracking.DateCreated as ActionDate, 
-                UserId, OrderTracking.OrderStatusCodeId as OrderStatusCode, Orders.WorkgroupId, Orders.DateCreated as OrderCreated 
+                    conn.Query<OrderTrackingDto>(@"select OrderTracking.Id, OrderTracking.OrderId, Description, OrderTracking.DateCreated as ActionDate, 
+                UserId, users.FirstName + ' ' + users.LastName as userName, OrderTracking.OrderStatusCodeId as TrackingStatusCode, 
+				Orders.WorkgroupId, workgroups.Name as workgroupName, Orders.DateCreated as OrderCreated,
+				orders.OrderStatusCodeId as CurrentStatusCodeId, OrderStatusCodes.Name as CurrentStatusCode
                 from OrderTracking
-	            inner join Orders on OrderId = Orders.Id", Indexes.OrderTracking).ToList();
+	            inner join Orders on OrderId = Orders.Id
+				LEFT outer join Users ON OrderTracking.UserId = Users.Id
+				LEFT OUTER join Workgroups ON orders.WorkgroupId=workgroups.Id 
+				inner join OrderStatusCodes ON orders.OrderStatusCodeId = OrderStatusCodes.Id
+                WHERE orderid < 50
+                ORDER BY OrderTracking.DateCreated DESC", Indexes.OrderTracking).ToList();
 
                 //do work
                 var ordersWithTracking = from o in orderTrackings
                     group o by o.OrderId
                     into orders
                     select new {OrderId = orders.Key, TrackingInfo = orders.ToList()};
-
+                var entities = new List<OrderTrackingEntity>();
                 foreach (var order in ordersWithTracking)
                 {
                     var orderCreated = order.TrackingInfo.First();
-                    var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.Description == "completed");
+                    var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.TrackingStatusCode == "CP" || x.TrackingStatusCode == "CN");
+                    var orderApprove = order.TrackingInfo.FirstOrDefault(x => x.Description == "approved" && x.TrackingStatusCode == "AP");
+                    var orderAccountManager =
+                        order.TrackingInfo.FirstOrDefault(x => x.Description == "approved" && x.TrackingStatusCode == "AM");
+
 
                     var obj =
-                        new
+                        new OrderTrackingEntity
                         {
-                            order.OrderId,
-                            created = orderCreated.OrderCreated,
-                            minutesForCompletion =
+                            OrderId = order.OrderId,
+                            OrderCreated = orderCreated.OrderCreated,
+                            WorkgroupId = orderCreated.WorkgroupId,
+                            WorkgroupName = orderCreated.WorkgroupName,
+                            IsComplete =
+                                orderCreated.CurrentStatusCodeId == "CP" || orderCreated.CurrentStatusCodeId == "CN" || orderCreated.CurrentStatusCodeId == "OC" || orderCreated.CurrentStatusCodeId == "OD",
+                            StatusCode = orderCreated.CurrentStatusCodeId,
+                            Status = orderCreated.CurrentStatusCode,
+                            MinutesToCompletion =
                                 orderCompleted == null
                                     ? 0
-                                    : (orderCompleted.ActionDate - orderCreated.OrderCreated).TotalMinutes
+                                    : (orderCompleted.ActionDate - orderCreated.OrderCreated).TotalMinutes,
+                            MinutesToApprove =
+                                orderApprove == null
+                                    ? 0
+                                    : (orderApprove.ActionDate - orderCreated.OrderCreated).TotalMinutes,
+                            ApproverName =
+                                orderApprove == null
+                                    ? ""
+                                    : orderApprove.UserName,
+                            ApproverId =
+                                orderApprove == null
+                                    ? ""
+                                    : orderApprove.UserId,
+                            MinutesToAccountManagerComplete =
+                                orderAccountManager == null || orderApprove == null
+                                    ? 0
+                                    : (orderAccountManager.ActionDate - orderApprove.ActionDate).TotalMinutes,
+                            AccountManagerName =
+                                orderAccountManager == null
+                                    ? ""
+                                    : orderAccountManager.UserName,
+                            AccountManagerId =
+                                orderAccountManager == null
+                                    ? ""
+                                    : orderAccountManager.UserId,
+                            MinutesToPurchaserComplete =
+                                orderCompleted == null || orderAccountManager == null
+                                    ? 0
+                                    : (orderCompleted.ActionDate - orderAccountManager.ActionDate).TotalMinutes,
+                            PurchaserName =
+                                orderCompleted == null
+                                    ? ""
+                                    : orderCompleted.UserName,
+                            PurchaserId =
+                                orderCompleted == null
+                                    ? ""
+                                    : orderCompleted.UserId
                         };
-
-                    var i = 0;
+                    entities.Add(obj);
+                    
                 }
 
-                //WriteIndex(entities, Indexes.OrderTracking);
+                WriteIndex(entities, Indexes.OrderTracking);
             }
         }
 
@@ -322,15 +375,42 @@ namespace Purchasing.Core.Services
 
     public class OrderTrackingDto
     {
+       
         public int Id { get; set; }
         public int OrderId { get; set; }
         public string Description { get; set; }
         public DateTime ActionDate { get; set; }
         public string UserId { get; set; }
-        public string OrderStatusCode { get; set; }
+        public string UserName { get; set; }
+        public string TrackingStatusCode { get; set; }
         public int WorkgroupId { get; set; }
         public DateTime OrderCreated { get; set; }
-        public long MinutesToCompletion { get; set; }
+        public string WorkgroupName { get; set; }
+        public bool IsComplete { get; set; }
+        public string CurrentStatusCode { get; set; }
+        public string CurrentStatusCodeId { get; set; }
+    }
+
+    
+    public class OrderTrackingEntity
+    {
+        public int OrderId { get; set; }
+        public int WorkgroupId { get; set; }
+        public string WorkgroupName { get; set; }
+        public DateTime OrderCreated { get; set; }
+        public double MinutesToCompletion { get; set; }
+        public double MinutesToApprove { get; set; }
+        public string ApproverName { get; set; }
+        public string ApproverId { get; set; }
+        public double MinutesToAccountManagerComplete { get; set; }
+        public string AccountManagerName { get; set; }
+        public string AccountManagerId { get; set; }
+        public double MinutesToPurchaserComplete { get; set; }
+        public string PurchaserName { get; set; }
+        public string PurchaserId { get; set; }
+        public bool IsComplete { get; set; }
+        public string Status { get; set; }
+        public string StatusCode { get; set; }
     }
 
     public static class IndexHelper
