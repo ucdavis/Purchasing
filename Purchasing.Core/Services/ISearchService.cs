@@ -51,5 +51,8 @@ namespace Purchasing.Core.Services
         IList<IdAndName> SearchBuildings(string searchTerm);
 
         IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore);
+
+        IList<OrderTrackingEntity> GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups, DateTime createdAfter,
+            DateTime createBefore);
     }
 }

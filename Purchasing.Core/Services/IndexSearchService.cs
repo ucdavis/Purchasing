@@ -5,6 +5,7 @@ using Nest;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 
+
 namespace Purchasing.Core.Services
 {
     public class ElasticSearchService : ISearchService
@@ -117,6 +118,19 @@ namespace Purchasing.Core.Services
                         .Filter(f => f.Range(r => r.OnField(o => o.DateCreated).Greater(createdAfter).Lower(createdBefore)))
                 );
 
+            return results.Hits.Select(h => h.Source).ToList();
+        }
+
+        public IList<OrderTrackingEntity> GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups,
+            DateTime createdAfter, DateTime createBefore)
+        {
+            var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
+            var workgroupIds = workgroups.Select(w => w.Id).ToArray();
+            var results = _client.Search<OrderTrackingEntity>(
+                s=> s.Index(index)
+                    .Query(q => q.Terms(o => o.WorkgroupId, workgroupIds))
+                    .Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore)))
+                );
             return results.Hits.Select(h => h.Source).ToList();
         }
     }

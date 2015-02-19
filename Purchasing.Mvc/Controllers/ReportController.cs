@@ -386,5 +386,53 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [AuthorizeWorkgroupAccess]
+        public ActionResult ProcessingTimeSummary(int? workgroupId = null, DateTime? startDate = null,
+            DateTime? endDate = null, bool? onlyShowCompleted = null)
+        {
+            Workgroup workgroup = null;
+
+            if (workgroupId.HasValue)
+            {
+                workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
+            }
+            if (onlyShowCompleted == null)
+            {
+                onlyShowCompleted = true;
+            }
+            if (startDate == null)
+            {
+                startDate = DateTime.MinValue;
+            }
+            if (endDate == null)
+            {
+                endDate = DateTime.MaxValue;
+            }
+            var workgroups = _workgroupService.LoadAdminWorkgroups().ToList();
+            
+            var viewModel = new ReportProcessingTimeSummaryViewModel()
+            {
+                Workgroups = workgroups,
+                Workgroup = workgroup,
+                OnlyShowCompleted = onlyShowCompleted.Value,
+                Columns = _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value).ToList()
+            };
+            return View(viewModel);
+            
+        }
+
     }
+
+    public class ReportProcessingTimeSummaryViewModel
+    {
+        public IEnumerable<Workgroup> Workgroups;
+        public Workgroup Workgroup { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public List<OrderTrackingEntity> Columns { get; set; }
+        public bool OnlyShowCompleted { get; set; }
+    }
+
+  
 }
