@@ -395,7 +395,8 @@ namespace Purchasing.Mvc.Controllers
 
             if (workgroupId.HasValue)
             {
-                workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
+                //workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
+                workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(14);
             }
             if (onlyShowCompleted == null)
             {
