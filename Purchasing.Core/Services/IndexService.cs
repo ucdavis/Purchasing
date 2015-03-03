@@ -120,7 +120,7 @@ namespace Purchasing.Core.Services
             using (var conn = _dbService.GetConnection())
             {
                 var orderTrackings =
-                    conn.Query<OrderTrackingDto>(@"select * from [vOrderTrackingIndex] ORDER BY OrderTracking.DateCreated DESC", Indexes.OrderTracking).ToList();
+                    conn.Query<OrderTrackingDto>(@"select * from [vOrderTrackingIndex] ORDER BY ActionDate DESC", Indexes.OrderTracking).ToList();
 
                 var entities = ProcessTrackingEntities(orderTrackings);
 
