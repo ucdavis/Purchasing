@@ -9,6 +9,9 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+<p>
+    All times are displayed as (Days:Hours:Minutes)
+</p>
 <table class="datatable no-icon-table">
     <thead>
         <tr>
@@ -47,23 +50,37 @@
                 <td>
                     @if (item.MinutesToCompletion != null)
                     {
-                        @TimeSpan.FromMinutes(item.MinutesToCompletion.Value)
+                        @TimeSpan.FromMinutes(item.MinutesToCompletion.Value).ToString("dd':'hh':'mm")
+                    } <br/>
+                    @if (item.MinutesToCompletion != null)
+                    {
+                        @TimeSpan.FromMinutes(item.MinutesToCompletion.Value).TotalDays
                     }
+                    
                 </td>
                 <td>
-                    @item.MinutesToApprove
+                    @if (item.MinutesToApprove != null)
+                    {
+                        @TimeSpan.FromMinutes(item.MinutesToApprove.Value).ToString("dd':'hh':'mm")
+                    }
                 </td>
                 <td>
                     @item.ApproverName
                 </td>
                 <td>
-                    @item.MinutesToAccountManagerComplete
+                    @if (item.MinutesToAccountManagerComplete != null)
+                    {
+                        @TimeSpan.FromMinutes(item.MinutesToAccountManagerComplete.Value).ToString("dd':'hh':'mm")
+                    }
                 </td>
                 <td>
                     @item.AccountManagerName
                 </td>
                 <td>
-                    @item.MinutesToPurchaserComplete
+                    @if (item.MinutesToPurchaserComplete != null)
+                    {
+                        @TimeSpan.FromMinutes(item.MinutesToPurchaserComplete.Value).ToString("dd':'hh':'mm")
+                    }
                 </td>
                 <td>
                     @item.PurchaserName

@@ -250,6 +250,7 @@ namespace Purchasing.Core.Services
         private IEnumerable<OrderTrackingEntity> ProcessTrackingEntities(IEnumerable<OrderTrackingDto> orderTrackingDtos)
         {
             //do work
+            string[] completeList = {"completed", "cancelled", "denied"};
             var ordersWithTracking = from o in orderTrackingDtos
                                      group o by o.OrderId
                                          into orders
@@ -258,7 +259,7 @@ namespace Purchasing.Core.Services
             foreach (var order in ordersWithTracking)
             {
                 var lastTrackingItem = order.TrackingInfo.First();
-                var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.TrackingStatusComplete);
+                var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.TrackingStatusComplete && completeList.Contains(x.Description) );
                 var orderApprove = order.TrackingInfo.FirstOrDefault(x => x.Description == "approved" && x.TrackingStatusCode == "AP");
                 var orderAccountManager =
                     order.TrackingInfo.FirstOrDefault(
