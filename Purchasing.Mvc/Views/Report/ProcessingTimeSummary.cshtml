@@ -15,13 +15,13 @@
 <table class="datatable no-icon-table">
     <thead>
         <tr>
+            <th>View</th>
             <th>
                 Date Created
             </th>
             <th>
                 Workgroup
             </th>
-            <th>Request #</th>
             <th>Time to Completion</th>
             <th>Time to Approve</th>
             <th>Approve</th>
@@ -29,8 +29,8 @@
             <th>Account Manager</th>
             <th>Time to Purchaser</th>
             <th>Purchaser</th>
-            <th>Complete</th>
-            <th>barchart</th>
+            <th>Complete/Status</th>
+           
         </tr>
     </thead>
     <tbody>
@@ -39,24 +39,20 @@
         {
             <tr class="@(odd ? "odd" : "even")">
                 <td>
-                    @item.OrderCreated
+                    <a href='@Url.Action("Review", "Order", new {id=item.OrderId})' class="ui-icon ui-icon-document" title="Review order" target="_blank"></a>
+                </td>
+                <td>
+                    @item.OrderCreated.ToShortDateString()
                 </td>
                 <td>
                     @item.WorkgroupName
                 </td>
-                <td>
-                    @Html.ActionLink(item.OrderId.ToString(), "Review", "Order", new { id = item.OrderId }, new { target = "_blank" })
-                </td>
+                
                 <td>
                     @if (item.MinutesToCompletion != null)
                     {
                         @TimeSpan.FromMinutes(item.MinutesToCompletion.Value).ToString("dd':'hh':'mm")
-                    } <br/>
-                    @if (item.MinutesToCompletion != null)
-                    {
-                        @TimeSpan.FromMinutes(item.MinutesToCompletion.Value).TotalDays
-                    }
-                    
+                    } 
                 </td>
                 <td>
                     @if (item.MinutesToApprove != null)
@@ -86,7 +82,11 @@
                     @item.PurchaserName
                 </td>
                 <td>
-                    @item.IsComplete
+                    @item.IsComplete 
+                    @if (item.StatusCode != "CP")
+                    {
+                        @item.Status
+                    }
                 </td>
             </tr>
             odd = !odd;

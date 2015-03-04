@@ -398,10 +398,10 @@ namespace Purchasing.Mvc.Controllers
                 //workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
                 workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(14);
             }
-            if (onlyShowCompleted == null)
-            {
-                onlyShowCompleted = true;
-            }
+            //if (onlyShowCompleted == null)
+            //{
+            //    onlyShowCompleted = true;
+            //}
             if (startDate == null)
             {
                 startDate = DateTime.MinValue;
@@ -416,8 +416,8 @@ namespace Purchasing.Mvc.Controllers
             {
                 Workgroups = workgroups,
                 Workgroup = workgroup,
-                OnlyShowCompleted = onlyShowCompleted.Value,
-                Columns = _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value).ToList()
+                OnlyShowCompleted = onlyShowCompleted,
+                Columns = _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value, onlyShowCompleted).ToList()
             };
             return View(viewModel);
             
@@ -432,7 +432,7 @@ namespace Purchasing.Mvc.Controllers
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public List<OrderTrackingEntity> Columns { get; set; }
-        public bool OnlyShowCompleted { get; set; }
+        public bool? OnlyShowCompleted { get; set; }
     }
 
   
