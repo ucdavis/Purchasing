@@ -114,8 +114,8 @@ namespace Purchasing.Core.Services
             var results = _client.Search<OrderHistory>(
                 s =>
                     s.Index(index)
-                        .Query(q => q.Terms(o => o.WorkgroupId, workgroupIds))
-                        .Filter(f => f.Range(r => r.OnField(o => o.DateCreated).Greater(createdAfter).Lower(createdBefore)))
+                        .Filter(f => f.Range(r => r.OnField(o => o.DateCreated).Greater(createdAfter).Lower(createdBefore))
+                        && f.Terms(o => o.WorkgroupId, workgroupIds))
                 );
 
             return results.Hits.Select(h => h.Source).ToList();
