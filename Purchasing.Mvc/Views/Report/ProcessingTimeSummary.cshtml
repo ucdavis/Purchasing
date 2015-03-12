@@ -5,6 +5,11 @@
     ViewBag.Title = "ProcessingTimeSummary";
 }
 
+@section AdditionalScripts
+{
+
+}
+
 <h2>ProcessingTimeSummary</h2>
 
 <p>
@@ -13,10 +18,56 @@
     Average time to Account Manager: @TimeSpan.FromMinutes(Model.Columns.AverageTimeToAccountManagers.Value).ToString("dd':'hh':'mm")<br />
     Average time to Purchase: @TimeSpan.FromMinutes(Model.Columns.AverageTimeToPurchaser.Value).ToString("dd':'hh':'mm")
 </p>
+<script src="//code.highcharts.com/4.1/highcharts.js"></script>
+
+
+<div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+<script>
+    $(function () {
+        $('#container').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}</b>'
+            },
+            credits: {enabled: false},
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '',
+                data: [
+                    ['Avg Approve', @Model.Columns.AverageTimeToApprover.Value ],
+                    ['Avg Account Manager', @Model.Columns.AverageTimeToAccountManagers.Value ],
+                    ['Avg Purchase', @Model.Columns.AverageTimeToPurchaser.Value ]
+                ]
+            }]
+                    });
+    });
+
+   
+</script>
 <p>
     All times are displayed as (Days:Hours:Minutes)
-</p>.v
-<table class="datatable no-icon-table">
+</p>
+<table class="dt-table no-icon-table">
     <thead>
         <tr>
             <th>View</th>
@@ -34,7 +85,7 @@
             <th>Time to Purchaser</th>
             <th>Purchaser</th>
             <th>Complete/Status</th>
-           
+
         </tr>
     </thead>
     <tbody>
@@ -51,12 +102,12 @@
                 <td>
                     @item.WorkgroupName
                 </td>
-                
+
                 <td>
                     @if (item.MinutesToCompletion != null)
                     {
                         @TimeSpan.FromMinutes(item.MinutesToCompletion.Value).ToString("dd':'hh':'mm")
-                    } 
+                    }
                 </td>
                 <td>
                     @if (item.MinutesToApprove != null)
@@ -86,14 +137,14 @@
                     @item.PurchaserName
                 </td>
                 <td>
-                    @item.IsComplete 
+                    @item.IsComplete
                     @if (item.StatusCode != "CP")
                     {
                         @item.Status
                     }
                 </td>
             </tr>
-            odd = !odd;
+                    odd = !odd;
         }
     </tbody>
 </table>
