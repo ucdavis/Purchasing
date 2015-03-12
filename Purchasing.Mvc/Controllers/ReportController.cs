@@ -5,6 +5,8 @@ using System.Web.Mvc;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
+using Lucene.Net.Util;
+using Nest;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -16,6 +18,7 @@ using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
+using UCDArch.Web.ActionResults;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -33,7 +36,9 @@ namespace Purchasing.Mvc.Controllers
         private readonly ISearchService _searchService;
 
 
-        public ReportController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IReportRepositoryFactory reportRepositoryFactory, IReportService reportService, IWorkgroupService workgroupService,  ISearchService searchService)
+        public ReportController(IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory,
+            IReportRepositoryFactory reportRepositoryFactory, IReportService reportService,
+            IWorkgroupService workgroupService, ISearchService searchService)
         {
             _repositoryFactory = repositoryFactory;
             _queryRepositoryFactory = queryRepositoryFactory;
@@ -73,15 +78,19 @@ namespace Purchasing.Mvc.Controllers
 
             var users =
                 _repositoryFactory.OrderTrackingRepository
-                          .Queryable.Where(a => a.DateCreated >= reportDate.Value.Date && a.DateCreated <= reportDate.Value.Date.AddDays(1) && workgroupIds.Contains(a.Order.Workgroup.Id) && a.Description.Contains("completed"))
-                          .Select(a => a.User).ToList();
+                    .Queryable.Where(
+                        a =>
+                            a.DateCreated >= reportDate.Value.Date && a.DateCreated <= reportDate.Value.Date.AddDays(1) &&
+                            workgroupIds.Contains(a.Order.Workgroup.Id) && a.Description.Contains("completed"))
+                    .Select(a => a.User).ToList();
             var distinctUsers = users.Distinct().ToList();
             foreach (var user in distinctUsers)
             {
                 var item = new ReportPurchaserWorkLoadItem();
                 item.userId = user.Id;
                 item.UserName = user.FullName;
-                item.CompletedCount = users.Count(a => a.Id == user.Id); //This will tell me how many orders have been completed by each purchaser.
+                item.CompletedCount = users.Count(a => a.Id == user.Id);
+                    //This will tell me how many orders have been completed by each purchaser.
                 viewModel.Items.Add(item);
             }
 
@@ -98,12 +107,14 @@ namespace Purchasing.Mvc.Controllers
                 {
                     item = new ReportPurchaserWorkLoadItem();
                     item.UserName = userName1;
-                    item.PendingCount = userNamesFromOrderHistory.FindAll(a => a.Contains(userName1)).Count; //Find all pending orders in Purchaser state
+                    item.PendingCount = userNamesFromOrderHistory.FindAll(a => a.Contains(userName1)).Count;
+                        //Find all pending orders in Purchaser state
                     viewModel.Items.Add(item);
                 }
                 else
                 {
-                    item.PendingCount = userNamesFromOrderHistory.FindAll(a => a.Contains(userName)).Count; //Find all pending orders in Purchaser state
+                    item.PendingCount = userNamesFromOrderHistory.FindAll(a => a.Contains(userName)).Count;
+                        //Find all pending orders in Purchaser state
                 }
             }
 
@@ -121,13 +132,14 @@ namespace Purchasing.Mvc.Controllers
                 workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
             }
 
-            var viewModel = ReportWorkloadViewModel.Create(_repositoryFactory, _queryRepositoryFactory, _workgroupService, CurrentUser.Identity.Name, workgroup);
+            var viewModel = ReportWorkloadViewModel.Create(_repositoryFactory, _queryRepositoryFactory,
+                _workgroupService, CurrentUser.Identity.Name, workgroup);
 
             if (workgroupId.HasValue)
             {
                 viewModel.GenerateDisplayTable(_reportRepositoryFactory, workgroupId.Value);
             }
-            
+
             return View(viewModel);
         }
 
@@ -148,17 +160,18 @@ namespace Purchasing.Mvc.Controllers
             if (startDate == null || endDate == null)
             {
                 Message = "Select a start date and an end date then click apply to view report.";
-                
+
 
                 return View(viewModel);
             }
-            
+
             //Grab all workgroups for this user as well as related primary orgs
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
             var workgroupIds = allWorkgroups.Select(x => x.Id).ToArray();
-            var workgroupsWithPrimaryOrgs = _repositoryFactory.WorkgroupRepository.Queryable.Where(x => workgroupIds.Contains(x.Id))
-                              .Select(x => new { Workgroup = x, Primary = x.PrimaryOrganization }).ToList();
-            
+            var workgroupsWithPrimaryOrgs =
+                _repositoryFactory.WorkgroupRepository.Queryable.Where(x => workgroupIds.Contains(x.Id))
+                    .Select(x => new {Workgroup = x, Primary = x.PrimaryOrganization}).ToList();
+
             //Get every order that matches these workgroups
             var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
             var workgroupCounts = new List<OrderTotals>();
@@ -170,12 +183,32 @@ namespace Purchasing.Mvc.Controllers
                     orderTotal.WorkgroupName = workgroup.Name;
                     orderTotal.WorkgroupId = workgroup.Id;
                     orderTotal.Administrative = false;
-                    orderTotal.PrimaryOrg = workgroupsWithPrimaryOrgs.Single(x => x.Workgroup.Id == workgroup.Id).Primary.Name;
+                    orderTotal.PrimaryOrg =
+                        workgroupsWithPrimaryOrgs.Single(x => x.Workgroup.Id == workgroup.Id).Primary.Name;
                     orderTotal.InitiatedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id);
-                    orderTotal.DeniedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Denied);
-                    orderTotal.CanceledOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Cancelled);
-                    orderTotal.CompletedOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && (a.StatusId == OrderStatusCode.Codes.Complete || a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
-                    orderTotal.PendingOrders = matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && (a.StatusId == OrderStatusCode.Codes.Approver || a.StatusId == OrderStatusCode.Codes.AccountManager || a.StatusId == OrderStatusCode.Codes.Purchaser || a.StatusId == OrderStatusCode.Codes.Requester || a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
+                    orderTotal.DeniedOrders =
+                        matchingOrders.AsQueryable()
+                            .Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Denied);
+                    orderTotal.CanceledOrders =
+                        matchingOrders.AsQueryable()
+                            .Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Cancelled);
+                    orderTotal.CompletedOrders =
+                        matchingOrders.AsQueryable()
+                            .Count(
+                                a =>
+                                    a.WorkgroupId == workgroup.Id &&
+                                    (a.StatusId == OrderStatusCode.Codes.Complete ||
+                                     a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
+                    orderTotal.PendingOrders =
+                        matchingOrders.AsQueryable()
+                            .Count(
+                                a =>
+                                    a.WorkgroupId == workgroup.Id &&
+                                    (a.StatusId == OrderStatusCode.Codes.Approver ||
+                                     a.StatusId == OrderStatusCode.Codes.AccountManager ||
+                                     a.StatusId == OrderStatusCode.Codes.Purchaser ||
+                                     a.StatusId == OrderStatusCode.Codes.Requester ||
+                                     a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
 
                     workgroupCounts.Add(orderTotal);
                 }
@@ -245,8 +278,9 @@ namespace Purchasing.Mvc.Controllers
             //Grab all workgroups for this user as well as related primary orgs
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
             var workgroupIds = allWorkgroups.Select(x => x.Id).ToArray();
-            var workgroupsWithPrimaryOrgs = _repositoryFactory.WorkgroupRepository.Queryable.Where(x => workgroupIds.Contains(x.Id))
-                              .Select(x => new { Workgroup = x, Primary = x.PrimaryOrganization }).ToList();
+            var workgroupsWithPrimaryOrgs =
+                _repositoryFactory.WorkgroupRepository.Queryable.Where(x => workgroupIds.Contains(x.Id))
+                    .Select(x => new {Workgroup = x, Primary = x.PrimaryOrganization}).ToList();
 
             //Get every order that matches these workgroups
             var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
@@ -256,11 +290,13 @@ namespace Purchasing.Mvc.Controllers
             {
                 if (workgroup.IsActive && !workgroup.Administrative)
                 {
-                    var orderTotal = workgroupCounts.FirstOrDefault(a => a.PrimaryOrg == workgroup.PrimaryOrganization.Name);
+                    var orderTotal =
+                        workgroupCounts.FirstOrDefault(a => a.PrimaryOrg == workgroup.PrimaryOrganization.Name);
                     if (orderTotal == null)
                     {
                         orderTotal = new OrderTotals();
-                        orderTotal.PrimaryOrg = workgroupsWithPrimaryOrgs.Single(x => x.Workgroup.Id == workgroup.Id).Primary.Name;
+                        orderTotal.PrimaryOrg =
+                            workgroupsWithPrimaryOrgs.Single(x => x.Workgroup.Id == workgroup.Id).Primary.Name;
                         orderTotal.InitiatedOrders = 0;
                         orderTotal.DeniedOrders = 0;
                         orderTotal.CanceledOrders = 0;
@@ -269,13 +305,32 @@ namespace Purchasing.Mvc.Controllers
 
                         workgroupCounts.Add(orderTotal);
                     }
-                    
+
                     orderTotal.InitiatedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id);
-                    orderTotal.DeniedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Denied);
-                    orderTotal.CanceledOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Cancelled);
-                    orderTotal.CompletedOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && (a.StatusId == OrderStatusCode.Codes.Complete || a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
-                    orderTotal.PendingOrders += matchingOrders.AsQueryable().Count(a => a.WorkgroupId == workgroup.Id && (a.StatusId == OrderStatusCode.Codes.Approver || a.StatusId == OrderStatusCode.Codes.AccountManager || a.StatusId == OrderStatusCode.Codes.Purchaser || a.StatusId == OrderStatusCode.Codes.Requester || a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
-                    
+                    orderTotal.DeniedOrders +=
+                        matchingOrders.AsQueryable()
+                            .Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Denied);
+                    orderTotal.CanceledOrders +=
+                        matchingOrders.AsQueryable()
+                            .Count(a => a.WorkgroupId == workgroup.Id && a.StatusId == OrderStatusCode.Codes.Cancelled);
+                    orderTotal.CompletedOrders +=
+                        matchingOrders.AsQueryable()
+                            .Count(
+                                a =>
+                                    a.WorkgroupId == workgroup.Id &&
+                                    (a.StatusId == OrderStatusCode.Codes.Complete ||
+                                     a.StatusId == OrderStatusCode.Codes.CompleteNotUploadedKfs));
+                    orderTotal.PendingOrders +=
+                        matchingOrders.AsQueryable()
+                            .Count(
+                                a =>
+                                    a.WorkgroupId == workgroup.Id &&
+                                    (a.StatusId == OrderStatusCode.Codes.Approver ||
+                                     a.StatusId == OrderStatusCode.Codes.AccountManager ||
+                                     a.StatusId == OrderStatusCode.Codes.Purchaser ||
+                                     a.StatusId == OrderStatusCode.Codes.Requester ||
+                                     a.StatusId == OrderStatusCode.Codes.ConditionalApprover));
+
                 }
             }
 
@@ -304,7 +359,7 @@ namespace Purchasing.Mvc.Controllers
 
             //Grab all workgroups for this user
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
-            
+
             //Get every order that matches these workgroups
             var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
             var workgroupCounts = new List<OrderTotals>();
@@ -364,7 +419,8 @@ namespace Purchasing.Mvc.Controllers
 
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
-        public ActionResult ProcessingTime(int? workgroupId = null, DateTime? month = null, bool? onlyShowReRouted = null)
+        public ActionResult ProcessingTime(int? workgroupId = null, DateTime? month = null,
+            bool? onlyShowReRouted = null)
         {
             Workgroup workgroup = null;
 
@@ -376,11 +432,12 @@ namespace Purchasing.Mvc.Controllers
             {
                 onlyShowReRouted = true;
             }
-            var viewModel = ReportProcessingTimeViewModel.Create( _workgroupService, workgroup, onlyShowReRouted.Value);
+            var viewModel = ReportProcessingTimeViewModel.Create(_workgroupService, workgroup, onlyShowReRouted.Value);
 
             if (workgroupId.HasValue && month.HasValue)
             {
-                viewModel.GenerateDisplayTable(_searchService,_repositoryFactory, _workgroupService,workgroupId.Value, month.Value);
+                viewModel.GenerateDisplayTable(_searchService, _repositoryFactory, _workgroupService, workgroupId.Value,
+                    month.Value);
             }
 
             return View(viewModel);
@@ -411,18 +468,38 @@ namespace Purchasing.Mvc.Controllers
                 endDate = DateTime.MaxValue;
             }
             var workgroups = _workgroupService.LoadAdminWorkgroups().ToList();
-            
+
             var viewModel = new ReportProcessingTimeSummaryViewModel()
             {
                 Workgroups = workgroups,
                 Workgroup = workgroup,
                 OnlyShowCompleted = onlyShowCompleted,
-                Columns = _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value, onlyShowCompleted)
+                Columns =
+                    _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value,
+                        onlyShowCompleted)
             };
+            viewModel.JsonData = GetTimeReportData(viewModel.Columns);
             return View(viewModel);
-            
         }
 
+        public dynamic GetTimeReportData(OrderTrackingAggregation data)
+        {
+            var roles = new string[]
+            {
+                "approver",
+                "account manager",
+                "purchaser"
+            };
+
+            var approvers = data.OrderTrackingEntities.Where(x=> !string.IsNullOrWhiteSpace(x.ApproverId)).Select(x=> new {personId = x.ApproverId, personName= x.ApproverName, minutes =  x.MinutesToApprove, orderId =  x.OrderId });
+            var accountManagers = data.OrderTrackingEntities.Where(x => !string.IsNullOrWhiteSpace(x.AccountManagerId)).Select(x => new { personId = x.AccountManagerId, personName = x.AccountManagerName, minutes = x.MinutesToAccountManagerComplete, orderId = x.OrderId });
+            var purchasers = data.OrderTrackingEntities.Where(x => !string.IsNullOrWhiteSpace(x.PurchaserId)).Select(x => new { personId = x.PurchaserId, personName = x.PurchaserName, minutes = x.MinutesToPurchaserComplete, orderId = x.OrderId });
+
+            var temp = new {approver = approvers, accountManger = accountManagers, purchaser = purchasers};
+
+            return temp;
+
+        }
     }
 
     public class ReportProcessingTimeSummaryViewModel
@@ -433,6 +510,7 @@ namespace Purchasing.Mvc.Controllers
         public DateTime? EndDate { get; set; }
         public OrderTrackingAggregation Columns { get; set; }
         public bool? OnlyShowCompleted { get; set; }
+        public dynamic JsonData { get; set; }
     }
 
   

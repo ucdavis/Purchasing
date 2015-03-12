@@ -1,4 +1,4 @@
-﻿@using NPOI.SS.Formula.Functions
+﻿@using Newtonsoft.Json
 @model Purchasing.Mvc.Controllers.ReportProcessingTimeSummaryViewModel
 
 @{
@@ -19,11 +19,95 @@
     Average time to Purchase: @TimeSpan.FromMinutes(Model.Columns.AverageTimeToPurchaser.Value).ToString("dd':'hh':'mm")
 </p>
 <script src="//code.highcharts.com/4.1/highcharts.js"></script>
-
+<script src="http://code.highcharts.com/modules/heatmap.js"></script>
+<script src="http://code.highcharts.com/modules/treemap.js"></script>
+<div id="treeChart"></div>
 
 <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 <script>
-    $(function () {
+    $(function() {
+        var data = @Html.Raw(JsonConvert.SerializeObject(Model.JsonData));
+       
+        var points = [],
+		region_p,
+		region_val,
+		region_i,
+		country_p,
+		country_i,
+		cause_p,
+		cause_i,
+		cause_name = [];
+        cause_name['Communicable & other Group I'] = 'Communicable diseases';
+        cause_name['Noncommunicable diseases'] = 'Non-communicable diseases';
+        cause_name['Injuries'] = 'Injuries';
+        region_i = 0,
+        roles = ['approver','accountManager','purchaser'];
+
+        for (var roleIndex in roles) {
+            region_val = 0;
+            region_p = {
+                id: "id_" + roleIndex,
+                name: roles[roleIndex],
+                color: Highcharts.getOptions().colors[roleIndex]
+            };
+            country_i = 0;
+            var orders = data[region_p.name];
+            for (var orderIndex in orders) {
+                country_p = {
+                    id: region_p.id + "_" + orderIndex,
+                    name: orders[orderIndex].personId,
+                    parent: region_p.id
+                };
+                points.push(country_p);
+                cause_i = 0;
+               
+                    cause_p = {
+                        id: country_p.id + "_" + orders[orderIndex].orderId,
+                        name: orders[orderIndex].orderId,
+                        parent: country_p.id,
+                        value: Math.round(orders[orderIndex].minutes)
+                    };
+                    region_val += cause_p.value;
+                    points.push(cause_p);
+                    cause_i++;
+                
+                country_i++;
+            }
+            region_p.value = Math.round(region_val / country_i);
+            points.push(region_p);
+            region_i++;
+        }
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'treeChart'
+            },
+            series: [{
+                type: "treemap",
+                layoutAlgorithm: 'squarified',
+                allowDrillToNode: true,
+                dataLabels: {
+                    enabled: false
+                },
+                levelIsConstant: false,
+                levels: [{
+                    level: 1,
+                    dataLabels: {
+                        enabled: true
+                    },
+                    borderWidth: 3
+                }],
+                data: points
+            }],
+            subtitle: {
+                text: 'Click points to drill down. Source: <a href="http://apps.who.int/gho/data/node.main.12?lang=en">WHO</a>.'
+            },
+            title: {
+                text: 'Global Mortality Rate 2012, per 100 000 population'
+            }
+        });
+    });
+
+    $(function () { 
         $('#container').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -59,10 +143,10 @@
                     ['Avg Purchase', @Model.Columns.AverageTimeToPurchaser.Value ]
                 ]
             }]
-                    });
+        });
     });
 
-   
+
 </script>
 <p>
     All times are displayed as (Days:Hours:Minutes)
