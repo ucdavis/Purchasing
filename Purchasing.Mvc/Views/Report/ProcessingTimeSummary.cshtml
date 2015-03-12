@@ -1,4 +1,5 @@
-﻿@model Purchasing.Mvc.Controllers.ReportProcessingTimeSummaryViewModel
+﻿@using NPOI.SS.Formula.Functions
+@model Purchasing.Mvc.Controllers.ReportProcessingTimeSummaryViewModel
 
 @{
     ViewBag.Title = "ProcessingTimeSummary";
@@ -7,11 +8,14 @@
 <h2>ProcessingTimeSummary</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    Averages:<br />Average Time to Complete: @TimeSpan.FromMinutes(Model.Columns.AverageTimeToCompletion.Value).ToString("dd':'hh':'mm")<br/>
+    Average time to Approve: @TimeSpan.FromMinutes(Model.Columns.AverageTimeToApprover.Value).ToString("dd':'hh':'mm")<br />
+    Average time to Account Manager: @TimeSpan.FromMinutes(Model.Columns.AverageTimeToAccountManagers.Value).ToString("dd':'hh':'mm")<br />
+    Average time to Purchase: @TimeSpan.FromMinutes(Model.Columns.AverageTimeToPurchaser.Value).ToString("dd':'hh':'mm")
 </p>
 <p>
     All times are displayed as (Days:Hours:Minutes)
-</p>
+</p>.v
 <table class="datatable no-icon-table">
     <thead>
         <tr>
@@ -35,7 +39,7 @@
     </thead>
     <tbody>
         @{ var odd = false; }
-        @foreach (var item in Model.Columns)
+        @foreach (var item in Model.Columns.OrderTrackingEntities)
         {
             <tr class="@(odd ? "odd" : "even")">
                 <td>

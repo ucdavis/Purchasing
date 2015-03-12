@@ -121,20 +121,34 @@ namespace Purchasing.Core.Services
             return results.Hits.Select(h => h.Source).ToList();
         }
 
-        public IList<OrderTrackingEntity> GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups,
+        public OrderTrackingAggregation GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups,
             DateTime createdAfter, DateTime createBefore, bool? onlyShowCompleted)
         {
             var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
             var workgroupIds = workgroups.Select(w => w.Id).ToArray();
-            
+
             var results = _client.Search<OrderTrackingEntity>(
-                s=> s.Index(index)
+                s => s.Index(index)
                     .Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore))
-                        && f.Term(x => x.IsComplete, onlyShowCompleted)
-                        && f.Terms(o => o.WorkgroupId, workgroupIds))
+                                 && f.Term(x => x.IsComplete, onlyShowCompleted)
+                                 && f.Terms(o => o.WorkgroupId, workgroupIds))
+                    .Aggregations(
+                        a =>
+                            a.Average("AverageTimeToCompletion", avg => avg.Field(x => x.MinutesToCompletion))
+                                .Average("AverageTimeToApprover", avg => avg.Field(x => x.MinutesToApprove))
+                                .Average("AverageTimeToAccountManagers",
+                                    avg => avg.Field(x => x.MinutesToAccountManagerComplete))
+                                .Average("AverageTimeToPurchaser", avg => avg.Field(x => x.MinutesToPurchaserComplete)))
                 );
-            
-            return results.Hits.Select(h => h.Source).ToList();
+
+            return new OrderTrackingAggregation
+            {
+                OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
+                AverageTimeToAccountManagers = results.Aggs.Average("AverageTimeToAccountManagers").Value,
+                AverageTimeToApprover = results.Aggs.Average("AverageTimeToApprover").Value,
+                AverageTimeToCompletion = results.Aggs.Average("AverageTimeToCompletion").Value,
+                AverageTimeToPurchaser = results.Aggs.Average("AverageTimeToPurchaser").Value
+            };
         }
     }
 }

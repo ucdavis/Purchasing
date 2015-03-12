@@ -426,6 +426,16 @@ namespace Purchasing.Core.Services
         public string StatusCode { get; set; }
     }
 
+    public class OrderTrackingAggregation 
+    {
+        public IList<OrderTrackingEntity> OrderTrackingEntities { get; set; }
+        public double? AverageTimeToCompletion { get; set; }
+        public double? AverageTimeToApprover { get; set; }
+        public double? AverageTimeToAccountManagers { get; set; }
+        public double? AverageTimeToPurchaser { get; set; }
+
+    }
+
     public static class IndexHelper
     {
         public static string GetIndexName(Indexes indexes)

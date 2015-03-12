@@ -417,7 +417,7 @@ namespace Purchasing.Mvc.Controllers
                 Workgroups = workgroups,
                 Workgroup = workgroup,
                 OnlyShowCompleted = onlyShowCompleted,
-                Columns = _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value, onlyShowCompleted).ToList()
+                Columns = _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value, onlyShowCompleted)
             };
             return View(viewModel);
             
@@ -431,7 +431,7 @@ namespace Purchasing.Mvc.Controllers
         public Workgroup Workgroup { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public List<OrderTrackingEntity> Columns { get; set; }
+        public OrderTrackingAggregation Columns { get; set; }
         public bool? OnlyShowCompleted { get; set; }
     }
 
