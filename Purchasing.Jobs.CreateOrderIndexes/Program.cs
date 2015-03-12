@@ -20,6 +20,7 @@ namespace Purchasing.Jobs.CreateOrderIndexes
                 indexService.CreateLineItemsIndex();
                 indexService.CreateCommentsIndex();
                 indexService.CreateCustomAnswersIndex();
+                indexService.CreateTrackingIndex();
 
                 Console.WriteLine("Order indexes created successfully at {0}", DateTime.UtcNow.ToPacificTime());
             }
