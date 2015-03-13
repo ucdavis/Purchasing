@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using AutoMapper.Internal;
@@ -48,9 +49,9 @@ namespace Purchasing.Core.Services
         public ElasticSearchIndexService(IDbService dbService)
         {
             _dbService = dbService;
-
+            
             var settings =
-                new ConnectionSettings(new Uri("https://ekgrfdtq8y:o4jy2eyhdu@caesdo-8165237795.us-west-2.bonsai.io"),
+                new ConnectionSettings(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]),
                     "prepurchasing");
             _client = new ElasticClient(settings);
         }
