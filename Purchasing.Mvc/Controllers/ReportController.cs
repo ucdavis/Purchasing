@@ -491,11 +491,11 @@ namespace Purchasing.Mvc.Controllers
                 "purchaser"
             };
 
-            var approvers = data.OrderTrackingEntities.Where(x=> !string.IsNullOrWhiteSpace(x.ApproverId)).Select(x=> new {personId = x.ApproverId, personName= x.ApproverName, minutes =  x.MinutesToApprove, orderId =  x.OrderId });
-            var accountManagers = data.OrderTrackingEntities.Where(x => !string.IsNullOrWhiteSpace(x.AccountManagerId)).Select(x => new { personId = x.AccountManagerId, personName = x.AccountManagerName, minutes = x.MinutesToAccountManagerComplete, orderId = x.OrderId });
-            var purchasers = data.OrderTrackingEntities.Where(x => !string.IsNullOrWhiteSpace(x.PurchaserId)).Select(x => new { personId = x.PurchaserId, personName = x.PurchaserName, minutes = x.MinutesToPurchaserComplete, orderId = x.OrderId });
+            var approvers = data.OrderTrackingEntities.Where(x=> !string.IsNullOrWhiteSpace(x.ApproverId) && x.MinutesToApprove!=null).Select(x=> new {personId = x.ApproverId, personName= x.ApproverName, minutes =  x.MinutesToApprove, orderId =  x.OrderId });
+            var accountManagers = data.OrderTrackingEntities.Where(x => !string.IsNullOrWhiteSpace(x.AccountManagerId) && x.MinutesToAccountManagerComplete!=null).Select(x => new { personId = x.AccountManagerId, personName = x.AccountManagerName, minutes = x.MinutesToAccountManagerComplete, orderId = x.OrderId });
+            var purchasers = data.OrderTrackingEntities.Where(x => !string.IsNullOrWhiteSpace(x.PurchaserId) && x.MinutesToPurchaserComplete!=null).Select(x => new { personId = x.PurchaserId, personName = x.PurchaserName, minutes = x.MinutesToPurchaserComplete, orderId = x.OrderId });
 
-            var temp = new {approver = approvers, accountManger = accountManagers, purchaser = purchasers};
+            var temp = new {approver = approvers, accountManager = accountManagers, purchaser = purchasers};
 
             return temp;
 
