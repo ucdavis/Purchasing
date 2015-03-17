@@ -122,7 +122,7 @@ namespace Purchasing.Core.Services
         }
 
         public OrderTrackingAggregation GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups,
-            DateTime createdAfter, DateTime createBefore, bool? onlyShowCompleted)
+            DateTime createdAfter, DateTime createBefore)
         {
             var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
             var workgroupIds = workgroups.Select(w => w.Id).ToArray();
@@ -130,7 +130,7 @@ namespace Purchasing.Core.Services
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore))
-                                 && f.Term(x => x.IsComplete, onlyShowCompleted)
+                                 && f.Term(x => x.IsComplete, true)
                                  && f.Terms(o => o.WorkgroupId, workgroupIds))
                     .Aggregations(
                         a =>

@@ -53,6 +53,6 @@ namespace Purchasing.Core.Services
         IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore);
 
         OrderTrackingAggregation GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups, DateTime createdAfter,
-            DateTime createBefore, bool? onlyShowCompleted);
+            DateTime createBefore);
     }
 }

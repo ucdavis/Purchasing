@@ -206,7 +206,7 @@
             <th>Account Manager</th>
             <th>Time to Purchaser</th>
             <th>Purchaser</th>
-            <th>Complete/Status</th>
+            <th>Exception Status</th>
 
         </tr>
     </thead>
@@ -259,7 +259,6 @@
                     @item.PurchaserName
                 </td>
                 <td>
-                    @item.IsComplete
                     @if (item.StatusCode != "CP")
                     {
                         @item.Status

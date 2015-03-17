@@ -446,7 +446,7 @@ namespace Purchasing.Mvc.Controllers
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult ProcessingTimeSummary(int? workgroupId = null, DateTime? startDate = null,
-            DateTime? endDate = null, bool? onlyShowCompleted = null)
+            DateTime? endDate = null)
         {
             Workgroup workgroup = null;
 
@@ -455,10 +455,7 @@ namespace Purchasing.Mvc.Controllers
                 //workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
                 workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(14);
             }
-            //if (onlyShowCompleted == null)
-            //{
-            //    onlyShowCompleted = true;
-            //}
+           
             if (startDate == null)
             {
                 startDate = DateTime.MinValue;
@@ -473,10 +470,8 @@ namespace Purchasing.Mvc.Controllers
             {
                 Workgroups = workgroups,
                 Workgroup = workgroup,
-                OnlyShowCompleted = onlyShowCompleted,
                 Columns =
-                    _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value,
-                        onlyShowCompleted)
+                    _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value)
             };
             viewModel.JsonData = GetTimeReportData(viewModel.Columns);
             return View(viewModel);
