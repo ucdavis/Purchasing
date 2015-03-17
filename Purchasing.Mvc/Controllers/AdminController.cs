@@ -436,6 +436,11 @@ namespace Purchasing.Mvc.Controllers
             return View(view);
         }
 
+        /// <summary>
+        /// #20
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public virtual bool NeedToCheckWorkgroupPermissions(string key)
         {
