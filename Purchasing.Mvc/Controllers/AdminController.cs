@@ -439,7 +439,7 @@ namespace Purchasing.Mvc.Controllers
         [AllowAnonymous]
         public virtual bool NeedToCheckWorkgroupPermissions(string key)
         {
-            if (key != ConfigurationManager.AppSettings["ValidationKey"])
+            if (string.IsNullOrWhiteSpace(key) || key != ConfigurationManager.AppSettings["ValidationKey"])
             {
                 return true;
             }
