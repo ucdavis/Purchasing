@@ -448,12 +448,12 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult ProcessingTimeSummary(int? workgroupId = null, DateTime? startDate = null,
             DateTime? endDate = null)
         {
+            const int defaultResultSize = 1000;
             Workgroup workgroup = null;
 
             if (workgroupId.HasValue)
             {
-                //workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
-                workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(14);
+                workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
             }
            
             if (startDate == null)
@@ -471,8 +471,15 @@ namespace Purchasing.Mvc.Controllers
                 Workgroups = workgroups,
                 Workgroup = workgroup,
                 Columns =
-                    _searchService.GetOrderTrackingEntities(workgroups, startDate.Value, endDate.Value)
+                    _searchService.GetOrderTrackingEntities(
+                        workgroup == null ? workgroups.ToArray() : new[] {workgroup}, startDate.Value, endDate.Value, defaultResultSize)
             };
+
+            if (viewModel.Columns.OrderTrackingEntities.Count == defaultResultSize)
+            {
+                ErrorMessage = string.Format("Max result size of {0} has been reached. Please refine your filters to show complete results.", defaultResultSize);
+            }
+            
             viewModel.JsonData = GetTimeReportData(viewModel.Columns);
             return View(viewModel);
         }

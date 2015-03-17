@@ -21,7 +21,14 @@ namespace Purchasing.Mvc.Attributes
             var workgroupId = 0;
             try
             {
-                workgroupId = int.Parse((string)filterContext.RouteData.Values["id"]);
+                if (filterContext.RouteData.Values.ContainsKey("id"))
+                {
+                    workgroupId = int.Parse((string) filterContext.RouteData.Values["id"]);
+                }
+                else if (filterContext.RouteData.Values.ContainsKey("workgroupId"))
+                {
+                    workgroupId = int.Parse((string)filterContext.RouteData.Values["workgroupId"]);
+                }
             }
             catch (Exception)
             {

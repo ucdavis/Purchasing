@@ -122,13 +122,14 @@ namespace Purchasing.Core.Services
         }
 
         public OrderTrackingAggregation GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups,
-            DateTime createdAfter, DateTime createBefore)
+            DateTime createdAfter, DateTime createBefore, int size = 1000)
         {
             var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
             var workgroupIds = workgroups.Select(w => w.Id).ToArray();
-
+            
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
+                    .Size(size)
                     .Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore))
                                  && f.Term(x => x.IsComplete, true)
                                  && f.Terms(o => o.WorkgroupId, workgroupIds))
@@ -140,6 +141,7 @@ namespace Purchasing.Core.Services
                                     avg => avg.Field(x => x.MinutesToAccountManagerComplete))
                                 .Average("AverageTimeToPurchaser", avg => avg.Field(x => x.MinutesToPurchaserComplete)))
                 );
+            
 
             return new OrderTrackingAggregation
             {

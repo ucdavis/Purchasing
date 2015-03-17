@@ -5,8 +5,15 @@
     ViewBag.Title = "ProcessingTimeSummary";
 }
 
+@section AdditionalStyles
+{
+   
+}
+
+
 @section AdditionalScripts
 {
+  
 
 }
 
@@ -17,9 +24,10 @@
 <script src="http://code.highcharts.com/modules/treemap.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
 
-<div id="treeChart" style="display: inline-block; width: 49%;"></div>
 
 <div id="container" style="display: inline-block; width: 49%;"></div>
+<div id="treeChart" style="display: inline-block; width: 49%;"></div>
+
 <script>
     $(function() {
         var data = @Html.Raw(JsonConvert.SerializeObject(Model.JsonData));
@@ -116,6 +124,7 @@
                     enabled: false
                 },
                 levelIsConstant: false,
+                turboThreshold: 0,
                 levels: [{
                     level: 1,
                     dataLabels: {
@@ -188,6 +197,64 @@
 
 
 </script>
+
+
+
+<div class="">
+    <div class="dt-table-filter-header display-form">
+        <div class="section-text">
+            <p> Workgroups with (Admin) after them will get all orders in child workgroups. </p>
+            <p> Only completed orders that were created in the month selected will be displayed. </p>
+            <p> If there were multiple ReRoutes, only the last one will be used. </p>
+        </div>
+        <div class="section-contents">
+            @using (Html.BeginForm("ProcessingTimeSummary", "Report", FormMethod.Get))
+            {
+                <ul>
+                    <li class="datepicker">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.StartDate)
+                        </div>
+                        <div class="editor-field">
+
+                            @Html.TextBoxFor(model => model.StartDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" } })
+                        </div>
+                    </li>
+                    <li class="datepicker">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.EndDate)
+                        </div>
+                        <div class="editor-field">
+
+                            @Html.TextBoxFor(model => model.EndDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" } })
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                            @Html.Label("Workgroup")
+                        </div>
+                        <div class="editor-field">
+                            @this.Select("WorkgroupId").Options(Model.Workgroups.OrderBy(x => x.Name), x => x.Id, x => x.NameAndAdmin).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--")
+                        </div>
+                    </li>
+                    <li>&nbsp;</li>
+                    <li>&nbsp;</li>
+                    <li>
+                        <div class="editor-label">
+                            &nbsp;
+                        </div>
+                        <div class="editor-field">
+                            <input class="button" type="submit" style="float: right" value="Apply" />
+                        </div>
+                    </li>
+           
+                   
+                </ul>
+            }
+        </div>
+    </div>
+
+</div>
 
 <table class="dt-table no-icon-table">
     <thead>
