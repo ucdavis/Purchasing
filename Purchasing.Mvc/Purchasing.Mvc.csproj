@@ -262,6 +262,7 @@
     <Compile Include="Helpers\DbHelper.cs" />
     <Compile Include="Helpers\OAuth.cs" />
     <Compile Include="Helpers\ProfileAttribte.cs" />
+    <Compile Include="Helpers\SelectLists.cs" />
     <Compile Include="Helpers\TimeSpanExtensions.cs" />
     <Compile Include="Helpers\WorkgroupAddressService.cs" />
     <Compile Include="Models\AccountSelectModel.cs" />
