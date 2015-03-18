@@ -10,6 +10,7 @@ using MvcContrib.TestHelper;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
@@ -103,10 +104,10 @@ namespace Purchasing.Tests.ControllerTests
             {
                 orderTrackingHistory.Add(CreateValidEntities.OrderTrackingHistory(i + 1));
                 orderTrackingHistory[i].AccessUserId = "Me";
-                orderTrackingHistory[i].DateCreated = DateTime.Now.Date;
+                orderTrackingHistory[i].DateCreated = DateTime.UtcNow.ToPacificTime().Date;
             }
-            orderTrackingHistory[3].DateCreated = DateTime.Now.AddDays(3);
-            orderTrackingHistory[4].DateCreated = DateTime.Now.AddDays(3);
+            orderTrackingHistory[3].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(3);
+            orderTrackingHistory[4].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(3);
             orderTrackingHistory[4].AccessUserId = "NotMe";
 
             new FakeOrderTrackingHistory(0, QueryRepositoryFactory.OrderTrackingHistoryRepository, orderTrackingHistory);
@@ -134,10 +135,10 @@ namespace Purchasing.Tests.ControllerTests
             {
                 orderTrackingHistory.Add(CreateValidEntities.OrderTrackingHistory(i + 1));
                 orderTrackingHistory[i].AccessUserId = "Me";
-                orderTrackingHistory[i].DateCreated = DateTime.Now.Date;
+                orderTrackingHistory[i].DateCreated = DateTime.UtcNow.ToPacificTime().Date;
             }
-            orderTrackingHistory[3].DateCreated = DateTime.Now.AddDays(3);
-            orderTrackingHistory[4].DateCreated = DateTime.Now.AddDays(3);
+            orderTrackingHistory[3].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(3);
+            orderTrackingHistory[4].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(3);
             //orderTrackingHistory[4].AccessUserId = "NotMe";
 
             new FakeOrderTrackingHistory(0, QueryRepositoryFactory.OrderTrackingHistoryRepository, orderTrackingHistory);
@@ -165,10 +166,10 @@ namespace Purchasing.Tests.ControllerTests
             {
                 orderTrackingHistory.Add(CreateValidEntities.OrderTrackingHistory(i + 1));
                 orderTrackingHistory[i].AccessUserId = "Me";
-                orderTrackingHistory[i].DateCreated = DateTime.Now.Date;
+                orderTrackingHistory[i].DateCreated = DateTime.UtcNow.ToPacificTime().Date;
             }
-            orderTrackingHistory[3].DateCreated = DateTime.Now.AddDays(3);
-            orderTrackingHistory[4].DateCreated = DateTime.Now.AddDays(4); //changed from other tests
+            orderTrackingHistory[3].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(3);
+            orderTrackingHistory[4].DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(4); //changed from other tests
             //orderTrackingHistory[4].AccessUserId = "NotMe";
 
             new FakeOrderTrackingHistory(0, QueryRepositoryFactory.OrderTrackingHistoryRepository, orderTrackingHistory);
@@ -200,7 +201,7 @@ namespace Purchasing.Tests.ControllerTests
             {
                 commentHistory.Add(CreateValidEntities.CommentHistory(i + 1));
                 commentHistory[i].AccessUserId = "Me";
-                commentHistory[i].DateCreated = DateTime.Now.Date.AddDays(i);
+                commentHistory[i].DateCreated = DateTime.UtcNow.ToPacificTime().Date.AddDays(i);
             }
             commentHistory[8].AccessUserId = "NotMe";
 
@@ -237,18 +238,18 @@ namespace Purchasing.Tests.ControllerTests
 
             new FakeOrderHistory(10, QueryRepositoryFactory.OrderHistoryRepository);
             var rtValue1 = new IndexedList<OrderHistory>();
-            rtValue1.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue1.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue1.Results = QueryRepositoryFactory.OrderHistoryRepository.Queryable.Take(5).ToList();
 
             var rtValue2 = new IndexedList<OrderHistory>();
-            rtValue2.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue2.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue2.Results = QueryRepositoryFactory.OrderHistoryRepository.Queryable.Take(3).ToList();
 
             OrderService.Expect(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
-                                                       new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null))
+                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null))
                                                        .Return(rtValue1);
             OrderService.Expect(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
-                                                       new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null))
+                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null))
                                                        .Return(rtValue2);
             #endregion Arrange
 
@@ -263,9 +264,9 @@ namespace Purchasing.Tests.ControllerTests
             Assert.AreEqual(5, (int)data.deniedThisMonth);
             Assert.AreEqual(3, (int)data.completedThisMonth);
             OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
-                                                       new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null));
+                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null));
             OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
-                                                       new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), null));
+                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null));
             #endregion Assert
         }
 

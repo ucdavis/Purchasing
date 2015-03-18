@@ -1,5 +1,6 @@
 using System;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using UCDArch.Testing;
 
@@ -43,7 +44,7 @@ namespace Purchasing.Tests.Core
             rtValue.ObjectName = "ObjectName" + counter.Extra();
             rtValue.SetActionCode(AuditActionType.Create);
             rtValue.Username = "Username" + counter.Extra();
-            rtValue.AuditDate = DateTime.Now.Date;
+            rtValue.AuditDate = DateTime.UtcNow.ToPacificTime().Date;
             if(loadAll)
             {
                 rtValue.ObjectId = "ObjectId" + counter.Extra();
@@ -260,7 +261,7 @@ namespace Purchasing.Tests.Core
         public static OrderTracking OrderTracking(int? counter)
         {
             var rtValue = new OrderTracking();
-            rtValue.DateCreated = DateTime.Now;
+            rtValue.DateCreated = DateTime.UtcNow.ToPacificTime();
             rtValue.Description = "Description" + counter.Extra();
             rtValue.Order = new Order();
             rtValue.StatusCode = new OrderStatusCode();
@@ -462,7 +463,7 @@ namespace Purchasing.Tests.Core
             rtValue.CampusShortName = "CampusShortName" + counter.Extra();
             rtValue.CampusTypeCode = "CampusTypeCode" + counter.Extra();
             rtValue.IsActive = true;
-            rtValue.LastUpdateDate = DateTime.Now;
+            rtValue.LastUpdateDate = DateTime.UtcNow.ToPacificTime();
 
             return rtValue;
         }
@@ -509,7 +510,7 @@ namespace Purchasing.Tests.Core
             rtValue.Vendor = "Vendor" + counter.Extra();
             rtValue.CreatedBy = "CreatedBy" + counter.Extra();
             rtValue.CreatorId = "CreatorId" + counter.Extra();
-            rtValue.DateCreated = DateTime.Now.AddDays(counter ?? 0);
+            rtValue.DateCreated = DateTime.UtcNow.ToPacificTime().AddDays(counter ?? 0);
             rtValue.Status = "Status" + counter.Extra();
             rtValue.IsComplete = true;
             rtValue.TotalAmount = 99.99m;
@@ -519,10 +520,10 @@ namespace Purchasing.Tests.Core
             rtValue.ShipTo = "ShipTo" + counter.Extra();
             rtValue.AllowBackorder = "AllowBackorder" + counter.Extra();
             rtValue.Restricted = "Restricted" + counter.Extra();
-            rtValue.DateNeeded = DateTime.Now.AddDays(counter ?? 0);
+            rtValue.DateNeeded = DateTime.UtcNow.ToPacificTime().AddDays(counter ?? 0);
             rtValue.ShippingType = "ShippingType" + counter.Extra();
             rtValue.ReferenceNumber = "ReferenceNumber" + counter.Extra();
-            rtValue.LastActionDate = DateTime.Now.AddDays(counter ?? 0);
+            rtValue.LastActionDate = DateTime.UtcNow.ToPacificTime().AddDays(counter ?? 0);
             rtValue.LastActionUser = "LastActionUser" + counter.Extra();
             rtValue.Received = "Received" + counter.Extra();
             rtValue.OrderType = "OrderType" + counter.Extra();
@@ -555,11 +556,11 @@ namespace Purchasing.Tests.Core
             var rtValue = new OrderTrackingHistory();
             rtValue.AccessUserId = "AccessUserId" + counter.Extra();
             rtValue.CreatedBy = "CreatedBy" + counter.Extra();
-            rtValue.DateCreated = DateTime.Now;
+            rtValue.DateCreated = DateTime.UtcNow.ToPacificTime();
             rtValue.OrderId = counter.HasValue ? counter.Value : 99;
             rtValue.RequestNumber = "RequestNumber" + counter.Extra();
             rtValue.Summary = "Summary" + counter.Extra();
-            rtValue.TrackingDate = DateTime.Now;
+            rtValue.TrackingDate = DateTime.UtcNow.ToPacificTime();
 
             return rtValue;
         }
@@ -571,7 +572,7 @@ namespace Purchasing.Tests.Core
             rtValue.Comment = "Comment" + counter.Extra();
             rtValue.CreatedBy = "CreatedBy" + counter.Extra();
             rtValue.CreatedByUserId = "CreatedByUserId" + counter.Extra();
-            rtValue.DateCreated = DateTime.Now;
+            rtValue.DateCreated = DateTime.UtcNow.ToPacificTime();
             rtValue.OrderId = counter.HasValue ? counter.Value : 99;
             rtValue.RequestNumber = "RequestNumber" + counter.Extra();
 

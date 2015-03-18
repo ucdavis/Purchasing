@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NHibernate;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UCDArch.Core.PersistanceSupport;
@@ -211,7 +212,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestCreatedWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             Notification record = GetValid(99);
             record.Created = compareDate;
             #endregion Arrange
@@ -236,7 +237,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestCreatedWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.Created = compareDate;
             #endregion Arrange
@@ -261,7 +262,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestCreatedWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.Created = compareDate;
             #endregion Arrange
@@ -289,7 +290,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestSentWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             Notification record = GetValid(99);
             record.Sent = compareDate;
             #endregion Arrange
@@ -314,7 +315,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestSentWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.Sent = compareDate;
             #endregion Arrange
@@ -339,7 +340,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestSentWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.Sent = compareDate;
             #endregion Arrange
@@ -383,7 +384,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestNotificationSentIsReadOnly()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = NotificationRepository.Queryable.Single(a => a.User.Id == "3");
             record.Sent = compareDate;
             #endregion Arrange

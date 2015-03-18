@@ -472,7 +472,7 @@
 
 //        public void SetupOrderTracking()
 //        {
-//            var whenApproved = DateTime.Now.AddDays(-10);
+//            var whenApproved = DateTime.UtcNow.ToPacificTime().AddDays(-10);
 //            var orderTracking = new List<OrderTracking>();
 //            var allOrders = OrderRepository.Queryable.ToList();
 //            foreach (var order in allOrders)

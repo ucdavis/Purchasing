@@ -90,9 +90,32 @@ namespace Purchasing.WS
                 doc.deliveryInstructionText = string.Empty;     // don't have this from anywhere yet
 
                 // shipping/handling and freight
-                doc.freightAmount = order.FreightAmount.ToString();
+                //doc.freightAmount = order.FreightAmount.ToString();
                 doc.shippingAndHandlingAmount = order.ShippingAmount.ToString();
 
+                var belowItems = new List<purchasingBelowTheLineItemInfo>();
+                
+                // Below item does not appear to be working for shipping & handling. Use single line item as above.
+                //var belowLi = new purchasingBelowTheLineItemInfo
+                //{
+                //    itemTypeCode = "SHPD",
+                //    belowItemDescription = "Shipping and Handling",
+                //    belowItemAmount = order.ShippingAmount.ToString()
+                //};
+
+                //belowItems.Add(belowLi);
+                
+                var belowLi = new purchasingBelowTheLineItemInfo
+                {
+                    itemTypeCode = "SHIP",
+                    belowItemDescription = "Freight",
+                    belowItemAmount = order.FreightAmount.ToString()
+                };
+
+                belowItems.Add(belowLi);
+                
+                doc.belowTheLineItems = belowItems.ToArray();
+               
                 var freightDistributions = new List<purchasingAccountingInfo>();
                 var shippingDistributions = new List<purchasingAccountingInfo>();
                 var fsDistributions = CalculateShippingFreightDistributions(order);

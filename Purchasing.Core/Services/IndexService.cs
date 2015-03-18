@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using AutoMapper.Internal;
@@ -31,6 +32,7 @@ namespace Purchasing.Core.Services
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
         void UpdateCommentsIndex();
+
         ElasticClient GetIndexClient();
         void CreateTrackingIndex();
     }
@@ -49,9 +51,9 @@ namespace Purchasing.Core.Services
         public ElasticSearchIndexService(IDbService dbService)
         {
             _dbService = dbService;
-
+            
             var settings =
-                new ConnectionSettings(new Uri("https://ekgrfdtq8y:o4jy2eyhdu@caesdo-8165237795.us-west-2.bonsai.io"),
+                new ConnectionSettings(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]),
                     "prepurchasing");
             _client = new ElasticClient(settings);
         }
@@ -130,7 +132,8 @@ namespace Purchasing.Core.Services
 
         public void UpdateOrderIndexes()
         {
-            var lastUpdate = DateTime.UtcNow.ToPacificTime().Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
+            var lastUpdate = DateTime.UtcNow.ToPacificTime().AddMinutes(-10); //10 minutes ago.
+            //var lastUpdate = DateTime.UtcNow.ToPacificTime().Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
 
             IEnumerable<OrderHistory> orderHistoryEntries = null;
             IEnumerable<SearchResults.LineResult> lineItems = null;
@@ -246,6 +249,7 @@ namespace Purchasing.Core.Services
 
             WriteIndex(comments, Indexes.Comments, recreate: false);
         }
+
 
         private IEnumerable<OrderTrackingEntity> ProcessTrackingEntities(IEnumerable<OrderTrackingDto> orderTrackingDtos)
         {

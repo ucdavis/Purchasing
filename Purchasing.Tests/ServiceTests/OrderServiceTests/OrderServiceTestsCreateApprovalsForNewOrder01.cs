@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Rhino.Mocks;
 using UCDArch.Core.Utils;
@@ -284,7 +285,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals.Add(CreateValidEntities.AutoApproval(1));
             autoApprovals[0].User = CreateValidEntities.User(11);
             autoApprovals[0].IsActive = true;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(1);
             autoApprovals[0].TargetUser = order.CreatedBy;
             autoApprovals[0].Account = null;
             new FakeAutoApprovals(0, AutoAprovalRepository, autoApprovals);
@@ -355,7 +356,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals.Add(CreateValidEntities.AutoApproval(1));
             autoApprovals[0].User = CreateValidEntities.User(11);
             autoApprovals[0].IsActive = true;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(1);
             autoApprovals[0].TargetUser = null;
             autoApprovals[0].Account = workgroupAccounts[0].Account;
             new FakeAutoApprovals(0, AutoAprovalRepository, autoApprovals);
@@ -424,7 +425,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals.Add(CreateValidEntities.AutoApproval(1));
             autoApprovals[0].User = CreateValidEntities.User(11);
             autoApprovals[0].IsActive = true;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(1);
             autoApprovals[0].TargetUser = null;
             autoApprovals[0].Account = workgroupAccounts[0].Account;
             autoApprovals[0].Equal = true;
@@ -500,7 +501,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals[0].IsActive = true;
             autoApprovals[0].TargetUser = null;
             autoApprovals[0].Account = workgroupAccounts[0].Account;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(-1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(-1);
             new FakeAutoApprovals(0, AutoAprovalRepository, autoApprovals);
 
             #endregion Arrange
@@ -571,7 +572,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals[0].IsActive = false;
             autoApprovals[0].TargetUser = null;
             autoApprovals[0].Account = workgroupAccounts[0].Account;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(1);
             new FakeAutoApprovals(0, AutoAprovalRepository, autoApprovals);
 
             #endregion Arrange
@@ -642,7 +643,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals[0].IsActive = true;
             autoApprovals[0].TargetUser = null;
             autoApprovals[0].Account = workgroupAccounts[0].Account;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(1);
             new FakeAutoApprovals(0, AutoAprovalRepository, autoApprovals);
 
             #endregion Arrange
@@ -711,7 +712,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals[0].IsActive = true;
             autoApprovals[0].TargetUser = null;
             autoApprovals[0].Account = workgroupAccounts[0].Account;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(1);
             autoApprovals[0].Equal = true;
             autoApprovals[0].LessThan = false;
             autoApprovals[0].MaxAmount = 200.00m;
@@ -783,7 +784,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals[0].IsActive = true;
             autoApprovals[0].TargetUser = null;
             autoApprovals[0].Account = workgroupAccounts[0].Account;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(1);
             autoApprovals[0].Equal = true;
             autoApprovals[0].LessThan = false;
             autoApprovals[0].MaxAmount = 200.00m;
@@ -855,7 +856,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals[0].IsActive = true;
             autoApprovals[0].TargetUser = null;
             autoApprovals[0].Account = workgroupAccounts[0].Account;
-            autoApprovals[0].Expiration = DateTime.Now.AddDays(1);
+            autoApprovals[0].Expiration = DateTime.UtcNow.ToPacificTime().AddDays(1);
             autoApprovals[0].Equal = false;
             autoApprovals[0].LessThan = true;
             autoApprovals[0].MaxAmount = 200.00m;
