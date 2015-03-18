@@ -477,7 +477,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (viewModel.Columns.OrderTrackingEntities.Count == defaultResultSize)
             {
-                ErrorMessage = string.Format("Max result size of {0} has been reached. Please refine your filters to show complete results.", defaultResultSize);
+                ErrorMessage = string.Format("Max result size of {0} has been reached. Please refine your filters to show complete results. Averages are accurate for the entire set, but not all rows are displayed.", defaultResultSize);
             }
             
             viewModel.JsonData = GetTimeReportData(viewModel.Columns);
