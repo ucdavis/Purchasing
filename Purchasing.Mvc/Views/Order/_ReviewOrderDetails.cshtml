@@ -6,7 +6,7 @@
         <a href="#" class="ui-icon ui-icon-help" title="Order Request Number Is For Internal Use Only" style="float:left;" ></a>&nbsp;&nbsp;
         <span style="float:none">Request # @Model.Order.RequestNumber</span>
     </header>
-
+    
     <div class="section-contents">
 
         <div class="col1">
@@ -70,13 +70,20 @@
                     <li>
                         <span>Order Type:</span><strong>@Model.Order.OrderType.Name @(!string.IsNullOrEmpty(Model.Order.KfsDocType) ? string.Format("({0})", Model.Order.KfsDocType) : string.Empty)</strong>
                     </li>
-                    @if (Model.Complete)
+                    if (Model.Complete)
                      {
                          <li>
                              <span>Post Order Status</span>
                              @if (Model.CanReceiveItems)
                              {
-                                 @Html.DropDownListFor(a=> a.Order.PostStatus, SelectLists.PostStatusList)
+                                 @Html.DropDownListFor(a=> a.Order.PostStatus, SelectLists.PostStatusList, new { @class="PostStatusDDL"})
+                                 <span class="poststatus-loader" style="display: none;" >
+                                     <img src='@Url.Image("ajax-loader.gif")' />
+                                 </span>
+                                <span id="poststatus-ok" style="display: none;">
+                                    <a href="#" class="ui-icon ui-icon-check"></a>
+                                </span>
+
                              }
                              else
                              {

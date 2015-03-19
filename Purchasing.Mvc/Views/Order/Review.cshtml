@@ -139,32 +139,33 @@
 
     <script type="text/javascript">
 
-        $(function () {
-            purchasing.options({
-                AddCommentUrl: "@Url.Action("AddComment", "Order", new {id = Model.Order.Id})",
-                UpdateReferenceNumberUrl: '@Url.Action("UpdateReferenceNumber", "Order", new {id = Model.Order.Id})',
-                UpdatePoNumberUrl: '@Url.Action("UpdatePoNumber", "Order", new {id = Model.Order.Id})',
-                UpdateTagUrl: '@Url.Action("UpdateTag", "Order", new {id = Model.Order.Id})',
-                UpdateNoteUrl: '@Url.Action("UpdateNote", "Order", new {id = Model.Order.Id})',
-                ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new {id = Model.Order.Id})",
-                FileUploadUrl: "@Url.Action("UploadFile", "Order", new {orderId = Model.Order.Id})",
-                KfsStatusUrl: '@Url.Action("GetKfsStatus", "Order", new {id = Model.Order.Id})',
-                UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
-                PeepsUrl: '@Url.Action("GetPeeps", "Order", new {id = Model.Order.Id})',
-                AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
-                CanEdit: '@Model.CanEditOrder' === 'True',
-                CanCancel: '@Model.CanCancelOrder' === 'True',
-                CanCancelCompletedOrder: '@Model.CanCancelCompletedOrder' === 'True',
-                CanComplete: '@Model.IsPurchaser' === 'True',
-                IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
-                IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True',
-                UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new {id = Model.Order.Id})',
-                AttachmentCategorySource: ["Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],
-                ViewAttachment: '@Url.Action("ViewFile")'
-            });
-
-            purchasing.init();
+    $(function () {
+        purchasing.options({
+            AddCommentUrl: "@Url.Action("AddComment", "Order", new {id = Model.Order.Id})",
+            UpdateReferenceNumberUrl: '@Url.Action("UpdateReferenceNumber", "Order", new {id = Model.Order.Id})',
+            UpdatePoNumberUrl: '@Url.Action("UpdatePoNumber", "Order", new {id = Model.Order.Id})',
+            UpdateTagUrl: '@Url.Action("UpdateTag", "Order", new {id = Model.Order.Id})',
+            UpdatePostStatusUrl: '@Url.Action("UpdatePostStatus", "Order", new {id = Model.Order.Id})',
+            UpdateNoteUrl: '@Url.Action("UpdateNote", "Order", new {id = Model.Order.Id})',
+            ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new {id = Model.Order.Id})",
+            FileUploadUrl: "@Url.Action("UploadFile", "Order", new {orderId = Model.Order.Id})",
+            KfsStatusUrl: '@Url.Action("GetKfsStatus", "Order", new {id = Model.Order.Id})',
+            UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
+            PeepsUrl: '@Url.Action("GetPeeps", "Order", new {id = Model.Order.Id})',
+            AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
+            CanEdit: '@Model.CanEditOrder' === 'True',
+            CanCancel: '@Model.CanCancelOrder' === 'True',
+            CanCancelCompletedOrder: '@Model.CanCancelCompletedOrder' === 'True',
+            CanComplete: '@Model.IsPurchaser' === 'True',
+            IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
+            IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True',
+            UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new {id = Model.Order.Id})',
+            AttachmentCategorySource: ["Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],
+            ViewAttachment: '@Url.Action("ViewFile")'
         });
+
+        purchasing.init();
+    });
 
     </script>
 

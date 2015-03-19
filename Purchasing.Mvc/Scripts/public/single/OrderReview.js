@@ -45,7 +45,8 @@
             attachOrderNotesEvents();
         }
         attachNav();
-        
+        attachPostStatusEvents();
+
     };
 
     function attachNav() {
@@ -55,6 +56,33 @@
 
     }
 
+    function attachPostStatusEvents() {
+        $(".PostStatusDDL").change(function () {
+            var id = $("#id").val();
+            var statusVal = $(this).val();
+           
+            var antiforgery = $("input[name='__RequestVerificationToken']").val();
+            var url = options.UpdatePostStatusUrl;
+
+            var okIcon = $("#poststatus-ok");
+            var loader = $(".poststatus-loader");
+
+            okIcon.hide();
+            loader.show();
+            
+            $.post(url, { id: id, postStatusValue: statusVal, __RequestVerificationToken: antiforgery }, function (result) {
+                        loader.hide();
+                        okIcon.show();
+                    
+            })
+            .fail( function() {
+                loader.hide();
+                    okIcon.hide();
+                    alert("There was a problem updating the Post Status.");
+            });
+        });
+
+    }
 
     function attachReferenceNumberEvents() {
         $("#modify-reference-number-dialog").dialog({

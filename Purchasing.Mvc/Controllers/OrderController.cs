@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Web.Mvc;
 using Elmah;
 using Microsoft.Web.Mvc;
@@ -1084,6 +1085,27 @@ namespace Purchasing.Mvc.Controllers
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             return new JsonNetResult(new { success = true, orderNote });
+
+        }
+
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdatePostStatus(int id, string postStatusValue)
+        {
+            
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+
+            var priorValue = order.PostStatus;
+
+            order.PostStatus = postStatusValue;
+
+            _eventService.OrderUpdated(order, string.Format("Order Post Status Updated. Prior Value: {0}", priorValue));
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new { success = true, postStatusValue });
 
         }
 
