@@ -1,11 +1,12 @@
-﻿@model ReviewOrderViewModel
+﻿@using Purchasing.Mvc.Helpers
+@model ReviewOrderViewModel
 <section id="order-details" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header showInNav">
         <a href="#" class="ui-icon ui-icon-help" title="Order Request Number Is For Internal Use Only" style="float:left;" ></a>&nbsp;&nbsp;
         <span style="float:none">Request # @Model.Order.RequestNumber</span>
     </header>
-
+    
     <div class="section-contents">
 
         <div class="col1">
@@ -69,9 +70,27 @@
                     <li>
                         <span>Order Type:</span><strong>@Model.Order.OrderType.Name @(!string.IsNullOrEmpty(Model.Order.KfsDocType) ? string.Format("({0})", Model.Order.KfsDocType) : string.Empty)</strong>
                     </li>
-                    <li>
-                        <span>Post Order Status</span><strong>@Model.Order.PostStatus</strong>
-                    </li>
+                    if (Model.Complete)
+                     {
+                         <li>
+                             <span>Post Order Status</span>
+                             @if (Model.CanReceiveItems)
+                             {
+                                 @Html.DropDownListFor(a=> a.Order.PostStatus, SelectLists.PostStatusList, new { @class="PostStatusDDL"})
+                                 <span class="poststatus-loader" style="display: none;" >
+                                     <img src='@Url.Image("ajax-loader.gif")' />
+                                 </span>
+                                <span id="poststatus-ok" style="display: none;">
+                                    <a href="#" class="ui-icon ui-icon-check"></a>
+                                </span>
+
+                             }
+                             else
+                             {
+                                 <strong>@Model.Order.PostStatus</strong>
+                             }
+                         </li>
+                     }
                     <li>
                         <span>Order Notes:</span><strong id="orderNote" style="width:auto;">@(string.IsNullOrWhiteSpace(Model.Order.OrderNote) ? "[None]" : Model.Order.OrderNote)</strong>
                         <a id="edit-ordernotes" href="#" class="ui-icon ui-icon-pencil" title="Edit Order Notes"></a>
