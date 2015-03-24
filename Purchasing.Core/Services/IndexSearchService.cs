@@ -115,6 +115,7 @@ namespace Purchasing.Core.Services
                     s.Index(index)
                         .Query(q => q.Terms(o => o.WorkgroupId, workgroupIds))
                         .Filter(f => f.Range(r => r.OnField(o => o.DateCreated).Greater(createdAfter).Lower(createdBefore)))
+                        .Size(int.MaxValue)
                 );
 
             return results.Hits.Select(h => h.Source).ToList();
