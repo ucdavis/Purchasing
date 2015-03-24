@@ -11,6 +11,7 @@ namespace Purchasing.Core.Services
     {
         private readonly IIndexService _indexService;
         private ElasticClient _client;
+        private const int MaxSeachResults = 1000;
 
         public ElasticSearchService(IIndexService indexService)
         {
@@ -25,7 +26,9 @@ namespace Purchasing.Core.Services
             var results = _client.Search<OrderHistory>(
                 s =>
                     s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
-                        .Filter(f => f.Terms(x => x.OrderId, allowedIds)));
+                        .Filter(f => f.Terms(x => x.OrderId, allowedIds))
+                        .SortDescending(x => x.LastActionDate)
+                        .Size(MaxSeachResults));
 
             return results.Hits.Select(h => AutoMapper.Mapper.Map<SearchResults.OrderResult>(h.Source)).ToList();
         }
@@ -37,7 +40,9 @@ namespace Purchasing.Core.Services
             var results = _client.Search<SearchResults.LineResult>(
                 s =>
                     s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
-                        .Filter(f => f.Terms(x => x.OrderId, allowedIds)));
+                        .Filter(f => f.Terms(x => x.OrderId, allowedIds))
+                        .SortDescending(x=>x.OrderId)
+                        .Size(MaxSeachResults));
 
             return results.Hits.Select(h => h.Source).ToList();
         }
@@ -49,7 +54,9 @@ namespace Purchasing.Core.Services
             var results = _client.Search<SearchResults.CustomFieldResult>(
                 s =>
                     s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
-                        .Filter(f => f.Terms(x => x.OrderId, allowedIds)));
+                        .Filter(f => f.Terms(x => x.OrderId, allowedIds))
+                        .SortDescending(x=>x.OrderId)
+                        .Size(MaxSeachResults));
 
             return results.Hits.Select(h => h.Source).ToList();
         }
@@ -61,7 +68,9 @@ namespace Purchasing.Core.Services
             var results = _client.Search<SearchResults.CommentResult>(
                 s =>
                     s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
-                        .Filter(f => f.Terms(x => x.OrderId, allowedIds)));
+                        .Filter(f => f.Terms(x => x.OrderId, allowedIds))
+                        .SortDescending(x => x.DateCreated)
+                        .Size(MaxSeachResults));
 
             return results.Hits.Select(h => h.Source).ToList();
         }
