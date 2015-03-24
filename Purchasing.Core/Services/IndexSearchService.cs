@@ -27,6 +27,7 @@ namespace Purchasing.Core.Services
                 s =>
                     s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
                         .Filter(f => f.Terms(x => x.OrderId, allowedIds))
+                        .SortDescending(x => x.LastActionDate)
                         .Size(MaxSeachResults));
 
             return results.Hits.Select(h => AutoMapper.Mapper.Map<SearchResults.OrderResult>(h.Source)).ToList();
@@ -40,6 +41,7 @@ namespace Purchasing.Core.Services
                 s =>
                     s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
                         .Filter(f => f.Terms(x => x.OrderId, allowedIds))
+                        .SortDescending(x=>x.OrderId)
                         .Size(MaxSeachResults));
 
             return results.Hits.Select(h => h.Source).ToList();
@@ -53,6 +55,7 @@ namespace Purchasing.Core.Services
                 s =>
                     s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
                         .Filter(f => f.Terms(x => x.OrderId, allowedIds))
+                        .SortDescending(x=>x.OrderId)
                         .Size(MaxSeachResults));
 
             return results.Hits.Select(h => h.Source).ToList();
@@ -66,6 +69,7 @@ namespace Purchasing.Core.Services
                 s =>
                     s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
                         .Filter(f => f.Terms(x => x.OrderId, allowedIds))
+                        .SortDescending(x => x.DateCreated)
                         .Size(MaxSeachResults));
 
             return results.Hits.Select(h => h.Source).ToList();
