@@ -77,22 +77,22 @@
                              
                              <span>Post Order Status:</span>
                              <span style="white-space:nowrap">
-    @if (Model.CanReceiveItems && (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false))
-    {
-        @Html.DropDownListFor(a => a.Order.PostStatus, SelectLists.PostStatusList, new { @class = "PostStatusDDL" })
-        <span class="poststatus-loader" style="display: none;">
-            <img src='@Url.Image("ajax-loader.gif")' />
-        </span>
-        <span id="poststatus-ok" style="display: none;">
-            <a href="#" class="ui-icon ui-icon-check"></a>
-        </span>
+                                 @if (Model.CanReceiveItems && (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false))
+                                 {
+                                     @Html.DropDownListFor(a => a.Order.PostStatus, SelectLists.PostStatusList, new { @class = "PostStatusDDL" })
+                                     <span class="poststatus-loader" style="display: none;">
+                                         <img src='@Url.Image("ajax-loader.gif")' />
+                                     </span>
+                                     <span id="poststatus-ok" style="display: none;">
+                                         <a href="#" class="ui-icon ui-icon-check"></a>
+                                     </span>
 
-    }
-    else
-    {
-        <strong>@Model.Order.PostStatus</strong>
-    }
-</span>
+                                 }
+                                 else
+                                 {
+                                     <strong>@Model.Order.PostStatus</strong>
+                                 }
+                             </span>
 
                          </li>
                      }
