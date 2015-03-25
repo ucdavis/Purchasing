@@ -174,7 +174,7 @@ namespace Purchasing.Mvc.Services
             var description = overrideDescription;
             if (string.IsNullOrWhiteSpace(description))
             {
-                description = string.Format("{0} received {1} of {2}", user.FullName, quantity, lineItem.Description);
+                description = string.Format("{0} received {1} of {2}", user.FullName, string.Format("{0:0.###}",quantity), lineItem.Description);
             }
 
             var trackingEvent = new OrderTracking
@@ -201,7 +201,7 @@ namespace Purchasing.Mvc.Services
             var description = overrideDescription;
             if (string.IsNullOrWhiteSpace(description))
             {
-                description = string.Format("{0} paid {1} of {2}", user.FullName, quantity, lineItem.Description);
+                description = string.Format("{0} paid {1} of {2}", user.FullName, string.Format("{0:0.###}",quantity), lineItem.Description);
             }
 
             var trackingEvent = new OrderTracking
