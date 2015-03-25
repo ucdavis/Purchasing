@@ -151,7 +151,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(19, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(20, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -561,6 +561,28 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.AreEqual(0, allAttributes.Count());
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// 20
+        /// </summary>
+        [TestMethod]
+        public void TestControllerMethodNeedToCheckWorkgroupPermissionsContainsExpectedAttributes()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethod("NeedToCheckWorkgroupPermissions");
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = controllerMethod.GetCustomAttributes(true).OfType<AllowAnonymousAttribute>();
+            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, allAttributes.Count());
+            Assert.AreEqual(1, expectedAttribute.Count());
             #endregion Assert
         }
         #endregion Controller Method Tests

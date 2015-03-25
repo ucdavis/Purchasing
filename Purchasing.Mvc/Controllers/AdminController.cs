@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -433,6 +434,51 @@ namespace Purchasing.Mvc.Controllers
             }
 
             return View(view);
+        }
+
+        /// <summary>
+        /// #20
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        public virtual bool NeedToCheckWorkgroupPermissions(string key)
+        {
+            if (string.IsNullOrWhiteSpace(key) || key != ConfigurationManager.AppSettings["ValidationKey"])
+            {
+                return true;
+            }
+            var childWorkGroups = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && !a.Administrative);
+            foreach (var childWorkGroup in childWorkGroups)
+            {
+                var parentWorkGroupIds = _workgroupService.GetParentWorkgroups(childWorkGroup.Id);
+                var parentPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => parentWorkGroupIds.Contains(a.Workgroup.Id)).Select(s => new { s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.Workgroup.Id, s.Workgroup.IsFullFeatured }).ToList();
+                var childPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.Workgroup == childWorkGroup && a.IsAdmin).Select(s => new { s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.ParentWorkgroup.Id, s.IsFullFeatured }).ToList();
+
+                var missingChildPermissions = parentPermissions.Where(a => !childPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
+                var extraChildPermissions = childPermissions.Where(a => !parentPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
+
+                if (missingChildPermissions.Count > 0 || extraChildPermissions.Count > 0)
+                {
+                    var sgMessage = new MailMessage(
+                        new MailAddress("opp-noreply@ucdavis.edu", "OPP No Reply"),
+                        new MailAddress("opp-tech@ucdavis.edu"))
+                    {
+                        Subject = "Check Workgroup Permissions",
+                        Body = "Run the Check"
+                    };
+
+                    var smtpClient = new SmtpClient("smtp.sendgrid.net", Convert.ToInt32(587));
+                    var credentials = new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"],
+                        WebConfigurationManager.AppSettings["SendGridPassword"]);
+                    smtpClient.Credentials = credentials;
+
+                    smtpClient.Send(sgMessage);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
