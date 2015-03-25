@@ -75,8 +75,7 @@
                      {
                          <li>
                              
-                             <span>Post Order Status:</span>
-                             <span style="white-space:nowrap">
+                             <span>Post Order Status:</span><span style="white-space:nowrap">
                                  @if (Model.CanReceiveItems && (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false))
                                  {
                                      @Html.DropDownListFor(a => a.Order.PostStatus, SelectLists.PostStatusList, new { @class = "PostStatusDDL" })
