@@ -1508,7 +1508,7 @@ namespace Purchasing.Mvc.Controllers
                     var history = new HistoryReceivedLineItem();
                     history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
                     history.OldReceivedQuantity = lineItem.QuantityReceived;
-                    history.NewReceivedQuantity = (lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity : receivedQuantity);
+                    history.NewReceivedQuantity = receivedQuantity;
                     history.LineItem = lineItem;
                     history.PayInvoice = false;
                                         
@@ -1534,8 +1534,14 @@ namespace Purchasing.Mvc.Controllers
                         unaccounted = string.Format("{0}", string.Format("{0:0.###}", (diff*-1)));
                         showRed = false;
                     }
+
+                    var updatedAmount = 0m;
+                    if (history.OldReceivedQuantity.HasValue && history.NewReceivedQuantity.HasValue)
+                    {
+                        updatedAmount = history.NewReceivedQuantity.Value - history.OldReceivedQuantity.Value;
+                    }
                                     
-                    _eventService.OrderReceived(lineItem.Order, lineItem, receivedQuantity.Value);
+                    _eventService.OrderReceived(lineItem.Order, lineItem, updatedAmount);
                    
 
                     _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
