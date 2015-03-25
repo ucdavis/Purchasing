@@ -1701,7 +1701,13 @@ namespace Purchasing.Mvc.Controllers
                         showRed = false;
                     }
 
-                    _eventService.OrderPaid(lineItem.Order, lineItem, receivedQuantity.Value);
+                    var updatedAmount = 0m;
+                    if (history.OldReceivedQuantity.HasValue && history.NewReceivedQuantity.HasValue)
+                    {
+                        updatedAmount = history.NewReceivedQuantity.Value - history.OldReceivedQuantity.Value;
+                    }
+
+                    _eventService.OrderPaid(lineItem.Order, lineItem, updatedAmount);
 
                     _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
                 }
