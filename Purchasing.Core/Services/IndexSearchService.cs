@@ -130,9 +130,9 @@ namespace Purchasing.Core.Services
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Size(size)
-                    .Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore))
+                    .Query(a=> a.Filtered(fq=> fq.Query(q=> q.MatchAll()).Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore))
                                  && f.Term(x => x.IsComplete, true)
-                                 && f.Terms(o => o.WorkgroupId, workgroupIds))
+                                 && f.Terms(o => o.WorkgroupId, workgroupIds))))
                     .Aggregations(
                         a =>
                             a.Average("AverageTimeToCompletion", avg => avg.Field(x => x.MinutesToCompletion))
