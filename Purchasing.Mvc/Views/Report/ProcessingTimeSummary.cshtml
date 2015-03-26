@@ -2,7 +2,7 @@
 @model Purchasing.Mvc.Controllers.ReportProcessingTimeSummaryViewModel
 
 @{
-    ViewBag.Title = "ProcessingTimeSummary";
+    ViewBag.Title = "Processing Time Summary";
 }
 
 @section AdditionalStyles
@@ -75,7 +75,15 @@
                         name: ordersForPerson[orderIndex].orderId,
                         parent: person_p.id,
                         value: Math.round(ordersForPerson[orderIndex].minutes),
-                        displayName: ordersForPerson[orderIndex].orderId
+                        displayName: ordersForPerson[orderIndex].orderId,
+                        events: {
+                            click: function() {
+                                var getIndexOfURL = location.protocol+"//"+location.host+"/Order/Review/" + ordersForPerson[orderIndex].orderId;
+                                if (getIndexOfURL){
+                                    window.open(getIndexOfURL);
+                                }
+                            }
+                        }
                     };
 
                     if (!order_p.value) {
