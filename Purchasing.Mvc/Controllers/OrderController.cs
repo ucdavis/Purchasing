@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Web.Mvc;
 using Elmah;
 using Microsoft.Web.Mvc;
@@ -1087,6 +1088,27 @@ namespace Purchasing.Mvc.Controllers
 
         }
 
+        [HttpPost]
+        [AuthorizeReadOrEditOrder]
+        public JsonNetResult UpdatePostStatus(int id, string postStatusValue)
+        {
+            
+            //Get the matching order, and only if the order is complete
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Single(x => x.Id == id && x.StatusCode.IsComplete);
+
+            var priorValue = order.PostStatus;
+
+            order.PostStatus = postStatusValue;
+
+            _eventService.OrderUpdated(order, string.Format("Order Post Status Updated. Prior Value: {0}", priorValue));
+
+            _repositoryFactory.OrderRepository.EnsurePersistent(order);
+
+            return new JsonNetResult(new { success = true, postStatusValue });
+
+        }
+
         [AuthorizeReadOrEditOrder]
         public JsonNetResult GetLineItemsAndSplits(int id)
         {
@@ -1486,7 +1508,7 @@ namespace Purchasing.Mvc.Controllers
                     var history = new HistoryReceivedLineItem();
                     history.User = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == CurrentUser.Identity.Name);
                     history.OldReceivedQuantity = lineItem.QuantityReceived;
-                    history.NewReceivedQuantity = (lineItem.QuantityReceived != null ? lineItem.QuantityReceived + receivedQuantity : receivedQuantity);
+                    history.NewReceivedQuantity = receivedQuantity;
                     history.LineItem = lineItem;
                     history.PayInvoice = false;
                                         
@@ -1512,8 +1534,14 @@ namespace Purchasing.Mvc.Controllers
                         unaccounted = string.Format("{0}", string.Format("{0:0.###}", (diff*-1)));
                         showRed = false;
                     }
+
+                    var updatedAmount = 0m;
+                    if (history.OldReceivedQuantity.HasValue && history.NewReceivedQuantity.HasValue)
+                    {
+                        updatedAmount = history.NewReceivedQuantity.Value - history.OldReceivedQuantity.Value;
+                    }
                                     
-                    _eventService.OrderReceived(lineItem.Order, lineItem, receivedQuantity.Value);
+                    _eventService.OrderReceived(lineItem.Order, lineItem, updatedAmount);
                    
 
                     _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
@@ -1673,7 +1701,13 @@ namespace Purchasing.Mvc.Controllers
                         showRed = false;
                     }
 
-                    _eventService.OrderPaid(lineItem.Order, lineItem, receivedQuantity.Value);
+                    var updatedAmount = 0m;
+                    if (history.OldReceivedQuantity.HasValue && history.NewReceivedQuantity.HasValue)
+                    {
+                        updatedAmount = history.NewReceivedQuantity.Value - history.OldReceivedQuantity.Value;
+                    }
+
+                    _eventService.OrderPaid(lineItem.Order, lineItem, updatedAmount);
 
                     _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
                 }
