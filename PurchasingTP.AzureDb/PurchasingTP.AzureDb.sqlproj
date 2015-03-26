@@ -185,6 +185,7 @@
     <Build Include="DataSync\User Defined Types\vBuildings_dss_BulkType_fc56ecf1-61c5-4593-80c0-47ccf467ce70.sql" />
     <Build Include="DataSync\User Defined Types\vCommodities_dss_BulkType_fc56ecf1-61c5-4593-80c0-47ccf467ce70.sql" />
     <Build Include="Security\DataSync.sql" />
+    <Build Include="dbo\Views\vOrderTrackingIndex.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />

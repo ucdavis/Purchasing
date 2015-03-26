@@ -5,6 +5,7 @@ using Nest;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 
+
 namespace Purchasing.Core.Services
 {
     public class ElasticSearchService : ISearchService
@@ -122,12 +123,44 @@ namespace Purchasing.Core.Services
             var results = _client.Search<OrderHistory>(
                 s =>
                     s.Index(index)
-                        .Query(q => q.Terms(o => o.WorkgroupId, workgroupIds))
-                        .Filter(f => f.Range(r => r.OnField(o => o.DateCreated).Greater(createdAfter).Lower(createdBefore)))
+                        .Filter(f => f.Range(r => r.OnField(o => o.DateCreated).Greater(createdAfter).Lower(createdBefore))
+                        && f.Terms(o => o.WorkgroupId, workgroupIds))
                         .Size(int.MaxValue)
                 );
 
             return results.Hits.Select(h => h.Source).ToList();
+        }
+
+        public OrderTrackingAggregation GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups,
+            DateTime createdAfter, DateTime createBefore, int size = 1000)
+        {
+            var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
+            var workgroupIds = workgroups.Select(w => w.Id).ToArray();
+            
+            var results = _client.Search<OrderTrackingEntity>(
+                s => s.Index(index)
+                    .Size(size)
+                    .Query(a=> a.Filtered(fq=> fq.Query(q=> q.MatchAll()).Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore))
+                                 && f.Term(x => x.IsComplete, true)
+                                 && f.Terms(o => o.WorkgroupId, workgroupIds))))
+                    .Aggregations(
+                        a =>
+                            a.Average("AverageTimeToCompletion", avg => avg.Field(x => x.MinutesToCompletion))
+                                .Average("AverageTimeToApprover", avg => avg.Field(x => x.MinutesToApprove))
+                                .Average("AverageTimeToAccountManagers",
+                                    avg => avg.Field(x => x.MinutesToAccountManagerComplete))
+                                .Average("AverageTimeToPurchaser", avg => avg.Field(x => x.MinutesToPurchaserComplete)))
+                );
+            
+
+            return new OrderTrackingAggregation
+            {
+                OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
+                AverageTimeToAccountManagers = results.Aggs.Average("AverageTimeToAccountManagers").Value,
+                AverageTimeToApprover = results.Aggs.Average("AverageTimeToApprover").Value,
+                AverageTimeToCompletion = results.Aggs.Average("AverageTimeToCompletion").Value,
+                AverageTimeToPurchaser = results.Aggs.Average("AverageTimeToPurchaser").Value
+            };
         }
     }
 }
