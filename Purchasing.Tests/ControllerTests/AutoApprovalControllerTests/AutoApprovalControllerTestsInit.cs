@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Routing;
 using Castle.Windsor;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc;
 using Purchasing.Core.Domain;
@@ -80,9 +81,9 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             autoApprovals[0].User.SetIdTo("NotMe");
             autoApprovals[1].IsActive = false;
-            autoApprovals[2].Expiration = DateTime.Now.Date;
-            autoApprovals[3].Expiration = DateTime.Now.Date.AddDays(1);
-            autoApprovals[4].Expiration = DateTime.Now.Date.AddDays(-1);
+            autoApprovals[2].Expiration = DateTime.UtcNow.ToPacificTime().Date;
+            autoApprovals[3].Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(1);
+            autoApprovals[4].Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(-1);
 
             new FakeAutoApprovals(0, AutoApprovalRepository, autoApprovals);
         }

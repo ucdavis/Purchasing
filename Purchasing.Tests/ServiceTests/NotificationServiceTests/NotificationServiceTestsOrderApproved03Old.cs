@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Rhino.Mocks;
 
@@ -33,7 +34,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             #region Assert
             Assert.AreEqual(3, order.EmailQueuesV2.Count);
-            Assert.AreEqual(DateTime.Now.Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueuesV2[0].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[0].NotificationType);
             Assert.IsTrue(order.EmailQueuesV2[0].Pending);
@@ -41,7 +42,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual("Approved", order.EmailQueuesV2[0].Action);
             Assert.AreEqual("By Amy Wong at Purchaser review.", order.EmailQueuesV2[0].Details);
 
-            Assert.AreEqual(DateTime.Now.Date, order.EmailQueuesV2[1].DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, order.EmailQueuesV2[1].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueuesV2[1].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[1].NotificationType);
             Assert.IsTrue(order.EmailQueuesV2[1].Pending);
@@ -49,7 +50,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             Assert.AreEqual("Approved", order.EmailQueuesV2[1].Action);
             Assert.AreEqual("By Amy Wong at Purchaser review.", order.EmailQueuesV2[1].Details);
 
-            Assert.AreEqual(DateTime.Now.Date, order.EmailQueuesV2[2].DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, order.EmailQueuesV2[2].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueuesV2[2].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[2].NotificationType);
             Assert.IsTrue(order.EmailQueuesV2[2].Pending);

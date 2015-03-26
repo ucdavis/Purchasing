@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Rhino.Mocks;
 using UCDArch.Testing;
@@ -45,7 +46,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             #region Assert
             Assert.AreEqual(4, order.EmailQueuesV2.Count);
-            Assert.AreEqual(DateTime.Now.Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueuesV2[0].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[0].NotificationType);
             Assert.IsTrue(order.EmailQueuesV2[0].Pending);
@@ -105,7 +106,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             #region Assert
             Assert.AreEqual(3, order.EmailQueuesV2.Count);
-            Assert.AreEqual(DateTime.Now.Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueuesV2[0].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[0].NotificationType);
             Assert.IsTrue(order.EmailQueuesV2[0].Pending);
@@ -163,7 +164,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             #region Assert
             Assert.AreEqual(2, order.EmailQueuesV2.Count);
-            Assert.AreEqual(DateTime.Now.Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, order.EmailQueuesV2[0].DateTimeCreated.Date);
             Assert.IsNull(order.EmailQueuesV2[0].DateTimeSent);
             Assert.AreEqual(EmailPreferences.NotificationTypes.PerEvent, order.EmailQueuesV2[0].NotificationType);
             Assert.IsTrue(order.EmailQueuesV2[0].Pending);

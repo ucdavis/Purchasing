@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentNHibernate.Testing;
@@ -295,7 +296,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateTimeStampWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             BugTracking record = GetValid(99);
             record.DateTimeStamp = compareDate;
             #endregion Arrange
@@ -320,7 +321,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateTimeStampWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.DateTimeStamp = compareDate;
             #endregion Arrange
@@ -345,7 +346,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateTimeStampWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.DateTimeStamp = compareDate;
             #endregion Arrange

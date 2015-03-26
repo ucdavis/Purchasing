@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using NHibernate;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentNHibernate.Testing;
@@ -879,7 +880,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             OrderRequestSave record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -904,7 +905,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -929,7 +930,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestDateCreatedWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.DateCreated = compareDate;
             #endregion Arrange
@@ -957,7 +958,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestLastUpdateWithPastDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(-10);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(-10);
             OrderRequestSave record = GetValid(99);
             record.LastUpdate = compareDate;
             #endregion Arrange
@@ -982,7 +983,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestLastUpdateWithCurrentDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now;
+            var compareDate = DateTime.UtcNow.ToPacificTime();
             var record = GetValid(99);
             record.LastUpdate = compareDate;
             #endregion Arrange
@@ -1007,7 +1008,7 @@ namespace Purchasing.Tests.RepositoryTests
         public void TestLastUpdateWithFutureDateDateWillSave()
         {
             #region Arrange
-            var compareDate = DateTime.Now.AddDays(15);
+            var compareDate = DateTime.UtcNow.ToPacificTime().AddDays(15);
             var record = GetValid(99);
             record.LastUpdate = compareDate;
             #endregion Arrange

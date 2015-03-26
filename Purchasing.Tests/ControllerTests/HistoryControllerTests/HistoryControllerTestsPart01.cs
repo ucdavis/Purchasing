@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
@@ -28,7 +29,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -92,7 +93,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -103,7 +104,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Index("All", DateTime.Now.Date.AddDays(1), DateTime.Now.Date.AddDays(2), DateTime.Now.Date.AddDays(3), DateTime.Now.Date.AddDays(4), true, false)
+            var result = Controller.Index("All", DateTime.UtcNow.ToPacificTime().Date.AddDays(1), DateTime.UtcNow.ToPacificTime().Date.AddDays(2), DateTime.UtcNow.ToPacificTime().Date.AddDays(3), DateTime.UtcNow.ToPacificTime().Date.AddDays(4), true, false)
                 .AssertViewRendered()
                 .WithViewData<FilteredOrderListModelDto>();
             #endregion Act
@@ -128,19 +129,19 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual(false, args[2]);
             Assert.AreEqual(true, args[3]);
             Assert.AreEqual(null, args[4]); // because we chose all
-            Assert.AreEqual(DateTime.Now.Date.AddDays(1), args[5]);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(2), args[6]);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(1), args[5]);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(2), args[6]);
             Assert.AreEqual(false, args[7]);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(3), args[8]);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(4), args[9]);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(3), args[8]);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(4), args[9]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
             Assert.AreEqual(null, result.SelectedOrderStatus);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(1), result.StartDate);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(2), result.EndDate);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(3), result.StartLastActionDate);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(4), result.EndLastActionDate);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(1), result.StartDate);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(2), result.EndDate);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(3), result.StartLastActionDate);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(4), result.EndLastActionDate);
             Assert.AreEqual(true, result.ShowPending);
             Assert.AreEqual(false, result.ShowCreated);
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did not exist, so created with defaults
@@ -156,7 +157,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -167,7 +168,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.Index("All", DateTime.Now.Date.AddDays(1), DateTime.Now.Date.AddDays(2), DateTime.Now.Date.AddDays(3), DateTime.Now.Date.AddDays(4), false, true)
+            var result = Controller.Index("All", DateTime.UtcNow.ToPacificTime().Date.AddDays(1), DateTime.UtcNow.ToPacificTime().Date.AddDays(2), DateTime.UtcNow.ToPacificTime().Date.AddDays(3), DateTime.UtcNow.ToPacificTime().Date.AddDays(4), false, true)
                 .AssertViewRendered()
                 .WithViewData<FilteredOrderListModelDto>();
             #endregion Act
@@ -192,19 +193,19 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.AreEqual(false, args[2]);
             Assert.AreEqual(false, args[3]);
             Assert.AreEqual(null, args[4]); // because we chose all
-            Assert.AreEqual(DateTime.Now.Date.AddDays(1), args[5]);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(2), args[6]);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(1), args[5]);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(2), args[6]);
             Assert.AreEqual(true, args[7]);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(3), args[8]);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(4), args[9]);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(3), args[8]);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(4), args[9]);
             #endregion GetListOfOrder Args
 
             Assert.IsNotNull(result);
             Assert.AreEqual(null, result.SelectedOrderStatus);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(1), result.StartDate);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(2), result.EndDate);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(3), result.StartLastActionDate);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(4), result.EndLastActionDate);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(1), result.StartDate);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(2), result.EndDate);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(3), result.StartLastActionDate);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date.AddDays(4), result.EndLastActionDate);
             Assert.AreEqual(false, result.ShowPending);
             Assert.AreEqual(true, result.ShowCreated);
             Assert.AreEqual("Me", result.ColumnPreferences.Id); // Did not exist, so created with defaults
@@ -224,7 +225,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -293,7 +294,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -362,7 +363,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -438,7 +439,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -513,7 +514,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -589,7 +590,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -680,7 +681,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].ShowApprover = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -771,7 +772,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].ShowApprover = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -861,7 +862,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].ShowDaysNotActedOn = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -951,7 +952,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].ShowDaysNotActedOn = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -1020,7 +1021,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -1089,7 +1090,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -1158,7 +1159,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -1227,7 +1228,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -1296,7 +1297,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>
@@ -1365,7 +1366,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
-            rtValue.LastModified = DateTime.Now.Date.AddHours(7);
+            rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             OrderService.Expect(
                 a =>

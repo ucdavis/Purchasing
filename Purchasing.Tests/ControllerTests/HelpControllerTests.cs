@@ -6,6 +6,7 @@ using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MvcContrib.TestHelper;
 using Newtonsoft.Json.Linq;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
@@ -105,7 +106,7 @@ namespace Purchasing.Tests.ControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.HasIssues.Value);
             Assert.AreEqual(0, data.IssuesCount.Value);
-            Assert.AreEqual(DateTime.Now.Date, new DateTime(data.TimeStamp.Value).Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, new DateTime(data.TimeStamp.Value).Date);
             #endregion Assert		
         }
 
@@ -125,7 +126,7 @@ namespace Purchasing.Tests.ControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsTrue((bool)data.HasIssues);
             Assert.AreEqual(2, (int)data.IssuesCount);
-            Assert.AreEqual(DateTime.Now.Date, new DateTime(data.TimeStamp.Value).Date);
+            Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, new DateTime(data.TimeStamp.Value).Date);
             #endregion Assert
         }
         #endregion GetActiveIssuesCount Tests
