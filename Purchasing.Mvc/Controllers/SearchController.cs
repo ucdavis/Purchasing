@@ -51,7 +51,7 @@ namespace Purchasing.Mvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (Regex.IsMatch(q, "^[A-Z]{4,4}-[A-Z,0-9]{7,7}$"))
+            if (Regex.IsMatch(q, "^[A-Z,0-9]{4,4}-[A-Z,0-9]{7,7}$"))
             {
                 return this.RedirectToAction<OrderController>(a => a.Lookup(q));
             }
