@@ -1540,6 +1540,10 @@ namespace Purchasing.Mvc.Controllers
                     {
                         updatedAmount = history.NewReceivedQuantity.Value - history.OldReceivedQuantity.Value;
                     }
+                    else if (history.OldReceivedQuantity.HasValue == false && history.NewReceivedQuantity.HasValue)
+                    {
+                        updatedAmount = history.NewReceivedQuantity.Value;
+                    }
                                     
                     _eventService.OrderReceived(lineItem.Order, lineItem, updatedAmount);
                    
@@ -1706,7 +1710,10 @@ namespace Purchasing.Mvc.Controllers
                     {
                         updatedAmount = history.NewReceivedQuantity.Value - history.OldReceivedQuantity.Value;
                     }
-
+                    else if (history.OldReceivedQuantity.HasValue == false && history.NewReceivedQuantity.HasValue)
+                    {
+                        updatedAmount = history.NewReceivedQuantity.Value;
+                    }
                     _eventService.OrderPaid(lineItem.Order, lineItem, updatedAmount);
 
                     _repositoryFactory.OrderRepository.EnsurePersistent(lineItem.Order);
