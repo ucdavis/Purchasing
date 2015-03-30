@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using Microsoft.Web.Mvc;
 using Purchasing.Core;
+using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Attributes;
@@ -51,9 +52,12 @@ namespace Purchasing.Mvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (Regex.IsMatch(q, "^[A-Z]{4,4}-[A-Z,0-9]{7,7}$"))
+            if (Regex.IsMatch(q, "^[A-Z,0-9]{4,4}-[A-Z,0-9]{7,7}$"))
             {
-                return this.RedirectToAction<OrderController>(a => a.Lookup(q));
+                if (Repository.OfType<Order>().Queryable.Any(a => a.RequestNumber == q))
+                {
+                    return this.RedirectToAction<OrderController>(a => a.Lookup(q));
+                }
             }
  
 
