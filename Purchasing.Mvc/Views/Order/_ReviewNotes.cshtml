@@ -16,7 +16,7 @@
         }
         <table class="noicon">
             <tbody>
-                @foreach (var notes in Model.Comments)
+                @foreach (var notes in Model.Comments.OrderBy(o => o.DateCreated))
                 {
                     <tr>
                         <td>@notes.DateCreated.ToString("d")</td>
