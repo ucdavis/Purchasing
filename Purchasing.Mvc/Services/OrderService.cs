@@ -430,7 +430,7 @@ namespace Purchasing.Mvc.Services
             var didApprovalHappen = false;
             var currentApprovalLevel = order.StatusCode.Level;
 
-            var hasWorkgroupRole = _securityService.hasWorkgroupRole(order.StatusCode.Id, order.Workgroup.Id);
+            var hasWorkgroupRole = _securityService.hasWorkgroupRole(order.StatusCode.Id == OrderStatusCode.Codes.ConditionalApprover ? OrderStatusCode.Codes.Approver : order.StatusCode.Id, order.Workgroup.Id);
 
             //If the approval is at the current level & directly associated with the user (primary or secondary), go ahead and approve it
             foreach (var approvalForUserDirectly in
