@@ -168,7 +168,8 @@ namespace Purchasing.Core.Services
         {
             var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
             var workgroupIds = workgroups.Select(w => w.Id).ToArray();
-
+            workgroupIds = new[] {291, 290};
+            ;
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Size(size)
@@ -188,12 +189,8 @@ namespace Purchasing.Core.Services
                 results.Aggs.Terms("PurchPercentiles")
                     .Items.Select(user => (PercentilesMetric) user.Aggregations["PercentileTimes"])
                     .Select(
-                        uservalue =>
-                            new Percentiles()
-                            {
-                                PercentileValues =
-                                    uservalue.Items.OrderBy(o => o.Percentile).Select(a => a.Value).ToArray()
-                            })
+                        uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => a.Value).ToArray()
+                            )
                     .ToList();
 
 

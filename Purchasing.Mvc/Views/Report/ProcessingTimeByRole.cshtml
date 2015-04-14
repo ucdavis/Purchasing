@@ -1,4 +1,5 @@
-﻿@model Purchasing.Mvc.Controllers.ReportProcessingTimeByRoleViewModel
+﻿@using Newtonsoft.Json
+@model Purchasing.Mvc.Controllers.ReportProcessingTimeByRoleViewModel
 
 @{
     ViewBag.Title = "ProcessingTimeByRole";
@@ -13,6 +14,8 @@
 <div id="container" style="height: 400px; margin: auto; min-width: 310px; max-width: 600px"></div>
 
 <script>
+    var names =  @Html.Raw(JsonConvert.SerializeObject(Model.Columns.NamesInRole));
+    var times =  @Html.Raw(JsonConvert.SerializeObject(Model.Columns.PercentilesForRole ));
     $(function () {
         $('#container').highcharts({
 
@@ -20,18 +23,16 @@
                 type: 'boxplot'
             },
 
-            title: {
-                text: 'Workgroup 291'
-            },
+            title: null,
 
             legend: {
                 enabled: false
             },
 
             xAxis: {
-                categories: ['cfaallen', 'galinad', 'vsutton'],
+                categories: names,
                 title: {
-                    text: 'Experiment No.'
+                    text: 'User: '
                 }
             },
 
@@ -41,11 +42,11 @@
                 },
                 min: 0,
                 plotLines: [{
-                    value: 1367.9,
+                    value: @Model.Columns.AverageTimeToRoleComplete,
                     color: 'red',
                     width: 1,
                     label: {
-                        text: 'Overall mean: 1367.9',
+                        text: 'Overall mean: ' +  @String.Format("{0:F2}", Model.Columns.AverageTimeToRoleComplete),
                         align: 'center',
                         style: {
                             color: 'gray'
@@ -53,16 +54,14 @@
                     }
                 }]
             },
-
+            credits: {
+                enabled: false
+            },
             series: [{
                 name: 'Observations',
-                data: [
-                    [35.7, 100.4, 1092.5, 1409.7, 8485.1],
-                    [42.3, 49.3, 598.1, 1473.9, 2461.5],
-                    [81.6, 81.6, 81.6, 81.6, 81.6]
-                ],
+                data: times,
                 tooltip: {
-                    headerFormat: '<em>Experiment No {point.key}</em><br/>'
+                    headerFormat: '<em>User {point.key}</em><br/>'
                 }
             }, {
                 name: 'Outlier',

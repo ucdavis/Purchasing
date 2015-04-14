@@ -444,14 +444,11 @@ namespace Purchasing.Core.Services
     {
         public IList<OrderTrackingEntity> OrderTrackingEntities { get; set; }
         public double? AverageTimeToRoleComplete { get; set; }
-        public IList<Percentiles>  PercentilesForRole { get; set; }
+        public IList<double[]>  PercentilesForRole { get; set; }
         public string[] NamesInRole { get; set; }
     }
 
-    public class Percentiles
-    {
-        public double[] PercentileValues { get; set; }
-    }
+    
 
     public class OrderTrackingByRoleAggregation
     {
