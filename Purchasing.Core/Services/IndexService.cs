@@ -440,6 +440,26 @@ namespace Purchasing.Core.Services
 
     }
 
+    public class OrderTrackingAggregationByRole
+    {
+        public IList<OrderTrackingEntity> OrderTrackingEntities { get; set; }
+        public double? AverageTimeToRoleComplete { get; set; }
+        public IList<Percentiles>  PercentilesForRole { get; set; }
+        public string[] NamesInRole { get; set; }
+    }
+
+    public class Percentiles
+    {
+        public double[] PercentileValues { get; set; }
+    }
+
+    public class OrderTrackingByRoleAggregation
+    {
+        // List of kerbs and percentiles
+        public IList<OrderTrackingEntity> OrderTrackingEntities { get; set; }
+        public double? AverageTimeForRole { get; set; }
+    }
+
     public static class IndexHelper
     {
         public static string GetIndexName(Indexes indexes)

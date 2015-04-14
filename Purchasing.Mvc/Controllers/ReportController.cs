@@ -484,6 +484,47 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [AuthorizeWorkgroupAccess]
+        public ActionResult ProcessingTimeByRole(int? workgroupId = null, DateTime? startDate = null,
+            DateTime? endDate = null)
+        {
+            const int defaultResultSize = 1000;
+            Workgroup workgroup = null;
+
+            if (workgroupId.HasValue)
+            {
+                workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
+            }
+
+            if (startDate == null)
+            {
+                startDate = DateTime.MinValue;
+            }
+            if (endDate == null)
+            {
+                endDate = DateTime.MaxValue;
+            }
+            var workgroups = _workgroupService.LoadAdminWorkgroups().ToList();
+
+            var viewModel = new ReportProcessingTimeByRoleViewModel()
+            {
+                Workgroups = workgroups,
+                Workgroup = workgroup,
+                Columns =
+                    _searchService.GetOrderTrackingEntitiesByRole(
+                        workgroup == null ? workgroups.ToArray() : new[] { workgroup }, startDate.Value, endDate.Value, defaultResultSize)
+            };
+
+            if (viewModel.Columns.OrderTrackingEntities.Count == defaultResultSize)
+            {
+                ErrorMessage = string.Format("Max result size of {0} has been reached. Please refine your filters to show complete results. Averages are accurate for the entire set, but not all rows are displayed.", defaultResultSize);
+            }
+
+            //viewModel.JsonData = GetTimeReportData(viewModel.Columns);
+            return View(viewModel);
+        }
+
         public dynamic GetTimeReportData(OrderTrackingAggregation data)
         {
             var roles = new string[]
@@ -512,6 +553,16 @@ namespace Purchasing.Mvc.Controllers
         public DateTime? EndDate { get; set; }
         public OrderTrackingAggregation Columns { get; set; }
         public bool? OnlyShowCompleted { get; set; }
+        public dynamic JsonData { get; set; }
+    }
+
+    public class ReportProcessingTimeByRoleViewModel
+    {
+        public IEnumerable<Workgroup> Workgroups;
+        public Workgroup Workgroup { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public OrderTrackingAggregationByRole Columns { get; set; }
         public dynamic JsonData { get; set; }
     }
 
