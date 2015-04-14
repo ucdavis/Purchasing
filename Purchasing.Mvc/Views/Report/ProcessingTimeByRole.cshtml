@@ -1,0 +1,83 @@
+﻿@model Purchasing.Mvc.Controllers.ReportProcessingTimeByRoleViewModel
+
+@{
+    ViewBag.Title = "ProcessingTimeByRole";
+}
+
+<h2>ProcessingTimeByRole</h2>
+
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<div id="container" style="height: 400px; margin: auto; min-width: 310px; max-width: 600px"></div>
+
+<script>
+    $(function () {
+        $('#container').highcharts({
+
+            chart: {
+                type: 'boxplot'
+            },
+
+            title: {
+                text: 'Workgroup 291'
+            },
+
+            legend: {
+                enabled: false
+            },
+
+            xAxis: {
+                categories: ['cfaallen', 'galinad', 'vsutton'],
+                title: {
+                    text: 'Experiment No.'
+                }
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Time to Complete'
+                },
+                min: 0,
+                plotLines: [{
+                    value: 1367.9,
+                    color: 'red',
+                    width: 1,
+                    label: {
+                        text: 'Overall mean: 1367.9',
+                        align: 'center',
+                        style: {
+                            color: 'gray'
+                        }
+                    }
+                }]
+            },
+
+            series: [{
+                name: 'Observations',
+                data: [
+                    [35.7, 100.4, 1092.5, 1409.7, 8485.1],
+                    [42.3, 49.3, 598.1, 1473.9, 2461.5],
+                    [81.6, 81.6, 81.6, 81.6, 81.6]
+                ],
+                tooltip: {
+                    headerFormat: '<em>Experiment No {point.key}</em><br/>'
+                }
+            }, {
+                name: 'Outlier',
+                color: Highcharts.getOptions().colors[0],
+                type: 'scatter',
+                marker: {
+                    fillColor: 'white',
+                    lineWidth: 1,
+                    lineColor: Highcharts.getOptions().colors[0]
+                },
+                tooltip: {
+                    pointFormat: 'Observation: {point.y}'
+                }
+            }]
+
+        });
+    });
+</script>

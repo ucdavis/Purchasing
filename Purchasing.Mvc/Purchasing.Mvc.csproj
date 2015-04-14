@@ -862,6 +862,7 @@
     <Content Include="Views\Workgroup\WhoHasAccessToWorkgroup.cshtml" />
     <Content Include="Views\Order\PayInvoice.cshtml" />
     <Content Include="Views\Report\ProcessingTimeSummary.cshtml" />
+    <Content Include="Views\Report\ProcessingTimeByRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
