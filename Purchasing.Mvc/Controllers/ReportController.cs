@@ -489,7 +489,7 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult ProcessingTimeByRole(int? workgroupId = null, DateTime? startDate = null,
             DateTime? endDate = null)
         {
-            const int defaultResultSize = 1000;
+            const int defaultResultSize = 10000;
             Workgroup workgroup = null;
 
             if (workgroupId.HasValue)
@@ -516,10 +516,7 @@ namespace Purchasing.Mvc.Controllers
                         workgroup == null ? workgroups.ToArray() : new[] { workgroup }, startDate.Value, endDate.Value, defaultResultSize)
             };
 
-            if (viewModel.Columns.OrderTrackingEntities.Count == defaultResultSize)
-            {
-                ErrorMessage = string.Format("Max result size of {0} has been reached. Please refine your filters to show complete results. Averages are accurate for the entire set, but not all rows are displayed.", defaultResultSize);
-            }
+           
 
             //viewModel.JsonData = GetTimeReportData(viewModel.Columns);
             return View(viewModel);

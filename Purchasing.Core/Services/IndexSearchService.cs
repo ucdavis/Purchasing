@@ -168,8 +168,10 @@ namespace Purchasing.Core.Services
         {
             var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
             var workgroupIds = workgroups.Select(w => w.Id).ToArray();
-            workgroupIds = new[] {291, 290};
-            ;
+            
+            string roleNames = "purchaserId";
+            string timeField = "minutesToPurchaserComplete";
+           
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Size(size)
@@ -178,18 +180,18 @@ namespace Purchasing.Core.Services
                                  && f.Terms(o => o.WorkgroupId, workgroupIds))))
                     .Aggregations(
                         a =>
-                            a.Terms("PurchPercentiles", t => t.Field(f => f.PurchaserId)
-                                    .Aggregations(b=> b.Percentiles("PercentileTimes", p=> p.Field(x=> x.MinutesToPurchaserComplete)
+                            a.Terms("RolePercentiles", t => t.Field(roleNames)
+                                    .Aggregations(b=> b.Percentiles("PercentileTimes", p=> p.Field(timeField)
                                     .Percentages(new double[] {0,25,50,75,100})))
                                 )
-                             .Average("AverageTimeToPurchaser", avg => avg.Field(x => x.MinutesToPurchaserComplete)))
+                             .Average("AverageTimeToRoleComplete", avg => avg.Field(timeField)))
                 );
-            var names = results.Aggs.Terms("PurchPercentiles").Items.Select(n=> n.Key).ToArray();
+            var names = results.Aggs.Terms("RolePercentiles").Items.Select(n => n.Key).ToArray();
             var percentilesInRole =
-                results.Aggs.Terms("PurchPercentiles")
+                results.Aggs.Terms("RolePercentiles")
                     .Items.Select(user => (PercentilesMetric) user.Aggregations["PercentileTimes"])
                     .Select(
-                        uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => a.Value).ToArray()
+                        uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => a.Value / 1440).ToArray()
                             )
                     .ToList();
 
@@ -197,7 +199,7 @@ namespace Purchasing.Core.Services
             return new OrderTrackingAggregationByRole
             {
                 OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
-                AverageTimeToRoleComplete = results.Aggs.Average("AverageTimeToPurchaser").Value,
+                AverageTimeToRoleComplete = results.Aggs.Average("AverageTimeToRoleComplete").Value,
                 NamesInRole = names,
                 PercentilesForRole = percentilesInRole
             };

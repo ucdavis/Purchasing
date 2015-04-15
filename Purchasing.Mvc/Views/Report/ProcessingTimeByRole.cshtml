@@ -2,7 +2,8 @@
 @model Purchasing.Mvc.Controllers.ReportProcessingTimeByRoleViewModel
 
 @{
-    ViewBag.Title = "ProcessingTimeByRole";
+    ViewBag.Title = "Processing Time By Role";
+    
 }
 
 <h2>ProcessingTimeByRole</h2>
@@ -80,3 +81,141 @@
         });
     });
 </script>
+
+
+<div class="">
+    <div class="dt-table-filter-header display-form">
+        <div class="section-text">
+            <p> Workgroups with (Admin) after them will get all orders in child workgroups. </p>
+            <p> Only completed orders that were created in the month selected will be displayed. </p>
+            <p> If there were multiple ReRoutes, only the last one will be used. </p>
+        </div>
+        <div class="section-contents">
+            @using (Html.BeginForm("ProcessingTimeByRole", "Report", FormMethod.Get))
+            {
+                <ul>
+                    <li class="datepicker">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.StartDate)
+                        </div>
+                        <div class="editor-field">
+
+                            @Html.TextBoxFor(model => model.StartDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" } })
+                        </div>
+                    </li>
+                    <li class="datepicker">
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.EndDate)
+                        </div>
+                        <div class="editor-field">
+
+                            @Html.TextBoxFor(model => model.EndDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" } })
+                        </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                            @Html.Label("Workgroup")
+                        </div>
+                        <div class="editor-field">
+                            @this.Select("WorkgroupId").Options(Model.Workgroups.OrderBy(x => x.Name), x => x.Id, x => x.NameAndAdmin).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--")
+                        </div>
+                    </li>
+                    <li>&nbsp;</li>
+                    <li>&nbsp;</li>
+                    <li>
+                        <div class="editor-label">
+                            &nbsp;
+                        </div>
+                        <div class="editor-field">
+                            <input class="button" type="submit" style="float: right" value="Apply" />
+                        </div>
+                    </li>
+
+
+                </ul>
+            }
+        </div>
+    </div>
+
+</div>
+
+<table class="dt-table no-icon-table">
+    <thead>
+        <tr>
+            <th>View</th>
+            <th>
+                Date Created
+            </th>
+            <th>
+                Workgroup
+            </th>
+            <th>Time to Completion</th>
+            <th>Time to Approve</th>
+            <th>Approve</th>
+            <th>Time to Account Manager</th>
+            <th>Account Manager</th>
+            <th>Time to Purchaser</th>
+            <th>Purchaser</th>
+            <th>Exception Status</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @{ var odd = false; }
+        @foreach (var item in Model.Columns.OrderTrackingEntities)
+        {
+            <tr class="@(odd ? "odd" : "even")">
+                <td>
+                    <a href='@Url.Action("Review", "Order", new {id=item.OrderId})' class="ui-icon ui-icon-document" title="Review order" target="_blank"></a>
+                </td>
+                <td>
+                    @item.OrderCreated.ToShortDateString()
+                </td>
+                <td>
+                    @item.WorkgroupName
+                </td>
+
+                <td>
+                    @if (item.MinutesToCompletion != null)
+                    {
+                        @TimeSpan.FromMinutes(item.MinutesToCompletion.Value).ToString("dd'd:'hh'h:'mm'm'")
+                    }
+                </td>
+                <td>
+                    @if (item.MinutesToApprove != null)
+                    {
+                        @TimeSpan.FromMinutes(item.MinutesToApprove.Value).ToString("dd'd:'hh'h:'mm'm'")
+                    }
+                </td>
+                <td>
+                    @item.ApproverName
+                </td>
+                <td>
+                    @if (item.MinutesToAccountManagerComplete != null)
+                    {
+                        @TimeSpan.FromMinutes(item.MinutesToAccountManagerComplete.Value).ToString("dd'd:'hh'h:'mm'm'")
+                    }
+                </td>
+                <td>
+                    @item.AccountManagerName
+                </td>
+                <td>
+                    @if (item.MinutesToPurchaserComplete != null)
+                    {
+                        @TimeSpan.FromMinutes(item.MinutesToPurchaserComplete.Value).ToString("dd'd:'hh'h:'mm'm'")
+                    }
+                </td>
+                <td>
+                    @item.PurchaserName
+                </td>
+                <td>
+                    @if (item.StatusCode != "CP")
+                    {
+                        @item.Status
+                    }
+                </td>
+            </tr>
+                    odd = !odd;
+        }
+    </tbody>
+</table>
