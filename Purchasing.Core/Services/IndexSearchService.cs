@@ -197,7 +197,7 @@ namespace Purchasing.Core.Services
                                 )
                              .Average("AverageTimeToRoleComplete", avg => avg.Field(timeField)))
                 );
-            var names = results.Aggs.Terms("RolePercentiles").Items.Select(n => n.Key).ToArray();
+            var names = results.Aggs.Terms("RolePercentiles").Items.Select(n => n.Key + "; n=" + n.DocCount.ToString()).ToArray();
             var percentilesInRole =
                 results.Aggs.Terms("RolePercentiles")
                     .Items.Select(user => (PercentilesMetric) user.Aggregations["PercentileTimes"])
