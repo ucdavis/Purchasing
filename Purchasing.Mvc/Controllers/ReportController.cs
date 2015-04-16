@@ -520,7 +520,10 @@ namespace Purchasing.Mvc.Controllers
                 Role = role
             };
 
-           
+            if (viewModel.Columns.OrderTrackingEntities.Count == defaultResultSize)
+            {
+                ErrorMessage = string.Format("Max result size of {0} has been reached. Please refine your filters to show complete results belowS. Graph is accurate regardless of hitting this limit.", defaultResultSize);
+            }
 
             //viewModel.JsonData = GetTimeReportData(viewModel.Columns);
             return View(viewModel);
@@ -561,12 +564,10 @@ namespace Purchasing.Mvc.Controllers
     {
         public IEnumerable<Workgroup> Workgroups;
         public Workgroup Workgroup { get; set; }
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string Role { get; set; }
         public OrderTrackingAggregationByRole Columns { get; set; }
-        public dynamic JsonData { get; set; }
     }
 
   
