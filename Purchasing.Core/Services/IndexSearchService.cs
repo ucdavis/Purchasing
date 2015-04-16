@@ -164,14 +164,25 @@ namespace Purchasing.Core.Services
         }
 
         public OrderTrackingAggregationByRole GetOrderTrackingEntitiesByRole(IEnumerable<Workgroup> workgroups,
-            DateTime createdAfter, DateTime createBefore, int size = 1000)
+            DateTime createdAfter, DateTime createBefore, string role, int size = 1000)
         {
             var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
             var workgroupIds = workgroups.Select(w => w.Id).ToArray();
             
             string roleNames = "purchaserId";
             string timeField = "minutesToPurchaserComplete";
-           
+
+            if (role == "Approver")
+            {
+                roleNames = "approverId";
+                timeField = "minutesToApprove";
+            }
+            if (role == "AccountManager")
+            {
+                roleNames = "accountManagerId";
+                timeField = "minutesToAccountManagerComplete";
+            }
+
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Size(size)
@@ -191,7 +202,7 @@ namespace Purchasing.Core.Services
                 results.Aggs.Terms("RolePercentiles")
                     .Items.Select(user => (PercentilesMetric) user.Aggregations["PercentileTimes"])
                     .Select(
-                        uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => a.Value / 1440).ToArray()
+                        uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => a.Value / 1440).ToArray() // converted to days to help with scale
                             )
                     .ToList();
 

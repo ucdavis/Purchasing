@@ -20,5 +20,13 @@ namespace Purchasing.Mvc.Helpers
             new SelectListItem() {Text = "Paid in full ", Value = "Paid in full "}
         };
 
+        public static List<SelectListItem> RoleList = new List<SelectListItem>()
+        {
+            
+            new SelectListItem() {Text = "Purchaser", Value = "Purchaser"},
+            new SelectListItem() {Text = "Approver", Value = "Approver"},
+            new SelectListItem() {Text = "Account Manager", Value = "AccountManager"},
+        };
+
     }
 }

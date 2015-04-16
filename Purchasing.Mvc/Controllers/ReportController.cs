@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using Lucene.Net.Analysis.Standard;
@@ -487,7 +488,7 @@ namespace Purchasing.Mvc.Controllers
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult ProcessingTimeByRole(int? workgroupId = null, DateTime? startDate = null,
-            DateTime? endDate = null)
+            DateTime? endDate = null, string role = "purchaser")
         {
             const int defaultResultSize = 10000;
             Workgroup workgroup = null;
@@ -499,11 +500,11 @@ namespace Purchasing.Mvc.Controllers
 
             if (startDate == null)
             {
-                startDate = DateTime.MinValue;
+                startDate = DateTime.Now.AddDays(-30);
             }
             if (endDate == null)
             {
-                endDate = DateTime.MaxValue;
+                endDate = DateTime.Now;
             }
             var workgroups = _workgroupService.LoadAdminWorkgroups().ToList();
 
@@ -513,7 +514,10 @@ namespace Purchasing.Mvc.Controllers
                 Workgroup = workgroup,
                 Columns =
                     _searchService.GetOrderTrackingEntitiesByRole(
-                        workgroup == null ? workgroups.ToArray() : new[] { workgroup }, startDate.Value, endDate.Value, defaultResultSize)
+                        workgroup == null ? workgroups.ToArray() : new[] { workgroup }, startDate.Value, endDate.Value, role, defaultResultSize),
+                StartDate = startDate,
+                EndDate = endDate,
+                Role = role
             };
 
            
@@ -557,8 +561,10 @@ namespace Purchasing.Mvc.Controllers
     {
         public IEnumerable<Workgroup> Workgroups;
         public Workgroup Workgroup { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string Role { get; set; }
         public OrderTrackingAggregationByRole Columns { get; set; }
         public dynamic JsonData { get; set; }
     }

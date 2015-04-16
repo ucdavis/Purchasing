@@ -1,4 +1,5 @@
 ﻿@using Newtonsoft.Json
+@using Purchasing.Mvc.Helpers
 @model Purchasing.Mvc.Controllers.ReportProcessingTimeByRoleViewModel
 
 @{
@@ -10,7 +11,7 @@
 
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
+@*<script src="http://code.highcharts.com/modules/exporting.js"></script>*@
 
 <div id="container" style="height: 400px; margin: auto; min-width: 310px; max-width: 600px"></div>
 
@@ -39,7 +40,7 @@
 
             yAxis: {
                 title: {
-                    text: 'Time to Complete'
+                    text: 'Time to Complete (days)'
                 },
                 min: 0,
                 plotLines: [{
@@ -100,7 +101,7 @@
                         </div>
                         <div class="editor-field">
 
-                            @Html.TextBoxFor(model => model.StartDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" } })
+                            @Html.TextBoxFor(model => model.StartDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" }, {"Value", Model.StartDate.Value.ToShortDateString()} })
                         </div>
                     </li>
                     <li class="datepicker">
@@ -109,8 +110,19 @@
                         </div>
                         <div class="editor-field">
 
-                            @Html.TextBoxFor(model => model.EndDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" } })
+                            @Html.TextBoxFor(model => model.EndDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" }, { "Value", Model.EndDate.Value.ToShortDateString() } })
                         </div>
+                    </li>
+                    <li>
+                        <div class="editor-label">
+                            @Html.Label("Role")
+                        </div>
+                        <div class="editor-field">
+                            @Html.DropDownListFor(a => a.Role, SelectLists.RoleList)
+                        </div>
+                    </li>
+                    <li>
+                        &nbsp;
                     </li>
                     <li>
                         <div class="editor-label">
@@ -120,6 +132,7 @@
                             @this.Select("WorkgroupId").Options(Model.Workgroups.OrderBy(x => x.Name), x => x.Id, x => x.NameAndAdmin).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--")
                         </div>
                     </li>
+                    
                     <li>&nbsp;</li>
                     <li>&nbsp;</li>
                     <li>
