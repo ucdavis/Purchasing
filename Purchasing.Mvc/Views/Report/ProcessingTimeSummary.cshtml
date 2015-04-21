@@ -224,7 +224,7 @@
                             @Html.LabelFor(model => model.StartDate)
                         </div>
                         <div class="editor-field">
-                            @Html.TextBoxFor(model => model.StartDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" }, { "Value", Model.StartDate.Value.ToShortDateString() } })
+                            @Html.EditorFor(model => model.StartDate)
                         </div>
                     </li>
                     <li class="datepicker">
@@ -232,7 +232,7 @@
                             @Html.LabelFor(model => model.EndDate)
                         </div>
                         <div class="editor-field">
-                            @Html.TextBoxFor(model => model.EndDate, new Dictionary<string, object> { { "data-val", false }, { "class", "datepicker" }, { "Value", Model.EndDate.Value.ToShortDateString() } })
+                            @Html.EditorFor(model => model.EndDate)
                         </div>
                     </li>
                     <li>
