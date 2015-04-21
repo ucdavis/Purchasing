@@ -210,7 +210,7 @@ namespace Purchasing.Core.Services
             return new OrderTrackingAggregationByRole
             {
                 OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
-                AverageTimeToRoleComplete = results.Aggs.Average("AverageTimeToRoleComplete").Value,
+                AverageTimeToRoleComplete = results.Aggs.Average("AverageTimeToRoleComplete").Value / 1440,
                 NamesInRole = names,
                 PercentilesForRole = percentilesInRole
             };
