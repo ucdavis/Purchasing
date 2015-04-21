@@ -459,11 +459,11 @@ namespace Purchasing.Mvc.Controllers
            
             if (startDate == null)
             {
-                startDate = DateTime.Now.AddDays(-30);
+                startDate = DateTime.Now.Date.AddDays(-30);
             }
             if (endDate == null)
             {
-                endDate = DateTime.Now;
+                endDate = DateTime.Now.Date;
             }
             var workgroups = _workgroupService.LoadAdminWorkgroups().ToList();
 
@@ -471,9 +471,11 @@ namespace Purchasing.Mvc.Controllers
             {
                 Workgroups = workgroups,
                 Workgroup = workgroup,
+                StartDate = startDate,
+                EndDate = endDate,
                 Columns =
                     _searchService.GetOrderTrackingEntities(
-                        workgroup == null ? workgroups.ToArray() : new[] {workgroup}, startDate.Value, endDate.Value, defaultResultSize)
+                        workgroup == null ? workgroups.ToArray() : new[] {workgroup}, startDate.Value, endDate.Value, defaultResultSize),
             };
 
             if (viewModel.Columns.OrderTrackingEntities.Count == defaultResultSize)
