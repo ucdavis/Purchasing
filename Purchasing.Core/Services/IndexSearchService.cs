@@ -164,7 +164,7 @@ namespace Purchasing.Core.Services
         }
 
         public OrderTrackingAggregationByRole GetOrderTrackingEntitiesByRole(IEnumerable<Workgroup> workgroups,
-            DateTime createdAfter, DateTime createBefore, string role, int size = 1000)
+            DateTime createdAfter, DateTime createBefore, string role, int size)
         {
             var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
             var workgroupIds = workgroups.Select(w => w.Id).ToArray();

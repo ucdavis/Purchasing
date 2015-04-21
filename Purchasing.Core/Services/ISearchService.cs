@@ -56,6 +56,6 @@ namespace Purchasing.Core.Services
             DateTime createBefore, int size =1000);
 
         OrderTrackingAggregationByRole GetOrderTrackingEntitiesByRole(IEnumerable<Workgroup> workgroups, DateTime createdAfter,
-            DateTime createBefore, string role, int size = 10);
+            DateTime createBefore, string role, int size);
     }
 }

@@ -490,7 +490,7 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult ProcessingTimeByRole(int? workgroupId = null, DateTime? startDate = null,
             DateTime? endDate = null, string role = "purchaser")
         {
-            const int defaultResultSize = 10000;
+            const int defaultResultSize = 1000;
             Workgroup workgroup = null;
 
             if (workgroupId.HasValue)
