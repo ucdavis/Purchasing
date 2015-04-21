@@ -146,7 +146,7 @@ namespace Purchasing.Core.Services
                     .Aggregations(
                         a =>
                             a.Average("AverageTimeToCompletion", avg => avg.Field(x => x.MinutesToCompletion))
-                                .Average("AverageTimeToApprover", avg => avg.Field(x => x.MinutesToApprove))
+                                .Average("AverageTimeToRoleComplete", avg => avg.Field(x => x.MinutesToApprove))
                                 .Average("AverageTimeToAccountManagers",
                                     avg => avg.Field(x => x.MinutesToAccountManagerComplete))
                                 .Average("AverageTimeToPurchaser", avg => avg.Field(x => x.MinutesToPurchaserComplete)))
@@ -157,9 +157,62 @@ namespace Purchasing.Core.Services
             {
                 OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
                 AverageTimeToAccountManagers = results.Aggs.Average("AverageTimeToAccountManagers").Value,
-                AverageTimeToApprover = results.Aggs.Average("AverageTimeToApprover").Value,
+                AverageTimeToApprover = results.Aggs.Average("AverageTimeToRoleComplete").Value,
                 AverageTimeToCompletion = results.Aggs.Average("AverageTimeToCompletion").Value,
                 AverageTimeToPurchaser = results.Aggs.Average("AverageTimeToPurchaser").Value
+            };
+        }
+
+        public OrderTrackingAggregationByRole GetOrderTrackingEntitiesByRole(IEnumerable<Workgroup> workgroups,
+            DateTime createdAfter, DateTime createBefore, string role, int size)
+        {
+            var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
+            var workgroupIds = workgroups.Select(w => w.Id).ToArray();
+            
+            string roleNames = "purchaserId";
+            string timeField = "minutesToPurchaserComplete";
+
+            if (role == "Approver")
+            {
+                roleNames = "approverId";
+                timeField = "minutesToApprove";
+            }
+            if (role == "AccountManager")
+            {
+                roleNames = "accountManagerId";
+                timeField = "minutesToAccountManagerComplete";
+            }
+
+            var results = _client.Search<OrderTrackingEntity>(
+                s => s.Index(index)
+                    .Size(size)
+                    .Query(a => a.Filtered(fq => fq.Query(q => q.MatchAll()).Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore))
+                                 && f.Term(x => x.Status, "complete")
+                                 && f.Terms(o => o.WorkgroupId, workgroupIds))))
+                    .Aggregations(
+                        a =>
+                            a.Terms("RolePercentiles", t => t.Field(roleNames)
+                                    .Aggregations(b=> b.Percentiles("PercentileTimes", p=> p.Field(timeField)
+                                    .Percentages(new double[] {0,25,50,75,100})))
+                                )
+                             .Average("AverageTimeToRoleComplete", avg => avg.Field(timeField)))
+                );
+            var names = results.Aggs.Terms("RolePercentiles").Items.Select(n => n.Key + "; n=" + n.DocCount.ToString()).ToArray();
+            var percentilesInRole =
+                results.Aggs.Terms("RolePercentiles")
+                    .Items.Select(user => (PercentilesMetric) user.Aggregations["PercentileTimes"])
+                    .Select(
+                        uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => a.Value / 1440).ToArray() // converted to days to help with scale
+                            )
+                    .ToList();
+
+
+            return new OrderTrackingAggregationByRole
+            {
+                OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
+                AverageTimeToRoleComplete = results.Aggs.Average("AverageTimeToRoleComplete").Value / 1440,
+                NamesInRole = names,
+                PercentilesForRole = percentilesInRole
             };
         }
     }

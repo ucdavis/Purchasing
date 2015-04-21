@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using Lucene.Net.Analysis.Standard;
@@ -458,11 +459,11 @@ namespace Purchasing.Mvc.Controllers
            
             if (startDate == null)
             {
-                startDate = DateTime.MinValue;
+                startDate = DateTime.Now.AddDays(-30);
             }
             if (endDate == null)
             {
-                endDate = DateTime.MaxValue;
+                endDate = DateTime.Now;
             }
             var workgroups = _workgroupService.LoadAdminWorkgroups().ToList();
 
@@ -481,6 +482,50 @@ namespace Purchasing.Mvc.Controllers
             }
             
             viewModel.JsonData = GetTimeReportData(viewModel.Columns);
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [AuthorizeWorkgroupAccess]
+        public ActionResult ProcessingTimeByRole(int? workgroupId = null, DateTime? startDate = null,
+            DateTime? endDate = null, string role = "purchaser")
+        {
+            const int defaultResultSize = 1000;
+            Workgroup workgroup = null;
+
+            if (workgroupId.HasValue)
+            {
+                workgroup = _repositoryFactory.WorkgroupRepository.GetNullableById(workgroupId.Value);
+            }
+
+            if (startDate == null)
+            {
+                startDate = DateTime.Now.AddDays(-30);
+            }
+            if (endDate == null)
+            {
+                endDate = DateTime.Now;
+            }
+            var workgroups = _workgroupService.LoadAdminWorkgroups().ToList();
+
+            var viewModel = new ReportProcessingTimeByRoleViewModel()
+            {
+                Workgroups = workgroups,
+                Workgroup = workgroup,
+                Columns =
+                    _searchService.GetOrderTrackingEntitiesByRole(
+                        workgroup == null ? workgroups.ToArray() : new[] { workgroup }, startDate.Value, endDate.Value, role, defaultResultSize),
+                StartDate = startDate,
+                EndDate = endDate,
+                Role = role
+            };
+
+            if (viewModel.Columns.OrderTrackingEntities.Count == defaultResultSize)
+            {
+                ErrorMessage = string.Format("Max result size of {0} has been reached. Please refine your filters to show complete results belowS. Graph is accurate regardless of hitting this limit.", defaultResultSize);
+            }
+
+            //viewModel.JsonData = GetTimeReportData(viewModel.Columns);
             return View(viewModel);
         }
 
@@ -513,6 +558,16 @@ namespace Purchasing.Mvc.Controllers
         public OrderTrackingAggregation Columns { get; set; }
         public bool? OnlyShowCompleted { get; set; }
         public dynamic JsonData { get; set; }
+    }
+
+    public class ReportProcessingTimeByRoleViewModel
+    {
+        public IEnumerable<Workgroup> Workgroups;
+        public Workgroup Workgroup { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string Role { get; set; }
+        public OrderTrackingAggregationByRole Columns { get; set; }
     }
 
   
