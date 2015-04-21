@@ -459,11 +459,11 @@ namespace Purchasing.Mvc.Controllers
            
             if (startDate == null)
             {
-                startDate = DateTime.MinValue;
+                startDate = DateTime.Now.AddDays(-30);
             }
             if (endDate == null)
             {
-                endDate = DateTime.MaxValue;
+                endDate = DateTime.Now;
             }
             var workgroups = _workgroupService.LoadAdminWorkgroups().ToList();
 
