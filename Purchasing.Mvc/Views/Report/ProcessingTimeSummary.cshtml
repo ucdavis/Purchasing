@@ -176,7 +176,7 @@
             },
             credits: {enabled: false},
             subtitle: {
-                text: 'Average total time to completion: @TimeSpan.FromMinutes(Model.Columns.AverageTimeToCompletion.Value).ToString("dd'd:'hh'h:'mm'm'")'
+                text: 'Average total time to completion: @(Model.Columns.AverageTimeToCompletion.HasValue ? TimeSpan.FromMinutes(Model.Columns.AverageTimeToCompletion.Value).ToString("dd'd:'hh'h:'mm'm'") : string.Empty)'
             },
             title: {
                 text: 'Average Time to Task Completion By Role'
@@ -195,9 +195,9 @@
                 type: 'pie',
                 name: '',
                 data: [
-                    ['Avg Approve', @Model.Columns.AverageTimeToApprover.Value ],
-                    ['Avg Account Manager', @Model.Columns.AverageTimeToAccountManagers.Value ],
-                    ['Avg Purchase', @Model.Columns.AverageTimeToPurchaser.Value ]
+                    ['Avg Approve', @(Model.Columns != null && Model.Columns.AverageTimeToApprover.HasValue ? Model.Columns.AverageTimeToApprover.Value : 0)],
+                    ['Avg Account Manager', @(Model.Columns.AverageTimeToAccountManagers.HasValue ? Model.Columns.AverageTimeToAccountManagers.Value : 0) ],
+                    ['Avg Purchase', @(Model.Columns.AverageTimeToPurchaser.HasValue ? Model.Columns.AverageTimeToPurchaser.Value : 0)]
                 ]
             }]
         });
