@@ -1454,6 +1454,69 @@ namespace Purchasing.Tests.RepositoryTests
 
         #endregion WorkgroupPermissions Tests
 
+        #region IsSscAdmin Tests
+
+        /// <summary>
+        /// Tests the IsSscAdmin is false saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsSscAdminIsFalseSaves()
+        {
+            #region Arrange
+
+            User user = GetValid(9);
+            user.IsSscAdmin = false;
+
+            #endregion Arrange
+
+            #region Act
+
+            UserRepository.DbContext.BeginTransaction();
+            UserRepository.EnsurePersistent(user);
+            UserRepository.DbContext.CommitTransaction();
+
+            #endregion Act
+
+            #region Assert
+
+            Assert.IsFalse(user.IsSscAdmin);
+            Assert.IsFalse(user.IsTransient());
+            Assert.IsTrue(user.IsValid());
+
+            #endregion Assert
+        }
+
+        /// <summary>
+        /// Tests the IsSscAdmin is true saves.
+        /// </summary>
+        [TestMethod]
+        public void TestIsSscAdminIsTrueSaves()
+        {
+            #region Arrange
+
+            var user = GetValid(9);
+            user.IsSscAdmin = true;
+
+            #endregion Arrange
+
+            #region Act
+
+            UserRepository.DbContext.BeginTransaction();
+            UserRepository.EnsurePersistent(user);
+            UserRepository.DbContext.CommitTransaction();
+
+            #endregion Act
+
+            #region Assert
+
+            Assert.IsTrue(user.IsSscAdmin);
+            Assert.IsFalse(user.IsTransient());
+            Assert.IsTrue(user.IsValid());
+
+            #endregion Assert
+        }
+
+        #endregion IsSscAdmin Tests
 
 
         #region Reflection of Database.
@@ -1500,6 +1563,7 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Is Active\")]"
             }));
             expectedFields.Add(new NameAndType("IsAway", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("IsSscAdmin", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("LastName", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Last Name\")]",
