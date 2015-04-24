@@ -6,6 +6,7 @@
     [AwayUntil] DATETIME     NULL,
     [IsActive]  BIT          CONSTRAINT [DF_Users_IsActive] DEFAULT ((1)) NOT NULL,
     [IsAway]    AS           (case when datediff(day,[AwayUntil],getdate())<(0) then (1) else (0) end),
+    [IsSscAdmin] BIT NOT NULL DEFAULT ((0)), 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

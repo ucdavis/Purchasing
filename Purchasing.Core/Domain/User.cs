@@ -60,6 +60,8 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Is Active")]
         public virtual bool IsActive { get; set; }
 
+        public virtual bool IsSscAdmin { get; set; }
+
         //public virtual EmailPreferences EmailPreferences { get; set; }
 
         public virtual IList<Organization> Organizations { get; set; }
@@ -79,6 +81,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.AwayUntil);
             Map(x => x.IsActive);
             Map(x => x.IsAway).ReadOnly();
+            Map(x => x.IsSscAdmin);
 
             //HasOne(x => x.EmailPreferences).Constrained().LazyLoad().Cascade.SaveUpdate();
 

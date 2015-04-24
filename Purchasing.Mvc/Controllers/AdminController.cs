@@ -97,6 +97,7 @@ namespace Purchasing.Mvc.Controllers
             user.LastName = departmentalAdminModel.User.LastName;
             user.Email = departmentalAdminModel.User.Email;
             user.IsActive = departmentalAdminModel.User.IsActive;
+            user.IsSscAdmin = departmentalAdminModel.User.IsSscAdmin;
 
             var isDeptAdmin = user.Roles.Any(x => x.Id == Role.Codes.DepartmentalAdmin);
             
@@ -117,9 +118,39 @@ namespace Purchasing.Mvc.Controllers
             // invalid the cache for the user that was just given permissions
             _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user.Id);
 
+            var skipped = 0;
+            var userList = new List<string>();
 
-            Message = string.Format("{0} was added as a departmental admin to the specified organization(s)",
+            if (departmentalAdminModel.UpdateAllSscAdmins && user.IsSscAdmin)
+            {
+                var users = _userRepository.Queryable.Where(a => a.IsSscAdmin && a.Id != user.Id).ToList();
+                foreach (var user1 in users)
+                {
+                    var isUser1DeptAdmin = user1.Roles.Any(x => x.Id == Role.Codes.DepartmentalAdmin);
+                    if (!isUser1DeptAdmin)
+                    {
+                        skipped++;
+                        continue;
+                    }
+                    user1.Organizations = new List<Organization>();
+                    foreach (var org in orgs)
+                    {
+                        user1.Organizations.Add(_organizationRepository.Queryable.Single(a => a.Id == org));
+                    }
+                    _userRepository.EnsurePersistent(user1);
+                    // invalid the cache for the user that was just given permissions
+                    _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user1.Id);
+                    userList.Add(user1.FullNameAndId);
+                }
+                Message = string.Format("{0} was added as a departmental admin to the specified organization(s) Also added perms for {1}. Skipped: {2}",
+                                    user.FullNameAndId, string.Join(",", userList.ToArray()), skipped);
+            }
+            else
+            {
+                Message = string.Format("{0} was added as a departmental admin to the specified organization(s)",
                                     user.FullNameAndId);
+            }
+
 
             return this.RedirectToAction(a => a.Index());
         }
@@ -261,7 +292,8 @@ namespace Purchasing.Mvc.Controllers
             var adminRole = user.Roles.Where(x => x.Id == Role.Codes.DepartmentalAdmin).Single();
 
             user.Roles.Remove(adminRole);
-            user.Organizations.Clear(); 
+            user.Organizations.Clear();
+            user.IsSscAdmin = false;
 
             _userRepository.EnsurePersistent(user);
 
@@ -595,6 +627,8 @@ namespace Purchasing.Mvc.Controllers
     {
         public User User { get; set; }
         public virtual IEnumerable<Organization> Organizations { get; set; }
+
+        public virtual bool UpdateAllSscAdmins { get; set; }
     }
 
     public class AdminListModel
