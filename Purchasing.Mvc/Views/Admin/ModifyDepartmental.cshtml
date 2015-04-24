@@ -114,8 +114,19 @@ Example: Dinosaur 1  *@
                     </div>
                 </li>
             }
-            
+
             @Html.EditorFor(x => x.User)
+            @if (Model.User.IsSscAdmin == true)
+            {
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.UpdateAllSscAdmins)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.UpdateAllSscAdmins) @Html.ValidationMessageFor(model => model.UpdateAllSscAdmins)
+                    </div>
+                </li>
+            }
 
             <li>
                 <div class="editor-label">@Html.LabelFor(x=>x.Organizations)</div>

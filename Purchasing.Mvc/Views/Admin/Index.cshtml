@@ -31,7 +31,7 @@
                     <th></th>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th>Email</th>
+                    <th>Email</th>                    
                     <th></th>
                 </tr>
             </thead>
@@ -42,7 +42,7 @@
                         <td><a href='@Url.Action("ModifyAdmin", new {user.Id})' class="ui-icon ui-icon-pencil" title="Edit admin"><img src='@Url.Image("edit.png")'></a></td>
                         <td>@user.FirstName</td>
                         <td>@user.LastName</td>
-                        <td>@user.Email</td>
+                        <td>@user.Email</td>                       
                         <td><a href='@Url.Action("RemoveAdmin", new {user.Id})' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
@@ -65,6 +65,7 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
+                    <th>Is SSC Admin</th>
                     <th></th>
                 </tr>
             </thead>
@@ -76,6 +77,7 @@
                         <td>@user.FirstName</td>
                         <td>@user.LastName</td>
                         <td>@user.Email</td>
+                        <td>@user.IsSscAdmin</td>
                         <td><a href='@Url.Action("RemoveDepartmental", new { user.Id })' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
