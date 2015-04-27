@@ -136,6 +136,29 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             "~/Admin/TestEmail".ShouldMapTo<AdminController>(a => a.TestEmail());
         }
+
+        [TestMethod]
+        public void TestModifySscAdminGetMapping()
+        {
+            "~/Admin/ModifySscAdmin/test".ShouldMapTo<AdminController>(a => a.ModifySscAdmin("test"));
+        }
+
+        [TestMethod]
+        public void TestModifySscAdminPostMapping()
+        {
+            "~/Admin/ModifySscAdmin/test".ShouldMapTo<AdminController>(a => a.ModifySscAdmin(new User()), true);
+        }
+
+        [TestMethod]
+        public void TestRemoveSscAdminGetMapping()
+        {
+            "~/Admin/RemoveSscAdmin/test".ShouldMapTo<AdminController>(a => a.RemoveSscAdmin("test"));
+        }
+        [TestMethod]
+        public void TestRemoveSscAdminRolePostMapping()
+        {
+            "~/Admin/RemoveSscAdmin/test".ShouldMapTo<AdminController>(a => a.RemoveSscAdmin("test"));
+        }
         #endregion Mapping Tests
     }
 }
