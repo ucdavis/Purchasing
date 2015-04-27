@@ -2,7 +2,7 @@
 
 
 @{
-    ViewBag.Title = "Create Admin";
+    ViewBag.Title = "Create SSC Admin";
 }
 
 @section SubNav
@@ -68,6 +68,7 @@
 
 @using(Html.BeginForm())
 {
+    <h3>Note! This will not add them as a departmental admin, that must be done separately.</h3>
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
 <section class="display-form">
