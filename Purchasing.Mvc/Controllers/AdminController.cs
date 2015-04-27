@@ -124,11 +124,7 @@ namespace Purchasing.Mvc.Controllers
             if (isSscAdmin && departmentalAdminModel.UpdateAllSscAdmins)
             {
                 var userList = new List<string>();
-                var admins = _roleRepository.Queryable.Where(x => x.Name.EndsWith("Admin")).Fetch(x => x.Users).ToList();
-                var users =
-                    admins.Single(x => x.Id == Role.Codes.SscAdmin)
-                        .Users.Where(x => x.IsActive && x.Id != user.Id)
-                        .ToList();
+                var users = _roleRepository.Queryable.Where(x => x.Id == Role.Codes.SscAdmin).SelectMany(x => x.Users).Where(w => w.IsActive && w.Id != user.Id).ToList();
 
                 foreach (var user1 in users)
                 {
