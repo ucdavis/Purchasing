@@ -38,6 +38,7 @@ namespace Purchasing.Core.Domain
             public const string Purchaser = "PR";
             public const string EmulationUser = "EU";
             public const string Reviewer = "RV";
+            public const string SscAdmin = "SS";
 
             /// <summary>
             /// This is not a valid code for the DB, Used for context of menu options

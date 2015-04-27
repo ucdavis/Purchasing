@@ -56,7 +56,8 @@ namespace Purchasing.Mvc.Controllers
             var model = new AdminListModel()
                             {
                                 Admins = admins.Single(x => x.Id == Role.Codes.Admin).Users.Where(x=>x.IsActive).ToList(),
-                                DepartmentalAdmins = admins.Single(x => x.Id == Role.Codes.DepartmentalAdmin).Users.Where(x=>x.IsActive).ToList()
+                                DepartmentalAdmins = admins.Single(x => x.Id == Role.Codes.DepartmentalAdmin).Users.Where(x=>x.IsActive).ToList(),
+                                SscAdmins = admins.Single(x => x.Id == Role.Codes.SscAdmin).Users.Where(x => x.IsActive).ToList()
                             };
 
             return View(model);
@@ -66,10 +67,12 @@ namespace Purchasing.Mvc.Controllers
         {
             var user = _userRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Organizations).SingleOrDefault() ??
                        new User(null) {IsActive = true};
+            var isSscAdmin = user.Roles.Any(x => x.Id == Role.Codes.SscAdmin);
 
             var model = new DepartmentalAdminModel
                             {
-                                User = user
+                                User = user,
+                                IsSscAdmin = isSscAdmin
                             };
 
             return View(model);
@@ -99,6 +102,7 @@ namespace Purchasing.Mvc.Controllers
             user.IsActive = departmentalAdminModel.User.IsActive;
 
             var isDeptAdmin = user.Roles.Any(x => x.Id == Role.Codes.DepartmentalAdmin);
+            var isSscAdmin = user.Roles.Any(x => x.Id == Role.Codes.SscAdmin);
             
             if (!isDeptAdmin)
             {
@@ -117,9 +121,33 @@ namespace Purchasing.Mvc.Controllers
             // invalid the cache for the user that was just given permissions
             _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user.Id);
 
+            if (isSscAdmin && departmentalAdminModel.UpdateAllSscAdmins)
+            {
+                var userList = new List<string>();
+                var users = _roleRepository.Queryable.Where(x => x.Id == Role.Codes.SscAdmin).SelectMany(x => x.Users).Where(w => w.IsActive && w.Id != user.Id).ToList();
 
-            Message = string.Format("{0} was added as a departmental admin to the specified organization(s)",
+                foreach (var user1 in users)
+                {
+                    user1.Organizations = new List<Organization>();
+                    foreach (var org in orgs)
+                    {
+                        user1.Organizations.Add(_organizationRepository.Queryable.Single(a => a.Id == org));
+                    }
+                    _userRepository.EnsurePersistent(user1);
+                    // invalid the cache for the user that was just given permissions
+                    _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user1.Id);
+                    userList.Add(user1.FullNameAndId);
+                }
+                Message =
+                    string.Format(
+                        "{0} was added as a departmental admin to the specified organization(s) Also added perms for {1}.",
+                        user.FullNameAndId, string.Join(",", userList.ToArray()));
+            }
+            else
+            {
+                Message = string.Format("{0} was added as a departmental admin to the specified organization(s)",
                                     user.FullNameAndId);
+            }
 
             return this.RedirectToAction(a => a.Index());
         }
@@ -173,6 +201,101 @@ namespace Purchasing.Mvc.Controllers
 
             return this.RedirectToAction(a => a.Index());
         }
+
+        public ActionResult ModifySscAdmin(string id)
+        {
+            var user = (!string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id) : new User(null) { IsActive = true }) ??
+                       new User(null) { IsActive = true };
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult ModifySscAdmin(User user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+
+            var userToSave = _userRepository.GetNullableById(user.Id) ?? new User(user.Id);
+            //user.Organizations = userToSave.Organizations; //Transfer the orgs and roles since they aren't managed on this page
+            //user.Roles = userToSave.Roles;
+            userToSave.FirstName = user.FirstName;
+            userToSave.LastName = user.LastName;
+            userToSave.Email = user.Email;
+            userToSave.IsActive = user.IsActive;
+
+            //Mapper.Map(user, userToSave);
+
+
+            var isAdmin = userToSave.Roles.Any(x => x.Id == Role.Codes.SscAdmin);
+
+            if (!isAdmin)
+            {
+                userToSave.Roles.Add(_roleRepository.GetById(Role.Codes.SscAdmin));
+            }
+
+            _userRepository.EnsurePersistent(userToSave);
+
+            // invalid the cache for the user that was just given permissions
+            _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, userToSave.Id);
+
+
+            if (_emailPreferencesRepository.GetNullableById(userToSave.Id) == null)
+            {
+                _emailPreferencesRepository.EnsurePersistent(new EmailPreferences(userToSave.Id));
+            }
+
+            Message = string.Format("{0} was edited under the SSC administrator role", user.FullNameAndId);
+
+            return this.RedirectToAction(a => a.Index());
+        }
+
+        public ActionResult RemoveSscAdmin(string id)
+        {
+            var user = _userRepository.GetNullableById(id);
+
+            if (user == null)
+            {
+                ErrorMessage = string.Format("User {0} not found.", id);
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            if (_userIdentity.IsUserInRole(id, Role.Codes.SscAdmin) == false)
+            {
+                Message = id + " is not an SSC admin";
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult RemoveSscAdminRole(string id)
+        {
+            var user = _userRepository.GetNullableById(id);
+            if (user == null)
+            {
+                ErrorMessage = string.Format("User {0} not found.", id);
+                return this.RedirectToAction(a => a.Index());
+            }
+
+            var adminRole = user.Roles.Where(x => x.Id == Role.Codes.SscAdmin).Single();
+
+            user.Roles.Remove(adminRole);
+
+            _userRepository.EnsurePersistent(user);
+
+            // invalid the cache for the user that was just given permissions
+            _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, user.Id);
+
+            Message = user.FullNameAndId + " was successfully removed from the SSC admin role";
+
+            return this.RedirectToAction(a => a.Index());
+        }
+
+           
 
         /// <summary>
         /// Note, post of this method is RemoveAdminRole
@@ -595,12 +718,17 @@ namespace Purchasing.Mvc.Controllers
     {
         public User User { get; set; }
         public virtual IEnumerable<Organization> Organizations { get; set; }
+
+        public virtual bool IsSscAdmin { get; set; }
+        public virtual bool UpdateAllSscAdmins { get; set; }
     }
 
     public class AdminListModel
     {
         public IList<User> Admins { get; set; }
         public IList<User> DepartmentalAdmins { get; set; }
+
+        public IList<User> SscAdmins { get; set; } 
     }
 
 

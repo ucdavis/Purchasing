@@ -23,7 +23,7 @@
     </header>
 
     <div class="section-contents">
-    <div class="col1"></div><div class="col2" style="display:inline-block; width:49%; text-align:right;">@Html.ActionLink("Create Admin", "ModifyAdmin", new { }, new { @class = "button" })<br /></div>
+        <div class="col1"></div><div class="col2" style="display:inline-block; width:49%; text-align:right;">@Html.ActionLink("Create Admin", "ModifyAdmin", new { }, new { @class = "button" })<br /></div>
     
         <table class="datatable">
             <thead>
@@ -44,6 +44,43 @@
                         <td>@user.LastName</td>
                         <td>@user.Email</td>
                         <td><a href='@Url.Action("RemoveAdmin", new {user.Id})' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+</section>
+
+<section class="display-form">
+
+    <header class="ui-widget-header ui-corner-top">
+        SSC Administrators
+    </header>
+
+    <div class="section-contents">
+        <div class="col1"></div><div class="col2" style="display:inline-block; width:49%; text-align:right;">@Html.ActionLink("Create Admin", "ModifySscAdmin", new { }, new { @class = "button" })<br /></div>
+
+        <table class="datatable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.SscAdmins)
+                {
+                    <tr>
+                        <td><a href='@Url.Action("ModifySscAdmin", new {user.Id})' class="ui-icon ui-icon-pencil" title="Edit admin"><img src='@Url.Image("edit.png")'></a></td>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.Email</td>
+                        <td><a href='@Url.Action("RemoveSscAdmin", new {user.Id})' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a></td>
                     </tr>
                 }
             </tbody>

@@ -113,6 +113,13 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             role.Level = 4;
             roles.Add(role);
 
+            role = new Role(Role.Codes.SscAdmin);
+            role.SetIdTo(Role.Codes.SscAdmin);
+            role.Name = "SSC Admin";
+            role.Level = 0;
+            role.IsAdmin = true;
+            roles.Add(role);
+
             new FakeRoles(0, RoleRepository, roles, true);
         } 
         #endregion Helpers

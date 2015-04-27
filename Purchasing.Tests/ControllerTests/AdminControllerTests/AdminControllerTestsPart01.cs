@@ -24,7 +24,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Arrange
             var roles = new List<Role>();
             var counter = 1;
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
                 roles.Add(CreateValidEntities.Role(i+1));
                 for (int j = 0; j < 3; j++)
@@ -38,6 +38,8 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             roles[2].Name = "DepartmentalAdmin";
             roles[2].SetIdTo(Role.Codes.DepartmentalAdmin);
             roles[1].SetIdTo(Role.Codes.Approver);
+            roles[3].SetIdTo(Role.Codes.SscAdmin);
+            roles[3].Name = "SscAdmin";
 
             new FakeRoles(0, RoleRepository, roles, true);
             #endregion Arrange
