@@ -172,6 +172,8 @@ namespace Purchasing.WS
 
                 // try to upload the requisition
                 var client = InitializeClient();
+
+                if (userId == "mnswang") { 
                 var result = client.uploadRequisitionExtend(doc, _token, "PP"); //Hard coded to PP which was assigned to us.
 
                 return new SubmitResult(result);
