@@ -105,16 +105,7 @@ namespace Purchasing.WS
 
                 //belowItems.Add(belowLi);
                 
-                var belowLi = new purchasingBelowTheLineItemInfo
-                {
-                    itemTypeCode = "SHIP",
-                    belowItemDescription = "Freight",
-                    belowItemAmount = order.FreightAmount.ToString()
-                };
-
-                belowItems.Add(belowLi);
-                
-                doc.belowTheLineItems = belowItems.ToArray();
+               
                
                 var freightDistributions = new List<purchasingAccountingInfo>();
                 var shippingDistributions = new List<purchasingAccountingInfo>();
@@ -126,6 +117,18 @@ namespace Purchasing.WS
                 }
                 doc.freightAccountingLines = freightDistributions.ToArray();
                 doc.shippingAndHandlingAccountingLines = shippingDistributions.ToArray();
+
+                var belowLi = new purchasingBelowTheLineItemInfo
+                {
+                    itemTypeCode = "SHIP",
+                    belowItemDescription = "Freight",
+                    belowItemAmount = order.FreightAmount.ToString(),
+                    belowItemPurchasingAccountingLines = freightDistributions.ToArray()
+                };
+
+                belowItems.Add(belowLi);
+
+                doc.belowTheLineItems = belowItems.ToArray();
 
                 var items = new List<purchasingItemInfo>();
                 var distributions = CalculateDistributions(order);
@@ -169,7 +172,7 @@ namespace Purchasing.WS
 
                 // try to upload the requisition
                 var client = InitializeClient();
-                var result = client.uploadRequisition(doc, _token, "PP"); //Hard coded to PP which was assigned to us.
+                var result = client.uploadRequisitionExtend(doc, _token, "PP"); //Hard coded to PP which was assigned to us.
 
                 return new SubmitResult(result);
             }
