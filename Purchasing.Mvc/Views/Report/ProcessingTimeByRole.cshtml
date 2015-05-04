@@ -34,7 +34,8 @@
             xAxis: {
                 categories: names,
                 title: {
-                    text: 'User: '
+                    text: 'User (n=#orders)<br/><span style="color: red">Overall mean: ' +  @String.Format("{0:F2}", Model.Columns.AverageTimeToRoleComplete) +'</span>',
+                   
                 }
             },
 
@@ -47,13 +48,6 @@
                     value: @Model.Columns.AverageTimeToRoleComplete,
                     color: 'red',
                     width: 1,
-                    label: {
-                        text: 'Overall mean: ' +  @String.Format("{0:F2}", Model.Columns.AverageTimeToRoleComplete),
-                        align: 'center',
-                        style: {
-                            color: 'gray'
-                        }
-                    }
                 }]
             },
             credits: {
