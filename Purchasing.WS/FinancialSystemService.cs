@@ -118,18 +118,20 @@ namespace Purchasing.WS
                 doc.freightAccountingLines = freightDistributions.ToArray();
                 doc.shippingAndHandlingAccountingLines = shippingDistributions.ToArray();
 
-                var belowLi = new purchasingBelowTheLineItemInfo
+                if (order.FreightAmount > 0)
                 {
-                    itemTypeCode = "SHIP",
-                    belowItemDescription = "Freight",
-                    belowItemAmount = order.FreightAmount.ToString(),
-                    belowItemPurchasingAccountingLines = freightDistributions.ToArray()
-                };
+                    var belowLi = new purchasingBelowTheLineItemInfo
+                    {
+                        itemTypeCode = "SHIP",
+                        belowItemDescription = "Freight",
+                        belowItemAmount = order.FreightAmount.ToString(),
+                        belowItemPurchasingAccountingLines = freightDistributions.ToArray()
+                    };
 
-                belowItems.Add(belowLi);
+                    belowItems.Add(belowLi);
 
-                doc.belowTheLineItems = belowItems.ToArray();
-
+                    doc.belowTheLineItems = belowItems.ToArray();
+                }
                 var items = new List<purchasingItemInfo>();
                 var distributions = CalculateDistributions(order);
 
