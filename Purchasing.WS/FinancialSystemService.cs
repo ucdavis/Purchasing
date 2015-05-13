@@ -194,10 +194,12 @@ namespace Purchasing.WS
             }
             catch (CommunicationException ex)
             {
-                return new SubmitResult() {Success = false, Messages = new List<string>() {"Hide Errors", "There was an error communicating with the campus financial system." , ex.Message}};
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                return new SubmitResult() { Success = false, Messages = new List<string>() { "Hide Errors", "There was an error communicating with the campus financial system.", ex.Message } };
             }
             catch (Exception ex)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                 return new SubmitResult() { Success = false, Messages = new List<string>() { "Hide Errors", ex.Message } };
             }
         }
