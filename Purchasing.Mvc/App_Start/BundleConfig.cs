@@ -75,10 +75,10 @@ namespace Purchasing.Mvc
                       "~/Css/custom.css",
                       "~/Css/icons.css"));
 
-            bundles.Add(new StyleBundle("~/Css/order").Include(
-                  "~/Css/single/fileuploader/fileuploader.css",                  
-                  "~/Css/single/orderrequest.css")
-                  .Include("~/Css/single/chosen.css", new CssRewriteUrlTransform()));
+            bundles.Add(new StyleBundle("~/Css/order")
+                .Include("~/Css/single/fileuploader/fileuploader.css", new CssRewriteUrlTransform())
+                .Include("~/Css/single/orderrequest.css")
+                .Include("~/Css/single/chosen.css", new CssRewriteUrlTransform()));
 
 
             RegisterIndividualAssets(bundles);
@@ -92,7 +92,7 @@ namespace Purchasing.Mvc
         {
             //css
             bundles.Add(new StyleBundle("~/Css/single/chosen").Include("~/Css/single/chosen.css", new CssRewriteUrlTransform()));
-            bundles.Add(new StyleBundle("~/Css/single/fileuploader/fileuploader").Include("~/Css/single/fileuploader/fileuploader.css"));
+            bundles.Add(new StyleBundle("~/Css/single/fileuploader/fileuploader").Include("~/Css/single/fileuploader/fileuploader.css", new CssRewriteUrlTransform()));
             bundles.Add(new StyleBundle("~/Css/single/orderrequest").Include("~/Css/single/orderrequest.css"));
             bundles.Add(new StyleBundle("~/Css/multiselector").Include("~/Css/single/jquery.multiselector.css"));
             bundles.Add(new StyleBundle("~/Css/single/receive-payment").Include("~/Css/single/receive-payment.css"));
