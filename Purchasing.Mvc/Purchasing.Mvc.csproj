@@ -463,7 +463,7 @@
     <Content Include="Css\custom.css" />
     <Content Include="Css\Datatables.css" />
     <Content Include="Css\icons.css" />
-    <Content Include="Css\images\chosen-sprite.png" />
+    <Content Include="Css\single\chosen-sprite.png" />
     <Content Include="Css\images\ui-bg_diagonals-small_50_aaaaaa_40x40.png" />
     <Content Include="Css\images\ui-bg_flat_50_aaaaaa_40x100.png" />
     <Content Include="Css\images\ui-bg_flat_75_ffffff_40x100.png" />
