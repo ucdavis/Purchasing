@@ -77,8 +77,7 @@ namespace Purchasing.Mvc
 
             bundles.Add(new StyleBundle("~/Css/order").Include(
                   "~/Css/single/fileuploader/fileuploader.css",
-                  "~/Css/single/chosen.css",
-                  "~/Css/single/orderrequest.css"));
+                  "~/Css/single/orderrequest.css").Include("~/Css/single/chosen.css", new CssRewriteUrlTransform()));
 
 
             RegisterIndividualAssets(bundles);
@@ -91,7 +90,7 @@ namespace Purchasing.Mvc
         static void RegisterIndividualAssets(BundleCollection bundles)
         {
             //css
-            bundles.Add(new StyleBundle("~/Css/single/chosen").Include("~/Css/single/chosen.css"));
+            bundles.Add(new StyleBundle("~/Css/single/chosen").Include("~/Css/single/chosen.css", new CssRewriteUrlTransform()));
             bundles.Add(new StyleBundle("~/Css/single/fileuploader/fileuploader").Include("~/Css/single/fileuploader/fileuploader.css"));
             bundles.Add(new StyleBundle("~/Css/single/orderrequest").Include("~/Css/single/orderrequest.css"));
             bundles.Add(new StyleBundle("~/Css/multiselector").Include("~/Css/single/jquery.multiselector.css"));
