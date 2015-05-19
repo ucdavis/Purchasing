@@ -175,16 +175,9 @@ namespace Purchasing.WS
                 // try to upload the requisition
                 var client = InitializeClient();
 
-                documentCreationResult result = null;
-                if ( userId.Equals("mnswang", StringComparison.OrdinalIgnoreCase))
-                {
-                    result = client.uploadRequisitionExtend(doc, _token, "PP");
-                    //Hard coded to PP which was assigned to us.
-                }
-                else
-                {
-                    result = client.uploadRequisition(doc, _token, "PP");
-                }
+                var result = client.uploadRequisitionExtend(doc, _token, "PP");
+                //Hard coded to PP which was assigned to us.
+
 
                 return new SubmitResult(result);
             }
