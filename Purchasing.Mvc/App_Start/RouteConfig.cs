@@ -13,6 +13,7 @@ namespace Purchasing.Mvc
         {
             routes.Clear();
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.IgnoreRoute("{*allappleicon}", new { allappleicon = @"apple-touch-icon-.*\.png(/.*)?" });
 
             routes.MapRoute(
                 name: "Default",
