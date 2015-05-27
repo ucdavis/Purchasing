@@ -1,3 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/65280kpyfpr6hicl/branch/master?svg=true)](https://ci.appveyor.com/project/UCNETAdmin/purchasing/branch/master)
+
+
 PrePurchasing is a web application designed to streamline the steps required for making campus acquisitions. It allows users to submit any type of order request, including KFS, MyTravel, DPO/DRO/PR, and other campus services. It also aids in departmental approval processes associated with order requests, and integrates seamlessly with DaFIS/KFS.
 
 PrePurchasing was developed in the open by programmers in two colleges and one school, with further integration by the Kuali KFS team. Any programmer on campus has the opportunity to view the code as it's being written and contribute what is important to their clients, and the tools used (GitHub) make it easy to manage and accept these changes. Project management is handled by another tool (Trello), also accessible to anyone, allowing efficient collaboration between programmers on and off campus.
