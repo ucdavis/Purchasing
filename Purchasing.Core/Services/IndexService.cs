@@ -203,6 +203,12 @@ namespace Purchasing.Core.Services
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
         {
+            if (orderids.Count() > 15000) //TODO: Fix. This is just a hack and means users will only have access to last 15000 orders.
+            {
+                var skip = orderids.Count() - 15000;
+                orderids = orderids.Skip(skip).ToArray();
+            }
+            
             var orders = _client.Search<OrderHistory>(
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
                     .Size(orderids.Length)
