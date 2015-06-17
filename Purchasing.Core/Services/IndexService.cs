@@ -36,6 +36,18 @@ namespace Purchasing.Core.Services
 
         ElasticClient GetIndexClient();
         void CreateTrackingIndex();
+
+        /// <summary>
+        /// return just the orders within the given date ranges
+        /// </summary>
+        /// <param name="orderids"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="startLastActionDate"></param>
+        /// <param name="endLastActionDate"></param>
+        /// <returns></returns>
+        IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
+            DateTime? startLastActionDate, DateTime? endLastActionDate);
     }
     public class Person
     {

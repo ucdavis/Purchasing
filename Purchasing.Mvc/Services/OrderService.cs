@@ -833,7 +833,7 @@ namespace Purchasing.Mvc.Services
             //var ids = orderIds.Select(a => a.OrderId).ToList();
 
             // filter for accessible orders
-            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray());
+            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray(), startDate, endDate, startLastActionDate, endLastActionDate);
             var ordersQuery = ordersIndexQuery.Results.AsQueryable();
             
             // filter for selected status
