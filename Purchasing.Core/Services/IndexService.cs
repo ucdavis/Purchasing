@@ -29,7 +29,6 @@ namespace Purchasing.Core.Services
 
         void UpdateOrderIndexes();
 
-        IndexedList<OrderHistory> GetOrderHistory(int[] orderids);
         DateTime LastModified(Indexes index);
         int NumRecords(Indexes index);
         void UpdateCommentsIndex();
@@ -267,26 +266,6 @@ namespace Purchasing.Core.Services
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
                     .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length)
                     .Filter(f => f.And(filters.ToArray())));
-
-            return new IndexedList<OrderHistory>
-            {
-                Results = orders.Hits.Select(h => h.Source).ToList(),
-                LastModified = DateTime.UtcNow.ToPacificTime().AddMinutes(-5).ToLocalTime()
-            };
-        }
-
-        public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
-        {
-            if (orderids.Count() > 15000) //TODO: Fix. This is just a hack and means users will only have access to last 15000 orders.
-            {
-                var skip = orderids.Count() - 15000;
-                orderids = orderids.Skip(skip).ToArray();
-            }
-            
-            var orders = _client.Search<OrderHistory>(
-                s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
-                    .Size(orderids.Length)
-                    .Filter(q => q.Terms(o => o.OrderId, orderids)));
 
             return new IndexedList<OrderHistory>
             {
