@@ -833,7 +833,7 @@ namespace Purchasing.Mvc.Services
             //var ids = orderIds.Select(a => a.OrderId).ToList();
 
             // filter for accessible orders
-            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray());
+            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray(), startDate, endDate, startLastActionDate, endLastActionDate, orderStatusCode);
             var ordersQuery = ordersIndexQuery.Results.AsQueryable();
             
             // filter for selected status
@@ -886,7 +886,7 @@ namespace Purchasing.Mvc.Services
             //var ids = orderIds.Select(a => a.OrderId).ToList();
 
             // filter for accessible orders
-            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray());
+            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray(), startDate, endDate, startLastActionDate, endLastActionDate, orderStatusCode);
             var ordersQuery = ordersIndexQuery.Results.AsQueryable();
 
             // filter for selected status
@@ -907,7 +907,7 @@ namespace Purchasing.Mvc.Services
             var orderIds = _repositoryFactory.OrderRepository.Queryable.Where(a => a.ApUser != null && a.ApUser.Id == _userIdentity.Current).Select(s => s.Id).ToArray();
 
             // filter for accessible orders
-            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds);
+            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds, startDate, endDate, startLastActionDate, endLastActionDate, orderStatusCode);
             var ordersQuery = ordersIndexQuery.Results.AsQueryable();
 
             // filter for selected status

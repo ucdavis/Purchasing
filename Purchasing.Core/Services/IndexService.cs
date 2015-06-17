@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using AutoMapper.Internal;
@@ -35,6 +36,18 @@ namespace Purchasing.Core.Services
 
         ElasticClient GetIndexClient();
         void CreateTrackingIndex();
+
+        /// <summary>
+        /// return just the orders within the given date ranges
+        /// </summary>
+        /// <param name="orderids"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="startLastActionDate"></param>
+        /// <param name="endLastActionDate"></param>
+        /// <returns></returns>
+        IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
+            DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId);
     }
     public class Person
     {
@@ -47,6 +60,8 @@ namespace Purchasing.Core.Services
     {
         private readonly IDbService _dbService;
         private ElasticClient _client;
+        private const int MaxReturnValues = 15000;
+
 
         public ElasticSearchIndexService(IDbService dbService)
         {
@@ -199,6 +214,65 @@ namespace Purchasing.Core.Services
                 WriteIndex(customAnswers, Indexes.CustomAnswers, recreate: false);
                 WriteIndex(orderTrackingEntities, Indexes.OrderTracking, o => o.OrderId, recreate: false);
             }
+        }
+
+        /// <summary>
+        /// return just the orders within the given date ranges
+        /// </summary>
+        /// <param name="orderids"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="startLastActionDate"></param>
+        /// <param name="endLastActionDate"></param>
+        /// <param name="statusId"></param>
+        /// <returns></returns>
+        public IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
+            DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId)
+        {
+            var filters = new List<FilterContainer>();
+
+            filters.Add(Filter<OrderHistory>.Terms(x => x.OrderId,
+                orderids.Select(x => x.ToString(CultureInfo.InvariantCulture))));
+
+            if (!endLastActionDate.HasValue)
+            {
+                endLastActionDate = DateTime.UtcNow.AddDays(1);
+            }
+
+            if (startLastActionDate.HasValue)
+            {
+                filters.Add(
+                    Filter<OrderHistory>.Range(
+                        o =>
+                            o.OnField(x => x.LastActionDate)
+                                .GreaterOrEquals(startLastActionDate.Value)
+                                .LowerOrEquals(endLastActionDate)));
+            }
+
+            if (startDate.HasValue)
+            {
+                filters.Add(Filter<OrderHistory>.Range(o => o.OnField(x => x.DateCreated).GreaterOrEquals(startDate)));
+            }
+
+            if (endDate.HasValue)
+            {
+                filters.Add(Filter<OrderHistory>.Range(o => o.OnField(x => x.DateCreated).LowerOrEquals(endDate)));
+            }
+            if (!string.IsNullOrWhiteSpace(statusId))
+            {
+                filters.Add(Filter<OrderHistory>.Term(a => a.StatusId, statusId.ToLower()));
+            }
+
+            var orders = _client.Search<OrderHistory>(
+                s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
+                    .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length)
+                    .Filter(f => f.And(filters.ToArray())));
+
+            return new IndexedList<OrderHistory>
+            {
+                Results = orders.Hits.Select(h => h.Source).ToList(),
+                LastModified = DateTime.UtcNow.ToPacificTime().AddMinutes(-5).ToLocalTime()
+            };
         }
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids)
