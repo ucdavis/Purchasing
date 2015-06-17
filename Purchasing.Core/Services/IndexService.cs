@@ -47,7 +47,7 @@ namespace Purchasing.Core.Services
         /// <param name="endLastActionDate"></param>
         /// <returns></returns>
         IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
-            DateTime? startLastActionDate, DateTime? endLastActionDate);
+            DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId);
     }
     public class Person
     {
@@ -222,9 +222,10 @@ namespace Purchasing.Core.Services
         /// <param name="endDate"></param>
         /// <param name="startLastActionDate"></param>
         /// <param name="endLastActionDate"></param>
+        /// <param name="statusId"></param>
         /// <returns></returns>
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
-            DateTime? startLastActionDate, DateTime? endLastActionDate)
+            DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId)
         {
             var filters = new List<FilterContainer>();
 
@@ -255,10 +256,14 @@ namespace Purchasing.Core.Services
             {
                 filters.Add(Filter<OrderHistory>.Range(o => o.OnField(x => x.DateCreated).LowerOrEquals(endDate)));
             }
+            if (!string.IsNullOrWhiteSpace(statusId))
+            {
+                filters.Add(Filter<OrderHistory>.Term(a => a.StatusId, statusId.ToLower()));
+            }
 
             var orders = _client.Search<OrderHistory>(
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
-                    .Size(orderids.Length)
+                    .Size(orderids.Length > 15000 ? 15000 : orderids.Length)
                     .Filter(f => f.And(filters.ToArray())));
 
             return new IndexedList<OrderHistory>
