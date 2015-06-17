@@ -60,6 +60,8 @@ namespace Purchasing.Core.Services
     {
         private readonly IDbService _dbService;
         private ElasticClient _client;
+        private const int MaxReturnValues = 15000;
+
 
         public ElasticSearchIndexService(IDbService dbService)
         {
@@ -263,7 +265,7 @@ namespace Purchasing.Core.Services
 
             var orders = _client.Search<OrderHistory>(
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
-                    .Size(orderids.Length > 15000 ? 15000 : orderids.Length)
+                    .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length)
                     .Filter(f => f.And(filters.ToArray())));
 
             return new IndexedList<OrderHistory>
