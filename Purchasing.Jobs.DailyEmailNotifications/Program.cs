@@ -27,7 +27,13 @@ namespace Purchasing.Jobs.DailyEmailNotifications
         [NoAutomaticTrigger]
         public static void EmailNotifications()
         {
-            ProcessNotifications.ProcessEmails(_dbService, EmailPreferences.NotificationTypes.PerEvent);
+            ProcessNotifications.ProcessEmails(_dbService, EmailPreferences.NotificationTypes.Daily);
+
+            // send weekly summaries
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
+            {
+                ProcessNotifications.ProcessEmails(_dbService, EmailPreferences.NotificationTypes.Weekly);
+            }
         }
     }
 }
