@@ -49,9 +49,69 @@ namespace Purchasing.Jobs.EmailNotifications
             //Setup sendGrid info, so we only look it up once per execution call
             _sendGridUserName = CloudConfigurationManager.GetSetting("opp-sendgrid-username");
             _sendGridPassword = CloudConfigurationManager.GetSetting("opp-sendgrid-pass");
+
+            var runType = ""; //context.MergedJobDataMap["RunType"] as string;
+
+            if (string.Equals(runType, "PerEvent", StringComparison.InvariantCultureIgnoreCase))
+            {
+                ProcessEmails(EmailPreferences.NotificationTypes.PerEvent);
+            }
+            else //Daily/Weekly
+            {
+                ProcessEmails(EmailPreferences.NotificationTypes.Daily);
+
+                // send weekly summaries
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
+                {
+                    ProcessEmails(EmailPreferences.NotificationTypes.Weekly);
+                }
+            }
         }
 
-        private void BatchEmail(IDbConnection connection, string email, List<dynamic> pendingForUser)
+        private static void ProcessEmails(EmailPreferences.NotificationTypes notificationType)
+        {
+            using (var connection = _dbService.GetConnection())
+            {
+                List<dynamic> pending = connection.Query(
+                    "select Id, rtrim(ltrim([UserId])) as UserId, Email, OrderId, DateTimeCreated, Action, Details from EmailQueueV2 where Pending = 1 and NotificationType = @notificationType",
+                    new { notificationType = notificationType.ToString() }).ToList();
+
+                var pendingUserIds = pending.Where(x => x.UserId != null).Select(x => x.UserId).Distinct();
+
+                List<dynamic> users = connection.Query("select distinct Id, Email from users where id in @ids",
+                                                       new { ids = pendingUserIds.ToArray() }).ToList();
+
+                #region Workgroup Notifications have a null User
+
+                var workgroupNotifications = pending.Where(b => b.UserId == null).Select(a => a.Email).Distinct();
+
+                foreach (var wEmail in workgroupNotifications)
+                {
+                    var pendingForUser = pending.Where(e => e.Email == wEmail).ToList();
+
+                    var email = wEmail;
+
+                    BatchEmail(connection, email, pendingForUser);
+                }
+
+                #endregion Workgroup Notifications have a null User
+
+                #region Normal Email Notification, user will never be null
+
+                foreach (var user in users)
+                {
+                    var pendingForUser = pending.Where(e => e.UserId == user.Id).ToList();
+
+                    var email = user.Email;
+
+                    BatchEmail(connection, email, pendingForUser);
+                }
+
+                #endregion Normal Email Notification, user will never be null
+            }
+        }
+
+        private static void BatchEmail(IDbConnection connection, string email, List<dynamic> pendingForUser)
         {
             var pendingOrderIds = pendingForUser.Select(x => x.OrderId).Distinct();
 
@@ -150,7 +210,7 @@ namespace Purchasing.Jobs.EmailNotifications
             }
         }
 
-        private string GenerateLink(string orderRequestNumber)
+        private static string GenerateLink(string orderRequestNumber)
         {
             return string.Format("<a href=\"{0}{1}\">{1}</a>", "http://prepurchasing.ucdavis.edu/Order/Lookup/", orderRequestNumber);
         }
