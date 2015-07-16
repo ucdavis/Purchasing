@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=1.38.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Dapper.1.38\lib\net45\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="Elmah.Io.Client, Version=2.0.22.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\elmah.io.client.2.0.22\lib\net40\Elmah.Io.Client.dll</HintPath>
@@ -101,6 +105,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
+      <Project>{B1C96724-966E-4481-89A7-DF4B1C26069D}</Project>
+      <Name>Purchasing.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Purchasing.Jobs.Common\Purchasing.Jobs.Common.csproj">
       <Project>{CD0959A5-72D6-4F58-A730-24251C0F95FD}</Project>
       <Name>Purchasing.Jobs.Common</Name>
