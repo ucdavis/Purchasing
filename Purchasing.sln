@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.CreateOrder
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.NightlySync", "Purchasing.Jobs.NightlySync\Purchasing.Jobs.NightlySync.csproj", "{7072D6B1-F8E8-4354-AC61-05ED0B301D6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.EmailNotifications", "Purchasing.Jobs.EmailNotifications\Purchasing.Jobs.EmailNotifications.csproj", "{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -148,6 +150,16 @@ Global
 		{7072D6B1-F8E8-4354-AC61-05ED0B301D6D}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
 		{7072D6B1-F8E8-4354-AC61-05ED0B301D6D}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{7072D6B1-F8E8-4354-AC61-05ED0B301D6D}.Test|Any CPU.Build.0 = Release|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.ReleaseAzure|Any CPU.ActiveCfg = Release|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.ReleaseAzure|Any CPU.Build.0 = Release|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.ReleaseCAES|Any CPU.ActiveCfg = Release|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,5 +170,6 @@ Global
 		{BBFDC157-DC74-4261-8783-20EBF8DBC250} = {3201A95E-A908-42BC-9363-D8B5720F6881}
 		{59F67891-02FB-48D9-AF00-55DB86208272} = {3201A95E-A908-42BC-9363-D8B5720F6881}
 		{7072D6B1-F8E8-4354-AC61-05ED0B301D6D} = {3201A95E-A908-42BC-9363-D8B5720F6881}
+		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E} = {3201A95E-A908-42BC-9363-D8B5720F6881}
 	EndGlobalSection
 EndGlobal
