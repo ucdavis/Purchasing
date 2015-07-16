@@ -1,17 +1,17 @@
 ﻿using System;
+using Microsoft.Azure.WebJobs;
 using Ninject;
 using Purchasing.Core.Services;
 using Purchasing.Jobs.Common;
 using Purchasing.Jobs.Common.Logging;
-using Microsoft.Azure.WebJobs;
 using Purchasing.Jobs.NotificationsCommon;
 
-namespace Purchasing.Jobs.EmailNotifications
+namespace Purchasing.Jobs.DailyEmailNotifications
 {
     public class Program : WebJobBase
     {
         private static IDbService _dbService;
-        
+
         static void Main(string[] args)
         {
             LogHelper.ConfigureLogging();

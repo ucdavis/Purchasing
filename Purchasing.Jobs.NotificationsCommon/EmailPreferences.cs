@@ -1,4 +1,4 @@
-﻿namespace Purchasing.Jobs.EmailNotifications
+namespace Purchasing.Jobs.NotificationsCommon
 {
     public class EmailPreferences
     {
