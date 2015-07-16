@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Microsoft.WindowsAzure;
+using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Purchasing.Core.Domain;
