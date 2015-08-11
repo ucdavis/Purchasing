@@ -2,21 +2,32 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
 using System.Text;
 using Dapper;
+using Mandrill;
+using Mandrill.Models;
+using Mandrill.Requests.Messages;
 using Microsoft.Azure;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
-using SendGrid;
 
 namespace Purchasing.Jobs.NotificationsCommon
 {
     public static class ProcessNotifications
     {
+        static readonly MandrillApi MandrillApi = new MandrillApi(CloudConfigurationManager.GetSetting("mandrill-key"));
+
         public static void ProcessEmails(IDbService dbService, EmailPreferences.NotificationTypes notificationType)
         {
+            var sendEmail = CloudConfigurationManager.GetSetting("opp-send-email");
+
+            //Don't execute unless email is turned on
+            if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Console.WriteLine("No emails sent because opp-send-email is not set to 'Yes'");
+                return;
+            }
+
             using (var connection = dbService.GetConnection())
             {
                 List<dynamic> pending = connection.Query(
@@ -138,29 +149,20 @@ namespace Purchasing.Jobs.NotificationsCommon
 
                 message.Append(string.Format("<p><em>{0} </em><em><a href=\"{1}\">{2}</a>&nbsp;</em></p>", "You can change your email preferences at any time by", "http://prepurchasing.ucdavis.edu/User/Profile", "updating your profile on the PrePurchasing site"));
 
-                var sendEmail = CloudConfigurationManager.GetSetting("opp-send-email");
-
-                //Don't execute unless email is turned on
-                if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase)) return;
-
-                //Setup sendGrid info, so we only look it up once per execution call
-                var sendGridUserName = CloudConfigurationManager.GetSetting("opp-sendgrid-username");
-                var sendGridPassword = CloudConfigurationManager.GetSetting("opp-sendgrid-pass");
-
-                var sgMessage = new SendGridMessage
+                MandrillApi.SendMessage(new SendMessageRequest(new EmailMessage
                 {
-                    From = new MailAddress("opp-noreply@ucdavis.edu", "UCD PrePurchasing No Reply"),
+                    FromEmail = "noreply@prepurchasing-notify.ucdavis.edu",
+                    FromName = "UCD PrePurchasing No Reply",
                     Subject = pendingOrders.Count == 1
-                        ? String.Format((string)"PrePurchasing Notification for Order #{0}",
-                            new[] { pendingOrders.Single().RequestNumber })
-                        : "PrePurchasing Notifications"
-                };
-
-                sgMessage.AddTo(email);
-                sgMessage.Html = message.ToString();
-
-                var transportWeb = new Web(new NetworkCredential(sendGridUserName, sendGridPassword));
-                transportWeb.Deliver(sgMessage);
+                        ? String.Format((string) "PrePurchasing Notification for Order #{0}",
+                            new[] {pendingOrders.Single().RequestNumber})
+                        : "PrePurchasing Notifications",
+                    To = new[]
+                    {
+                        new EmailAddress(email)
+                    },
+                    Html = message.ToString()
+                })).Wait();
 
                 ts.Commit();
             }
