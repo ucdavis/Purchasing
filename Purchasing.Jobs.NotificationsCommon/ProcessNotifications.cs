@@ -6,6 +6,9 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using Dapper;
+using Mandrill;
+using Mandrill.Models;
+using Mandrill.Requests.Messages;
 using Microsoft.Azure;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
@@ -15,6 +18,8 @@ namespace Purchasing.Jobs.NotificationsCommon
 {
     public static class ProcessNotifications
     {
+        static MandrillApi _mandrillApi = new MandrillApi(CloudConfigurationManager.GetSetting("mandrill-key"));
+
         public static void ProcessEmails(IDbService dbService, EmailPreferences.NotificationTypes notificationType)
         {
             using (var connection = dbService.GetConnection())
@@ -143,24 +148,20 @@ namespace Purchasing.Jobs.NotificationsCommon
                 //Don't execute unless email is turned on
                 if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase)) return;
 
-                //Setup sendGrid info, so we only look it up once per execution call
-                var sendGridUserName = CloudConfigurationManager.GetSetting("opp-sendgrid-username");
-                var sendGridPassword = CloudConfigurationManager.GetSetting("opp-sendgrid-pass");
-
-                var sgMessage = new SendGridMessage
+                _mandrillApi.SendMessage(new SendMessageRequest(new EmailMessage
                 {
-                    From = new MailAddress("opp-noreply@ucdavis.edu", "UCD PrePurchasing No Reply"),
+                    FromEmail = "noreply@prepurchasing-notify.ucdavis.edu",
+                    FromName = "UCD PrePurchasing No Reply",
                     Subject = pendingOrders.Count == 1
-                        ? String.Format((string)"PrePurchasing Notification for Order #{0}",
-                            new[] { pendingOrders.Single().RequestNumber })
-                        : "PrePurchasing Notifications"
-                };
-
-                sgMessage.AddTo(email);
-                sgMessage.Html = message.ToString();
-
-                var transportWeb = new Web(new NetworkCredential(sendGridUserName, sendGridPassword));
-                transportWeb.Deliver(sgMessage);
+                        ? String.Format((string) "PrePurchasing Notification for Order #{0}",
+                            new[] {pendingOrders.Single().RequestNumber})
+                        : "PrePurchasing Notifications",
+                    To = new[]
+                    {
+                        new EmailAddress(email)
+                    },
+                    Html = message.ToString()
+                })).Wait();
 
                 ts.Commit();
             }
