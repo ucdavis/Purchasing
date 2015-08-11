@@ -15,7 +15,7 @@ namespace Purchasing.Jobs.NotificationsCommon
 {
     public static class ProcessNotifications
     {
-        static MandrillApi _mandrillApi = new MandrillApi(CloudConfigurationManager.GetSetting("mandrill-key"));
+        static readonly MandrillApi MandrillApi = new MandrillApi(CloudConfigurationManager.GetSetting("mandrill-key"));
 
         public static void ProcessEmails(IDbService dbService, EmailPreferences.NotificationTypes notificationType)
         {
@@ -145,7 +145,7 @@ namespace Purchasing.Jobs.NotificationsCommon
                 //Don't execute unless email is turned on
                 if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase)) return;
 
-                _mandrillApi.SendMessage(new SendMessageRequest(new EmailMessage
+                MandrillApi.SendMessage(new SendMessageRequest(new EmailMessage
                 {
                     FromEmail = "noreply@prepurchasing-notify.ucdavis.edu",
                     FromName = "UCD PrePurchasing No Reply",
