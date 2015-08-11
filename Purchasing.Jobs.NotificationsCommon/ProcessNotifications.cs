@@ -19,6 +19,15 @@ namespace Purchasing.Jobs.NotificationsCommon
 
         public static void ProcessEmails(IDbService dbService, EmailPreferences.NotificationTypes notificationType)
         {
+            var sendEmail = CloudConfigurationManager.GetSetting("opp-send-email");
+
+            //Don't execute unless email is turned on
+            if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Console.WriteLine("No emails sent because opp-send-email is not set to 'Yes'");
+                return;
+            }
+
             using (var connection = dbService.GetConnection())
             {
                 List<dynamic> pending = connection.Query(
@@ -139,11 +148,6 @@ namespace Purchasing.Jobs.NotificationsCommon
                 }
 
                 message.Append(string.Format("<p><em>{0} </em><em><a href=\"{1}\">{2}</a>&nbsp;</em></p>", "You can change your email preferences at any time by", "http://prepurchasing.ucdavis.edu/User/Profile", "updating your profile on the PrePurchasing site"));
-
-                var sendEmail = CloudConfigurationManager.GetSetting("opp-send-email");
-
-                //Don't execute unless email is turned on
-                if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase)) return;
 
                 MandrillApi.SendMessage(new SendMessageRequest(new EmailMessage
                 {
