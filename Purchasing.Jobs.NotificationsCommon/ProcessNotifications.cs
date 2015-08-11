@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
 using System.Text;
 using Dapper;
 using Mandrill;
@@ -12,7 +10,6 @@ using Mandrill.Requests.Messages;
 using Microsoft.Azure;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
-using SendGrid;
 
 namespace Purchasing.Jobs.NotificationsCommon
 {
