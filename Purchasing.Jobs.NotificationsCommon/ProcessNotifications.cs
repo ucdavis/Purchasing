@@ -138,7 +138,7 @@ namespace Purchasing.Jobs.NotificationsCommon
 
                         //TODO: Can move to single update outside of foreach
                         connection.Execute("update EmailQueueV2 set Pending = 0, DateTimeSent = @now where id = @id",
-                                           new { now = DateTime.Now.ToPacificTime(), id = emailQueue.Id }, ts);
+                                           new { now = DateTime.UtcNow.ToPacificTime(), id = emailQueue.Id }, ts);
                     }
 
                     message.Append("</tbody>");
@@ -151,6 +151,7 @@ namespace Purchasing.Jobs.NotificationsCommon
 
                 MandrillApi.SendMessage(new SendMessageRequest(new EmailMessage
                 {
+                    SubAccount = "PrePurchasing",
                     FromEmail = "noreply@prepurchasing-notify.ucdavis.edu",
                     FromName = "UCD PrePurchasing No Reply",
                     Subject = pendingOrders.Count == 1

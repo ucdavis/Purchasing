@@ -95,6 +95,8 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\prepurchasing-jobs.pubxml" />
+    <None Include="Properties\webjob-publish-settings.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
@@ -118,6 +120,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
+  <Import Project="..\packages\Microsoft.Web.WebJobs.Publish.1.0.3\tools\webjobs.targets" Condition="Exists('..\packages\Microsoft.Web.WebJobs.Publish.1.0.3\tools\webjobs.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
