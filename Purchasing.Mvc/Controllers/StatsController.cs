@@ -36,7 +36,7 @@ namespace Purchasing.Mvc.Controllers
                 stats.TotalOrdersPlaced = conn.Query<int>("select COUNT(*) from Orders").Single();
                 stats.TotalOrdersCompleted = conn.Query<int>("select COUNT(*) from Orders where OrderStatusCodeId = 'CP'").Single();
                 stats.TotalAmount = string.Format("{0:C2}", conn.Query<decimal>("select SUM(Total) as OrderTotalSumCompleted from Orders").Single());
-                var amount = conn.Query<decimal>("select SUM(Total) as OrderTotalSumCompleted from Orders where OrderStatusCodeId = 'CP'").Single();
+                var amount = conn.Query<decimal>("select SUM(Total) as OrderTotalSumCompleted from Orders where OrderStatusCodeId = 'CP' and Total < 100000000").Single();
                 stats.TotalAmountCompleted = string.Format("{0:C2}",amount);
 
                 
