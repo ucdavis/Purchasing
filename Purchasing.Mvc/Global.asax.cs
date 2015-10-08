@@ -17,6 +17,7 @@ namespace Purchasing.Mvc
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             AutomapperConfig.Configure();
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            LogConfig.ConfigureLogging();
         }
     }
 }
