@@ -739,9 +739,9 @@ namespace Purchasing.Mvc.Services
             //See if there are any automatic approvals for this user/account.
             var possibleAutomaticApprovals =
                 _repositoryFactory.AutoApprovalRepository.Queryable
-                    .Where(x => x.IsActive && x.Expiration > DateTime.UtcNow.ToPacificTime()) //valid only if it is active and isn't expired yet
-                    .Where(x=> x.User.Id == approver.Id) //auto approval must have been created by the approver
-                    .Where(x=> (x.TargetUser != null && x.TargetUser.Id == order.CreatedBy.Id) || x.Account.Id == accountId)//either applies to the order creator or account
+                    .Where(x => x.IsActive && (x.Expiration == null || x.Expiration > DateTime.UtcNow.ToPacificTime())) //valid only if it is active and isn't expired yet
+                    .Where(x => x.User.Id == approver.Id) //auto approval must have been created by the approver
+                    .Where(x => (x.TargetUser != null && x.TargetUser.Id == order.CreatedBy.Id) || x.Account.Id == accountId)//either applies to the order creator or account
                     .ToList();
 
             foreach (var autoApproval in possibleAutomaticApprovals) //for each autoapproval, check if they apply.  If any do, return true
