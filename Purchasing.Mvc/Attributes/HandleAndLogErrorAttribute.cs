@@ -7,7 +7,8 @@ namespace Purchasing.Mvc.Attributes
     {
         public override void OnException(ExceptionContext filterContext)
         {
-            Log.Error(filterContext.Exception, "Unhandled Exception Caught");
+            Log.Error(filterContext.Exception, "Exception: {message} of type {type}", filterContext.Exception.Message,
+                filterContext.Exception.GetType().Name);
 
             base.OnException(filterContext);
         }
