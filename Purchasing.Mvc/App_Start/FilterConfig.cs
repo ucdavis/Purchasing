@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using Purchasing.Mvc.Attributes;
 
 namespace Purchasing.Mvc
 {
@@ -7,7 +8,7 @@ namespace Purchasing.Mvc
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            filters.Add(new HandleAndLogErrorAttribute());
         }
     }
 }
