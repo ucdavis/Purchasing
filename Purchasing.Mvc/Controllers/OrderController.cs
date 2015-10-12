@@ -18,6 +18,7 @@ using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
 using Purchasing.WS;
+using Serilog;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
@@ -863,8 +864,7 @@ namespace Purchasing.Mvc.Controllers
                         ErrorMessage =
                             "There was a problem completing this order. Please try again later and notify support if problems persist.";
 
-                        ErrorSignal.FromCurrentContext().Raise(
-                            new System.ApplicationException(string.Join(Environment.NewLine, errors)));
+                        Log.Error(string.Join(Environment.NewLine, errors));
                     }
                     else
                     {

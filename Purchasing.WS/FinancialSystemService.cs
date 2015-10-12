@@ -5,6 +5,7 @@ using System.ServiceModel;
 using Purchasing.Core.Domain;
 using Purchasing.WS.PurchaseDocumentService;
 using System.Configuration;
+using Serilog;
 
 namespace Purchasing.WS
 {
@@ -187,12 +188,12 @@ namespace Purchasing.WS
             }
             catch (CommunicationException ex)
             {
-                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                Log.Error(ex, "Error communicating with the campus financial system.");
                 return new SubmitResult() { Success = false, Messages = new List<string>() { "Hide Errors", "There was an error communicating with the campus financial system.", ex.Message } };
             }
             catch (Exception ex)
             {
-                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                Log.Error(ex, "Unknown error with financial system");
                 return new SubmitResult() { Success = false, Messages = new List<string>() { "Hide Errors", ex.Message } };
             }
         }

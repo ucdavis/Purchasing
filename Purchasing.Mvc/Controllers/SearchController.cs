@@ -13,6 +13,7 @@ using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
+using Serilog;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -81,7 +82,7 @@ namespace Purchasing.Mvc.Controllers
             }
             catch(Exception ex) //If the search fails, return no results
             {
-                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                Log.Error(ex, "Error searching for {query}", q);
                 model = new SearchResultModel {Query = q};
             }
 

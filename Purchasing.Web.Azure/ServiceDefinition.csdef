@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceDefinition name="Purchasing.Web.Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2014-06.2.4">
+<ServiceDefinition name="Purchasing.Web.Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2015-04.2.6">
   <WebRole name="Purchasing.Web" vmsize="Small">
     <Sites>
       <Site name="Web">
@@ -11,8 +11,7 @@
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
     </Endpoints>
-    <Imports>
-    </Imports>
+    <Imports></Imports>
     <Startup>
       <Task commandLine="settimezone.cmd" executionContext="elevated" taskType="simple" />
       <Task commandLine="disableAppPoolTimeout.cmd" executionContext="elevated" taskType="simple" />
