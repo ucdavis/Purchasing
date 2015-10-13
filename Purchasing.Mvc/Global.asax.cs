@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Azure;
 
 namespace Purchasing.Mvc
 {
@@ -18,6 +20,9 @@ namespace Purchasing.Mvc
             AutomapperConfig.Configure();
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             LogConfig.ConfigureLogging();
+
+            TelemetryConfiguration.Active.InstrumentationKey =
+                CloudConfigurationManager.GetSetting("ApplicationInsightsKey");
         }
     }
 }
