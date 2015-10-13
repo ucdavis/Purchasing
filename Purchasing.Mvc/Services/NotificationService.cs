@@ -73,12 +73,12 @@ namespace Purchasing.Mvc.Services
             {
                 var log = Log.ForContext("userId", userId);
                 //Log email pref not found
-                log.ForContext("userid", userId).Information("Email Preference not found with GetNullable");                
+                log.Information("Email Preference not found with GetNullable");                
                 pref = _emailPreferenceRepository.Queryable.FirstOrDefault(a => a.Id == userId.Trim().ToLower());
                 if (pref == null)
                 {
                     //Log that this failed too
-                    log.ForContext("userid", userId).Information("Email Preference not found with FirstOrDefault and Trim.ToLower");                    
+                    log.Information("Email Preference not found with FirstOrDefault and Trim.ToLower");                    
                     pref = new EmailPreferences(userId);
                 }
             }
