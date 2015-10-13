@@ -4,6 +4,7 @@ using System.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
+using Serilog;
 using UCDArch.Core.PersistanceSupport;
 
 namespace Purchasing.Mvc.Services
@@ -65,6 +66,26 @@ namespace Purchasing.Mvc.Services
             _repositoryFactory = repositoryFactory;
         }
 
+        private EmailPreferences GetEmailPreferences(string userId)
+        {
+            var pref = _emailPreferenceRepository.GetNullableById(userId);
+            if (pref == null)
+            {
+                var log = Log.ForContext("userId", userId);
+                //Log email pref not found
+                log.ForContext("userid", userId).Information("Email Preference not found with GetNullable");                
+                pref = _emailPreferenceRepository.Queryable.FirstOrDefault(a => a.Id == userId.Trim().ToLower());
+                if (pref == null)
+                {
+                    //Log that this failed too
+                    log.ForContext("userid", userId).Information("Email Preference not found with FirstOrDefault and Trim.ToLower");                    
+                    pref = new EmailPreferences(userId);
+                }
+            }
+
+            return pref;
+        }
+
         public void OrderApproved(Order order, Approval approval)
         {
             var queues = new List<EmailQueueV2>();
@@ -73,7 +94,7 @@ namespace Purchasing.Mvc.Services
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level < approval.StatusCode.Level).Select(a => new {User = a.User, StatusCode = a.StatusCode}).Distinct())
             {
                 var user = appr.User;
-                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+                var preference = GetEmailPreferences(user.Id);
 
                 if (IsMailRequested(preference, appr.StatusCode, approval.StatusCode, EventCode.Approval))
                 {
@@ -105,7 +126,7 @@ namespace Purchasing.Mvc.Services
             foreach (var appr in order.OrderTrackings.Select(a => new { User = a.User, StatusCode = a.StatusCode }).Distinct())
             {
                 var target = appr.User;
-                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+                var preference = GetEmailPreferences(user.Id);
 
                 //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(CancellationMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, user.FullName, order.StatusCode.Name, comment), target);
                 var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Denied", string.Format("By {0} at {1} review with the following comment \"{2}\".", user.FullName, previousStatus.Name, comment), target);
@@ -123,7 +144,7 @@ namespace Purchasing.Mvc.Services
         public void OrderCreated(Order order)
         {
             var user = order.CreatedBy;
-            var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+            var preference = GetEmailPreferences(user.Id);
 
             if(preference.RequesterOrderSubmission)
             {
@@ -145,7 +166,7 @@ namespace Purchasing.Mvc.Services
 
             foreach (var approval in order.OrderTrackings.Select(a => new { a.User, a.StatusCode }).Distinct())
             {
-                var preference = _emailPreferenceRepository.GetNullableById(approval.User.Id) ?? new EmailPreferences(approval.User.Id);
+                var preference = GetEmailPreferences(approval.User.Id);
 
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Approval))
                 {
@@ -185,7 +206,7 @@ namespace Purchasing.Mvc.Services
             
             foreach (var approval in order.OrderTrackings.Select(a => new { a.User, a.StatusCode }).Distinct())
             {
-                var preference = _emailPreferenceRepository.GetNullableById(approval.User.Id) ?? new EmailPreferences(approval.User.Id);
+                var preference = GetEmailPreferences(approval.User.Id);
 
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Received, order.OrderType))
                 {
@@ -216,7 +237,7 @@ namespace Purchasing.Mvc.Services
 
             foreach (var approval in order.OrderTrackings.Select(a => new { a.User, a.StatusCode }).Distinct())
             {
-                var preference = _emailPreferenceRepository.GetNullableById(approval.User.Id) ?? new EmailPreferences(approval.User.Id);
+                var preference = GetEmailPreferences(approval.User.Id);
 
                 if (IsMailRequested(preference, approval.StatusCode, order.StatusCode, EventCode.Paid, order.OrderType))
                 {                    
@@ -253,7 +274,7 @@ namespace Purchasing.Mvc.Services
 
                 foreach (var peep in peeps)
                 {
-                    var preference = _emailPreferenceRepository.GetNullableById(peep.Id) ?? new EmailPreferences(peep.Id);
+                    var preference = GetEmailPreferences(peep.Id);
 
                     if (IsMailRequested(preference, apf.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                     {
@@ -289,7 +310,7 @@ namespace Purchasing.Mvc.Services
                 // load the user and information
                 var user = ap.User;
 
-                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+                var preference = GetEmailPreferences(user.Id);
 
                 if (IsMailRequested(preference, ap.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
                 {
@@ -345,7 +366,7 @@ namespace Purchasing.Mvc.Services
             foreach (var appr in order.OrderTrackings.Where(a => a.StatusCode.Level <= order.StatusCode.Level).Select(a => new { User = a.User, StatusCode = a.StatusCode }).Distinct())
             {
                 var user = appr.User;
-                var preference = _emailPreferenceRepository.GetNullableById(user.Id) ?? new EmailPreferences(user.Id);
+                var preference = GetEmailPreferences(user.Id);
 
                 if (IsMailRequested(preference, appr.StatusCode, order.StatusCode, EventCode.Update))
                 {
@@ -378,7 +399,7 @@ namespace Purchasing.Mvc.Services
             var users = order.OrderTrackings.Select(a => a.User).Distinct().ToList();
             foreach (var ot in users)
             {
-                var preference = _emailPreferenceRepository.GetNullableById(ot.Id) ?? new EmailPreferences(ot.Id);
+                var preference = GetEmailPreferences(ot.Id);
 
                 if (preference.AddAttachment)
                 {
@@ -401,7 +422,7 @@ namespace Purchasing.Mvc.Services
 
             foreach (var ot in users)
             {
-                var preference = _emailPreferenceRepository.GetNullableById(ot.Id) ?? new EmailPreferences(ot.Id);
+                var preference = GetEmailPreferences(ot.Id);
 
                 if (preference.AddNote)
                 {
