@@ -26,6 +26,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager);
             approval.Completed = true;
             order.GenerateRequestNumber();
+            new FakeEmailPreferences(0, EmailPreferenceRepository);
             #endregion Arrange
 
             #region Act

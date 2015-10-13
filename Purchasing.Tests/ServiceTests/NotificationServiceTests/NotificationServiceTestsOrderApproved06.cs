@@ -66,6 +66,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
                 order.AddApproval(app);
             }
             order.GenerateRequestNumber();
+            new FakeEmailPreferences(0, EmailPreferenceRepository);
             #endregion Arrange
 
             #region Act
@@ -135,6 +136,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
                 order.AddApproval(app);
             }
             order.GenerateRequestNumber();
+            new FakeEmailPreferences(0, EmailPreferenceRepository);
             #endregion Arrange
 
             #region Act
