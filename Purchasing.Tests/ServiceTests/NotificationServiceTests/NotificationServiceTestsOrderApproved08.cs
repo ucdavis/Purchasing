@@ -38,6 +38,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
                 }
             }
             order.GenerateRequestNumber();
+            new FakeEmailPreferences(0, EmailPreferenceRepository);
             #endregion Arrange
 
             #region Act

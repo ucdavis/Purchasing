@@ -27,6 +27,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.GenerateRequestNumber();
             new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
+            new FakeEmailPreferences(0, EmailPreferenceRepository);
             #endregion Arrange
 
             #region Act

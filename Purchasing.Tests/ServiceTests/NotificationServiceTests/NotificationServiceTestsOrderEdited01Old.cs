@@ -23,6 +23,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
             approval.Completed = true;
             order.GenerateRequestNumber();
+            new FakeEmailPreferences(0, EmailPreferenceRepository);
             #endregion Arrange
 
             #region Act
@@ -52,6 +53,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             var approval = new Approval();
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver);
             approval.Completed = true;
+            new FakeEmailPreferences(0, EmailPreferenceRepository);
             #endregion Arrange
 
             #region Act
