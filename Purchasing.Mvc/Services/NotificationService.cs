@@ -564,8 +564,55 @@ namespace Purchasing.Mvc.Services
                     }
 
                 case OrderStatusCode.Codes.ConditionalApprover:
+                    //Copied code from Approver above... Otherwise this was always returning true...
+                    // evaluate the event
+                    switch (eventCode)
+                    {
+                        case EventCode.Approval:
 
-                    // is this supposed to be the same as approver?
+                            switch (currentStatus.Id)
+                            {
+                                case OrderStatusCode.Codes.AccountManager: return preference.ApproverAccountManagerApproved;
+                                case OrderStatusCode.Codes.Purchaser: return preference.ApproverPurchaserProcessed;
+                                //case OrderStatusCode.Codes.Complete: return preference.ApproverKualiApproved; //Done: OrderStatusCode.Codes.Complete (Kuali Approved) or Request Completed (Look at Email Preferences Page) ?
+                                case OrderStatusCode.Codes.Complete: return preference.ApproverPurchaserProcessed;
+
+                                default: return false;
+                            }
+
+                        case EventCode.Update:
+
+                            // this email is turned off, no email exists
+                            return false;
+
+                        case EventCode.Cancelled:
+
+                            // this email is turned off, no email exists
+                            return false;
+
+                        // this technically doesn't exist, since a "complete" order is an approval at purchaser level, see switch statement in approval event.
+                        case EventCode.Complete:
+
+                            return preference.ApproverPurchaserProcessed;
+
+                        //case EventCode.KualiUpdate:
+
+                        //    //TODO: add in kuali stuff
+
+                        //    break;
+
+                        case EventCode.Arrival:
+
+                            return preference.ApproverOrderArrive;
+
+                        // no received status for approver
+                        case EventCode.Received:
+                            return false;
+                        case EventCode.Paid:
+                            return false;
+
+                        default: return false;
+                    }
 
                     break;
                 case OrderStatusCode.Codes.AccountManager:
