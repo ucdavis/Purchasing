@@ -19,8 +19,8 @@ namespace Purchasing.Mvc.Models
 
         public static WorkgroupAccountModel Create(IRepository repository, Workgroup workgroup, WorkgroupAccount workgroupAccount = null)
         {
-            Check.Require(repository != null);
-            Check.Require(workgroup != null);
+            Check.Require(repository != null, "repo null");
+            Check.Require(workgroup != null, "workgroup null");
 
             var viewModel = new WorkgroupAccountModel { Workgroup = workgroup, WorkgroupAccount = workgroupAccount ?? new WorkgroupAccount()};
 

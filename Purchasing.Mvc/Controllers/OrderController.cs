@@ -126,7 +126,7 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult RerouteAccountManager(int id, int approvalId, string accountManagerId)
         {
             var approval = _repositoryFactory.ApprovalRepository.Queryable.Single(a => a.Id == approvalId);
-            Check.Require(approval.Order.Id == id);
+            Check.Require(approval.Order.Id == id, "approval.Order.Id");
 
             if (approval.Order.StatusCode.Id != OrderStatusCode.Codes.AccountManager)
             {
@@ -150,7 +150,7 @@ namespace Purchasing.Mvc.Controllers
 
             var accountManager = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == accountManagerId);
             var accountManagerCheck = approval.Order.Workgroup.Permissions.Any(a => a.Role.Id == Role.Codes.AccountManager && a.User == accountManager);
-            Check.Require(accountManagerCheck); // Check that the AM assigned is in the workgroup as an account manager.
+            Check.Require(accountManagerCheck, "accountManagerCheck"); // Check that the AM assigned is in the workgroup as an account manager.
 
             _orderService.ReRouteSingleApprovalForExistingOrder(approval, accountManager, (approval.Order.StatusCode.Id == OrderStatusCode.Codes.AccountManager));
             _eventService.OrderReRoutedToAccountManager(approval.Order, string.Empty, originalRouting, accountManager.FullName);
@@ -350,7 +350,7 @@ namespace Purchasing.Mvc.Controllers
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
 
-            Check.Require(canCreateOrderInWorkgroup);
+            Check.Require(canCreateOrderInWorkgroup, "canCreateOrderInWorkgroup");
 
             var order = new Order();
 
@@ -362,7 +362,7 @@ namespace Purchasing.Mvc.Controllers
 
             _orderService.HandleSavedForm(order, model.FormSaveId);
 
-            Check.Require(order.LineItems.Count > 0);
+            Check.Require(order.LineItems.Count > 0, "Line Items less than 1");
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -412,7 +412,7 @@ namespace Purchasing.Mvc.Controllers
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
-            Check.Require(order != null);
+            Check.Require(order != null, "order is null");
 
             var adjustRouting = model.AdjustRouting.HasValue && model.AdjustRouting.Value;
 
@@ -444,7 +444,7 @@ namespace Purchasing.Mvc.Controllers
                 }
             }
 
-            Check.Require(order.LineItems.Count > 0);
+            Check.Require(order.LineItems.Count > 0, "Line count");
 
             if(adjustRouting)
             {
@@ -527,7 +527,7 @@ namespace Purchasing.Mvc.Controllers
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
 
-            Check.Require(canCreateOrderInWorkgroup);
+            Check.Require(canCreateOrderInWorkgroup, "canCreateOrderInWorkgroup");
 
             var order = new Order();
 
@@ -537,7 +537,7 @@ namespace Purchasing.Mvc.Controllers
 
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
-            Check.Require(order.LineItems.Count > 0);
+            Check.Require(order.LineItems.Count > 0, "line count");
 
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
@@ -823,8 +823,8 @@ namespace Purchasing.Mvc.Controllers
                 var newOrderType = _repositoryFactory.OrderTypeRepository.GetNullableById(orderType);
                 var isPurchaser = order.StatusCode.Id == OrderStatusCode.Codes.Purchaser;
 
-                Check.Require(isPurchaser);
-                Check.Require(newOrderType != null);
+                Check.Require(isPurchaser, "isPurchaser");
+                Check.Require(newOrderType != null, "new order type");
                 
                 newOrderType.DocType = kfsDocType;
 
@@ -970,14 +970,14 @@ namespace Purchasing.Mvc.Controllers
             {
                 var approval = _repositoryFactory.ApprovalRepository.GetNullableById(approvalId);
 
-                Check.Require(approval != null);
-                Check.Require(id == approval.Order.Id);
-                Check.Require(!approval.Completed);
-                Check.Require(approval.IsExternal);
+                Check.Require(approval != null, "approve null");
+                Check.Require(id == approval.Order.Id, "approve id no match");
+                Check.Require(!approval.Completed, "not completed");
+                Check.Require(approval.IsExternal, "external");
                 Check.Require(!approval.Order.Workgroup.Accounts.Select(a => a.Account.Id).Contains(approval.Split.Account), Resources.ReRouteApproval_AccountError);
                 var oldUserName = approval.User.FullName;
                 var user = _securityService.GetUser(kerb);
-                Check.Require(user != null);
+                Check.Require(user != null, "user null");
 
                 _orderService.ReRouteSingleApprovalForExistingOrder(approval, user);
                 _eventService.OrderReRoutedToAccountManager(approval.Order, "external ", oldUserName, user.FullName);

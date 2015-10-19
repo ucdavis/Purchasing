@@ -15,8 +15,8 @@ namespace Purchasing.Mvc.Models
         public int AccountPurchaserCount { get; set; }
         public static WorkgroupPeopleDeleteModel Create(IRepository<WorkgroupPermission> workgroupPermissionRepository, WorkgroupPermission workgroupPermission)
         {
-            Check.Require(workgroupPermissionRepository != null);
-            Check.Require(workgroupPermission != null);
+            Check.Require(workgroupPermissionRepository != null, "workgroupPermissionRepository null");
+            Check.Require(workgroupPermission != null, "workgroupPermission null");
             var viewModel = new WorkgroupPeopleDeleteModel{WorkgroupPermission = workgroupPermission};
             viewModel.WorkgroupPermissions = workgroupPermissionRepository.Queryable.Where(a => a.Workgroup == workgroupPermission.Workgroup && a.User == workgroupPermission.User && !a.Role.IsAdmin && !a.IsAdmin).ToList();
 

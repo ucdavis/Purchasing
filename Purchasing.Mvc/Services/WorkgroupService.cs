@@ -510,9 +510,9 @@ namespace Purchasing.Mvc.Services
                 return;
             }
 
-            Check.Require(OrderStatusCode.Codes.Approver == Role.Codes.Approver);
-            Check.Require(OrderStatusCode.Codes.AccountManager == Role.Codes.AccountManager);
-            Check.Require(OrderStatusCode.Codes.Purchaser == Role.Codes.Purchaser);
+            Check.Require(OrderStatusCode.Codes.Approver == Role.Codes.Approver, "Approver");
+            Check.Require(OrderStatusCode.Codes.AccountManager == Role.Codes.AccountManager, "Account manager");
+            Check.Require(OrderStatusCode.Codes.Purchaser == Role.Codes.Purchaser, "Purchaser");
 
             var user = workgroupPermission.User;
             var workgroup = workgroupPermission.Workgroup;

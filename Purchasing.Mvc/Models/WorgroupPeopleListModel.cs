@@ -25,9 +25,9 @@ namespace Purchasing.Mvc.Models
         /// <returns></returns>
         public static WorgroupPeopleListModel Create(IRepository<WorkgroupPermission> workgroupPermissionRepository, IRepositoryWithTypedId<Role, string> roleRepository ,Workgroup workgroup, string rolefilter)
         {
-            Check.Require(workgroupPermissionRepository != null);
-            Check.Require(roleRepository != null);
-            Check.Require(workgroup != null);
+            Check.Require(workgroupPermissionRepository != null, "workgroup permission repository null");
+            Check.Require(roleRepository != null, "role repo null");
+            Check.Require(workgroup != null, "workgroup null");
 
             var viewModel = new WorgroupPeopleListModel()
                                 {

@@ -20,7 +20,7 @@ namespace Purchasing.Mvc.Models
         public static AutoApprovalViewModel Create(IRepository repository, string userName)
         {
             Check.Require(repository != null, "Repository must be supplied");
-            Check.Require(!string.IsNullOrWhiteSpace(userName));
+            Check.Require(!string.IsNullOrWhiteSpace(userName), "user name");
 
             var viewModel = new AutoApprovalViewModel
                                 {

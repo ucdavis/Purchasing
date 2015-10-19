@@ -15,8 +15,8 @@ namespace Purchasing.Mvc.Models
 
         public static WorkgroupDetailModel Create(IRepository<WorkgroupPermission> workgroupPermissionRepository, Workgroup workgroup)
         {
-            Check.Require(workgroupPermissionRepository != null);
-            Check.Require(workgroup != null);
+            Check.Require(workgroupPermissionRepository != null, "workgroupPermissionRepository null");
+            Check.Require(workgroup != null, "workgroup null");
 
             var viewModel = new WorkgroupDetailModel
             {
