@@ -657,7 +657,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("Precondition failed.", ex.Message);
+                Assert.AreEqual("canCreateOrderInWorkgroup", ex.Message);
                 SecurityService.AssertWasCalled(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2)));
                 throw;
             }
