@@ -293,11 +293,11 @@ namespace Purchasing.Mvc.Controllers
                 viewModel.Role = _roleRepository.Queryable.SingleOrDefault(a => !a.IsAdmin && a.Id == roleFilter);
             }
 
-            Check.Require(viewModel.Roles.Single(a => a.Level == 1).Id == "RQ"); //Used for navigation in _StatusBar.cshtml
-            Check.Require(viewModel.Roles.Single(a => a.Level == 2).Id == "AP"); //Used for navigation in _StatusBar.cshtml
-            Check.Require(viewModel.Roles.Single(a => a.Level == 3).Id == "AM"); //Used for navigation in _StatusBar.cshtml
-            Check.Require(viewModel.Roles.Single(a => a.Level == 4).Id == "PR"); //Used for navigation in _StatusBar.cshtml
-            Check.Require(viewModel.Roles.Single(a => a.Level == 0).Id == "RV"); //Used for navigation in _StatusBar.cshtml
+            Check.Require(viewModel.Roles.Single(a => a.Level == 1).Id == "RQ", "RQ"); //Used for navigation in _StatusBar.cshtml
+            Check.Require(viewModel.Roles.Single(a => a.Level == 2).Id == "AP", "AP"); //Used for navigation in _StatusBar.cshtml
+            Check.Require(viewModel.Roles.Single(a => a.Level == 3).Id == "AM", "AM"); //Used for navigation in _StatusBar.cshtml
+            Check.Require(viewModel.Roles.Single(a => a.Level == 4).Id == "PR", "PR"); //Used for navigation in _StatusBar.cshtml
+            Check.Require(viewModel.Roles.Single(a => a.Level == 0).Id == "RV", "RV"); //Used for navigation in _StatusBar.cshtml
 
             ViewBag.rolefilter = roleFilter;
             if (viewModel.Role.Level == 0)

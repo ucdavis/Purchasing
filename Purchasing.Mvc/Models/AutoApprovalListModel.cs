@@ -15,8 +15,8 @@ namespace Purchasing.Mvc.Models
 
         public static AutoApprovalListModel Create(IRepository<AutoApproval> autoApprovalRepository, string userName, bool showAll)
         {
-            Check.Require(autoApprovalRepository != null);
-            Check.Require(!string.IsNullOrWhiteSpace(userName));
+            Check.Require(autoApprovalRepository != null, "repository null");
+            Check.Require(!string.IsNullOrWhiteSpace(userName), "user name");
 
             var viewModel = new AutoApprovalListModel {ShowAll = showAll};
             var temp = autoApprovalRepository.Queryable.Where(a => a.User != null && a.User.Id == userName);

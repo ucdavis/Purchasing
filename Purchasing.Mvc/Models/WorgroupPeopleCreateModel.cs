@@ -20,9 +20,9 @@ namespace Purchasing.Mvc.Models
 
         public static WorgroupPeopleCreateModel Create(IRepositoryWithTypedId<Role, string> roleRepository, Workgroup workgroup)
         {
-            Check.Require(roleRepository != null);
+            Check.Require(roleRepository != null, "role repo null");
 
-            Check.Require(workgroup != null);
+            Check.Require(workgroup != null, "workgroup null");
 
             var viewModel = new WorgroupPeopleCreateModel
                                 {
