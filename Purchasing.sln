@@ -16,8 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Core", "Purchasi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.WS", "Purchasing.WS\Purchasing.WS.csproj", "{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}"
 EndProject
-Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "Purchasing.Web.Azure", "Purchasing.Web.Azure\Purchasing.Web.Azure.ccproj", "{78504968-F0E0-48BA-8BEE-8886E196E0C0}"
-EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PurchasingTP.AzureDb", "PurchasingTP.AzureDb\PurchasingTP.AzureDb.sqlproj", "{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Mvc", "Purchasing.Mvc\Purchasing.Mvc.csproj", "{AD6F87B5-3E46-45C7-94E1-3625D8E44F33}"
@@ -76,15 +74,6 @@ Global
 		{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}.ReleaseCAES|Any CPU.Build.0 = ReleaseCAES|Any CPU
 		{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}.Test|Any CPU.ActiveCfg = Test|Any CPU
 		{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}.Test|Any CPU.Build.0 = Test|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.ReleaseAzure|Any CPU.ActiveCfg = ReleaseAzure|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.ReleaseAzure|Any CPU.Build.0 = ReleaseAzure|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.ReleaseCAES|Any CPU.ActiveCfg = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Test|Any CPU.ActiveCfg = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Test|Any CPU.Build.0 = Release|Any CPU
 		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Release|Any CPU.Build.0 = Release|Any CPU

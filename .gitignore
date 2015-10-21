@@ -51,3 +51,6 @@ Web.ReleaseAzure.config
 newrelic.cmd
 Purchasing.Web.Azure/ServiceDefinition.build.csdef
 .vs/
+
+.vs/config/
+.vs/config/applicationhost.config
