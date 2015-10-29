@@ -185,7 +185,7 @@ namespace Purchasing.Core.Services
 
                     var orderInfo =
                         conn.Query<OrderTrackingDto>(
-                            "select * from [vOrderTrackingIndex] WHERE orderid in @updatedOrderIds ORDER BY OrderTracking.DateCreated DESC",
+                            "select * from [vOrderTrackingIndex] WHERE orderid in @updatedOrderIds ORDER BY ActionDate DESC",
                             new {updatedOrderIds}).ToList();
 
                     orderTrackingEntities = ProcessTrackingEntities(orderInfo);
