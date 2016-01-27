@@ -83,7 +83,7 @@
                 <div class="display-details">
                     @Html.DisplayFor(model => model.DepartmentalAdminRequest.Email)
                     @{
-                        var url = string.Format("http://www.ucdavis.edu/search/directory_results.shtml?filter={0}", Model.DepartmentalAdminRequest.Email);
+                        var url = string.Format("http://directory.ucdavis.edu/search/directory_results.shtml?filter={0}", Model.DepartmentalAdminRequest.Email);
                     }
                     <a class="button" href="@url" target="_blank">Lookup</a>
 
