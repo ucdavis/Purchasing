@@ -1,4 +1,5 @@
-﻿@model ReviewOrderViewModel
+﻿@using System.Configuration
+@model ReviewOrderViewModel
 
 <section id="history" class="ui-corner-all display-form">
 
@@ -13,7 +14,7 @@
                         <td>@tracking.DateCreated</td>
                         <td>@tracking.Description</td>
                         <td>@tracking.StatusCode.Name</td>
-                        <td>@tracking.User.FullName <a class="showTip ui-icon ui-icon-info" href="http://directory.ucdavis.edu/search/directory_results.shtml?filter=@tracking.User.Email" target="_blank" title='Opens a new window to the campus directory performing a search for this person.'></a></td>
+                        <td>@tracking.User.FullName <a class="showTip ui-icon ui-icon-info" href="@ConfigurationManager.AppSettings["PersonLookupUrl"]@tracking.User.Email" target="_blank" title='Opens a new window to the campus directory performing a search for this person.'></a></td>
                     </tr>
                 }
             </tbody>

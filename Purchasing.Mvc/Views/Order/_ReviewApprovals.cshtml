@@ -1,4 +1,5 @@
-﻿@using Purchasing.Core.Domain
+﻿@using System.Configuration
+@using Purchasing.Core.Domain
 @model ReviewOrderViewModel
 
 @if (!Model.Complete)
@@ -24,7 +25,7 @@
                                 }
                                 else
                                 {
-                                    <a class="showTip ui-icon ui-icon-info" href="http://directory.ucdavis.edu/search/directory_results.shtml?filter=@approval.User.Email" target="_blank" title='Opens a new window to the campus directory performing a search for this person.'></a>
+                                    <a class="showTip ui-icon ui-icon-info" href="@ConfigurationManager.AppSettings["PersonLookupUrl"]@approval.User.Email" target="_blank" title='Opens a new window to the campus directory performing a search for this person.'></a>
                                 }
                             </td>
                             <td>@(approval.Completed ? "Approved" : "Pending")</td>

@@ -1,4 +1,5 @@
-﻿@model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
+﻿@using System.Configuration
+@model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
 
 @{
     ViewBag.Title = "Approve";
@@ -77,7 +78,7 @@
                         <div class="display-details">
                                      
                             @{
-                                var url = string.Format("http://directory.ucdavis.edu/search/directory_results.shtml?filter={0}", email.Value);
+                    var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], email.Value);
                                 var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>
@@ -115,7 +116,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("http://directory.ucdavis.edu/search/directory_results.shtml?filter={0}", email.Value);
+                    var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], email.Value);
                     var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>
@@ -152,7 +153,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("http://directory.ucdavis.edu/search/directory_results.shtml?filter={0}", email.Value);
+                    var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], email.Value);
                     var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>
