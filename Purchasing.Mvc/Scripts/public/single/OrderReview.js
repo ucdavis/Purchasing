@@ -294,7 +294,8 @@
                     $("#peepsLoaderId").toggle();
                     if (result && result) {
                         $(result.peeps).each(function () {
-                            dialogList.append("<li><span>" + this.FullName + "<span>  <a target='_blank' href='http://ucdavis.edu/search/directory_results.shtml?filter=" + this.Email + "'><span style='color: blue; text-decoration: underline;'><i>[Lookup]</i></span></a></li>");
+                            var lookupstring = window.Configuration.PersonLookup + this.Email;                                                        
+                            dialogList.append("<li><span>" + this.FullName + "<span>  <a target='_blank' href='" + lookupstring + "'><span style='color: blue; text-decoration: underline;'><i>[Lookup]</i></span></a></li>");
                         });
 
                     } else {

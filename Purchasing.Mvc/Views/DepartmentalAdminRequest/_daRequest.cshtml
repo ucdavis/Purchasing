@@ -1,4 +1,5 @@
-﻿@model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
+﻿@using System.Configuration
+@model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
            
     <section class="display-form">
     <header class="ui-widget-header ui-corner-top">User Details</header>
@@ -83,7 +84,7 @@
                 <div class="display-details">
                     @Html.DisplayFor(model => model.DepartmentalAdminRequest.Email)
                     @{
-                        var url = string.Format("http://www.ucdavis.edu/search/directory_results.shtml?filter={0}", Model.DepartmentalAdminRequest.Email);
+                        var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], Model.DepartmentalAdminRequest.Email);
                     }
                     <a class="button" href="@url" target="_blank">Lookup</a>
 
