@@ -952,6 +952,8 @@ namespace Purchasing.Mvc.Controllers
 
             _orderService.Cancel(order, comment);
 
+            _eventService.OrderAddNote(order, comment);
+
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
             Message = Resources.OrderCancelled_Success;
