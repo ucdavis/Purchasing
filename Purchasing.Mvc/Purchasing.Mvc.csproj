@@ -143,9 +143,6 @@
     <Reference Include="Nest">
       <HintPath>..\packages\NEST.1.3.1\lib\Nest.dll</HintPath>
     </Reference>
-    <Reference Include="NewRelic.Api.Agent">
-      <HintPath>..\packages\NewRelic.Azure.WebSites.x64.4.4.60.0\lib\NewRelic.Api.Agent.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -574,36 +571,6 @@
     <Content Include="Images\Sample\search-icon.png" />
     <Content Include="Images\search.gif" />
     <Content Include="Images\top_blue_bar.jpg" />
-    <Content Include="newrelic\Extensions\CoreInstrumentation.xml" />
-    <Content Include="newrelic\Extensions\NewRelic.Collections.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Core.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Dispatchers.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Memoization.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.TransactionContext.Asp.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.TransactionContext.Default.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.TransactionContext.Wcf3.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.Asp35.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.Asp35.Instrumentation.xml" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.MongoDb.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.MongoDb.Instrumentation.xml" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.Mvc3.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.Mvc3.Instrumentation.xml" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.NServiceBus.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.NServiceBus.Instrumentation.xml" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.Wcf3.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.Wcf3.Instrumentation.xml" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.WebApi1.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.WebApi1.Instrumentation.xml" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.WebApi2.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.Providers.Wrapper.WebApi2.Instrumentation.xml" />
-    <Content Include="newrelic\Extensions\NewRelic.Reflection.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.SystemExtensions.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.SystemInterfaces.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.TypeInstantiation.dll" />
-    <Content Include="newrelic\Extensions\NewRelic.WeakActions.dll" />
-    <Content Include="newrelic\NewRelic.Agent.Core.dll" />
-    <Content Include="newrelic\NewRelic.Agent.Extensions.dll" />
-    <Content Include="newrelic\NewRelic.Profiler.dll" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.js" />
     <Content Include="Scripts\DataTables-1.8.1\extras\AutoFill\media\js\AutoFill.min.js" />
@@ -673,16 +640,9 @@
     <Content Include="Scripts\external\jquery\Bundle.txt" />
     <Content Include="Scripts\external\jquery\jquery-1.7.1.js" />
     <Content Include="Scripts\guider.js" />
-    <Content Include="newrelic\newrelic.config" />
-    <Content Include="newrelic\Extensions\extension.xsd">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="newrelic\newrelic.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Scripts\jquery-1.7.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.15.min.js" />
