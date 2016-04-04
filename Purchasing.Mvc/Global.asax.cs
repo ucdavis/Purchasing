@@ -20,9 +20,6 @@ namespace Purchasing.Mvc
             AutomapperConfig.Configure();
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             LogConfig.ConfigureLogging();
-
-            TelemetryConfiguration.Active.InstrumentationKey =
-                CloudConfigurationManager.GetSetting("ApplicationInsightsKey");
         }
     }
 }
