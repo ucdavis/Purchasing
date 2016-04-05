@@ -42,9 +42,6 @@
     <Reference Include="Flurl.Http">
       <HintPath>..\packages\Flurl.Http.0.6.0\lib\net45\Flurl.Http.dll</HintPath>
     </Reference>
-    <Reference Include="Mandrill">
-      <HintPath>..\packages\Mandrill.2.1.4.0\lib\net45\Mandrill.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Configuration, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.1.0\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
@@ -57,6 +54,10 @@
     </Reference>
     <Reference Include="SendGridMail">
       <HintPath>..\packages\Sendgrid.5.0.0\lib\SendGridMail.dll</HintPath>
+    </Reference>
+    <Reference Include="SparkPost, Version=1.0.2.24239, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SparkPost.1.0.7\lib\net45\SparkPost.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
