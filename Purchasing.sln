@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1EFCD76D-1C9A-499A-906C-7130C1427185}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,8 +15,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Core", "Purchasing.Core\Purchasing.Core.csproj", "{B1C96724-966E-4481-89A7-DF4B1C26069D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.WS", "Purchasing.WS\Purchasing.WS.csproj", "{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}"
-EndProject
-Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "Purchasing.Web.Azure", "Purchasing.Web.Azure\Purchasing.Web.Azure.ccproj", "{78504968-F0E0-48BA-8BEE-8886E196E0C0}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PurchasingTP.AzureDb", "PurchasingTP.AzureDb\PurchasingTP.AzureDb.sqlproj", "{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}"
 EndProject
@@ -76,15 +74,6 @@ Global
 		{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}.ReleaseCAES|Any CPU.Build.0 = ReleaseCAES|Any CPU
 		{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}.Test|Any CPU.ActiveCfg = Test|Any CPU
 		{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}.Test|Any CPU.Build.0 = Test|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.ReleaseAzure|Any CPU.ActiveCfg = ReleaseAzure|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.ReleaseAzure|Any CPU.Build.0 = ReleaseAzure|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.ReleaseCAES|Any CPU.ActiveCfg = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Test|Any CPU.ActiveCfg = Release|Any CPU
-		{78504968-F0E0-48BA-8BEE-8886E196E0C0}.Test|Any CPU.Build.0 = Release|Any CPU
 		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}.Release|Any CPU.Build.0 = Release|Any CPU
