@@ -4,18 +4,16 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using Dapper;
-using Mandrill;
-using Mandrill.Models;
-using Mandrill.Requests.Messages;
 using Microsoft.Azure;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
+using SparkPost;
 
 namespace Purchasing.Jobs.NotificationsCommon
 {
     public static class ProcessNotifications
     {
-        static readonly MandrillApi MandrillApi = new MandrillApi(CloudConfigurationManager.GetSetting("mandrill-key"));
+        static readonly string SparkPostApiKey = CloudConfigurationManager.GetSetting("SparkPostApiKey");
 
         public static void ProcessEmails(IDbService dbService, EmailPreferences.NotificationTypes notificationType)
         {
@@ -149,21 +147,28 @@ namespace Purchasing.Jobs.NotificationsCommon
 
                 message.Append(string.Format("<p><em>{0} </em><em><a href=\"{1}\">{2}</a>&nbsp;</em></p>", "You can change your email preferences at any time by", "http://prepurchasing.ucdavis.edu/User/Profile", "updating your profile on the PrePurchasing site"));
 
-                MandrillApi.SendMessage(new SendMessageRequest(new EmailMessage
+                var emailTransmission = new Transmission
                 {
-                    SubAccount = "PrePurchasing",
-                    FromEmail = "noreply@prepurchasing-notify.ucdavis.edu",
-                    FromName = "UCD PrePurchasing No Reply",
-                    Subject = pendingOrders.Count == 1
-                        ? String.Format((string) "PrePurchasing Notification for Order #{0}",
-                            new[] {pendingOrders.Single().RequestNumber})
-                        : "PrePurchasing Notifications",
-                    To = new[]
+                    Content = new Content
                     {
-                        new EmailAddress(email)
-                    },
-                    Html = message.ToString()
-                })).Wait();
+                        From =
+                            new Address
+                            {
+                                Email = "noreply@prepurchasing-notify.ucdavis.edu",
+                                Name = "UCD PrePurchasing No Reply"
+                            },
+                        Subject = pendingOrders.Count == 1
+                            ? String.Format((string) "PrePurchasing Notification for Order #{0}",
+                                new[] {pendingOrders.Single().RequestNumber})
+                            : "PrePurchasing Notifications",
+                        Html = message.ToString()
+                    }
+                };
+
+                emailTransmission.Recipients.Add(new Recipient { Address = new Address { Email = email } });
+
+                var client = new Client(SparkPostApiKey);
+                client.Transmissions.Send(emailTransmission).Wait();
 
                 ts.Commit();
             }
