@@ -187,6 +187,7 @@
     <Build Include="Security\DataSync.sql" />
     <Build Include="dbo\Views\vOrderTrackingIndex.sql" />
     <Build Include="dbo\Functions\udf_GetOpenOrderInfoForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetRecentActivityForLogin.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
