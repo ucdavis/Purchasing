@@ -32,7 +32,7 @@ RETURNS
       ,[statusname] varchar(50)
       ,[summary] varchar(max)
       ,[accessuserid] varchar(10)
-      ,[isDirectlyAssigned] bit
+      ,[vendorname] varchar(50)
 )
 AS
 BEGIN
