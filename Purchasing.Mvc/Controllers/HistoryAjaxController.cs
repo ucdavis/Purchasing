@@ -36,7 +36,7 @@ namespace Purchasing.Mvc.Controllers
             using (var conn = _dbService.GetConnection())
             {
                 var lastOrderEvent = conn.Query<OrderTrackingHistory>(
-                    "SELECT * FROM [dbo].[udf_GetPendingOrdersForLogin] (@login) ORDER BY lastactiondate DESC",
+                    "SELECT * FROM [dbo].[udf_GetRecentActivityForLogin] (@login)",
                     new {login = CurrentUser.Identity.Name}).FirstOrDefault();
 
                 return PartialView(lastOrderEvent);
