@@ -2,9 +2,12 @@
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.SessionState;
+using Dapper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
+using Purchasing.Core.Queries;
+using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
 using UCDArch.Web.ActionResults;
@@ -19,19 +22,25 @@ namespace Purchasing.Mvc.Controllers
     {
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IOrderService _orderService;
+        private readonly IDbService _dbService;
 
-        public HistoryAjaxController(IQueryRepositoryFactory queryRepositoryFactory, IOrderService orderService)
+        public HistoryAjaxController(IQueryRepositoryFactory queryRepositoryFactory, IOrderService orderService, IDbService dbService)
         {
             _queryRepositoryFactory = queryRepositoryFactory;
             _orderService = orderService;
+            _dbService = dbService;
         }
 
         public PartialViewResult RecentActivity()
         {
-            var lastOrderEvent = _queryRepositoryFactory.OrderTrackingHistoryRepository.Queryable.Where(
-                d => d.AccessUserId == CurrentUser.Identity.Name).OrderByDescending(e => e.DateCreated).FirstOrDefault();
+            using (var conn = _dbService.GetConnection())
+            {
+                var lastOrderEvent = conn.Query<OrderTrackingHistory>(
+                    "SELECT * FROM [dbo].[udf_GetPendingOrdersForLogin] (@login) ORDER BY lastactiondate DESC",
+                    new {login = CurrentUser.Identity.Name}).FirstOrDefault();
 
-            return PartialView(lastOrderEvent);
+                return PartialView(lastOrderEvent);
+            }
         }
 
         public PartialViewResult RecentComments()
