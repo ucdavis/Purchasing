@@ -55,7 +55,7 @@ namespace Purchasing.Mvc.Controllers
                                 new {login = CurrentUser.Identity.Name}),
                         YourOpenOrders =
                             conn.Query<OrderHistoryBase>(
-                                "SELECT * FROM [dbo].[vOpenOrdersByUser] WHERE accessuserid = @login ORDER BY lastactiondate DESC",
+                                "SELECT * FROM [dbo].[udf_GetOpenOrderInfoForLogin] (@login) ORDER BY lastactiondate DESC",
                                 new {login = CurrentUser.Identity.Name})
                     };
                 
