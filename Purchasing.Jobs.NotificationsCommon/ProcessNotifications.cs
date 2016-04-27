@@ -70,8 +70,7 @@ namespace Purchasing.Jobs.NotificationsCommon
         }
 
         private static void BatchEmail(IDbConnection connection, string email, List<dynamic> pendingForUser)
-        {
-            LogHelper.ConfigureLogging();
+        {            
             var pendingOrderIds = pendingForUser.Select(x => x.OrderId).Distinct();
 
             //Do batches inside of their own transactions
