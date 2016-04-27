@@ -7,7 +7,9 @@ using Dapper;
 using Microsoft.Azure;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
+using Purchasing.Jobs.Common.Logging;
 using SparkPost;
+using Serilog;
 
 namespace Purchasing.Jobs.NotificationsCommon
 {
@@ -68,7 +70,7 @@ namespace Purchasing.Jobs.NotificationsCommon
         }
 
         private static void BatchEmail(IDbConnection connection, string email, List<dynamic> pendingForUser)
-        {
+        {            
             var pendingOrderIds = pendingForUser.Select(x => x.OrderId).Distinct();
 
             //Do batches inside of their own transactions
@@ -86,7 +88,7 @@ namespace Purchasing.Jobs.NotificationsCommon
                               .ToList();
 
                 var message = new StringBuilder();
-                message.Append(string.Format("<p>{0}</p>", "Here is your summary for the PrePurchasing system."));
+                message.Append(string.Format("<p>{0}</p>", "Here is your summary for the PrePurchasing system."));                
                 foreach (var order in pendingOrders)
                 {
                     var extraStyle1 = string.Empty;
@@ -137,6 +139,7 @@ namespace Purchasing.Jobs.NotificationsCommon
                         //TODO: Can move to single update outside of foreach
                         connection.Execute("update EmailQueueV2 set Pending = 0, DateTimeSent = @now where id = @id",
                                            new { now = DateTime.UtcNow.ToPacificTime(), id = emailQueue.Id }, ts);
+
                     }
 
                     message.Append("</tbody>");
@@ -168,7 +171,17 @@ namespace Purchasing.Jobs.NotificationsCommon
                 emailTransmission.Recipients.Add(new Recipient { Address = new Address { Email = email } });
 
                 var client = new Client(SparkPostApiKey);
-                client.Transmissions.Send(emailTransmission).Wait();
+                try
+                {
+                    client.Transmissions.Send(emailTransmission).Wait();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, string.Format("There was a problem emailing {0}", email));
+                    ts.Rollback(); //We want a notification Maybe only if it fails a certain number of times?
+                    return;
+                }
+                
 
                 ts.Commit();
             }
