@@ -177,8 +177,8 @@ namespace Purchasing.Jobs.NotificationsCommon
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, string.Format("There was a problem emailing {0}", email));
-                    ts.Rollback(); //We want a notification Maybe only if it fails a certain number of times?
+                    Log.Error(ex, "There was a problem emailing {email}", email);
+                    ts.Rollback(); 
                     return;
                 }
                 
