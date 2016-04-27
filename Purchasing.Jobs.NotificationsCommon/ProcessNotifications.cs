@@ -7,7 +7,9 @@ using Dapper;
 using Microsoft.Azure;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
+using Purchasing.Jobs.Common.Logging;
 using SparkPost;
+using Serilog;
 
 namespace Purchasing.Jobs.NotificationsCommon
 {
@@ -69,6 +71,7 @@ namespace Purchasing.Jobs.NotificationsCommon
 
         private static void BatchEmail(IDbConnection connection, string email, List<dynamic> pendingForUser)
         {
+            LogHelper.ConfigureLogging();
             var pendingOrderIds = pendingForUser.Select(x => x.OrderId).Distinct();
 
             //Do batches inside of their own transactions
@@ -173,8 +176,9 @@ namespace Purchasing.Jobs.NotificationsCommon
                 {
                     client.Transmissions.Send(emailTransmission).Wait();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error(ex, string.Format("There was a problem emailing {0}", email));
                     ts.Rollback(); //We want a notification Maybe only if it fails a certain number of times?
                     return;
                 }
