@@ -727,6 +727,10 @@ namespace Purchasing.Mvc.Services
         /// <param name="emailQueue"></param>
         private void AddToQueue(List<EmailQueueV2> emailQueues, EmailQueueV2 emailQueue)
         {
+            if (!emailQueue.User.IsActive)
+            {
+                return;                
+            }
             if (!emailQueues.Any(a => a.User == emailQueue.User)) emailQueues.Add(emailQueue);
         }
 
