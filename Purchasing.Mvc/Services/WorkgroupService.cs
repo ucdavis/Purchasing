@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Utility;
@@ -623,15 +624,21 @@ namespace Purchasing.Mvc.Services
             // get the administrative rollup on orgs
             var wgIds = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.WorkgroupId).ToList();
 
-            // get the workgroups
-            var workgroups = _workgroupRepository.Queryable.Where(a => wgIds.Contains(a.Id));
-
-            if (!showActive)
+            List<Workgroup> workgroups = new List<Workgroup>();
+            var batches = wgIds.Partition(1000).ToArray();
+            foreach (var batch in batches)
             {
-                workgroups = workgroups.Where(a => a.IsActive);
+                if (!showActive)
+                {
+                    workgroups.AddRange(_workgroupRepository.Queryable.Where(a => batch.Contains(a.Id) && a.IsActive).ToList());
+                }
+                else
+                {
+                    workgroups.AddRange(_workgroupRepository.Queryable.Where(a => batch.Contains(a.Id)).ToList());
+                }
             }
 
-            return workgroups.ToList();
+            return workgroups;
         }
 
 
