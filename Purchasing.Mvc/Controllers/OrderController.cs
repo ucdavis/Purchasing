@@ -2223,8 +2223,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (!requesterInWorkgroup.Any())
             {
-                ErrorMessage = "Not your order";
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return new HttpUnauthorizedResult("not your order");
             }
 
 
