@@ -1925,6 +1925,7 @@ namespace Purchasing.Mvc.Controllers
         /// <summary>
         /// Tested
         /// Returns all of requesters for a given workgroup
+        /// Note, this code was moved to the orders controller because it was limiting to departmental admins.
         /// </summary>
         /// <param name="id">Workgroup</param>
         /// <returns></returns>
