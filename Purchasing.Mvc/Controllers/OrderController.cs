@@ -2214,5 +2214,28 @@ namespace Purchasing.Mvc.Controllers
 
             return this.RedirectToAction(a => a.SavedOrderRequests());
         }
+
+        public JsonNetResult GetRequesters(int id)
+        {
+            var requesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository
+                .Queryable.Where(x => x.Workgroup.Id == id && x.User.Id == CurrentUser.Identity.Name)
+                .Where(x => x.Role.Id == Role.Codes.Requester);
+
+            if (!requesterInWorkgroup.Any())
+            {
+                throw new Exception("Someone isn't a requester!!!");
+            }
+
+
+            var requestersForWorkgroup = (from wp in _repositoryFactory.WorkgroupPermissionRepository.Queryable
+                                          where wp.Workgroup.Id == id
+                                                && wp.User.IsActive
+                                                && wp.Role.Id == Role.Codes.Requester
+                                          select new { wp.User }).ToList();
+
+            var requesterInfo = requestersForWorkgroup.Select(x => new { Name = x.User.FullNameAndId, x.User.Id });
+
+            return new JsonNetResult(requesterInfo);
+        }
     }
 }

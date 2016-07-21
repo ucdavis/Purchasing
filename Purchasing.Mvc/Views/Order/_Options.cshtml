@@ -15,7 +15,7 @@ purchasing.options({
     SearchBuildingUrl : '@Url.Action("SearchBuilding", "Ajax")',
     GetLineItemsAndSplitsUrl: '@Url.Action("GetLineItemsAndSplits", new { id = Model.Order.Id })',
     GetSubAccounts: '@Url.Action("GetSubAccounts", new { id = Model.Order.Id })',
-    GetRequesters: '@Url.Action("GetRequesters", "Workgroup", new { id = Model.Workgroup.Id })',
+    GetRequesters: '@Url.Action("GetRequesters", "Order", new { id = Model.Workgroup.Id })',
     UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new { id = Model.Order.Id })',
     AttachmentCategorySource: ["Receipt", "Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],    
     AntiForgeryToken: $("input[name=__RequestVerificationToken]").val(),
