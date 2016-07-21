@@ -2215,7 +2215,7 @@ namespace Purchasing.Mvc.Controllers
             return this.RedirectToAction(a => a.SavedOrderRequests());
         }
 
-        public JsonNetResult GetRequesters(int id)
+        public ActionResult GetRequesters(int id)
         {
             var requesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository
                 .Queryable.Where(x => x.Workgroup.Id == id && x.User.Id == CurrentUser.Identity.Name)
@@ -2223,7 +2223,8 @@ namespace Purchasing.Mvc.Controllers
 
             if (!requesterInWorkgroup.Any())
             {
-                throw new Exception("Someone isn't a requester!!!");
+                ErrorMessage = "Not your order";
+                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
             }
 
 
