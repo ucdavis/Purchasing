@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Purchasing.WS</RootNamespace>
     <AssemblyName>Purchasing.WS</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Purchasing\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -209,6 +209,9 @@
     <None Include="Service References\AzureStorage\Microsoft.SqlServer.Management.Dac.Services.wsdl" />
     <None Include="Service References\AzureStorage\Microsoft.SqlServer.Management.Dac.ServiceTypes.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\AzureStorage\Purchasing.WS.AzureStorage.ExportResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\AzureStorage\service.wsdl" />
     <None Include="Service References\AzureStorage\service.xsd">

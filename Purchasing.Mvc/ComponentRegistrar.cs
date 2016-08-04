@@ -51,7 +51,7 @@ namespace Purchasing.Mvc
             container.Register(Component.For<IServerLink>().ImplementedBy<ServerLink>().Named("serverLink"));
 
             container.Register(Component.For<IOrderService>().ImplementedBy<OrderService>().Named("orderService"));
-            container.Register(Component.For<IDirectorySearchService>().ImplementedBy<DirectorySearchService>().Named("directorySearch"));
+            container.Register(Component.For<IDirectorySearchService>().ImplementedBy<AzureDirectorySearchService>().Named("directorySearch"));
             container.Register(Component.For<IInterceptor>().ImplementedBy<AuditInterceptor>().Named("audit"));
             container.Register(Component.For<IDbService>().ImplementedBy<DbService>().Named("dbService"));
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<NHibernateQueryExtensionProvider>().Named("queryExtensions"));
