@@ -102,7 +102,7 @@ namespace Purchasing.Mvc
             bundles.Add(new ScriptBundle("~/bundles/customField").Include("~/Scripts/public/single/jquery.tablednd_0_5.js"));
             bundles.Add(new ScriptBundle("~/bundles/fileuploader.js").Include("~/Scripts/public/single/fileuploader.js"));
             bundles.Add(new ScriptBundle("~/bundles/landing").Include("~/Scripts/public/single/Landing.js"));
-            bundles.Add(new ScriptBundle("~/bundles/jquery.tmpl").Include("~/Scripts/public/single/jquery.tmpl.js"));
+            bundles.Add(new ScriptBundle("~/bundles/jqueryTmpl").Include("~/Scripts/public/single/jquerytmpl.js"));
             bundles.Add(new ScriptBundle("~/bundles/jquery.qtip").Include("~/Scripts/public/common/jquery.qtip.js"));
             
         }

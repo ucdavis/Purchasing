@@ -696,7 +696,7 @@
     <Content Include="Scripts\public\single\jquery.multiselector.js" />
     <Content Include="Scripts\public\single\jquery.stickyfloat.js" />
     <Content Include="Scripts\public\single\jquery.tablednd_0_5.js" />
-    <Content Include="Scripts\public\single\jquery.tmpl.js" />
+    <Content Include="Scripts\public\single\jquerytmpl.js" />
     <Content Include="Scripts\public\single\jquery.tmpl.min.js" />
     <Content Include="Scripts\public\single\Landing.js" />
     <Content Include="Scripts\public\single\OrderReview.js" />
