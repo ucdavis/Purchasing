@@ -100,10 +100,10 @@ namespace Purchasing.Mvc
             bundles.Add(new ScriptBundle("~/bundles/single/chosen").Include("~/Scripts/public/single/chosen.jquery.js"));
             bundles.Add(new ScriptBundle("~/bundles/multiselector").Include("~/Scripts/public/single/jquery.multiselector.js")); //Has css
             bundles.Add(new ScriptBundle("~/bundles/customField").Include("~/Scripts/public/single/jquery.tablednd_0_5.js"));
-            bundles.Add(new ScriptBundle("~/bundles/fileuploader.js").Include("~/Scripts/public/single/fileuploader.js"));
+            bundles.Add(new ScriptBundle("~/bundles/fileuploader-js").Include("~/Scripts/public/single/fileuploader.js"));
             bundles.Add(new ScriptBundle("~/bundles/landing").Include("~/Scripts/public/single/Landing.js"));
             bundles.Add(new ScriptBundle("~/bundles/jqueryTmpl").Include("~/Scripts/public/single/jquerytmpl.js"));
-            bundles.Add(new ScriptBundle("~/bundles/jquery.qtip").Include("~/Scripts/public/common/jquery.qtip.js"));
+            bundles.Add(new ScriptBundle("~/bundles/jquery-qtip").Include("~/Scripts/public/common/jquery.qtip.js"));
             
         }
     }
