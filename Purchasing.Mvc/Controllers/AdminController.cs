@@ -5,8 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Mvc;
+using AzureActiveDirectorySearcher;
+using Microsoft.Azure;
 using Microsoft.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
@@ -670,7 +673,26 @@ namespace Purchasing.Mvc.Controllers
             return this.RedirectToAction(a => a.Index());
         }
 
+        /// <summary>
+        /// Debugging method for when azure isn't returning what is expected
+        /// </summary>
+        /// <returns></returns>
+        public async Task<JsonNetResult> Test(string id)
+        {
+            var _searcher =
+                new ActiveDirectorySearchClient(
+                    new ActiveDirectoryConfigurationValues(
+                        tenantName: CloudConfigurationManager.GetSetting("AzureSearchTenantName"),
+                        tenantId: CloudConfigurationManager.GetSetting("AzureSearchTenantId"),
+                        clientId: CloudConfigurationManager.GetSetting("AzureSearchClientId"),
+                        clientSecret: CloudConfigurationManager.GetSetting("AzureSearchClientSecret")));
 
+            var users = await _searcher.FindByKerberosOrEmail(id, id);
+
+            //var users2 = await _searcher.ActiveDirectoryClient.Users.Where(u => u.ProxyAddresses.Any(p => p.StartsWith("jamesd"))).ExecuteAsync();
+
+            return new JsonNetResult(users);
+        }
 
 
 
