@@ -151,7 +151,8 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(24, result.Count(), "It looks like a method was added or removed from the controller.");
+            //Noted bumped up to 25 for test method 
+            Assert.AreEqual(25, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
