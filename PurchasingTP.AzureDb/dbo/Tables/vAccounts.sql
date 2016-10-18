@@ -14,3 +14,11 @@
 
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [nci_wi_vAccounts_4E63C6CC0499FEF1E3C4CDF5A600FD28]
+    ON [dbo].[vAccounts]([IsActive] ASC, [OrganizationId] ASC)
+    INCLUDE([Id], [Name]);
+
