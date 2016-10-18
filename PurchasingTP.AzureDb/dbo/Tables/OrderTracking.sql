@@ -16,6 +16,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [OrderTracking_UserId_IDX]
     ON [dbo].[OrderTracking]([UserId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
@@ -43,4 +45,10 @@ CREATE NONCLUSTERED INDEX [OrderTracking_UserId_Incl_OrderIdOrderStatusCodeId_CV
     INCLUDE([OrderId], [OrderStatusCodeId]) WITH (STATISTICS_NORECOMPUTE = ON);
 
 
+
+
+GO
+CREATE NONCLUSTERED INDEX [nci_wi_OrderTracking_B5D42DBEA7740A3E914FD6E95C68E93F]
+    ON [dbo].[OrderTracking]([DateCreated] ASC)
+    INCLUDE([Description], [OrderId], [UserId]);
 
