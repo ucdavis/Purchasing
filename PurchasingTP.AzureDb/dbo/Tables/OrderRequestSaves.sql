@@ -9,10 +9,12 @@
     [DateCreated]  DATETIME         CONSTRAINT [DF_OrderRequestSaves_DateCreated] DEFAULT (getdate()) NOT NULL,
     [LastUpdate]   DATETIME         CONSTRAINT [DF_OrderRequestSaves_LastUpdate] DEFAULT (getdate()) NOT NULL,
     [Version]      VARCHAR (15)     NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_OrderRequestSaves_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]),
     CONSTRAINT [FK_OrderRequestSaves_Users1] FOREIGN KEY ([PreparedById]) REFERENCES [dbo].[Users] ([Id])
 );
+
+
 
 
 GO
@@ -22,5 +24,7 @@ CREATE NONCLUSTERED INDEX [OrderRequestSaves_PreparedById_IDX]
 
 GO
 CREATE NONCLUSTERED INDEX [OrderRequestSaves_UserId_IDX]
-    ON [dbo].[OrderRequestSaves]([UserId] ASC);
+    ON [dbo].[OrderRequestSaves]([UserId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

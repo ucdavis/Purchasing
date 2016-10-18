@@ -19,16 +19,22 @@
     [IsDefault]       BIT              NULL,
     [IsActive]        BIT              NULL,
     [UpdateHash]      VARBINARY (16)   NULL,
-    CONSTRAINT [PK_vVendorAddresses] PRIMARY KEY NONCLUSTERED ([VendorAddressId] ASC)
+    CONSTRAINT [PK_vVendorAddresses] PRIMARY KEY NONCLUSTERED ([VendorAddressId] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [vVendorAddress_VendorIdTypeCode_IDX]
-    ON [dbo].[vVendorAddresses]([VendorId] ASC, [TypeCode] ASC);
+    ON [dbo].[vVendorAddresses]([VendorId] ASC, [TypeCode] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE CLUSTERED INDEX [vVendorAddress_VendorIdTypeCodeDetailId_CLSTRD_IDX]
-    ON [dbo].[vVendorAddresses]([VendorId] ASC, [TypeCode] ASC, [DetailId] ASC);
+    ON [dbo].[vVendorAddresses]([VendorId] ASC, [TypeCode] ASC, [DetailId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

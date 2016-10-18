@@ -31,9 +31,9 @@
     [ShowReferenceNumber]     BIT          DEFAULT ((1)) NOT NULL,
     [ShowFpdCompleted]        BIT          DEFAULT ((0)) NOT NULL,
     [ShowOrderPaid]           BIT          DEFAULT ((0)) NOT NULL,
-    [ShowApUser] BIT NOT NULL DEFAULT ((0)), 
-    [ShowPostStatus] BIT NOT NULL DEFAULT ((0)), 
-    [ShowOrderNote] BIT NOT NULL DEFAULT ((0)), 
+    [ShowApUser]              BIT          DEFAULT ((0)) NOT NULL,
+    [ShowPostStatus]          BIT          DEFAULT ((0)) NOT NULL,
+    [ShowOrderNote]           BIT          DEFAULT ((0)) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
@@ -43,7 +43,11 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [ColumnPreferences_UserId_IDX]
-    ON [dbo].[ColumnPreferences]([Id] ASC);
+    ON [dbo].[ColumnPreferences]([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

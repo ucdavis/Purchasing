@@ -6,7 +6,9 @@
     [ParentId]   VARCHAR (10)   NULL,
     [IsActive]   BIT            NOT NULL,
     [UpdateHash] VARBINARY (16) NULL,
-    CONSTRAINT [PK_vOrganizations] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [vOrganizations_Id_UDX] UNIQUE NONCLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_vOrganizations] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
+    CONSTRAINT [vOrganizations_Id_UDX] UNIQUE NONCLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 

@@ -7,9 +7,11 @@
     [EndUser]             VARCHAR (200) NOT NULL,
     [OrderId]             INT           NOT NULL,
     [PharmaceuticalGrade] BIT           DEFAULT ((0)) NOT NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_AuthorizationNumbers_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id])
 );
+
+
 
 
 
