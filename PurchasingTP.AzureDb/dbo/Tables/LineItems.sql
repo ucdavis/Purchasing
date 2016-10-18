@@ -15,7 +15,7 @@
     [ReceivedNotes]    VARCHAR (MAX)   NULL,
     [QuantityPaid]     DECIMAL (18, 3) NULL,
     [PaidNotes]        VARCHAR (MAX)   NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_LineItems_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id])
 );
 
@@ -24,19 +24,27 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [LineItems_OrderId_IDX]
-    ON [dbo].[LineItems]([OrderId] ASC);
+    ON [dbo].[LineItems]([OrderId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [LineItems_Received_Incl_OrderId_CVIDX]
     ON [dbo].[LineItems]([Received] ASC)
-    INCLUDE([OrderId]);
+    INCLUDE([OrderId]) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [LineItems_Paid_Incl_OrderId_CVIDX]
     ON [dbo].[LineItems]([Paid] ASC)
-    INCLUDE([OrderId]);
+    INCLUDE([OrderId]) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

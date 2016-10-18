@@ -10,11 +10,13 @@
     [AllowControlledSubstances] BIT           CONSTRAINT [DF_Workgroups_AllowControlledSubstances] DEFAULT ((0)) NOT NULL,
     [ForceAccountApprover]      BIT           DEFAULT ((0)) NOT NULL,
     [NotificationEmailList]     VARCHAR (100) NULL,
-    [RequireApproval] BIT NOT NULL DEFAULT ((0)), 
-    [DoNotInheritPermissions] BIT NOT NULL DEFAULT ((0)), 
-    [DefaultTag] VARCHAR(256) NULL, 
-    PRIMARY KEY CLUSTERED ([Id] ASC)
+    [RequireApproval]           BIT           DEFAULT ((0)) NOT NULL,
+    [DoNotInheritPermissions]   BIT           DEFAULT ((0)) NOT NULL,
+    [DefaultTag]                VARCHAR (256) NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 
 
 
@@ -31,5 +33,7 @@ CREATE NONCLUSTERED INDEX [Workgroups_IsActive_IDX]
 
 GO
 CREATE NONCLUSTERED INDEX [Workgroups_Administrative_IDX]
-    ON [dbo].[Workgroups]([Administrative] ASC);
+    ON [dbo].[Workgroups]([Administrative] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

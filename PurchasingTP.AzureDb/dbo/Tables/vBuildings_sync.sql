@@ -10,6 +10,8 @@
     [IsActive]        BIT            NULL,
     [UpdateHash]      VARBINARY (16) NULL,
     CONSTRAINT [PK_vBuildings_temp] PRIMARY KEY CLUSTERED ([CampusCode] ASC, [BuildingCode] ASC),
-    CONSTRAINT [vBuildings_temp_Id_UDX] UNIQUE NONCLUSTERED ([Id] ASC)
+    CONSTRAINT [vBuildings_temp_Id_UDX] UNIQUE NONCLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 

@@ -31,10 +31,10 @@
     [PoNumber]                VARCHAR (50)  NULL,
     [Tag]                     VARCHAR (256) NULL,
     [FpdCompleted]            BIT           DEFAULT ((0)) NOT NULL,
-    [ApUser] VARCHAR(10) NULL, 
-    [PostStatus] VARCHAR(50) NULL, 
-    [OrderNote] VARCHAR(140) NULL, 
-    PRIMARY KEY CLUSTERED ([Id] ASC),
+    [ApUser]                  VARCHAR (10)  NULL,
+    [PostStatus]              VARCHAR (50)  NULL,
+    [OrderNote]               VARCHAR (140) NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
     CONSTRAINT [FK_Orders_OrderTypes] FOREIGN KEY ([OrderTypeId]) REFERENCES [dbo].[OrderTypes] ([Id]),
     CONSTRAINT [FK_Orders_ShippingTypes] FOREIGN KEY ([ShippingTypeId]) REFERENCES [dbo].[ShippingTypes] ([Id]),
@@ -50,48 +50,68 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [Orders_WorkgroupVendorId_IDX]
-    ON [dbo].[Orders]([WorkgroupVendorId] ASC);
+    ON [dbo].[Orders]([WorkgroupVendorId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [Orders_workgroupid_IDX]
-    ON [dbo].[Orders]([WorkgroupId] ASC);
+    ON [dbo].[Orders]([WorkgroupId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [Orders_WorkgroupAddressId_IDX]
-    ON [dbo].[Orders]([WorkgroupAddressId] ASC);
+    ON [dbo].[Orders]([WorkgroupAddressId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [Orders_ShippingTypeId_IDX]
-    ON [dbo].[Orders]([ShippingTypeId] ASC);
+    ON [dbo].[Orders]([ShippingTypeId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [Orders_OrderTypeId_IDX]
-    ON [dbo].[Orders]([OrderTypeId] ASC);
+    ON [dbo].[Orders]([OrderTypeId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [Orders_orderstatuscodeid_IDX]
-    ON [dbo].[Orders]([OrderStatusCodeId] ASC);
+    ON [dbo].[Orders]([OrderStatusCodeId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [Orders_LastCompletedApprovalId_IDX]
-    ON [dbo].[Orders]([LastCompletedApprovalId] ASC);
+    ON [dbo].[Orders]([LastCompletedApprovalId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [Orders_CreatedBy_IDX]
-    ON [dbo].[Orders]([CreatedBy] ASC);
+    ON [dbo].[Orders]([CreatedBy] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [Orders_OrderStatusCodeId_Incl_IdWorkgroupId_CVIDX]
     ON [dbo].[Orders]([OrderStatusCodeId] ASC)
-    INCLUDE([Id], [WorkgroupId]);
+    INCLUDE([Id], [WorkgroupId]) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

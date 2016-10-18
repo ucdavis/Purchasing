@@ -6,8 +6,10 @@
     [AwayUntil] DATETIME     NULL,
     [IsActive]  BIT          CONSTRAINT [DF_Users_IsActive] DEFAULT ((1)) NOT NULL,
     [IsAway]    AS           (case when datediff(day,[AwayUntil],getdate())<(0) then (1) else (0) end),
-    PRIMARY KEY CLUSTERED ([Id] ASC)
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 
 
 
@@ -15,5 +17,7 @@
 GO
 CREATE NONCLUSTERED INDEX [Users_IdIsAway_CVDX]
     ON [dbo].[Users]([Id] ASC)
-    INCLUDE([IsActive]);
+    INCLUDE([IsActive]) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

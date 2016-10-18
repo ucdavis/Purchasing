@@ -5,6 +5,8 @@
     [Name]             VARCHAR (40)     NULL,
     [IsActive]         BIT              NOT NULL,
     [UpdateHash]       VARBINARY (16)   NULL,
-    CONSTRAINT [PK_vSubAccounts_temp] PRIMARY KEY CLUSTERED ([AccountNumber] ASC, [SubAccountNumber] ASC)
+    CONSTRAINT [PK_vSubAccounts_temp] PRIMARY KEY CLUSTERED ([AccountNumber] ASC, [SubAccountNumber] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 

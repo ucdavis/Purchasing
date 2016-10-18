@@ -8,7 +8,9 @@
     [PrincipalInvestigatorId] VARCHAR (10)   NULL,
     [OrganizationId]          VARCHAR (10)   NOT NULL,
     [UpdateHash]              VARBINARY (16) NULL,
-    CONSTRAINT [PK_vAccounts_temp] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [vAccounts_temp_Id_UDX] UNIQUE NONCLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_vAccounts_temp] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
+    CONSTRAINT [vAccounts_temp_Id_UDX] UNIQUE NONCLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 

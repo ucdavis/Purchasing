@@ -29,16 +29,20 @@
     [NotificationType]                    VARCHAR (50) NOT NULL,
     [AddAttachment]                       BIT          DEFAULT ((1)) NOT NULL,
     [AddNote]                             BIT          DEFAULT ((1)) NOT NULL,
-    [ShowAccountInEmail] BIT NOT NULL DEFAULT ((0)), 
-    [RequesterPaid] BIT NOT NULL DEFAULT ((0)), 
-    [PurchaserKfsItemPaid] BIT NOT NULL DEFAULT ((0)), 
-    [PurchaserPCardItemPaid] BIT NOT NULL DEFAULT ((0)), 
-    [PurchaserCampusServicesItemPaid] BIT NOT NULL DEFAULT ((0)), 
-    PRIMARY KEY CLUSTERED ([Id] ASC)
+    [ShowAccountInEmail]                  BIT          DEFAULT ((0)) NOT NULL,
+    [RequesterPaid]                       BIT          DEFAULT ((0)) NOT NULL,
+    [PurchaserKfsItemPaid]                BIT          DEFAULT ((0)) NOT NULL,
+    [PurchaserPCardItemPaid]              BIT          DEFAULT ((0)) NOT NULL,
+    [PurchaserCampusServicesItemPaid]     BIT          DEFAULT ((0)) NOT NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [EmailPreferences_UserId_IDX]
-    ON [dbo].[EmailPreferences]([Id] ASC);
+    ON [dbo].[EmailPreferences]([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
