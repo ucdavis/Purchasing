@@ -274,6 +274,10 @@ namespace Purchasing.Mvc.Services
 
                 foreach (var peep in peeps)
                 {
+                    if (!peep.IsActive) //Not active, we don't want to email them
+                    {
+                        continue;
+                    }
                     var preference = GetEmailPreferences(peep.Id);
 
                     if (IsMailRequested(preference, apf.StatusCode, approval != null ? approval.StatusCode : null, EventCode.Arrival))
@@ -399,6 +403,10 @@ namespace Purchasing.Mvc.Services
             var users = order.OrderTrackings.Select(a => a.User).Distinct().ToList();
             foreach (var ot in users)
             {
+                if (!ot.IsActive) //Not active, we don't want to email them
+                {
+                    continue;
+                }
                 var preference = GetEmailPreferences(ot.Id);
 
                 if (preference.AddAttachment)
@@ -422,6 +430,10 @@ namespace Purchasing.Mvc.Services
 
             foreach (var ot in users)
             {
+                if (!ot.IsActive) //Not active, we don't want to email them
+                {
+                    continue;
+                }
                 var preference = GetEmailPreferences(ot.Id);
 
                 if (preference.AddNote)
