@@ -5,5 +5,11 @@
     [IsActive]          BIT          DEFAULT ((1)) NOT NULL,
     [ImmediateParentId] VARCHAR (10) NULL,
     [RollupParentId]    VARCHAR (10) NULL,
-	PRIMARY KEY CLUSTERED ([ID] ASC)
+    PRIMARY KEY CLUSTERED ([id] ASC)
 );
+
+
+GO
+CREATE NONCLUSTERED INDEX [nci_wi_vOrganizationDescendants_6992A67F3973348D2691C195903D58FD]
+    ON [dbo].[vOrganizationDescendants]([RollupParentId] ASC);
+
