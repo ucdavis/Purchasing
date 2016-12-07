@@ -680,14 +680,14 @@ namespace Purchasing.Mvc.Controllers
         public async Task<JsonNetResult> Test(string id)
         {
             var _searcher =
-                new ActiveDirectorySearchClient(
+                new GraphSearchClient(
                     new ActiveDirectoryConfigurationValues(
                         tenantName: CloudConfigurationManager.GetSetting("AzureSearchTenantName"),
                         tenantId: CloudConfigurationManager.GetSetting("AzureSearchTenantId"),
                         clientId: CloudConfigurationManager.GetSetting("AzureSearchClientId"),
                         clientSecret: CloudConfigurationManager.GetSetting("AzureSearchClientSecret")));
 
-            var users = await _searcher.FindByKerberosOrEmail(id, id);
+            var users = await _searcher.FindByEmailOrKerberos(id, id);
 
             //var users2 = await _searcher.ActiveDirectoryClient.Users.Where(u => u.ProxyAddresses.Any(p => p.StartsWith("jamesd"))).ExecuteAsync();
 
