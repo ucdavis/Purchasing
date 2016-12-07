@@ -8,12 +8,12 @@ namespace Purchasing.Mvc.Services
 {
     public class AzureDirectorySearchService : IDirectorySearchService
     {
-        private readonly ActiveDirectorySearchClient _searcher;
+        private readonly GraphSearchClient _searcher;
 
         public AzureDirectorySearchService()
         {
             _searcher =
-                new ActiveDirectorySearchClient(
+                new GraphSearchClient(
                     new ActiveDirectoryConfigurationValues(
                         tenantName: CloudConfigurationManager.GetSetting("AzureSearchTenantName"),
                         tenantId: CloudConfigurationManager.GetSetting("AzureSearchTenantId"),
@@ -23,10 +23,10 @@ namespace Purchasing.Mvc.Services
         public List<DirectoryUser> SearchUsers(string searchTerm)
         {
             //TODO: make this interface async
-            var users = Task.Run(() => _searcher.FindByKerberosOrEmail(searchTerm, searchTerm)).Result;
+            var users = Task.Run(() => _searcher.FindByEmailOrKerberos(searchTerm, searchTerm)).Result;
 
             return
-                users.CurrentPage.Select(
+                users.Select(
                     u =>
                         new DirectoryUser
                         {
@@ -34,7 +34,7 @@ namespace Purchasing.Mvc.Services
                             FirstName = u.GivenName,
                             LastName = u.Surname,
                             FullName = u.DisplayName,
-                            LoginId = u.GetKerberos(),
+                            LoginId = u.Kerberos,
                             PhoneNumber = u.TelephoneNumber
                         }).ToList();
         }
