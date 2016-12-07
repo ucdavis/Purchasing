@@ -11,18 +11,24 @@
     [Phone]        VARCHAR (15)  NULL,
     [WorkgroupId]  INT           NOT NULL,
     [IsActive]     BIT           CONSTRAINT [DF_WorkgroupAddresses_IsActive] DEFAULT ((1)) NOT NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_WorkgroupAddresses_States] FOREIGN KEY ([StateId]) REFERENCES [dbo].[States] ([Id]),
     CONSTRAINT [FK_WorkgroupAddresses_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id])
 );
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [WorkgroupAddresses_StateId_IDX]
-    ON [dbo].[WorkgroupAddresses]([StateId] ASC);
+    ON [dbo].[WorkgroupAddresses]([StateId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [WorkgroupAddresses_WorkgroupId_IDX]
-    ON [dbo].[WorkgroupAddresses]([WorkgroupId] ASC);
+    ON [dbo].[WorkgroupAddresses]([WorkgroupId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

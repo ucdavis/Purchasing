@@ -5,11 +5,13 @@
     [SecondaryApproverId] VARCHAR (10)  NULL,
     [WorkgroupId]         INT           NULL,
     [OrganizationId]      VARCHAR (10)  NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_ConditionalApproval_SecondaryUser] FOREIGN KEY ([SecondaryApproverId]) REFERENCES [dbo].[Users] ([Id]),
     CONSTRAINT [FK_ConditionalApproval_Users] FOREIGN KEY ([PrimaryApproverId]) REFERENCES [dbo].[Users] ([Id]),
     CONSTRAINT [FK_ConditionalApproval_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id])
 );
+
+
 
 
 GO
@@ -19,12 +21,16 @@ CREATE NONCLUSTERED INDEX [HistoryReceivedLineItems_UserID_IDX]
 
 GO
 CREATE NONCLUSTERED INDEX [ConditionalApproval_WorkgroupId_IDX]
-    ON [dbo].[ConditionalApproval]([WorkgroupId] ASC);
+    ON [dbo].[ConditionalApproval]([WorkgroupId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [ConditionalApproval_SecondaryApproverId_IDX]
-    ON [dbo].[ConditionalApproval]([SecondaryApproverId] ASC);
+    ON [dbo].[ConditionalApproval]([SecondaryApproverId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO

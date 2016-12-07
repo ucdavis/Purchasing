@@ -23,7 +23,7 @@ namespace Purchasing.Mvc
                 .Enrich.With<HttpSessionIdEnricher>()
                 .Enrich.With<UserNameEnricher>()
                 .Enrich.FromLogContext()
-                .Filter.ByExcluding(e => e.Exception != null && e.Exception.GetType() == typeof (HttpException)) //filter out those 404s and headers exceptions
+                .Filter.ByExcluding(e => e.Exception != null && e.Exception.GetBaseException() is HttpException) //filter out those 404s and headers exceptions
                 .CreateLogger();
 
             _loggingSetup = true;

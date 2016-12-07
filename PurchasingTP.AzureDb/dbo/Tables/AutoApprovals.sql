@@ -8,18 +8,24 @@
     [IsActive]     BIT          CONSTRAINT [DF_AutoApprovals_IsActive] DEFAULT ((0)) NOT NULL,
     [UserId]       VARCHAR (10) NOT NULL,
     [Expiration]   DATE         NULL,
-    CONSTRAINT [PK_AutoApprovals] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [PK_AutoApprovals] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_AutoApprovals_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]),
     CONSTRAINT [FK_AutoApprovals_Users1] FOREIGN KEY ([TargetUserId]) REFERENCES [dbo].[Users] ([Id])
 );
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [AutoApprovals_TargetUserId_IDX]
-    ON [dbo].[AutoApprovals]([TargetUserId] ASC);
+    ON [dbo].[AutoApprovals]([TargetUserId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [AutoApprovals_UserId_IDX]
-    ON [dbo].[AutoApprovals]([UserId] ASC);
+    ON [dbo].[AutoApprovals]([UserId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

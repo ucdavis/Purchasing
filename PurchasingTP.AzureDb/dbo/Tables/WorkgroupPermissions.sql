@@ -7,7 +7,7 @@
     [ParentWorkgroupId]   INT          NULL,
     [IsFullFeatured]      BIT          DEFAULT ((0)) NOT NULL,
     [IsDefaultForAccount] BIT          DEFAULT ((0)) NOT NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC),
+    PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_WorkgroupPermissions_Roles] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Roles] ([Id]),
     CONSTRAINT [FK_WorkgroupPermissions_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([Id]),
     CONSTRAINT [FK_WorkgroupPermissions_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id])
@@ -19,34 +19,48 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [WorkgroupPermissions_workgroupid]
-    ON [dbo].[WorkgroupPermissions]([WorkgroupId] ASC);
+    ON [dbo].[WorkgroupPermissions]([WorkgroupId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [WorkgroupPermissions_UserId_IDX]
-    ON [dbo].[WorkgroupPermissions]([UserId] ASC);
+    ON [dbo].[WorkgroupPermissions]([UserId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [WorkgroupPermissions_roleid_IDX]
-    ON [dbo].[WorkgroupPermissions]([RoleId] ASC);
+    ON [dbo].[WorkgroupPermissions]([RoleId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [WordgroupPermissions_RoleId_Incl_WorkgroupIdUserIdIsAdminIsFullFeatured_CVIDX]
     ON [dbo].[WorkgroupPermissions]([RoleId] ASC)
-    INCLUDE([WorkgroupId], [UserId], [IsAdmin], [IsFullFeatured]);
+    INCLUDE([WorkgroupId], [UserId], [IsAdmin], [IsFullFeatured]) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [WorkgroupPermissions_UserIdRoldId_IDX]
-    ON [dbo].[WorkgroupPermissions]([UserId] ASC, [RoleId] ASC);
+    ON [dbo].[WorkgroupPermissions]([UserId] ASC, [RoleId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 
 
 GO
 CREATE NONCLUSTERED INDEX [WorkgroupPermissions_IsAdminIsFullFeatured_Incl_WorkgroupIdUserIdRoleId_CVIDX]
     ON [dbo].[WorkgroupPermissions]([IsAdmin] ASC, [IsFullFeatured] ASC)
-    INCLUDE([WorkgroupId], [UserId], [RoleId]);
+    INCLUDE([WorkgroupId], [UserId], [RoleId]) WITH (STATISTICS_NORECOMPUTE = ON);
+
+
 

@@ -5,7 +5,9 @@
     [SubGroupCode] VARCHAR (2)    NULL,
     [IsActive]     BIT            NOT NULL,
     [UpdateHash]   VARBINARY (16) NULL,
-    CONSTRAINT [PK_vCommodities] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [vCommodities_Id_UDX] UNIQUE NONCLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_vCommodities] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
+    CONSTRAINT [vCommodities_Id_UDX] UNIQUE NONCLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 
