@@ -13,9 +13,16 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [HistoryReceivedLineItems_UserID_IDX]
     ON [dbo].[HistoryReceivedLineItems]([UserId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
 
 
+
+
+GO
+CREATE NONCLUSTERED INDEX [nci_wi_HistoryReceivedLineItems_8EB794659A45C1BD7935F77BC7AC44C0]
+    ON [dbo].[HistoryReceivedLineItems]([LineItemId] ASC, [PayInvoice] ASC);
 

@@ -52,6 +52,10 @@
 
 
 
+
+
+
+
 GO
 CREATE NONCLUSTERED INDEX [Orders_WorkgroupVendorId_IDX]
     ON [dbo].[Orders]([WorkgroupVendorId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
@@ -113,5 +117,9 @@ CREATE NONCLUSTERED INDEX [Orders_OrderStatusCodeId_Incl_IdWorkgroupId_CVIDX]
     ON [dbo].[Orders]([OrderStatusCodeId] ASC)
     INCLUDE([Id], [WorkgroupId]) WITH (STATISTICS_NORECOMPUTE = ON);
 
+
+
+
+GO
 
 
