@@ -390,7 +390,7 @@
 
             self.shipping = ko.observable('$0.00');
             self.freight = ko.observable('$0.00');
-            self.tax = ko.observable('7.50%');
+            self.tax = ko.observable('7.25%');
 
             //Account info
             self.account = ko.observable();
@@ -817,7 +817,7 @@
 
     function attachKeyboardShortcutEvents() {
         $("#order-form").on("keydown", ".line-item-split-account-amount, .order-split-account-amount", function (event) {
-            if (event.ctrlKey && event.which == 13 /*enter*/) {
+            if (event.ctrlKey && event.which === 13 /*enter*/) {
                 event.preventDefault();
                 this.blur();
                 purchasing.OrderModel.insertUnaccountedValue(this);
@@ -1281,7 +1281,7 @@
                     options.AddKfsVendorUrl,
                     { workgroupId: workgroupId, vendorId: vendorId, addressTypeCode: typeCode, __RequestVerificationToken: options.AntiForgeryToken },
                     function (result) {
-                        if (result.added == true) {
+                        if (result.added === true) {
                             $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor");
                         }
                         if (result.duplicate) {
@@ -1291,7 +1291,7 @@
                             alert("That vendor was previously removed from this workgroup. It has been added back.");
                             $("#select-option-template").tmpl({ id: result.id, name: result.name }).appendTo("#vendor"); // We want it is a choice because we added it back.
                         }
-                        if (result.errorMessage != null) {
+                        if (result.errorMessage !== null) {
                             alert(result.errorMessage);
                         }
                         $("#vendor").val(result.id);
@@ -1373,7 +1373,7 @@
                 $("#building-code-display").addClass("green");
             },
             change: function (event, ui) {
-                if (ui.item == null) {
+                if (ui.item === null) {
                     $("#address-buildingcode").val("");
                     $("#building-code-display").html("Warning Not a Valid Building");
                     $("#building-code-display").removeClass("green");
