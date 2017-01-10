@@ -33,7 +33,7 @@ namespace Purchasing.Core.Domain
             DateCreated = DateTime.UtcNow.ToPacificTime();
             HasControlledSubstance = false;
 
-            EstimatedTax = 7.50m; //Default 7.50% UCD estimated tax
+            EstimatedTax = 7.25m; //Default 7.25% UCD estimated tax
         }
 
         public virtual string RequestNumber { get; protected set; }

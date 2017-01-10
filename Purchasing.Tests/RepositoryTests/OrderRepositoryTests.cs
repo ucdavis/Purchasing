@@ -8142,7 +8142,7 @@ namespace Purchasing.Tests.RepositoryTests
 
             Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, record.DateCreated.Date);
             Assert.IsFalse(record.HasControlledSubstance);
-            Assert.AreEqual(7.5m, record.EstimatedTax);
+            Assert.AreEqual(7.25m, record.EstimatedTax);
 
             Assert.IsNull(record.RequestNumber);
             #endregion Assert		
