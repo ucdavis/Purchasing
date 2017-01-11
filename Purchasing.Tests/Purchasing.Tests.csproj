@@ -228,7 +228,6 @@
     <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsReflection.cs" />
     <Compile Include="ControllerTests\DirectorySearchControllerTests.cs" />
     <Compile Include="ControllerTests\ErrorControllerTests.cs" />
-    <Compile Include="ControllerTests\HelpControllerTests.cs" />
     <Compile Include="ControllerTests\HistoryAjaxControllerTests.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsInit.cs" />
     <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsMapping.cs" />
