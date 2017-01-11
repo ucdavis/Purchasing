@@ -227,6 +227,10 @@
             <td>
                 <a href='@Url.Action("DeletePeople", new { workgroupPermissionId = item.FirstWorkgroupPermissionId, id = @Model.Workgroup.Id, @ViewBag.rolefilter })' title="Delete" class="ui-icon ui-icon-trash">
                 </a>
+                @if (!item.User.IsActive)
+                {
+                    <span title="User has been deactivated and should be removed."> *Deactivated</span>
+                }
             </td>
 		
 		</tr>

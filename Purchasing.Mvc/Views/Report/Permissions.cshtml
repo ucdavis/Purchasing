@@ -80,7 +80,13 @@
                         <ul>
                             @foreach (var person in people)
                             {
-                                <li>@(string.Format("{0} {1}", person.User.FullName, person.IsAdmin ? "*" : string.Empty))</li>    
+                                <li>
+                                    @(string.Format("{0} {1}", person.User.FullName, person.IsAdmin ? "*" : string.Empty))
+                                    @if (!person.User.IsActive)
+                                    {
+                                        <span strong style="background-color: lightcoral;">User no longer Active (Probably left the university) They should be removed.</span>
+                                    }
+                                </li>
                             }
                         </ul>    
                     }
@@ -97,7 +103,7 @@
         
             <section class="display-form">
             
-                <header class="ui-widget ui-widget-header">@user.FullName</header>
+                <header class="ui-widget ui-widget-header">@user.FullName @(!user.IsActive ? " (User no longer Active (Probably left the university) They should be removed.)" : string.Empty)</header>
             
                 @{
                 var perms = Model.Permissions.Where(a => a.User == user).OrderBy(a => a.Workgroup.Name).ThenBy(a => a.Role.Level);
