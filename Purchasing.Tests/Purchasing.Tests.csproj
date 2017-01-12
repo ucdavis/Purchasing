@@ -400,6 +400,10 @@
       <Project>{ad6f87b5-3e46-45c7-94e1-3625d8e44f33}</Project>
       <Name>Purchasing.Mvc</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Purchasing.Service\Purchasing.Service.csproj">
+      <Project>{057AF0B5-BDE2-4837-9A29-8D73091DE6A6}</Project>
+      <Name>Purchasing.Service</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj">
       <Project>{8bec9b9f-df26-4072-9c84-eab76e1484a6}</Project>
       <Name>Purchasing.WS</Name>
