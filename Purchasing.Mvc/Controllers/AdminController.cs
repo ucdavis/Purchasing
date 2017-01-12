@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Mvc;
-using AzureActiveDirectorySearcher;
+
 using Microsoft.Azure;
 using Microsoft.Web.Mvc;
 using Purchasing.Core;
@@ -679,15 +679,17 @@ namespace Purchasing.Mvc.Controllers
         /// <returns></returns>
         public async Task<JsonNetResult> Test(string id)
         {
-            var _searcher =
-                new GraphSearchClient(
-                    new ActiveDirectoryConfigurationValues(
-                        tenantName: CloudConfigurationManager.GetSetting("AzureSearchTenantName"),
-                        tenantId: CloudConfigurationManager.GetSetting("AzureSearchTenantId"),
-                        clientId: CloudConfigurationManager.GetSetting("AzureSearchClientId"),
-                        clientSecret: CloudConfigurationManager.GetSetting("AzureSearchClientSecret")));
 
-            var users = await _searcher.FindByEmailOrKerberos(id, id);
+            var users = _searchService.FindUser(id);
+            //var _searcher =
+            //    new GraphSearchClient(
+            //        new ActiveDirectoryConfigurationValues(
+            //            tenantName: CloudConfigurationManager.GetSetting("AzureSearchTenantName"),
+            //            tenantId: CloudConfigurationManager.GetSetting("AzureSearchTenantId"),
+            //            clientId: CloudConfigurationManager.GetSetting("AzureSearchClientId"),
+            //            clientSecret: CloudConfigurationManager.GetSetting("AzureSearchClientSecret")));
+
+            //var users = await _searcher.FindByEmailOrKerberos(id, id);
 
             //var users2 = await _searcher.ActiveDirectoryClient.Users.Where(u => u.ProxyAddresses.Any(p => p.StartsWith("jamesd"))).ExecuteAsync();
 
