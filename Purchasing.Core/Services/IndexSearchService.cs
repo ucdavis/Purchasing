@@ -26,9 +26,11 @@ namespace Purchasing.Core.Services
 
             var results = _client.Search<OrderHistory>(
                 s =>
-                    s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
-                        .Filter(f => f.Terms(x => x.OrderId, allowedIds))
-                        .SortDescending(x => x.LastActionDate)
+                    s.Index(index)
+                        .Query(
+                            q => q.QueryString(qs => qs.Query(searchTerm)) && q.Terms(t => t.Field(f => f.OrderId).Terms(allowedIds))
+                        )
+                        .Sort(sort => sort.Descending(d => d.LastActionDate))
                         .Size(MaxSeachResults));
 
             return results.Hits.Select(h => AutoMapper.Mapper.Map<SearchResults.OrderResult>(h.Source)).ToList();
@@ -40,9 +42,11 @@ namespace Purchasing.Core.Services
 
             var results = _client.Search<SearchResults.LineResult>(
                 s =>
-                    s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
-                        .Filter(f => f.Terms(x => x.OrderId, allowedIds))
-                        .SortDescending(x=>x.OrderId)
+                    s.Index(index)
+                        .Query(
+                            q => q.QueryString(qs => qs.Query(searchTerm)) && q.Terms(t => t.Field(f => f.OrderId).Terms(allowedIds))
+                        )
+                        .Sort(sort => sort.Descending(d => d.OrderId))
                         .Size(MaxSeachResults));
 
             return results.Hits.Select(h => h.Source).ToList();
@@ -54,9 +58,11 @@ namespace Purchasing.Core.Services
 
             var results = _client.Search<SearchResults.CustomFieldResult>(
                 s =>
-                    s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
-                        .Filter(f => f.Terms(x => x.OrderId, allowedIds))
-                        .SortDescending(x=>x.OrderId)
+                    s.Index(index)
+                        .Query(
+                            q => q.QueryString(qs => qs.Query(searchTerm)) && q.Terms(t => t.Field(f => f.OrderId).Terms(allowedIds))
+                        )
+                        .Sort(sort => sort.Descending(d => d.OrderId))
                         .Size(MaxSeachResults));
 
             return results.Hits.Select(h => h.Source).ToList();
@@ -68,9 +74,11 @@ namespace Purchasing.Core.Services
 
             var results = _client.Search<SearchResults.CommentResult>(
                 s =>
-                    s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm)))
-                        .Filter(f => f.Terms(x => x.OrderId, allowedIds))
-                        .SortDescending(x => x.DateCreated)
+                    s.Index(index)
+                        .Query(
+                            q => q.QueryString(qs => qs.Query(searchTerm)) && q.Terms(t => t.Field(f => f.OrderId).Terms(allowedIds))
+                        )
+                        .Sort(sort => sort.Descending(d => d.DateCreated))
                         .Size(MaxSeachResults));
 
             return results.Hits.Select(h => h.Source).ToList();
@@ -123,8 +131,8 @@ namespace Purchasing.Core.Services
             var results = _client.Search<OrderHistory>(
                 s =>
                     s.Index(index)
-                        .Filter(f => f.Range(r => r.OnField(o => o.DateCreated).Greater(createdAfter).Lower(createdBefore))
-                        && f.Terms(o => o.WorkgroupId, workgroupIds))
+                        .Query(f => f.DateRange(r => r.Field(o => o.DateCreated).GreaterThan(createdAfter).LessThan(createdBefore))
+                        && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))
                         .Size(int.MaxValue)
                 );
 
@@ -140,9 +148,9 @@ namespace Purchasing.Core.Services
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Size(size)
-                    .Query(a=> a.Filtered(fq=> fq.Query(q=> q.MatchAll()).Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore))
+                    .Query(a=> a.Filtered(fq=> fq.Query(q=> q.MatchAll()).Filter(f => f.DateRange(r => r.Field(o => o.OrderCreated).GreaterThan(createdAfter).LessThan(createBefore))
                                  && f.Term(x => x.IsComplete, true)
-                                 && f.Terms(o => o.WorkgroupId, workgroupIds))))
+                                 && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))))
                     .Aggregations(
                         a =>
                             a.Average("AverageTimeToCompletion", avg => avg.Field(x => x.MinutesToCompletion))
@@ -186,21 +194,21 @@ namespace Purchasing.Core.Services
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Size(size)
-                    .Query(a => a.Filtered(fq => fq.Query(q => q.MatchAll()).Filter(f => f.Range(r => r.OnField(o => o.OrderCreated).Greater(createdAfter).Lower(createBefore))
+                    .Query(a => a.Filtered(fq => fq.Query(q => q.MatchAll()).Filter(f => f.DateRange(r => r.Field(o => o.OrderCreated).GreaterThan(createdAfter).LessThan(createBefore))
                                  && f.Term(x => x.Status, "complete")
-                                 && f.Terms(o => o.WorkgroupId, workgroupIds))))
+                                 && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))))
                     .Aggregations(
                         a =>
                             a.Terms("RolePercentiles", t => t.Field(roleNames)
                                     .Aggregations(b=> b.Percentiles("PercentileTimes", p=> p.Field(timeField)
-                                    .Percentages(new double[] {0,25,50,75,100})))
+                                    .Percents(new double[] {0,25,50,75,100})))
                                 )
                              .Average("AverageTimeToRoleComplete", avg => avg.Field(timeField)))
                 );
-            var names = results.Aggs.Terms("RolePercentiles").Items.Select(n => n.Key + "; n=" + n.DocCount.ToString()).ToArray();
+            var names = results.Aggs.Terms("RolePercentiles").Buckets.Select(n => n.Key + "; n=" + n.DocCount.ToString()).ToArray();
             var percentilesInRole =
                 results.Aggs.Terms("RolePercentiles")
-                    .Items.Select(user => (PercentilesMetric) user.Aggregations["PercentileTimes"])
+                    .Buckets.Select(user => (PercentilesAggregate) user.Aggregations["PercentileTimes"])
                     .Select(
                         uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => a.Value / 1440).ToArray() // converted to days to help with scale
                             )
