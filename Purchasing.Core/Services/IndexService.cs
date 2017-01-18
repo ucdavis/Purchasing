@@ -66,9 +66,9 @@ namespace Purchasing.Core.Services
         {
             _dbService = dbService;
             
-            var settings =
-                new ConnectionSettings(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]),
-                    "prepurchasing");
+            var settings = new ConnectionSettings(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]));
+            settings.DefaultIndex("prepurchasing");
+
             _client = new ElasticClient(settings);
         }
 
@@ -195,19 +195,12 @@ namespace Purchasing.Core.Services
             if (updatedOrderIds.Any())
             {
                 //Clear out existing lines and custom fields for the orders we are about to recreate
-                _client.DeleteByQuery<SearchResults.LineResult>(
-                    q => q.Index(IndexHelper.GetIndexName(Indexes.LineItems)).Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
+                _client.DeleteByQuery<SearchResults.LineResult>(Indices.Index(IndexHelper.GetIndexName(Indexes.LineItems)), Types.All, q=> q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
 
-                _client.DeleteByQuery<SearchResults.CustomFieldResult>(
-                    q =>
-                        q.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers))
-                            .Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
+                _client.DeleteByQuery<SearchResults.CustomFieldResult>(Indices.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers)), Types.All, q => q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
 
-                _client.DeleteByQuery<OrderTrackingEntity>(
-                    q =>
-                        q.Index(IndexHelper.GetIndexName(Indexes.OrderTracking))
-                            .Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
-                
+                _client.DeleteByQuery<OrderTrackingEntity>(Indices.Index(IndexHelper.GetIndexName(Indexes.OrderTracking)), Types.All, q => q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
+
                 WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
                 WriteIndex(lineItems, Indexes.LineItems, recreate: false);
                 WriteIndex(customAnswers, Indexes.CustomAnswers, recreate: false);
