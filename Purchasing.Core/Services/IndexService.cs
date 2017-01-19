@@ -270,14 +270,16 @@ namespace Purchasing.Core.Services
         {
             //TODO: no idea if this will work
             var indexName = IndexHelper.GetIndexName(index);
-            return
-                Convert.ToDateTime(_client.IndicesStats(i => i.Index(indexName)).Indices[indexName].Total.Indexing.Time);
+
+            return Convert.ToDateTime(_client.IndicesStats(indexName).Indices[indexName].Total.Indexing.Time);
         }
 
         public int NumRecords(Indexes index)
         {
             var indexName = IndexHelper.GetIndexName(index);
-            return (int) _client.Status(i => i.Index(indexName)).Indices[indexName].IndexDocs.NumberOfDocs;
+
+            // hopefully this works despite count not having a generic option.  I overwrote the index inside the action instead.
+            return (int) _client.Count<OrderHistory>(x => x.Index(indexName)).Count;
         }
 
         public ElasticClient GetIndexClient()
