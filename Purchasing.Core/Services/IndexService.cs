@@ -7,7 +7,6 @@ using System.Text;
 using AutoMapper.Internal;
 using Dapper;
 using Nest;
-using NHibernate.Hql.Ast.ANTLR;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
