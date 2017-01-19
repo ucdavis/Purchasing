@@ -21,6 +21,7 @@ Purchasing.Web/bin/*
 *.ilk
 *.log
 *.orig
+*.jfm
 [Bb]in
 [Dd]ebug*/
 *.lib
