@@ -221,10 +221,9 @@ namespace Purchasing.Core.Services
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
             DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId)
         {
-            var filters = new List<FilterContainer>();
+            var filters = new List<QueryContainer>();
 
-            filters.Add(Filter<OrderHistory>.Terms(x => x.OrderId,
-                orderids.Select(x => x.ToString(CultureInfo.InvariantCulture))));
+            filters.Add(Query<OrderHistory>.Terms(t => t.Field(f => f.OrderId).Terms(orderids.Select(x => x.ToString(CultureInfo.InvariantCulture)))));
 
             if (!endLastActionDate.HasValue)
             {
@@ -234,31 +233,31 @@ namespace Purchasing.Core.Services
             if (startLastActionDate.HasValue)
             {
                 filters.Add(
-                    Filter<OrderHistory>.Range(
+                    Query<OrderHistory>.DateRange(
                         o =>
-                            o.OnField(x => x.LastActionDate)
-                                .GreaterOrEquals(startLastActionDate.Value)
-                                .LowerOrEquals(endLastActionDate)));
+                            o.Field(x => x.LastActionDate)
+                                .GreaterThanOrEquals(startLastActionDate.Value)
+                                .LessThanOrEquals(endLastActionDate)));
             }
 
             if (startDate.HasValue)
             {
-                filters.Add(Filter<OrderHistory>.Range(o => o.OnField(x => x.DateCreated).GreaterOrEquals(startDate)));
+                filters.Add(Query<OrderHistory>.DateRange(o => o.Field(x => x.DateCreated).GreaterThanOrEquals(startDate)));
             }
 
             if (endDate.HasValue)
             {
-                filters.Add(Filter<OrderHistory>.Range(o => o.OnField(x => x.DateCreated).LowerOrEquals(endDate)));
+                filters.Add(Query<OrderHistory>.DateRange(o => o.Field(x => x.DateCreated).LessThanOrEquals(endDate)));
             }
             if (!string.IsNullOrWhiteSpace(statusId))
             {
-                filters.Add(Filter<OrderHistory>.Term(a => a.StatusId, statusId.ToLower()));
+                filters.Add(Query<OrderHistory>.Term(a => a.StatusId, statusId.ToLower()));
             }
 
             var orders = _client.Search<OrderHistory>(
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
                     .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length)
-                    .Filter(f => f.And(filters.ToArray())));
+                    .Query(q => q.Bool(b => b.Must(filters.ToArray())))); //used to be .Query(f => f.And(filters.ToArray())));.  Now boolean must query/filter
 
             return new IndexedList<OrderHistory>
             {
