@@ -13,7 +13,7 @@
         attachTabEvents();
         attachToolTipEvents();
         loadRecentHistory();
-        loadCompleteHistory();
+        //loadCompleteHistory();
         loadCommentHistory();
     };
 
@@ -59,13 +59,13 @@
         $("#recent-activity-container").load(options.RecentActivityUrl);
     }
 
-    function loadCompleteHistory() {
-        $.getJSON(options.RecentlyCompletedUrl, null, function (results) {
-            $("#completed-container").html(results.completedThisMonth);
-            $("#denied-container").html(results.deniedThisMonth);
-        });
+    //function loadCompleteHistory() {
+    //    $.getJSON(options.RecentlyCompletedUrl, null, function (results) {
+    //        $("#completed-container").html(results.completedThisMonth);
+    //        $("#denied-container").html(results.deniedThisMonth);
+    //    });
 
-    }
+    //}
 
 
     function loadCommentHistory() {
