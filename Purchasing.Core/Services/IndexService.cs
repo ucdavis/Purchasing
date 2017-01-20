@@ -253,9 +253,9 @@ namespace Purchasing.Core.Services
 
             var orders = _client.Search<OrderHistory>(
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
-                    .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length)
                     .Query(q => q.Bool(b => b.Must(filters.ToArray())))
-                    .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(orderids)))))); //used to be .Query(f => f.And(filters.ToArray())));.  Now boolean must query/filter
+                    .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(orderids))))) //used to be .Query(f => f.And(filters.ToArray())));.  Now boolean must query/filter
+                    .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length));
 
             return new IndexedList<OrderHistory>
             {
