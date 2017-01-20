@@ -222,8 +222,6 @@ namespace Purchasing.Core.Services
         {
             var filters = new List<QueryContainer>();
 
-            filters.Add(Query<OrderHistory>.Terms(t => t.Field(f => f.OrderId).Terms(orderids.Select(x => x.ToString(CultureInfo.InvariantCulture)))));
-
             if (!endLastActionDate.HasValue)
             {
                 endLastActionDate = DateTime.UtcNow.AddDays(1);
@@ -256,7 +254,8 @@ namespace Purchasing.Core.Services
             var orders = _client.Search<OrderHistory>(
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
                     .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length)
-                    .Query(q => q.Bool(b => b.Must(filters.ToArray())))); //used to be .Query(f => f.And(filters.ToArray())));.  Now boolean must query/filter
+                    .Query(q => q.Bool(b => b.Must(filters.ToArray())))
+                    .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(orderids)))))); //used to be .Query(f => f.And(filters.ToArray())));.  Now boolean must query/filter
 
             return new IndexedList<OrderHistory>
             {

@@ -28,8 +28,9 @@ namespace Purchasing.Core.Services
                 s =>
                     s.Index(index)
                         .Query(
-                            q => q.QueryString(qs => qs.Query(searchTerm)) && q.Terms(t => t.Field(f => f.OrderId).Terms(allowedIds))
+                            q => q.QueryString(qs => qs.Query(searchTerm))
                         )
+                        .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(allowedIds)))))
                         .Sort(sort => sort.Descending(d => d.LastActionDate))
                         .Size(MaxSeachResults));
 
@@ -44,8 +45,9 @@ namespace Purchasing.Core.Services
                 s =>
                     s.Index(index)
                         .Query(
-                            q => q.QueryString(qs => qs.Query(searchTerm)) && q.Terms(t => t.Field(f => f.OrderId).Terms(allowedIds))
+                            q => q.QueryString(qs => qs.Query(searchTerm))
                         )
+                        .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(allowedIds)))))
                         .Sort(sort => sort.Descending(d => d.OrderId))
                         .Size(MaxSeachResults));
 
@@ -60,8 +62,9 @@ namespace Purchasing.Core.Services
                 s =>
                     s.Index(index)
                         .Query(
-                            q => q.QueryString(qs => qs.Query(searchTerm)) && q.Terms(t => t.Field(f => f.OrderId).Terms(allowedIds))
+                            q => q.QueryString(qs => qs.Query(searchTerm))
                         )
+                        .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(allowedIds)))))
                         .Sort(sort => sort.Descending(d => d.OrderId))
                         .Size(MaxSeachResults));
 
@@ -76,8 +79,9 @@ namespace Purchasing.Core.Services
                 s =>
                     s.Index(index)
                         .Query(
-                            q => q.QueryString(qs => qs.Query(searchTerm)) && q.Terms(t => t.Field(f => f.OrderId).Terms(allowedIds))
+                            q => q.QueryString(qs => qs.Query(searchTerm))
                         )
+                        .PostFilter(f=>f.ConstantScore(c=>c.Filter(x=>x.Terms(t=>t.Field(q=>q.OrderId).Terms(allowedIds)))))
                         .Sort(sort => sort.Descending(d => d.DateCreated))
                         .Size(MaxSeachResults));
 
