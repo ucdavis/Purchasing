@@ -58,7 +58,7 @@ namespace Purchasing.Core.Services
     {
         private readonly IDbService _dbService;
         private ElasticClient _client;
-        private const int MaxReturnValues = 15000;
+        private const int MaxReturnValues = 10000; //This was 15,000 but ElasticSearch Errors out if it is that big. Tested with 12,000
 
 
         public ElasticSearchIndexService(IDbService dbService)
