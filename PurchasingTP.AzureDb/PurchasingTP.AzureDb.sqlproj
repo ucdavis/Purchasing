@@ -188,6 +188,8 @@
     <Build Include="dbo\Views\vOrderTrackingIndex.sql" />
     <Build Include="dbo\Functions\udf_GetOpenOrderInfoForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetRecentActivityForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetReadAndEditAccessOrderIdsForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetCommentHistoryForLogin.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
