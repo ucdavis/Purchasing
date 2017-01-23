@@ -7,7 +7,6 @@ using System.Text;
 using AutoMapper.Internal;
 using Dapper;
 using Nest;
-using NHibernate.Hql.Ast.ANTLR;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
@@ -59,16 +58,16 @@ namespace Purchasing.Core.Services
     {
         private readonly IDbService _dbService;
         private ElasticClient _client;
-        private const int MaxReturnValues = 15000;
+        private const int MaxReturnValues = 10000; //This was 15,000 but ElasticSearch Errors out if it is that big. Tested with 12,000
 
 
         public ElasticSearchIndexService(IDbService dbService)
         {
             _dbService = dbService;
             
-            var settings =
-                new ConnectionSettings(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]),
-                    "prepurchasing");
+            var settings = new ConnectionSettings(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]));
+            settings.DefaultIndex("prepurchasing");
+
             _client = new ElasticClient(settings);
         }
 
@@ -195,19 +194,12 @@ namespace Purchasing.Core.Services
             if (updatedOrderIds.Any())
             {
                 //Clear out existing lines and custom fields for the orders we are about to recreate
-                _client.DeleteByQuery<SearchResults.LineResult>(
-                    q => q.Index(IndexHelper.GetIndexName(Indexes.LineItems)).Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
+                _client.DeleteByQuery<SearchResults.LineResult>(Indices.Index(IndexHelper.GetIndexName(Indexes.LineItems)), Types.All, q=> q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
 
-                _client.DeleteByQuery<SearchResults.CustomFieldResult>(
-                    q =>
-                        q.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers))
-                            .Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
+                _client.DeleteByQuery<SearchResults.CustomFieldResult>(Indices.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers)), Types.All, q => q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
 
-                _client.DeleteByQuery<OrderTrackingEntity>(
-                    q =>
-                        q.Index(IndexHelper.GetIndexName(Indexes.OrderTracking))
-                            .Query(rq => rq.Terms(f => f.OrderId, updatedOrderIds)));
-                
+                _client.DeleteByQuery<OrderTrackingEntity>(Indices.Index(IndexHelper.GetIndexName(Indexes.OrderTracking)), Types.All, q => q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
+
                 WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
                 WriteIndex(lineItems, Indexes.LineItems, recreate: false);
                 WriteIndex(customAnswers, Indexes.CustomAnswers, recreate: false);
@@ -228,10 +220,7 @@ namespace Purchasing.Core.Services
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
             DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId)
         {
-            var filters = new List<FilterContainer>();
-
-            filters.Add(Filter<OrderHistory>.Terms(x => x.OrderId,
-                orderids.Select(x => x.ToString(CultureInfo.InvariantCulture))));
+            var filters = new List<QueryContainer>();
 
             if (!endLastActionDate.HasValue)
             {
@@ -241,31 +230,32 @@ namespace Purchasing.Core.Services
             if (startLastActionDate.HasValue)
             {
                 filters.Add(
-                    Filter<OrderHistory>.Range(
+                    Query<OrderHistory>.DateRange(
                         o =>
-                            o.OnField(x => x.LastActionDate)
-                                .GreaterOrEquals(startLastActionDate.Value)
-                                .LowerOrEquals(endLastActionDate)));
+                            o.Field(x => x.LastActionDate)
+                                .GreaterThanOrEquals(startLastActionDate.Value)
+                                .LessThanOrEquals(endLastActionDate)));
             }
 
             if (startDate.HasValue)
             {
-                filters.Add(Filter<OrderHistory>.Range(o => o.OnField(x => x.DateCreated).GreaterOrEquals(startDate)));
+                filters.Add(Query<OrderHistory>.DateRange(o => o.Field(x => x.DateCreated).GreaterThanOrEquals(startDate)));
             }
 
             if (endDate.HasValue)
             {
-                filters.Add(Filter<OrderHistory>.Range(o => o.OnField(x => x.DateCreated).LowerOrEquals(endDate)));
+                filters.Add(Query<OrderHistory>.DateRange(o => o.Field(x => x.DateCreated).LessThanOrEquals(endDate)));
             }
             if (!string.IsNullOrWhiteSpace(statusId))
             {
-                filters.Add(Filter<OrderHistory>.Term(a => a.StatusId, statusId.ToLower()));
+                filters.Add(Query<OrderHistory>.Term(a => a.StatusId, statusId.ToLower()));
             }
 
             var orders = _client.Search<OrderHistory>(
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
-                    .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length)
-                    .Filter(f => f.And(filters.ToArray())));
+                    .Query(q => q.Bool(b => b.Must(filters.ToArray())))
+                    .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(orderids))))) //used to be .Query(f => f.And(filters.ToArray())));.  Now boolean must query/filter
+                    .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length));
 
             return new IndexedList<OrderHistory>
             {
@@ -278,14 +268,16 @@ namespace Purchasing.Core.Services
         {
             //TODO: no idea if this will work
             var indexName = IndexHelper.GetIndexName(index);
-            return
-                Convert.ToDateTime(_client.IndicesStats(i => i.Index(indexName)).Indices[indexName].Total.Indexing.Time);
+
+            return Convert.ToDateTime(_client.IndicesStats(indexName).Indices[indexName].Total.Indexing.Time);
         }
 
         public int NumRecords(Indexes index)
         {
             var indexName = IndexHelper.GetIndexName(index);
-            return (int) _client.Status(i => i.Index(indexName)).Indices[indexName].IndexDocs.NumberOfDocs;
+
+            // hopefully this works despite count not having a generic option.  I overwrote the index inside the action instead.
+            return (int) _client.Count<OrderHistory>(x => x.Index(indexName)).Count;
         }
 
         public ElasticClient GetIndexClient()
