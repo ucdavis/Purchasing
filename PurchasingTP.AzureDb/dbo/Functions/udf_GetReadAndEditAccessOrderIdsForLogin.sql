@@ -12,32 +12,34 @@
 /*
 	select * from udf_GetReadAndEditAccessOrdersForLogin('bazemore') 
 */
+-- Modifications:
+--	20170124 by kjt: Added "isadmin" as additional return table column.
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetReadAndEditAccessOrderIdsForLogin] 
 (
 	-- Add the parameters for the function here
-	@LoginId varchar(50) 
+	@LoginId varchar(50)
 )
 RETURNS 
-@ReadAndEditAccessOrders TABLE 
+@ReadAndEditAccessOrderIds TABLE 
 ( 
-	orderid int
+	orderid int,
+	isadmin bit
 )
 AS
 BEGIN
-	INSERT INTO @ReadAndEditAccessOrders
-	select access.orderid
+	INSERT INTO @ReadAndEditAccessOrderIds
+	select access.orderid, access.isadmin
 from
 	(
-		select orderid
+		select orderid, isadmin
 		from udf_GetEditAccessOrdersForLogin(@LoginId)
-		WHERE IsAdmin = 0
 
 		union
 
-		select orderid
+		select orderid, isadmin
 		from udf_GetReadAccessOrdersForLogin(@LoginId)
-		WHERE IsAdmin = 0
+
 	) access
 	
 	RETURN 
