@@ -19,7 +19,7 @@
                 @foreach (var notes in Model.Comments.OrderBy(o => o.DateCreated))
                 {
                     <tr>
-                        <td title="@notes.DateCreated.ToString("T")">@notes.DateCreated.ToString("d")</td>
+                        <td class="showQTip" title="@notes.DateCreated.ToString("T")">@notes.DateCreated.ToString("d")</td>
                         <td>@notes.Text</td>
                         <td>@notes.User.FullName</td>
                     </tr>
