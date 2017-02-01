@@ -894,6 +894,12 @@ namespace Purchasing.Mvc.Controllers
                 return RedirectToAction("Review", new {id});
             }
 
+            if (order.StatusCode.IsComplete)
+            {
+                ErrorMessage = "Order was already completed. Unable to cancel. (You may want to contact the purchaser.)";
+                return RedirectToAction("Review", new { id });
+            }
+
             if (string.IsNullOrWhiteSpace(comment))
             {
                 ErrorMessage = Resources.CancelOrder_CommentRequired;

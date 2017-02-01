@@ -12,6 +12,12 @@
     purchasing.init = function () {
         $("a[title]").qtip();
         $("input[title]").qtip();
+        $(".showQTip").qtip({
+            position: {
+                my: 'bottom right',
+                at: 'top left'
+            }
+        });
         attachNoteEvents(); //Anyone can add notes and files
         attachPeepsEvents();
         attachFileEvents();
