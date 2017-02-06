@@ -20,13 +20,15 @@ namespace Purchasing.Mvc.Controllers
     [SessionState(SessionStateBehavior.Disabled)]
     public class HistoryAjaxController : ApplicationController
     {
-        private readonly IQueryRepositoryFactory _queryRepositoryFactory;
+        private readonly ISearchService _searchService;
+        private readonly IAccessQueryService _accessQueryService;
         private readonly IOrderService _orderService;
         private readonly IDbService _dbService;
 
-        public HistoryAjaxController(IQueryRepositoryFactory queryRepositoryFactory, IOrderService orderService, IDbService dbService)
+        public HistoryAjaxController(ISearchService searchService, IAccessQueryService accessQueryService, IOrderService orderService, IDbService dbService)
         {
-            _queryRepositoryFactory = queryRepositoryFactory;
+            _searchService = searchService;
+            _accessQueryService = accessQueryService;
             _orderService = orderService;
             _dbService = dbService;
         }
@@ -45,12 +47,11 @@ namespace Purchasing.Mvc.Controllers
 
         public PartialViewResult RecentComments()
         {
-            var recentComments = _queryRepositoryFactory.CommentHistoryRepository
-                .Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name)
-                .OrderByDescending(o => o.DateCreated)
-                .Take(5).ToList();
+            var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(CurrentUser.Identity.Name, isAdmin: false).Select(x => x.OrderId).ToArray();
 
-            return PartialView(recentComments);
+            var comments = _searchService.GetLatestComments(5, orderIds);
+
+            return PartialView(comments);
         }
 
         public JsonNetResult RecentlyCompleted()
