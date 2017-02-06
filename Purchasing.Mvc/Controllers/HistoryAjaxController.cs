@@ -56,11 +56,13 @@ namespace Purchasing.Mvc.Controllers
 
         public JsonNetResult RecentlyCompleted()
         {
+            var accessibleOrders = _accessQueryService.GetOrderAccessByAdminStatus(CurrentUser.Identity.Name, isAdmin: false).ToArray();
+            
             var deniedThisMonth =
-                _orderService.GetIndexedListofOrders(null, null,false, false, OrderStatusCode.Codes.Denied, null, null, true,
+                _orderService.GetIndexedListofOrders(accessibleOrders, null, null,false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                               new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null).Results.Count();
             var completedThisMonth =
-                _orderService.GetIndexedListofOrders(null, null,true, false, OrderStatusCode.Codes.Complete, null, null, true,
+                _orderService.GetIndexedListofOrders(accessibleOrders, null, null,true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                   new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null).Results.Count();
 
             return new JsonNetResult(new { deniedThisMonth, completedThisMonth });
