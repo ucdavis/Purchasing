@@ -57,5 +57,7 @@ namespace Purchasing.Core.Services
 
         OrderTrackingAggregationByRole GetOrderTrackingEntitiesByRole(IEnumerable<Workgroup> workgroups, DateTime createdAfter,
             DateTime createBefore, string role, int size);
+
+        IList<SearchResults.CommentResult> GetLatestComments(int count, int[] allowedIds);
     }
 }

@@ -88,6 +88,20 @@ namespace Purchasing.Core.Services
             return results.Hits.Select(h => h.Source).ToList();
         }
 
+        public IList<SearchResults.CommentResult> GetLatestComments(int count, int[] allowedIds)
+        {
+            var index = IndexHelper.GetIndexName(Indexes.Comments);
+
+            var results = _client.Search<SearchResults.CommentResult>(
+                s =>
+                    s.Index(index)
+                        .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(allowedIds)))))
+                        .Sort(sort => sort.Descending(d => d.DateCreated))
+                        .Size(count));
+
+            return results.Hits.Select(h => h.Source).ToList();
+        }
+
         public IList<IdAndName> SearchCommodities(string searchTerm)
         {
             var index = IndexHelper.GetIndexName(Indexes.Commodities);
