@@ -2,7 +2,16 @@
 
 <section id="line-items" class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header showInNav">Line Items </header>
+    <header class="ui-corner-top ui-widget-header showInNav">Line Items 
+        @if (Model.Order.OrderReceived)
+        {
+            <strong> (Received)</strong>
+        }
+        @if (Model.Order.OrderPaid)
+        {
+            <strong> (Paid)</strong>
+        }
+    </header>
    
     <div class="section-contents">
         <div class="col1">
