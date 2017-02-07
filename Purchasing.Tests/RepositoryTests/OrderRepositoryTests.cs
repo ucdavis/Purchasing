@@ -6622,6 +6622,117 @@ namespace Purchasing.Tests.RepositoryTests
         }
         #endregion OrderReceived Tests
 
+        #region OrderPaid Tests
+
+        [TestMethod]
+        public void TestOrderPaidWhenLineItemsIsNull()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = null;
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.OrderPaid);
+            Assert.IsNull(record.LineItems);
+            #endregion Assert		
+        }
+
+        [TestMethod]
+        public void TestOrderPaidWhenLineItemsIsEmpty()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = new List<LineItem>();
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.OrderPaid);
+            Assert.AreEqual(0, record.LineItems.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderPaidWhenLineItemsIsNotComplete1()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = new List<LineItem>();
+            record.LineItems.Add(CreateValidEntities.LineItem(1));
+            record.LineItems.Add(CreateValidEntities.LineItem(2));
+            record.LineItems.Add(CreateValidEntities.LineItem(3));
+            foreach (var lineItem in record.LineItems)
+            {
+                lineItem.Paid = false;
+            }
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.OrderPaid);
+            Assert.AreEqual(3, record.LineItems.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderPaidWhenLineItemsIsNotComplete2()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = new List<LineItem>();
+            record.LineItems.Add(CreateValidEntities.LineItem(1));
+            record.LineItems.Add(CreateValidEntities.LineItem(2));
+            record.LineItems.Add(CreateValidEntities.LineItem(3));
+            foreach (var lineItem in record.LineItems)
+            {
+                lineItem.Paid = false;
+            }
+            record.LineItems[1].Paid = true;
+            #endregion Act
+
+            #region Assert
+            Assert.IsFalse(record.OrderPaid);
+            Assert.AreEqual(3, record.LineItems.Count);
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestOrderPaidWhenLineItemsIsComplete()
+        {
+            #region Arrange
+            var record = CreateValidEntities.Order(2);
+            #endregion Arrange
+
+            #region Act
+            record.LineItems = new List<LineItem>();
+            record.LineItems.Add(CreateValidEntities.LineItem(1));
+            record.LineItems.Add(CreateValidEntities.LineItem(2));
+            record.LineItems.Add(CreateValidEntities.LineItem(3));
+            foreach (var lineItem in record.LineItems)
+            {
+                lineItem.Paid = true;
+            }
+
+            #endregion Act
+
+            #region Assert
+            Assert.IsTrue(record.OrderPaid);
+            Assert.AreEqual(3, record.LineItems.Count);
+            #endregion Assert
+        }
+        #endregion OrderPaid Tests
+
         #region DeliverToPhone Tests
         #region Invalid Tests
 
@@ -8231,6 +8342,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)140)]"
             }));
+            expectedFields.Add(new NameAndType("OrderPaid", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("OrderReceived", "System.Boolean", new List<string>()));
             expectedFields.Add(new NameAndType("OrderTrackings", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.OrderTracking]", new List<string>()));
             expectedFields.Add(new NameAndType("OrderType", "Purchasing.Core.Domain.OrderType", new List<string>
