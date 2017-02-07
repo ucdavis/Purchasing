@@ -2,16 +2,7 @@
 
 <section id="line-items" class="ui-corner-all display-form">
 
-    <header class="ui-corner-top ui-widget-header showInNav">Line Items 
-        @if (Model.Order.OrderReceived)
-        {
-            <strong> (Received)</strong>
-        }
-        @if (Model.Order.OrderPaid)
-        {
-            <strong> (Paid)</strong>
-        }
-    </header>
+    <header class="ui-corner-top ui-widget-header showInNav">Line Items </header>
    
     <div class="section-contents">
         <div class="col1">
@@ -37,7 +28,15 @@
             @if (Model.CanReceiveItems)
             {
                 @Html.ActionLink("Receive Items", "ReceiveItems", new {id = Model.Order.Id}, new {@class = "button"})
+                if (Model.Order.OrderReceived)
+                {
+                    <i class="ui-icon ui-icon-check showQTip" title="All Items Received"></i>
+                }
                 @Html.ActionLink("Pay Invoice", "PayInvoice", new { id = Model.Order.Id}, new { @class = "button" })
+                if (Model.Order.OrderPaid)
+                {
+                    <i class="ui-icon ui-icon-check" title="All Items Paid">></i>
+                }
             }
 
         </div>
