@@ -595,7 +595,7 @@ namespace Purchasing.Mvc.Controllers
                         Body = "Run the Check"
                     };
 
-                    Log.Error("Run the Workgroup Permissions Check");
+                    Log.Warning("Run the Workgroup Permissions Check");
 
                     var smtpClient = new SmtpClient("smtp.sendgrid.net", Convert.ToInt32(587));
                     var credentials = new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"],
