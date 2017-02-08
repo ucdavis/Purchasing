@@ -17,6 +17,7 @@ using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
+using Serilog;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
@@ -588,11 +589,13 @@ namespace Purchasing.Mvc.Controllers
                 {
                     var sgMessage = new MailMessage(
                         new MailAddress("opp-noreply@ucdavis.edu", "OPP No Reply"),
-                        new MailAddress("opp-tech@ucdavis.edu"))
+                        new MailAddress("apprequests@caes.ucdavis.edu"))
                     {
                         Subject = "Check Workgroup Permissions",
                         Body = "Run the Check"
                     };
+
+                    Log.Error("Run the Workgroup Permissions Check");
 
                     var smtpClient = new SmtpClient("smtp.sendgrid.net", Convert.ToInt32(587));
                     var credentials = new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"],
