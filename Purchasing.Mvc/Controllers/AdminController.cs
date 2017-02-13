@@ -571,8 +571,10 @@ namespace Purchasing.Mvc.Controllers
         [AllowAnonymous]
         public virtual bool NeedToCheckWorkgroupPermissions(string key)
         {
+            Log.Information("NeedToCheckWorkgroupPermissions Starting");
             if (string.IsNullOrWhiteSpace(key) || key != ConfigurationManager.AppSettings["ValidationKey"])
             {
+                Log.Warning("NeedToCheckWorkgroupPermissions Validation Key missing");
                 return true;
             }
             var childWorkGroups = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && !a.Administrative);
@@ -595,7 +597,7 @@ namespace Purchasing.Mvc.Controllers
                         Body = "Run the Check"
                     };
 
-                    Log.Warning("Run the Workgroup Permissions Check");
+                    Log.Warning("NeedToCheckWorkgroupPermissions Run the Workgroup Permissions Check");
 
                     var smtpClient = new SmtpClient("smtp.sendgrid.net", Convert.ToInt32(587));
                     var credentials = new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"],
@@ -603,10 +605,13 @@ namespace Purchasing.Mvc.Controllers
                     smtpClient.Credentials = credentials;
 
                     smtpClient.Send(sgMessage);
+
+                    Log.Information("NeedToCheckWorkgroupPermissions Done (true)");
+
                     return true;
                 }
             }
-
+            Log.Information("NeedToCheckWorkgroupPermissions Done (false)");
             return false;
         }
 
