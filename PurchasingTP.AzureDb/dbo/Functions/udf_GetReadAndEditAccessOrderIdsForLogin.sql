@@ -1,5 +1,6 @@
 ﻿
 
+
 -- =============================================
 -- Author:		Ken Taylor
 -- Create date: January 20, 2017
@@ -10,10 +11,11 @@
 --			udf_GetReadAccessOrdersForLogin(@LoginId) user defined functions.
 -- Usage:
 /*
-	select * from udf_GetReadAndEditAccessOrdersForLogin('bazemore') 
+	select * from udf_GetReadAndEditAccessOrderIdsForLogin('bazemore') 
 */
 -- Modifications:
 --	20170124 by kjt: Added "isadmin" as additional return table column.
+--	20170216 by kjt: Revised USAGE to execute correct stored procedure.
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetReadAndEditAccessOrderIdsForLogin] 
 (

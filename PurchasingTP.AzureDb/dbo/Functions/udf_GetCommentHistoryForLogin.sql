@@ -1,5 +1,6 @@
 ﻿
 
+
 -- =============================================
 -- Author:		Ken Taylor
 -- Create date: January 20, 2017
@@ -8,9 +9,11 @@
 --		Replaces vCommenthistory.--
 -- Usage:
 /*
-	select * from udf_GetCommentHistoryForLogin('bazemore', 5)
+	select * from udf_GetCommentHistoryForLogin('rajahn', 5)
 */
 -- Modifications:
+--	20170216 by kjt: Needed to add grouping statement in order not to repeat same comment being returned than once because we added column "isAdmin" to
+--		udf_GetReadAndEditAccessOrderIdsForLogin after this was initially created.
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetCommentHistoryForLogin]
 (
@@ -41,11 +44,12 @@ BEGIN
 	dbo.OrderComments.UserId AS createdbyuserid, 
 	dbo.OrderComments.DateCreated, 
 	@LoginId AS access 
- FROM dbo.udf_GetReadAndEditAccessOrderIdsForLogin(@LoginId) access -- Returns orderIds only
+ FROM dbo.udf_GetReadAndEditAccessOrderIdsForLogin(@LoginId) access -- Returns orderIds AND isAdmin only
     INNER JOIN dbo.OrderComments ON access.OrderId = dbo.OrderComments.OrderId
 	INNER JOIN dbo.Orders ON dbo.Orders.Id = dbo.OrderComments.OrderId  
- 	INNER JOIN dbo.Users ON dbo.Users.Id = dbo.OrderComments.UserId  
-ORDER BY dbo.OrderComments.DateCreated DESC
+ 	INNER JOIN dbo.Users ON dbo.Users.Id = dbo.OrderComments.UserId 
+GROUP BY access.OrderId, OrderComments.OrderId, Orders.RequestNumber, Users.FirstName, Users.LastName, OrderComments.Text, UserId, OrderComments.DateCreated
+ORDER BY dbo.OrderComments.DateCreated DESC, access.OrderId, OrderComments.OrderId, Orders.RequestNumber, Users.FirstName, Users.LastName, OrderComments.Text, UserId
 	
 	RETURN 
 END
