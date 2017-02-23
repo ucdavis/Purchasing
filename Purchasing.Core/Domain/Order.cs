@@ -224,7 +224,12 @@ namespace Purchasing.Core.Domain
         {
             get { return LineItems != null && LineItems.Count > 0 && LineItems.All(a => a.Received); }
         }
-        
+
+        public virtual bool OrderPaid
+        {
+            get { return LineItems != null && LineItems.Count > 0 && LineItems.All(a => a.Paid); }
+        }
+
         /// <summary>
         /// Check if the order is split by line items
         /// </summary>

@@ -102,6 +102,10 @@ namespace Purchasing.Mvc.Services
 
         IndexedList<OrderHistory> GetAccountsPayableIndexedListofOrders(string received, string paid, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
 
+        IndexedList<OrderHistory> GetIndexedListofOrders(Access[] accessibleOrders, string received, string paid, bool isComplete = false,
+            bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(),
+            DateTime? endDate = new DateTime?(), bool showCreated = false,
+            DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?());
     }
 
     public class OrderService : IOrderService
@@ -822,20 +826,20 @@ namespace Purchasing.Mvc.Services
             return ordersQuery;
         }
 
-        public IndexedList<OrderHistory> GetIndexedListofOrders(string received, string paid,bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
+        public IndexedList<OrderHistory> GetIndexedListofOrders(Access[] accessibleOrders, string received, string paid, bool isComplete = false,
+            bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(),
+            DateTime? endDate = new DateTime?(), bool showCreated = false,
+            DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
-            // get orderids accessible by user
-            var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: false);
-
             // only show "pending" aka has edit rights
-            if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
+            if (showPending) accessibleOrders = accessibleOrders.Where(a => a.EditAccess).ToArray();
 
             //var ids = orderIds.Select(a => a.OrderId).ToList();
 
             // filter for accessible orders
-            var ordersIndexQuery = _indexService.GetOrderHistory(orderIds.Select(x => x.OrderId).ToArray(), startDate, endDate, startLastActionDate, endLastActionDate, orderStatusCode);
+            var ordersIndexQuery = _indexService.GetOrderHistory(accessibleOrders.Select(x => x.OrderId).ToArray(), startDate, endDate, startLastActionDate, endLastActionDate, orderStatusCode);
             var ordersQuery = ordersIndexQuery.Results.AsQueryable();
-            
+
             // filter for selected status
             ordersQuery = GetOrdersByStatus(ordersQuery, isComplete, orderStatusCode, received, paid);
 
@@ -851,6 +855,16 @@ namespace Purchasing.Mvc.Services
             ordersIndexQuery.Results = ordersQuery.OrderByDescending(a => a.LastActionDate).Take(1000).ToList();
 
             return ordersIndexQuery;
+
+        }
+
+
+        public IndexedList<OrderHistory> GetIndexedListofOrders(string received, string paid,bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), bool showCreated = false, DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
+        {
+            // get orderids accessible by user
+            var orders = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: false).ToArray();
+            
+            return GetIndexedListofOrders(orders, received, paid, isComplete, showPending, orderStatusCode, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
         }
 
         public IQueryable<OrderHistory> GetAdministrativeListofOrders(bool isComplete = false, bool showPending = false, string orderStatusCode = null, DateTime? startDate = new DateTime?(), DateTime? endDate = new DateTime?(), DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
