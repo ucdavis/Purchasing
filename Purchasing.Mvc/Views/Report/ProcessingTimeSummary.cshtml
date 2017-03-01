@@ -3,6 +3,7 @@
 
 @{
     ViewBag.Title = "Processing Time Summary";
+    ViewBag.LoadTableTools = true;
 }
 
 @section AdditionalStyles
@@ -13,7 +14,7 @@
 
 @section AdditionalScripts
 {
-  
+    @Scripts.Render("~/bundles/history")
 
 }
 
