@@ -190,6 +190,7 @@
     <Build Include="dbo\Functions\udf_GetRecentActivityForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetReadAndEditAccessOrderIdsForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetCommentHistoryForLogin.sql" />
+    <Build Include="dbo\Views\Get_NEWID.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
