@@ -4,7 +4,12 @@
 
 @{
     ViewBag.Title = "Processing Time By Role";
-    
+    ViewBag.LoadTableTools = true;
+}
+
+@section AdditionalScripts
+{
+    @Scripts.Render("~/bundles/history")
 }
 
 <h2>ProcessingTimeByRole</h2>
