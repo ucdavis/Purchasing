@@ -59,9 +59,9 @@ namespace Purchasing.Mvc.Controllers
 
             var model = new AdminListModel()
                             {
-                                Admins = admins.Single(x => x.Id == Role.Codes.Admin).Users.Where(x=>x.IsActive).ToList(),
-                                DepartmentalAdmins = admins.Single(x => x.Id == Role.Codes.DepartmentalAdmin).Users.Where(x=>x.IsActive).ToList(),
-                                SscAdmins = admins.Single(x => x.Id == Role.Codes.SscAdmin).Users.Where(x => x.IsActive).ToList()
+                                Admins = admins.Single(x => x.Id == Role.Codes.Admin).Users.ToList(),
+                                DepartmentalAdmins = admins.Single(x => x.Id == Role.Codes.DepartmentalAdmin).Users.ToList(),
+                                SscAdmins = admins.Single(x => x.Id == Role.Codes.SscAdmin).Users.ToList()
                             };
 
             return View(model);

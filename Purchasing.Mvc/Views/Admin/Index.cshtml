@@ -43,7 +43,13 @@
                         <td>@user.FirstName</td>
                         <td>@user.LastName</td>
                         <td>@user.Email</td>
-                        <td><a href='@Url.Action("RemoveAdmin", new {user.Id})' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a></td>
+                        <td>
+                            <a href='@Url.Action("RemoveAdmin", new {user.Id})' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a>
+                            @if (!user.IsActive)
+                            {
+                                <span title="User has been deactivated and should be removed."> *Deactivated</span>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -80,7 +86,13 @@
                         <td>@user.FirstName</td>
                         <td>@user.LastName</td>
                         <td>@user.Email</td>
-                        <td><a href='@Url.Action("RemoveSscAdmin", new {user.Id})' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a></td>
+                        <td>
+                            <a href='@Url.Action("RemoveSscAdmin", new {user.Id})' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a>
+                            @if (!user.IsActive)
+                            {
+                                <span title="User has been deactivated and should be removed."> *Deactivated</span>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -113,7 +125,13 @@
                         <td>@user.FirstName</td>
                         <td>@user.LastName</td>
                         <td>@user.Email</td>
-                        <td><a href='@Url.Action("RemoveDepartmental", new { user.Id })' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a></td>
+                        <td>
+                            <a href='@Url.Action("RemoveDepartmental", new {user.Id})' class="ui-icon ui-icon-trash" title="Delete admin"><img src='@Url.Image("delete.png")'></a>
+                            @if (!user.IsActive)
+                            {
+                                <span title="User has been deactivated and should be removed."> *Deactivated</span>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>
