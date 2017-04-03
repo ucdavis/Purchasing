@@ -50,7 +50,7 @@ namespace Purchasing.Core.Services
         /// </summary>
         IList<IdAndName> SearchBuildings(string searchTerm);
 
-        IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore);
+        IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore, int size = 1000);
 
         OrderTrackingAggregation GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups, DateTime createdAfter,
             DateTime createBefore, int size =1000);
