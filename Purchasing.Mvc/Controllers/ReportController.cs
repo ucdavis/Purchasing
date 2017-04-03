@@ -455,7 +455,11 @@ namespace Purchasing.Mvc.Controllers
                 viewModel.GenerateDisplayTable(_searchService, _repositoryFactory, _workgroupService, workgroupId.Value,
                     month.Value);
             }
-            if(vi)
+            if (viewModel.SearchResultsCount == defaultResultSize)
+            {
+                Message = "Max size of 1000 reached. Please adjust filters.";
+            }
+            
 
             return View(viewModel);
         }

@@ -19,6 +19,8 @@ namespace Purchasing.Mvc.Models
         public List<ReportProcessingColumns> Columns { get; set; }
         public bool OnlyShowReRouted { get; set; }
 
+        public int SearchResultsCount { get; set; }
+
         public static ReportProcessingTimeViewModel Create(IWorkgroupService workgroupService, Workgroup workgroup, bool onlyShowReRouted)
         {
             var workgroups = workgroupService.LoadAdminWorkgroups();
@@ -52,6 +54,7 @@ namespace Purchasing.Mvc.Models
             Columns = new List<ReportProcessingColumns>();
             var workgroups = repositoryFactory.WorkgroupRepository.Queryable.Where(a => allChildWorkgroups.Contains(a.Id)).ToList();
             var matchingOrders = indexSearchService.GetOrdersByWorkgroups(workgroups, month, endMonth, defaultResultSize);
+            SearchResultsCount = matchingOrders.Count;
             //if (matchingOrders.Count == defaultResultSize)
             //{
             //    Log.Warning("Max reached");
