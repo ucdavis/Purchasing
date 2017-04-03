@@ -6,7 +6,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Services;
-using Serilog;
+
 using UCDArch.Core.Utils;
 
 namespace Purchasing.Mvc.Models
@@ -55,10 +55,7 @@ namespace Purchasing.Mvc.Models
             var workgroups = repositoryFactory.WorkgroupRepository.Queryable.Where(a => allChildWorkgroups.Contains(a.Id)).ToList();
             var matchingOrders = indexSearchService.GetOrdersByWorkgroups(workgroups, month, endMonth, defaultResultSize);
             SearchResultsCount = matchingOrders.Count;
-            //if (matchingOrders.Count == defaultResultSize)
-            //{
-            //    Log.Warning("Max reached");
-            //}
+
             foreach (var matchingOrder in matchingOrders.Where(a => a.IsComplete && a.StatusId != OrderStatusCode.Codes.Denied && a.StatusId != OrderStatusCode.Codes.Cancelled))
             {
                 
