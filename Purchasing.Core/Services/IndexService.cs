@@ -161,33 +161,41 @@ namespace Purchasing.Core.Services
 
                 if (updatedOrderIds.Any())
                 {
-                    var updatedOrderIdsParameter = new StringBuilder();
-                    foreach (var updatedOrderId in updatedOrderIds)
+                    var batches = updatedOrderIds.Partition(1000).ToArray();
+                    foreach (var batch in batches)
                     {
-                        updatedOrderIdsParameter.AppendFormat("({0}),", updatedOrderId);
-                    }
-                    updatedOrderIdsParameter.Remove(updatedOrderIdsParameter.Length - 1, 1); //take off the last comma
+                        var localIds = batch.ToArray();
 
-                    orderHistoryEntries =
-                        conn.Query<OrderHistory>(string.Format(@"DECLARE @OrderIds OrderIdsTableType
+                        var updatedOrderIdsParameter = new StringBuilder();
+                        foreach (var updatedOrderId in localIds)
+                        {
+                            updatedOrderIdsParameter.AppendFormat("({0}),", updatedOrderId);
+                        }
+                        updatedOrderIdsParameter.Remove(updatedOrderIdsParameter.Length - 1, 1);
+                            //take off the last comma
+
+                        orderHistoryEntries =
+                            conn.Query<OrderHistory>(string.Format(@"DECLARE @OrderIds OrderIdsTableType
                                                 INSERT INTO @OrderIds VALUES {0}
-                                                select * from udf_GetOrderHistoryForOrderIds(@OrderIds)", updatedOrderIdsParameter)).ToList();
+                                                select * from udf_GetOrderHistoryForOrderIds(@OrderIds)",
+                                updatedOrderIdsParameter)).ToList();
 
-                    lineItems =
-                        conn.Query<SearchResults.LineResult>(
-                            "SELECT [Id], [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @updatedOrderIds",
-                            new { updatedOrderIds }).ToList();
-                    customAnswers =
-                        conn.Query<SearchResults.CustomFieldResult>(
-                            "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @updatedOrderIds",
-                            new { updatedOrderIds }).ToList();
+                        lineItems =
+                            conn.Query<SearchResults.LineResult>(
+                                "SELECT [Id], [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @localIds",
+                                new { localIds }).ToList();
+                        customAnswers =
+                            conn.Query<SearchResults.CustomFieldResult>(
+                                "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @localIds",
+                                new { localIds }).ToList();
 
-                    var orderInfo =
-                        conn.Query<OrderTrackingDto>(
-                            "select * from [vOrderTrackingIndex] WHERE orderid in @updatedOrderIds ORDER BY ActionDate DESC",
-                            new {updatedOrderIds}).ToList();
+                        var orderInfo =
+                            conn.Query<OrderTrackingDto>(
+                                "select * from [vOrderTrackingIndex] WHERE orderid in @localIds ORDER BY ActionDate DESC",
+                                new { localIds }).ToList();
 
-                    orderTrackingEntities = ProcessTrackingEntities(orderInfo);
+                        orderTrackingEntities = ProcessTrackingEntities(orderInfo);
+                    }
                 }
             }
 
