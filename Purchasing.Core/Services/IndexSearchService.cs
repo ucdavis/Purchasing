@@ -142,16 +142,17 @@ namespace Purchasing.Core.Services
             return results.Hits.Select(h => new IdAndName(h.Source.Id, h.Source.BuildingName)).ToList();
         }
 
-        public IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore)
+        public IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore, int size = 1000)
         {
             var index = IndexHelper.GetIndexName(Indexes.OrderHistory);
             var workgroupIds = workgroups.Select(w => w.Id).ToArray();
             var results = _client.Search<OrderHistory>(
                 s =>
                     s.Index(index)
+                        .Size(size)
                         .Query(f => f.DateRange(r => r.Field(o => o.DateCreated).GreaterThan(createdAfter).LessThan(createdBefore))
                         && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))
-                        .Size(int.MaxValue)
+                        
                 );
 
             return results.Hits.Select(h => h.Source).ToList();

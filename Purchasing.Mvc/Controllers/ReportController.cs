@@ -155,6 +155,7 @@ namespace Purchasing.Mvc.Controllers
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByWorkgroup(DateTime? startDate, DateTime? endDate, bool showAdmin)
         {
+            const int defaultResultSize = 1000;
             var viewModel = TotalByWorkgroupViewModel.Create(startDate, endDate, showAdmin);
 
             if (startDate == null || endDate == null)
@@ -173,7 +174,11 @@ namespace Purchasing.Mvc.Controllers
                     .Select(x => new {Workgroup = x, Primary = x.PrimaryOrganization}).ToList();
 
             //Get every order that matches these workgroups
-            var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
+            var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value, defaultResultSize);
+            if (matchingOrders.Count == defaultResultSize)
+            {
+                Message = "Max size of 1000 reached. Please adjust filters.";
+            }
             var workgroupCounts = new List<OrderTotals>();
             foreach (var workgroup in allWorkgroups)
             {
@@ -266,6 +271,7 @@ namespace Purchasing.Mvc.Controllers
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByPrimaryOrg(DateTime? startDate, DateTime? endDate)
         {
+            const int defaultResultSize = 1000;
             var viewModel = TotalByWorkgroupViewModel.Create(startDate, endDate, false);
 
             if (startDate == null || endDate == null)
@@ -283,7 +289,11 @@ namespace Purchasing.Mvc.Controllers
                     .Select(x => new {Workgroup = x, Primary = x.PrimaryOrganization}).ToList();
 
             //Get every order that matches these workgroups
-            var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
+            var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value, defaultResultSize);
+            if (matchingOrders.Count == defaultResultSize)
+            {
+                Message = "Max size of 1000 reached. Please adjust filters.";
+            }
             var workgroupCounts = new List<OrderTotals>();
 
             foreach (var workgroup in allWorkgroups)
@@ -348,6 +358,7 @@ namespace Purchasing.Mvc.Controllers
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByVendor(DateTime? startDate, DateTime? endDate)
         {
+            const int defaultResultSize = 1000;
             var viewModel = TotalByWorkgroupViewModel.Create(startDate, endDate, false);
 
             if (startDate == null || endDate == null)
@@ -361,7 +372,11 @@ namespace Purchasing.Mvc.Controllers
             var allWorkgroups = _workgroupService.LoadAdminWorkgroups(true).ToList();
 
             //Get every order that matches these workgroups
-            var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value);
+            var matchingOrders = _searchService.GetOrdersByWorkgroups(allWorkgroups, startDate.Value, endDate.Value, defaultResultSize);
+            if (matchingOrders.Count == defaultResultSize)
+            {
+                Message = "Max size of 1000 reached. Please adjust filters.";
+            }
             var workgroupCounts = new List<OrderTotals>();
 
             foreach (var workgroup in allWorkgroups)
@@ -422,6 +437,7 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult ProcessingTime(int? workgroupId = null, DateTime? month = null,
             bool? onlyShowReRouted = null)
         {
+            const int defaultResultSize = 1000;
             Workgroup workgroup = null;
 
             if (workgroupId.HasValue)
@@ -439,6 +455,11 @@ namespace Purchasing.Mvc.Controllers
                 viewModel.GenerateDisplayTable(_searchService, _repositoryFactory, _workgroupService, workgroupId.Value,
                     month.Value);
             }
+            if (viewModel.SearchResultsCount == defaultResultSize)
+            {
+                Message = "Max size of 1000 reached. Please adjust filters.";
+            }
+            
 
             return View(viewModel);
         }

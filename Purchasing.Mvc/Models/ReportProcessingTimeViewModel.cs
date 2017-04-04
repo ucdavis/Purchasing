@@ -6,6 +6,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Services;
+
 using UCDArch.Core.Utils;
 
 namespace Purchasing.Mvc.Models
@@ -17,6 +18,8 @@ namespace Purchasing.Mvc.Models
         public DateTime? Month { get; set; }
         public List<ReportProcessingColumns> Columns { get; set; }
         public bool OnlyShowReRouted { get; set; }
+
+        public int SearchResultsCount { get; set; }
 
         public static ReportProcessingTimeViewModel Create(IWorkgroupService workgroupService, Workgroup workgroup, bool onlyShowReRouted)
         {
@@ -36,6 +39,7 @@ namespace Purchasing.Mvc.Models
 
         public void GenerateDisplayTable(ISearchService indexSearchService, IRepositoryFactory repositoryFactory,IWorkgroupService workgroupService, int workgroupId, DateTime month)
         {
+            const int defaultResultSize = 1000;
             Check.Require(month.Day == 1);
             var endMonth = month.AddMonths(1);
 
@@ -49,7 +53,9 @@ namespace Purchasing.Mvc.Models
 
             Columns = new List<ReportProcessingColumns>();
             var workgroups = repositoryFactory.WorkgroupRepository.Queryable.Where(a => allChildWorkgroups.Contains(a.Id)).ToList();
-            var matchingOrders = indexSearchService.GetOrdersByWorkgroups(workgroups, month, endMonth);
+            var matchingOrders = indexSearchService.GetOrdersByWorkgroups(workgroups, month, endMonth, defaultResultSize);
+            SearchResultsCount = matchingOrders.Count;
+
             foreach (var matchingOrder in matchingOrders.Where(a => a.IsComplete && a.StatusId != OrderStatusCode.Codes.Denied && a.StatusId != OrderStatusCode.Codes.Cancelled))
             {
                 
