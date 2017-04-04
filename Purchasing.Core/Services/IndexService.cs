@@ -161,7 +161,7 @@ namespace Purchasing.Core.Services
 
                 if (updatedOrderIds.Any())
                 {
-                    var batches = updatedOrderIds.Partition(1000).ToArray();
+                    var batches = updatedOrderIds.Partition(1000);
                     foreach (var batch in batches)
                     {
                         var localIds = batch.ToArray();
