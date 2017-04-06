@@ -20,7 +20,7 @@
             purchasing.options({
                 OrdersBaseUrl: '@Url.Action("Index", "History")',
                 RecentActivityUrl: '@Url.Action("RecentActivity", "HistoryAjax")',
-                RecentlyCompletedUrl: '@Url.Action("RecentlyCompleted", "HistoryAjax")',
+                //RecentlyCompletedUrl: '@Url.Action("RecentlyCompleted", "HistoryAjax")',
                 RecentComments: '@Url.Action("RecentComments", "HistoryAjax")'
             });
 
@@ -96,27 +96,8 @@
         <div id="recent-activity-container"></div>
     </section>
 
-    <section class="complete col-25">
-        <header class="ui-widget-header ui-corner-top">Complete</header>
-        <!--<div id="recently-completed-container"></div>-->
 
-        <div id="recently-completed">
-        <p><span class="time-ago">This month, you've had</span></p>
-            <div class="scoreboard">
-                <p class="count"><a id="completed-container" href="@Url.Action("Index", "History", new { selectedOrderStatus = OrderStatusCode.Codes.Complete, startLastActionDate = new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), showCreated = true })">--</a>
-                    <span class="label">Completed Orders</span></p>
-            </div>
-            <div class="scoreboard">
-            <p class="count"><a id="denied-container" href="@Url.Action("Index", "History", new { selectedOrderStatus = OrderStatusCode.Codes.Denied, startLastActionDate = new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), showCreated = true })">--</a>
-                <span class="label">Denied Orders</span></p>
-            </div>
-        <p class="review"><a href="@Url.Action("Index","History")">Review your history &gt;</a></p>
-        </div>
-
-
-    </section>
-
-    <section class="comments col-50 col-last">
+    <section class="comments col-75 col-last">
         <header class="ui-widget-header ui-corner-top">Recent comments</header>
         <aside id="recent-comments-container"></aside>
     </section>
