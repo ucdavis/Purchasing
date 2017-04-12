@@ -514,7 +514,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.AllowBackorder);
             Map(x => x.EstimatedTax);
             Map(x => x.ReferenceNumber);
-            Map(x => x.PoNumber); //Added a specific PO Number because users were changing the reference number, messing up KFS access and some other reasons https://ucdavis.uservoice.com/admin/forums/126891-purchasing/suggestions/3224208-purchase-order-number
+            Map(x => x.PoNumber); //Added a specific PO Number because users were changing the reference number, messing up KFS access and some other reasons 
             Map(x => x.Tag).Length(256);
             Map(x => x.ShippingAmount);
             Map(x => x.FreightAmount);

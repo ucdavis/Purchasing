@@ -154,7 +154,6 @@
                 }
                 
                 <li class="drop-down-menu">
-                    @*<a href="https://ucdavis.uservoice.com/forums/126891-purchasing/category/31579-issues" id="help-link" target="_blank">Help</a>*@
                     @Html.ActionLink("Help", "Index", "Help", new { }, new { @class = "navigation-button" })
                 </li>
             </ul>
@@ -245,7 +244,6 @@
     (function (w) {
         var d = w['Configuration'] || (w['Configuration'] = {});
         d.AnalyticsKey = '@WebConfigurationManager.AppSettings["AnalyticsKey"]';
-        d.ActiveIssuesCountUrl = "/Help/GetActiveIssuesCount";
         d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
         d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
         d.TableToolsSwf = '@Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")';

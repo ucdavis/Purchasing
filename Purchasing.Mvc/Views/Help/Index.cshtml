@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Microsoft.Azure
+@{
     ViewBag.Title = "PrePurchasing Help";
 }
 
@@ -12,7 +13,7 @@
 <div id="keeper">
 <section id="suggestion" class="container split" style="margin-right: 17px;">
     <header>
-        <a href="https://ucdavis.uservoice.com/forums/126891-purchasing">
+        <a href="@CloudConfigurationManager.GetSetting("feedbackUrl")">
         <img src='@Url.Content("~/Images/feedback.png")' alt='feedback'/>
         </a>
     </header>
@@ -63,7 +64,7 @@
     </section>
     <section id="faq" class="container split">
         <header>
-            <a class="button" href="https://ucdavis.uservoice.com/knowledgebase" target="_blank">
+            <a class="button" href="http://computing.caes.ucdavis.edu/documentation/#purchasing" target="_blank">
                 Knowledge Base
             </a>
         </header>

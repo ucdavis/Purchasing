@@ -35,27 +35,13 @@
         $('input[type="datetime"]').datepicker();
         $('input.datepicker').datepicker();
 
-        //loadActiveIssues(); //TODO: removing active issue loading, at least until we use it for issues
-        //initUservoice(); //We are not getting tickets with this if they are not signed into uservoice first
         initBrowserDetect();
         konami(function () {
             $("#carty").show();
         });
     };
 
-    function loadActiveIssues() {
-        $.get(window.Configuration.ActiveIssuesCountUrl, null, function (result) {
-            if (result.HasIssues) {
-                $("#help-link").html("Help (" + result.IssuesCount + ")").css("color", "red");
-            }
-        });
-    }
 
-    function initUservoice() {
-        var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
-        uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/39iNhpJPwlSkFDpX5Ajxw.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
-    }
     
     function initBrowserDetect() {
         if (BrowserDetect.unsupported) {
