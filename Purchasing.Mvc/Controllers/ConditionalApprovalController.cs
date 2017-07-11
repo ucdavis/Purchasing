@@ -337,15 +337,20 @@ namespace Purchasing.Mvc.Controllers
                 }
                 else //found the primary approver in ldap
                 {
-                    primaryApproverInDb = new User(primaryApproverInLdap.LoginId)
+                    //It is possible the found user is in our DB with a different email, so check before adding
+                    primaryApproverInDb = GetUserBySearchTerm(primaryApproverInLdap.LoginId);
+                    if (primaryApproverInDb == null)
                     {
-                        FirstName = primaryApproverInLdap.FirstName,
-                        LastName = primaryApproverInLdap.LastName,
-                        Email = primaryApproverInLdap.EmailAddress,
-                        IsActive = true
-                    };
+                        primaryApproverInDb = new User(primaryApproverInLdap.LoginId)
+                        {
+                            FirstName = primaryApproverInLdap.FirstName,
+                            LastName = primaryApproverInLdap.LastName,
+                            Email = primaryApproverInLdap.EmailAddress,
+                            IsActive = true
+                        };
 
-                    _userRepository.EnsurePersistent(primaryApproverInDb, forceSave: true);
+                        _userRepository.EnsurePersistent(primaryApproverInDb, forceSave: true);
+                    }
                 }
             }
 
@@ -362,15 +367,20 @@ namespace Purchasing.Mvc.Controllers
                     }
                     else //found the secondary approver in ldap
                     {
-                        secondaryApproverInDb = new User(secondaryApproverInLdap.LoginId)
+                        //It is possible the found user is in our DB with a different email, so check before adding
+                        secondaryApproverInDb = GetUserBySearchTerm(secondaryApproverInLdap.LoginId);
+                        if (secondaryApproverInDb == null)
                         {
-                            FirstName = secondaryApproverInLdap.FirstName,
-                            LastName = secondaryApproverInLdap.LastName,
-                            Email = secondaryApproverInLdap.EmailAddress,
-                            IsActive = true
-                        };
+                            secondaryApproverInDb = new User(secondaryApproverInLdap.LoginId)
+                            {
+                                FirstName = secondaryApproverInLdap.FirstName,
+                                LastName = secondaryApproverInLdap.LastName,
+                                Email = secondaryApproverInLdap.EmailAddress,
+                                IsActive = true
+                            };
 
-                        _userRepository.EnsurePersistent(secondaryApproverInDb, forceSave: true);
+                            _userRepository.EnsurePersistent(secondaryApproverInDb, forceSave: true);
+                        }
                     }
                 }
             }
