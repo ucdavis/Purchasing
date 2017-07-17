@@ -8,7 +8,8 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index", "Report", new { @class = "button" })</li>
+        <li>@Html.ActionLink("Back to List", "Index", "Report", null, new { @class = "button" })</li>
+        <li>@Html.ActionLink(Model.HideInherited ? "Show All":"Hide Inherited", "Permissions", "Report", new { hideInherited = !Model.HideInherited } , new { @class = "button" })</li>
 	</ul>
 }
 

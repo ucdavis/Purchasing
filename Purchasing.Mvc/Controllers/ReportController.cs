@@ -144,9 +144,9 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
-        public ActionResult Permissions()
+        public ActionResult Permissions(bool hideInherited = false)
         {
-            var viewModel = ReportPermissionsViewModel.Create(_repositoryFactory, _workgroupService);
+            var viewModel = ReportPermissionsViewModel.Create(_repositoryFactory, _workgroupService, hideInherited);
 
             return View(viewModel);
         }
