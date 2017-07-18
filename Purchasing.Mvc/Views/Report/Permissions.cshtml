@@ -8,7 +8,8 @@
 @section SubNav
 {
 	<ul class="navigation">
-		<li>@Html.ActionLink("Back to List", "Index", "Report", new { @class = "button" })</li>
+        <li>@Html.ActionLink("Back to List", "Index", "Report", null, new { @class = "button" })</li>
+        <li>@Html.ActionLink(Model.HideInherited ? "Show All":"Hide Inherited", "Permissions", "Report", new { hideInherited = !Model.HideInherited } , new { @class = "button" })</li>
 	</ul>
 }
 
@@ -90,6 +91,34 @@
                             }
                         </ul>    
                     }
+                    <h3>Conditional Approvers</h3>
+                    <ul>
+                        @foreach (var allConditionalApproval in wk.AllConditionalApprovals)
+                        {
+                            <li>
+                                Question: @allConditionalApproval.Question
+                                <ul>
+                                    <li>
+                                        @allConditionalApproval.PrimaryApprover.FullName <span><strong>Primary</strong></span>
+                                        @if (!allConditionalApproval.PrimaryApprover.IsActive)
+                                        {
+                                            <span strong style="background-color: lightcoral;">User no longer Active (Probably left the university) They should be removed.</span>
+                                        }
+                                    </li>
+                                    @if (allConditionalApproval.SecondaryApprover != null)
+                                    {
+                                        <li>
+                                            @allConditionalApproval.SecondaryApprover.FullName <span><strong>Secondary</strong></span>
+                                            @if (!allConditionalApproval.SecondaryApprover.IsActive)
+                                            {
+                                                <span strong style="background-color: lightcoral;">User no longer Active (Probably left the university) They should be removed.</span>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
                 </div>
 
             </section>
