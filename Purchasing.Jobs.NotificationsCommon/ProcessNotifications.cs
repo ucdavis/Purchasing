@@ -167,6 +167,7 @@ namespace Purchasing.Jobs.NotificationsCommon
                         Html = message.ToString()
                     }
                 };
+                emailTransmission.Options.Transactional = true;
 
                 emailTransmission.Recipients.Add(new Recipient { Address = new Address { Email = email } });
 
