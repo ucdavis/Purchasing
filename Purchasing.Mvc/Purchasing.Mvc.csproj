@@ -358,6 +358,7 @@
     <Compile Include="Services\DirectorySearchService.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\IetWsDirectorySearchService.cs" />
     <Compile Include="Services\IReportService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\OrderService.cs" />
