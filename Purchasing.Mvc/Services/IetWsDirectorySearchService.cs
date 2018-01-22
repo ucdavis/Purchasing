@@ -15,6 +15,7 @@ namespace Purchasing.Mvc.Services
         public IetWsDirectorySearchService()
         {
             ietClient = new IetClient(CloudConfigurationManager.GetSetting("IetWsKey"));
+
         }
 
         public List<DirectoryUser> SearchUsers(string searchTerm)
