@@ -31,8 +31,7 @@ namespace Purchasing.Mvc.Controllers
 
         public ActionResult LogOut()
         {
-            FormsAuthentication.SignOut();
-            return Redirect("https://cas.ucdavis.edu/cas/logout");
+            return Redirect(CasHelper.Logout());
         }
 
         /// <summary>

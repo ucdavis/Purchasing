@@ -8,7 +8,12 @@ namespace Purchasing.Mvc.Helpers
 {
     public static class CasHelper
     {
+#if DEBUG
+        private const string StrCasUrl = "https://ssodev.ucdavis.edu/cas/";
+#else
         private const string StrCasUrl = "https://cas.ucdavis.edu/cas/";
+#endif
+
         private const string StrTicket = "ticket";
         private const string StrReturnUrl = "ReturnURL";
 
@@ -26,6 +31,12 @@ namespace Purchasing.Mvc.Helpers
             string returnUrl = Login();
 
             if (returnUrl != null) HttpContext.Current.Response.Redirect(returnUrl);
+        }
+
+        public static string Logout()
+        {
+            FormsAuthentication.SignOut();
+            return string.Format("{0}logout", StrCasUrl);
         }
 
         /// <summary>
