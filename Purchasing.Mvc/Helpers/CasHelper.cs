@@ -8,7 +8,12 @@ namespace Purchasing.Mvc.Helpers
 {
     public static class CasHelper
     {
+#if DEBUG
+        private const string StrCasUrl = "https://ssodev.ucdavis.edu/cas/";
+#else
         private const string StrCasUrl = "https://cas.ucdavis.edu/cas/";
+#endif
+
         private const string StrTicket = "ticket";
         private const string StrReturnUrl = "ReturnURL";
 
