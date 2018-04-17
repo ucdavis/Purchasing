@@ -33,6 +33,12 @@ namespace Purchasing.Mvc.Helpers
             if (returnUrl != null) HttpContext.Current.Response.Redirect(returnUrl);
         }
 
+        public static string Logout()
+        {
+            FormsAuthentication.SignOut();
+            return string.Format("{0}logout", StrCasUrl);
+        }
+
         /// <summary>
         /// Login to the campus DistAuth system using CAS        
         /// </summary>
