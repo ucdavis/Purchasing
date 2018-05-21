@@ -3,16 +3,13 @@ using System.IO;
 using System.Net;
 using System.Web;
 using System.Web.Security;
+using Microsoft.Azure;
 
 namespace Purchasing.Mvc.Helpers
 {
     public static class CasHelper
     {
-#if DEBUG
-        private const string StrCasUrl = "https://ssodev.ucdavis.edu/cas/";
-#else
-        private const string StrCasUrl = "https://cas.ucdavis.edu/cas/";
-#endif
+        private static readonly string CasFromAppSetting = CloudConfigurationManager.GetSetting("CasUrl");
 
         private const string StrTicket = "ticket";
         private const string StrReturnUrl = "ReturnURL";
@@ -36,7 +33,7 @@ namespace Purchasing.Mvc.Helpers
         public static string Logout()
         {
             FormsAuthentication.SignOut();
-            return string.Format("{0}logout", StrCasUrl);
+            return string.Format("{0}logout", CasFromAppSetting);
         }
 
         /// <summary>
@@ -92,7 +89,7 @@ namespace Purchasing.Mvc.Helpers
                 if (!string.IsNullOrEmpty(ticket))
                 {
                     // validate ticket against cas
-                    StreamReader sr = new StreamReader(new WebClient().OpenRead(StrCasUrl + "validate?ticket=" + ticket + "&service=" + service));
+                    StreamReader sr = new StreamReader(new WebClient().OpenRead(CasFromAppSetting + "validate?ticket=" + ticket + "&service=" + service));
 
                     // parse text file
                     if (sr.ReadLine() == "yes")
@@ -110,7 +107,7 @@ namespace Purchasing.Mvc.Helpers
                 }
 
                 // ticket doesn't exist or is invalid so redirect user to CAS login
-                context.Response.Redirect(StrCasUrl + "login?service=" + service);
+                context.Response.Redirect(CasFromAppSetting + "login?service=" + service);
             }
 
             return null;
