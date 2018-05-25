@@ -708,11 +708,16 @@ namespace Purchasing.Mvc.Controllers
 
                 // now look up the whole person's record by ID including kerb
                 var ucdKerbResult = await _searcher.Kerberos.Search(KerberosSearchField.iamId, ucdContact.IamId);
+                var allTheSame = ucdKerbResult.ResponseData.Results.Select(a => new { a.UserId, a.IamId }).Distinct().ToList();
+                if (allTheSame.Count > 1)
+                {
+                    throw new Exception("More than 1 unique kerb values found.");
+                }
                 if (ucdKerbResult.ResponseStatus != 0 || ucdKerbResult.ResponseData.Results.Length <= 0)
                 {
                     return new JsonNetResult(new IetWsDirectorySearchService.Person());
                 }
-                var ucdKerbPerson = ucdKerbResult.ResponseData.Results.Single();
+                var ucdKerbPerson = ucdKerbResult.ResponseData.Results.First();
                 var xxx =  new IetWsDirectorySearchService.Person
 
                 {
@@ -733,7 +738,13 @@ namespace Purchasing.Mvc.Controllers
                 {
                     return new JsonNetResult(new IetWsDirectorySearchService.Person());
                 }
-                var ucdKerbPerson = ucdKerbResult.ResponseData.Results.Single();
+
+                var allTheSame = ucdKerbResult.ResponseData.Results.Select(a => new { a.UserId, a.IamId }).Distinct().ToList();
+                if (allTheSame.Count > 1)
+                {
+                    throw new Exception("More than 1 unique kerb values found.");
+                }
+                var ucdKerbPerson = ucdKerbResult.ResponseData.Results.First();
 
                 var ucdContactResult = await _searcher.Contacts.Search(ContactSearchField.iamId, ucdKerbPerson.IamId);
                 if (ucdContactResult.ResponseStatus != 0 || ucdContactResult.ResponseData.Results.Length <= 0)
