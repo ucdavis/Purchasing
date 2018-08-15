@@ -137,7 +137,7 @@ namespace Purchasing.Jobs.NotificationsCommon
                         message.Append("</tr>");
 
                         //TODO: Can move to single update outside of foreach
-                        connection.Execute("update EmailQueueV2 set Pending = 0, DateTimeSent = @now where id = @id",
+                        connection.Execute("update EmailQueueV2 set Pending = 0, DateTimeSent = @now where id like @id",
                                            new { now = DateTime.UtcNow.ToPacificTime(), id = emailQueue.Id }, ts);
 
                     }
