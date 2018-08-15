@@ -96,6 +96,7 @@ namespace Purchasing.Mvc.Helpers
                     {
                         // get kerberos id
                         string kerberos = sr.ReadLine();
+                        kerberos = kerberos.ToLower();
 
                         // set forms authentication ticket
                         FormsAuthentication.SetAuthCookie(kerberos, false);
