@@ -31,7 +31,7 @@ namespace Purchasing.Jobs.NotificationsCommon
             using (var connection = dbService.GetConnection())
             {
                 List<dynamic> pending = connection.Query(
-                    "select Id, lower(rtrim(ltrim([UserId]))) as UserId, Email, OrderId, DateTimeCreated, Action, Details from EmailQueueV2 where Pending = 1 and NotificationType = @notificationType",
+                    "select Id, rtrim(ltrim([UserId])) as UserId, Email, OrderId, DateTimeCreated, Action, Details from EmailQueueV2 where Pending = 1 and NotificationType = @notificationType",
                     new { notificationType = notificationType.ToString() }).ToList();
 
                 var pendingUserIds = pending.Where(x => x.UserId != null).Select(x => x.UserId).Distinct();
@@ -137,7 +137,7 @@ namespace Purchasing.Jobs.NotificationsCommon
                         message.Append("</tr>");
 
                         //TODO: Can move to single update outside of foreach
-                        connection.Execute("update EmailQueueV2 set Pending = 0, DateTimeSent = @now where id like @id",
+                        connection.Execute("update EmailQueueV2 set Pending = 0, DateTimeSent = @now where id = @id",
                                            new { now = DateTime.UtcNow.ToPacificTime(), id = emailQueue.Id }, ts);
 
                     }
