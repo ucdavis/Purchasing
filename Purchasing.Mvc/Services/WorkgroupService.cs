@@ -622,7 +622,7 @@ namespace Purchasing.Mvc.Services
             var porgs = person.Organizations.Select(x => x.Id).ToList();
 
             // get the administrative rollup on orgs
-            var wgIds = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.WorkgroupId).ToList();
+            var wgIds = _queryRepositoryFactory.AdminWorkgroupRepository.Queryable.Where(a => porgs.Contains(a.RollupParentId)).Select(a => a.WorkgroupId).Distinct().ToList();
 
             List<Workgroup> workgroups = new List<Workgroup>();
             var batches = wgIds.Partition(1000).ToArray();
