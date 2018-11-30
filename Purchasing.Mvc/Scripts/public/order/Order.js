@@ -351,6 +351,10 @@
                         self.quantity("");
                         self.price("");
                         self.desc("");
+                        self.catalogNumber("");
+                        self.url("");
+                        self.commodity("");
+                        self.note("");
                     }
                 }
                 else {
