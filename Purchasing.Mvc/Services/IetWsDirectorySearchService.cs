@@ -70,7 +70,7 @@ namespace Purchasing.Mvc.Services
             return GetPersonDetails(ucdKerbPerson, ucdContact);
         }
 
-        private static Person GetPersonDetails(KerberosResult ucdKerbPerson, ContactResult ucdContact)
+        private Person GetPersonDetails(KerberosResult ucdKerbPerson, ContactResult ucdContact)
         {
             return new Person
 
