@@ -262,6 +262,7 @@ namespace Purchasing.Core.Services
             var orders = _client.Search<OrderHistory>(
                 s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
                     .Query(q => q.Bool(b => b.Must(filters.ToArray())))
+                    .Sort(s1 => s1.Descending(f => f.LastActionDate))
                     .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(orderids))))) //used to be .Query(f => f.And(filters.ToArray())));.  Now boolean must query/filter
                     .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length));
 
