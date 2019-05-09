@@ -67,16 +67,20 @@ namespace Purchasing.Mvc.Services
                 throw new Exception("More than 1 unique kerb values found.");
             }
             var ucdKerbPerson = ucdKerbResult.ResponseData.Results.First();
+            return GetPersonDetails(ucdKerbPerson, ucdContact);
+        }
+
+        private Person GetPersonDetails(KerberosResult ucdKerbPerson, ContactResult ucdContact)
+        {
             return new Person
 
             {
-                GivenName = ucdKerbPerson.DFirstName,
-                Surname = ucdKerbPerson.DLastName,
-                FullName = ucdKerbPerson.DFullName,
+                GivenName = string.IsNullOrWhiteSpace(ucdKerbPerson.DFirstName) ? ucdKerbPerson.OFirstName : ucdKerbPerson.DFirstName,
+                Surname = string.IsNullOrWhiteSpace(ucdKerbPerson.DLastName) ? ucdKerbPerson.OLastName : ucdKerbPerson.DLastName,
+                FullName = string.IsNullOrWhiteSpace(ucdKerbPerson.DFullName) ? ucdKerbPerson.OFullName : ucdKerbPerson.DFullName,
                 Kerberos = ucdKerbPerson.UserId,
                 Mail = ucdContact.Email,
                 WorkPhone = ucdContact.WorkPhone
-
             };
         }
 
@@ -96,17 +100,7 @@ namespace Purchasing.Mvc.Services
             var ucdContactResult = await ietClient.Contacts.Search(ContactSearchField.iamId, ucdKerbPerson.IamId);
             EnsureResponseSuccess(ucdContactResult);
             var ucdContact = ucdContactResult.ResponseData.Results.First();
-            return new Person
-
-            {
-                GivenName = ucdKerbPerson.DFirstName,
-                Surname = ucdKerbPerson.DLastName,
-                FullName = ucdKerbPerson.DFullName,
-                Kerberos = ucdKerbPerson.UserId,
-                Mail = ucdContact.Email,
-                WorkPhone = ucdContact.WorkPhone
-
-            };
+            return GetPersonDetails(ucdKerbPerson, ucdContact);
         }
 
         private void EnsureResponseSuccess<T>(IetResult<T> result)
