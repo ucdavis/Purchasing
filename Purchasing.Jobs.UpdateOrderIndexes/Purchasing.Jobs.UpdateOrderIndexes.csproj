@@ -127,6 +127,9 @@
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\prepurchasing-jobs.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />
+    <None Include="settings.job">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
