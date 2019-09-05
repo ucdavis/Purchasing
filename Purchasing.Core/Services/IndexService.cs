@@ -201,12 +201,13 @@ namespace Purchasing.Core.Services
 
             if (updatedOrderIds.Any())
             {
+
+
                 //Clear out existing lines and custom fields for the orders we are about to recreate
-                _client.DeleteByQuery<SearchResults.LineResult>(Indices.Index(IndexHelper.GetIndexName(Indexes.LineItems)), Types.All, q=> q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
+                _client.DeleteByQuery<SearchResults.LineResult>(d => d.Index(Indices.Index(IndexHelper.GetIndexName(Indexes.LineItems))).Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
 
-                _client.DeleteByQuery<SearchResults.CustomFieldResult>(Indices.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers)), Types.All, q => q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
-
-                _client.DeleteByQuery<OrderTrackingEntity>(Indices.Index(IndexHelper.GetIndexName(Indexes.OrderTracking)), Types.All, q => q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
+                _client.DeleteByQuery<SearchResults.CustomFieldResult>(d => d.Index(Indices.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers))).Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
+                _client.DeleteByQuery<OrderTrackingEntity>(d => d.Index(Indices.Index(IndexHelper.GetIndexName(Indexes.OrderTracking))).Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
 
                 WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
                 WriteIndex(lineItems, Indexes.LineItems, recreate: false);
