@@ -163,13 +163,13 @@ namespace Purchasing.Core.Services
         {
             var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
             var workgroupIds = workgroups.Select(w => w.Id).ToArray();
-            
+
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Size(size)
-                    .Query(a=> a.Filtered(fq=> fq.Query(q=> q.MatchAll()).Filter(f => f.DateRange(r => r.Field(o => o.OrderCreated).GreaterThan(createdAfter).LessThan(createBefore))
-                                 && f.Term(x => x.IsComplete, true)
-                                 && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))))
+                    .Query(f => f.DateRange(r => r.Field(o => o.OrderCreated).GreaterThan(createdAfter).LessThan(createBefore))
+                                    && f.Term(x => x.IsComplete, true)
+                                    && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))
                     .Aggregations(
                         a =>
                             a.Average("AverageTimeToCompletion", avg => avg.Field(x => x.MinutesToCompletion))
@@ -183,10 +183,10 @@ namespace Purchasing.Core.Services
             return new OrderTrackingAggregation
             {
                 OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
-                AverageTimeToAccountManagers = results.Aggs.Average("AverageTimeToAccountManagers").Value,
-                AverageTimeToApprover = results.Aggs.Average("AverageTimeToRoleComplete").Value,
-                AverageTimeToCompletion = results.Aggs.Average("AverageTimeToCompletion").Value,
-                AverageTimeToPurchaser = results.Aggs.Average("AverageTimeToPurchaser").Value
+                AverageTimeToAccountManagers = results.Aggregations.Average("AverageTimeToAccountManagers").Value,
+                AverageTimeToApprover = results.Aggregations.Average("AverageTimeToRoleComplete").Value,
+                AverageTimeToCompletion = results.Aggregations.Average("AverageTimeToCompletion").Value,
+                AverageTimeToPurchaser = results.Aggregations.Average("AverageTimeToPurchaser").Value
             };
         }
 
@@ -213,9 +213,9 @@ namespace Purchasing.Core.Services
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Size(size)
-                    .Query(a => a.Filtered(fq => fq.Query(q => q.MatchAll()).Filter(f => f.DateRange(r => r.Field(o => o.OrderCreated).GreaterThan(createdAfter).LessThan(createBefore))
+                    .Query(f => f.DateRange(r => r.Field(o => o.OrderCreated).GreaterThan(createdAfter).LessThan(createBefore))
                                  && f.Term(x => x.Status, "complete")
-                                 && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))))
+                                 && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))
                     .Aggregations(
                         a =>
                             a.Terms("RolePercentiles", t => t.Field(roleNames)
@@ -224,12 +224,12 @@ namespace Purchasing.Core.Services
                                 )
                              .Average("AverageTimeToRoleComplete", avg => avg.Field(timeField)))
                 );
-            var names = results.Aggs.Terms("RolePercentiles").Buckets.Select(n => n.Key + "; n=" + n.DocCount.ToString()).ToArray();
+            var names = results.Aggregations.Terms("RolePercentiles").Buckets.Select(n => n.Key + "; n=" + n.DocCount.ToString()).ToArray();
             var percentilesInRole =
-                results.Aggs.Terms("RolePercentiles")
-                    .Buckets.Select(user => (PercentilesAggregate) user.Aggregations["PercentileTimes"])
+                results.Aggregations.Terms("RolePercentiles")
+                    .Buckets.Select(user => user.PercentilesBucket("PercentileTimes"))
                     .Select(
-                        uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => a.Value / 1440).ToArray() // converted to days to help with scale
+                        uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => (a.Value.HasValue ? a.Value.Value : 0) / 1440).ToArray() // converted to days to help with scale
                             )
                     .ToList();
 
@@ -237,7 +237,7 @@ namespace Purchasing.Core.Services
             return new OrderTrackingAggregationByRole
             {
                 OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
-                AverageTimeToRoleComplete = results.Aggs.Average("AverageTimeToRoleComplete").Value / 1440,
+                AverageTimeToRoleComplete = results.Aggregations.Average("AverageTimeToRoleComplete").Value / 1440,
                 NamesInRole = names,
                 PercentilesForRole = percentilesInRole
             };
