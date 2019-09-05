@@ -412,8 +412,8 @@ namespace Purchasing.Core.Services
             
             if (recreate) //TODO: might have to check to see if index exists first time
             {
-                _client.DeleteIndex(index);
-                _client.CreateIndex(index);
+                _client.Indices.Delete(index);
+                _client.Indices.Create(index);
             }
 
             var batches = entities.Partition(5000).ToArray(); //split into batches of up to 5000
