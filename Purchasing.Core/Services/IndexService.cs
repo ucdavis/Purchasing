@@ -279,7 +279,14 @@ namespace Purchasing.Core.Services
             //TODO: no idea if this will work
             var indexName = IndexHelper.GetIndexName(index);
 
-            return Convert.ToDateTime(_client.Indices.Stats(indexName).Indices[indexName].Total.Indexing.Time);
+            var indexStats = _client.Indices.Stats(indexName);
+
+            if (indexStats.IsValid && indexStats.Indices.ContainsKey(indexName))
+            {
+                return Convert.ToDateTime(indexStats.Indices[indexName].Total.Indexing.Time);
+            }
+
+            return Convert.ToDateTime(DateTime.MinValue);
         }
 
         public int NumRecords(Indexes index)
