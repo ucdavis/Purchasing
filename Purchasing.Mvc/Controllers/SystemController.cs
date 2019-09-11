@@ -39,7 +39,8 @@ namespace Purchasing.Mvc.Controllers
         {
             ViewBag.ModifiedDates = new Dictionary<string, DateTime>
                                     {
-                                        {"OrderHistory", _indexService.LastModified(Core.Services.Indexes.OrderHistory)}
+                                        {"OrderHistory", _indexService.LastModified(Core.Services.Indexes.OrderHistory)},
+                                        {"OrderTracking", _indexService.LastModified(Core.Services.Indexes.OrderTracking)}
                                         ,{"LineItems", _indexService.LastModified(Core.Services.Indexes.LineItems)}
                                         ,{"Comments", _indexService.LastModified(Core.Services.Indexes.Comments)}
                                         ,{"CustomAnswers", _indexService.LastModified(Core.Services.Indexes.CustomAnswers)}
@@ -52,6 +53,7 @@ namespace Purchasing.Mvc.Controllers
             ViewBag.NumRecords = new Dictionary<string, int>
                                      {
                                          {"OrderHistory", _indexService.NumRecords(Core.Services.Indexes.OrderHistory)}
+                                         ,{"OrderTracking", _indexService.NumRecords(Core.Services.Indexes.OrderTracking)}
                                          ,{"LineItems", _indexService.NumRecords(Core.Services.Indexes.LineItems)}
                                          ,{"Comments", _indexService.NumRecords(Core.Services.Indexes.Comments)}
                                          ,{"CustomAnswers", _indexService.NumRecords(Core.Services.Indexes.CustomAnswers)}
@@ -70,6 +72,9 @@ namespace Purchasing.Mvc.Controllers
             {
                 case "OrderHistory":
                     _indexService.CreateHistoricalOrderIndex();
+                    break;
+                case "OrderTracking":
+                    _indexService.CreateTrackingIndex();
                     break;
                 case "LineItems":
                     _indexService.CreateLineItemsIndex();
