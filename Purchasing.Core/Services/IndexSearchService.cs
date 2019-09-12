@@ -210,6 +210,9 @@ namespace Purchasing.Core.Services
                 timeField = "minutesToAccountManagerComplete";
             }
 
+            // get the .keyword version of the index, for aggregates (since we aren't full text searching against the field)
+            roleNames = roleNames + ".keyword";
+
             var results = _client.Search<OrderTrackingEntity>(
                 s => s.Index(index)
                     .Size(size)
