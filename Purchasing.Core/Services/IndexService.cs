@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using AutoMapper.Internal;
 using Dapper;
+using Elasticsearch.Net;
 using Nest;
+using Nest.JsonNetSerializer;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
@@ -64,8 +66,10 @@ namespace Purchasing.Core.Services
         public ElasticSearchIndexService(IDbService dbService)
         {
             _dbService = dbService;
-            
-            var settings = new ConnectionSettings(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]));
+
+            var pool = new SingleNodeConnectionPool(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]));
+            var settings = new ConnectionSettings(pool, JsonNetSerializer.Default);
+
             settings.DefaultIndex("prepurchasing");
 
             _client = new ElasticClient(settings);
