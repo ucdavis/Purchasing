@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using AutoMapper.Internal;
 using Dapper;
+using Elasticsearch.Net;
 using Nest;
+using Nest.JsonNetSerializer;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
@@ -59,13 +61,15 @@ namespace Purchasing.Core.Services
         private readonly IDbService _dbService;
         private ElasticClient _client;
         private const int MaxReturnValues = 10000; //This was 15,000 but ElasticSearch Errors out if it is that big. Tested with 12,000
-
+        private const int CreateIndexQueryTimeout = 60 * 5; // Allow 5 minutes for long index creation queries
 
         public ElasticSearchIndexService(IDbService dbService)
         {
             _dbService = dbService;
-            
-            var settings = new ConnectionSettings(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]));
+
+            var pool = new SingleNodeConnectionPool(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]));
+            var settings = new ConnectionSettings(pool, JsonNetSerializer.Default);
+
             settings.DefaultIndex("prepurchasing");
 
             _client = new ElasticClient(settings);
@@ -111,7 +115,7 @@ namespace Purchasing.Core.Services
 
             using (var conn = _dbService.GetConnection())
             {
-                orderHistoryEntries = conn.Query<OrderHistory>("SELECT * FROM vOrderHistory");
+                orderHistoryEntries = conn.Query<OrderHistory>("SELECT * FROM vOrderHistory", commandTimeout: CreateIndexQueryTimeout);
             }
 
             WriteIndex(orderHistoryEntries, Indexes.OrderHistory, o => o.OrderId);
@@ -135,7 +139,7 @@ namespace Purchasing.Core.Services
             using (var conn = _dbService.GetConnection())
             {
                 var orderTrackings =
-                    conn.Query<OrderTrackingDto>(@"select * from [vOrderTrackingIndex] ORDER BY ActionDate DESC", Indexes.OrderTracking).ToList();
+                    conn.Query<OrderTrackingDto>(@"select * from [vOrderTrackingIndex] ORDER BY ActionDate DESC", Indexes.OrderTracking, commandTimeout: CreateIndexQueryTimeout).ToList();
 
                 var entities = ProcessTrackingEntities(orderTrackings);
 
@@ -201,12 +205,13 @@ namespace Purchasing.Core.Services
 
             if (updatedOrderIds.Any())
             {
+
+
                 //Clear out existing lines and custom fields for the orders we are about to recreate
-                _client.DeleteByQuery<SearchResults.LineResult>(Indices.Index(IndexHelper.GetIndexName(Indexes.LineItems)), Types.All, q=> q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
+                _client.DeleteByQuery<SearchResults.LineResult>(d => d.Index(Indices.Index(IndexHelper.GetIndexName(Indexes.LineItems))).Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
 
-                _client.DeleteByQuery<SearchResults.CustomFieldResult>(Indices.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers)), Types.All, q => q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
-
-                _client.DeleteByQuery<OrderTrackingEntity>(Indices.Index(IndexHelper.GetIndexName(Indexes.OrderTracking)), Types.All, q => q.Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
+                _client.DeleteByQuery<SearchResults.CustomFieldResult>(d => d.Index(Indices.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers))).Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
+                _client.DeleteByQuery<OrderTrackingEntity>(d => d.Index(Indices.Index(IndexHelper.GetIndexName(Indexes.OrderTracking))).Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
 
                 WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
                 WriteIndex(lineItems, Indexes.LineItems, recreate: false);
@@ -278,7 +283,14 @@ namespace Purchasing.Core.Services
             //TODO: no idea if this will work
             var indexName = IndexHelper.GetIndexName(index);
 
-            return Convert.ToDateTime(_client.IndicesStats(indexName).Indices[indexName].Total.Indexing.Time);
+            var indexStats = _client.Indices.Stats(indexName);
+
+            if (indexStats.IsValid && indexStats.Indices.ContainsKey(indexName))
+            {
+                return Convert.ToDateTime(indexStats.Indices[indexName].Total.Indexing.Time);
+            }
+
+            return Convert.ToDateTime(DateTime.MinValue);
         }
 
         public int NumRecords(Indexes index)
@@ -411,8 +423,8 @@ namespace Purchasing.Core.Services
             
             if (recreate) //TODO: might have to check to see if index exists first time
             {
-                _client.DeleteIndex(index);
-                _client.CreateIndex(index);
+                _client.Indices.Delete(index);
+                _client.Indices.Create(index);
             }
 
             var batches = entities.Partition(5000).ToArray(); //split into batches of up to 5000
