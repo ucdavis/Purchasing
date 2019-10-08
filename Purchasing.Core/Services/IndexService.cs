@@ -61,7 +61,7 @@ namespace Purchasing.Core.Services
         private readonly IDbService _dbService;
         private ElasticClient _client;
         private const int MaxReturnValues = 10000; //This was 15,000 but ElasticSearch Errors out if it is that big. Tested with 12,000
-        private const int CreateIndexQueryTimeout = 60 * 5; // Allow 5 minutes for long index creation queries
+        private const int CreateIndexQueryTimeout = 60 * 120; // Allow 5 minutes for long index creation queries
 
         public ElasticSearchIndexService(IDbService dbService)
         {
