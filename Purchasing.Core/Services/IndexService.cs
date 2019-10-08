@@ -61,7 +61,7 @@ namespace Purchasing.Core.Services
         private readonly IDbService _dbService;
         private ElasticClient _client;
         private const int MaxReturnValues = 10000; //This was 15,000 but ElasticSearch Errors out if it is that big. Tested with 12,000
-        private const int CreateIndexQueryTimeout = 60 * 120; // Allow 120 minutes for long index creation queries
+        private const int CreateIndexQueryTimeout = 60 * 5; // Allow 5 minutes for long index creation queries
 
         public ElasticSearchIndexService(IDbService dbService)
         {
@@ -233,6 +233,7 @@ namespace Purchasing.Core.Services
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
             DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId)
         {
+            orderids = orderids.OrderByDescending(a => a).Take(50000).ToArray(); //Workaround for new Elastic Search limitation
             var filters = new List<QueryContainer>();
 
             if (!endLastActionDate.HasValue)
