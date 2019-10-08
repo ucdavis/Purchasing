@@ -233,7 +233,6 @@ namespace Purchasing.Core.Services
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
             DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId)
         {
-            orderids = orderids.OrderByDescending(a => a).Take(50000).ToArray(); //Workaround for new Elastic Search limitation
             var filters = new List<QueryContainer>();
 
             if (!endLastActionDate.HasValue)
