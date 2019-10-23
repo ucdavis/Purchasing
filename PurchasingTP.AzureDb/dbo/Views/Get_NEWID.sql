@@ -1,0 +1,4 @@
+﻿
+
+CREATE VIEW dbo.Get_NEWID AS
+SELECT NEWID() AS MyNewID
