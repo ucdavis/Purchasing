@@ -94,10 +94,8 @@
                     if (result == null || result.success == false) {
                         alert("There was a problem getting the list of users.");
                     } else {
-
-
                         $(result.peeps).each(function () {
-                            dialogList.append("<li>" + this + "</li>");
+                            dialogList.append("<li>" + this.FullName + " " + this.Email  + "</li>");
                         });
                     }
                 });
