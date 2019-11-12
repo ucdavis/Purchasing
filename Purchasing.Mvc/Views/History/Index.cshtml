@@ -61,25 +61,10 @@
                     }
                 }
             });
-            
-            $(".showTip").qtip({
-                overwrite: false,
-                show: {
-                    event: 'mouseenter focus',
-                    ready: false
-                },
-                hide: {
-                    event: 'mouseleave blur'
-                },
-                position: {
-                    my: 'bottom center',
-                    at: 'top center'
-                }
-            });
         });
         
         $(function () {
-            $(".workgroupDetails").click(function () {
+            $('.dt-table').on('click', '.workgroupDetails',function () {
                 var temp = $(this);
                 var orderId = temp.data("id");
                 var role = temp.data("role");
@@ -94,10 +79,8 @@
                     if (result == null || result.success == false) {
                         alert("There was a problem getting the list of users.");
                     } else {
-
-
                         $(result.peeps).each(function () {
-                            dialogList.append("<li>" + this + "</li>");
+                            dialogList.append("<li>" + this.FullName + " " + this.Email  + "</li>");
                         });
                     }
                 });
