@@ -257,6 +257,7 @@
         d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
         d.TableToolsSwf = '@Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")';
         d.LoadFixedHeaders = @(ViewBag.LoadFixedHeaders == null ? "false" : ViewBag.LoadFixedHeaders.ToString().ToLower());
+        d.CustomDataTable = @(ViewBag.CustomDataTable == null ? "false" : ViewBag.CustomDataTable.ToString().ToLower());
     }(window));
     </script>
     
