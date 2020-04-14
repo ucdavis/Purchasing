@@ -21,7 +21,7 @@ namespace Purchasing.Mvc.Controllers
 
         public ActionResult Users()
         {
-            var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.WorkgroupPermissions.Any() || a.Roles.Any()).Select(x => new UserEmailResult {Email = x.Email, Name = x.FirstName + " " + x.LastName});
+            var users = _repositoryFactory.UserRepository.Queryable.Where(a => a.IsActive && ( a.WorkgroupPermissions.Any() || a.Roles.Any())).Select(x => new UserEmailResult {Email = x.Email, Name = x.FirstName + " " + x.LastName});
 
             return Content(WriteUsers(users), "text/plain");
         }
@@ -29,7 +29,7 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult Admins()
         {
             var adminUsers = from user in _repositoryFactory.UserRepository.Queryable
-                             where user.Roles.Any()
+                             where user.IsActive &&  user.Roles.Any()
                              select new UserEmailResult { Email = user.Email, Name = user.FirstName + " " + user.LastName };
 
             return Content(WriteUsers(adminUsers), "text/plain");
