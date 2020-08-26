@@ -1,4 +1,4 @@
-﻿@using NPOI.SS.Formula.Functions
+﻿@using Microsoft.Azure
 @using Purchasing.Mvc.Helpers
 @model ReviewOrderViewModel
 <section id="order-details" class="ui-corner-all display-form">
@@ -125,7 +125,9 @@
                             <div class="fn">@Model.Vendor.Name
                                 @if (!string.IsNullOrEmpty(Model.Vendor.VendorId))
                                 {
-                                    var kfsLookup = string.Format("https://kfs.ucdavis.edu/kfs-prd/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={0}", Model.Vendor.VendorId);                                    
+                                    //TODO: Change /kfs-prd/ to /fin/
+                                    //I can't test it now to see if it works, but hopefully moving that part to the config setting will be enough
+                                    var kfsLookup = string.Format("{0}/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={1}", CloudConfigurationManager.GetSetting("AfsLookupUrl"),Model.Vendor.VendorId);                                    
                                     <span>(KFS Id: <a href="@kfsLookup" target="_blank"> @Model.Vendor.VendorId</a>)</span>
                                 }
                             </div>

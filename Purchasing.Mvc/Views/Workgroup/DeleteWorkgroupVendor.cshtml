@@ -1,4 +1,5 @@
-﻿@model Purchasing.Core.Domain.WorkgroupVendor
+﻿@using Microsoft.Azure
+@model Purchasing.Core.Domain.WorkgroupVendor
 
 @{
     ViewBag.Title = "Delete Workgroup Vendor";
@@ -27,7 +28,8 @@
 	    </li>
         @if (!string.IsNullOrWhiteSpace(Model.VendorId))
         {
-            var kfsLookup = string.Format("https://kfs.ucdavis.edu/kfs-prd/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={0}", Model.VendorId);                                    
+			
+            var kfsLookup = string.Format("{0}/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={1}",CloudConfigurationManager.GetSetting("AfsLookupUrl") ,Model.VendorId);                                    
             <li>
                 <div class="display-label">Vendor Id</div>
                 <div class="display-details">
