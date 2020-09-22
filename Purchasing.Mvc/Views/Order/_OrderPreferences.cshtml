@@ -20,7 +20,7 @@
 			    </div>
 			    <div class="editor-field">
                     <input name="dateNeeded" type="text" class="datepicker" title="Specify a date when the delivery needs to arrive by." value="@(Model.Order.DateNeeded == DateTime.MinValue ? string.Empty : Model.Order.DateNeeded.ToString("d"))" 
-                           data-val="true" data-val-required="Date Needed is required" data-val-date="Date Format Not Recognized" />
+                           data-val="true" data-val-required="Date Needed is required" data-val-date="Date Format Not Recognized" autocomplete="off"/>
                     <span data-valmsg-for="dateNeeded" data-valmsg-replace="true"></span>
 			    </div>
 		    </li>
