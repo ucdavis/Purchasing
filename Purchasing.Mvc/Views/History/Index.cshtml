@@ -9,8 +9,8 @@
     ViewBag.Title = "Orders" + extra;
     ViewBag.SingleColumn = false;
     ViewBag.GetMethod = "Index";
-    ViewBag.LoadTableTools = true;
-    ViewBag.LoadFixedHeaders = true;
+    ViewBag.LoadTableTools = false;
+    ViewBag.LoadFixedHeaders = false;
     ViewBag.LastRefreshTitle = string.Format("The data on this page is current as of {0}-- recent changes may make take up to five minutes to process. Press F5 to refresh.", @ViewBag.IndexLastModified.ToString("dddd h:mm:ss tt"));
     ViewBag.LastRefresh = string.Format("Results current as of {0}", @ViewBag.IndexLastModified.ToString("dddd h:mm tt"));
     
@@ -37,7 +37,19 @@
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/history")
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.5.2/css/colReorder.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.css"/>
+ 
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.colVis.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.print.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.js"></script>
+
     <script type="text/javascript">
         $(function () {
             $("#filterToggle").click(function () {
@@ -45,7 +57,72 @@
                 $(this).toggleClass("selected");
                 event.preventDefault();
             });
-        });
+            //var table = $(".dt-table, .datatable").dataTable({
+            //    "dom": 'lBfrtip',
+            //    oLanguage: { sSearch: "Filter Within These Results: " },
+            //    iDisplayLength: window.Configuration.DataTablesPageSize,
+
+            //    "buttons": [
+            //        {
+            //            extend: 'copyHtml5'
+            //        },
+            //        {
+            //            extend: 'excelHtml5'
+            //        },
+            //        {
+            //            extend: 'csvHtml5'
+            //        },
+            //        {
+            //            extend: 'print'
+            //        }
+            //    ]
+            //});
+
+            var table = $(".dt-table, .datatable").dataTable({
+                bJQueryUI: false,
+                sPaginationType: "full_numbers",
+                oLanguage: { sSearch: "Filter Within These Results: " },
+                iDisplayLength: window.Configuration.DataTablesPageSize,
+                sDom: 'lBfrtip',
+                //sDom: 'T<"clear">lBfrtip',
+                "buttons": [
+                    {
+                        extend: 'copyHtml5'
+                    },
+                    {
+                        extend: 'excelHtml5'
+                    },
+                    {
+                        extend: 'csvHtml5'
+                    },
+                    {
+                        extend: 'print'
+                    }
+                ],
+                fnDrawCallback: function(oSettings) {
+                    $(".showTip").qtip({
+                        overwrite: false,
+                        show: {
+                            event: "mouseenter focus",
+                            ready: false
+                        },
+                        hide: {
+                            event: "mouseleave blur"
+                        },
+                        position: {
+                            my: "bottom center",
+                            at: "top center"
+                        }
+                    });
+                },
+                fixedHeader: true
+            });
+
+            //$.each($(".dataTables_wrapper"), function(index, item) {
+            //    RearranngeDataTable($(item));
+            //});
+            });
+
 
         $(document).ready(function () {
             $("#peepsDialog").dialog({
