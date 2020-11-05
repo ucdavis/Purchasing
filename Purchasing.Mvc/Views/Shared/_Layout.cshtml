@@ -246,6 +246,7 @@
         d.AnalyticsKey = '@WebConfigurationManager.AppSettings["AnalyticsKey"]';
         d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
         d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
+        d.DisableGlobalDataTables = @(ViewBag.DisableGlobalDataTables == null ? "false" : ViewBag.DisableGlobalDataTables.ToString().ToLower());
         d.TableToolsSwf = '@Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")';
         d.LoadFixedHeaders = @(ViewBag.LoadFixedHeaders == null ? "false" : ViewBag.LoadFixedHeaders.ToString().ToLower());
         d.PersonLookup = '@ConfigurationManager.AppSettings["PersonLookupUrl"]';
