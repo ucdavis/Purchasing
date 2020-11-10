@@ -37,11 +37,10 @@
 
 @section AdditionalStyles
 {
-    @*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css"/>*@
+    @*Datatable css being used is the old one in the bundle. If I grab the current one and use here, some input fields are blue*@ 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.css"/>
-    @*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/fh-3.1.7/datatables.min.css"/>*@
- 
+
     <style>
         button.dt-button{
             color: white;
@@ -52,12 +51,7 @@
 @section AdditionalScripts
 {
 
-    @*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.print.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.js"></script>*@
+    @*The js includes jszip, datatables, buttons (for copy, excel, csv) and fixed header*@
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/fh-3.1.7/datatables.min.js"></script>
 
     <script type="text/javascript">
@@ -113,18 +107,7 @@
                 RearranngeDataTable($(item));
             });
 
-            //Original:
-            //function RearranngeDataTable($wrapper) {
-            //    var $dtt = $wrapper.find(".DTTT_container");
-            //    var $length = $wrapper.find(".dataTables_length");
-
-            //    // dtt is present, move those accordingly
-            //    if ($dtt.length > 0) {
-            //        $("<div>").addClass("dttt_buttons").append($dtt.find("button")).insertAfter($length.find("label"));
-            //        $wrapper.find(".DTTT_container").remove();
-            //        $wrapper.find(".clear").remove();
-            //    }
-            //}
+            //This was copied from startup.js and modified so it works better with the new export buttons. It isn't 100% working (an empty div is created)
             function RearranngeDataTable($wrapper) {
                 var $dtt = $wrapper.find(".dt-buttons");
                 var $length = $wrapper.find(".dataTables_length");
