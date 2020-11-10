@@ -72,6 +72,9 @@
                 iDisplayLength: window.Configuration.DataTablesPageSize,
                 sDom: 'lBfrtip',
                 //sDom: 'T<"clear">lBfrtip',
+                columnDefs: [
+                    { 'bSortable': false, 'aTargets': [0] }
+                ],
                 "buttons": [
                     {
                         extend: 'copyHtml5'
