@@ -4,17 +4,12 @@
 @{
     ViewBag.Title = "Total By Primary Organization";
     ViewBag.SingleColumn = false;
+    ViewBag.DisableGlobalDataTables = true;
     ViewBag.LoadTableTools = true;
     ViewBag.LoadFixedHeaders = true;
-    ViewBag.LoadFixedHeaders = true;
 
 }
 
-@section AdditionalScripts
-{
-    @Scripts.Render("~/bundles/history")
-
-}
 
 <div class="">
     <div class="dt-table-filter-header display-form">
@@ -109,4 +104,69 @@
 
 
 
+@section AdditionalStyles
+{
+    @*Datatable css being used is the old one in the bundle. If I grab the current one and use here, some input fields are blue*@ 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.css"/>
+
+    <style>
+        button.dt-button{
+            color: white;
+        }
+    </style>
+}
+
+@section AdditionalScripts
+{
+    @*The js includes jszip, datatables, buttons (for copy, excel, csv) and fixed header*@
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/fh-3.1.7/datatables.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var table = $(".dt-table, .datatable").dataTable({
+                bJQueryUI: false,
+                sPaginationType: "full_numbers",
+                oLanguage: { sSearch: "Filter Within These Results: " },
+                iDisplayLength: window.Configuration.DataTablesPageSize,
+                //sDom: 'lBfrtip',
+                sDom: 'T<"clear">lBfrtip',
+                columnDefs: [
+                    { 'bSortable': false, 'aTargets': [0] }
+                ],
+                "buttons": [
+                    {
+                        extend: 'copyHtml5'
+                    },
+                    {
+                        extend: 'excelHtml5'
+                    },
+                    {
+                        extend: 'csvHtml5'
+                    }
+                ],
+                fixedHeader: true
+            });
+
+            $.each($(".dataTables_wrapper"), function(index, item) {
+                RearranngeDataTable($(item));
+            });
+
+            //This was copied from startup.js and modified so it works better with the new export buttons. It isn't 100% working (an empty div is created)
+            function RearranngeDataTable($wrapper) {
+                var $dtt = $wrapper.find(".dt-buttons");
+                var $length = $wrapper.find(".dataTables_length");
+
+                // dtt is present, move those accordingly
+                if ($dtt.length > 0) {
+                    $("<div>").addClass("dt-buttons").append($dtt.find("button")).insertAfter($length.find("label"));
+                    //$wrapper.find(".DTTT_container").remove();
+                    $wrapper.find(".clear").remove();
+                }
+            }
+        });
+
+    </script>
+
+}
 
