@@ -99,16 +99,11 @@
 
 @section AdditionalScripts
 {
-        @*The js includes jszip, datatables, buttons (for copy, excel, csv) and fixed header*@
+    @*The js includes jszip, datatables, buttons (for copy, excel, csv) and fixed header*@
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/fh-3.1.7/datatables.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
-            $("#filterToggle").click(function () {
-                $(".dt-table-filter-header").toggle();
-                $(this).toggleClass("selected");
-                event.preventDefault();
-            });
             var table = $(".dt-table, .datatable").dataTable({
                 bJQueryUI: false,
                 sPaginationType: "full_numbers",
