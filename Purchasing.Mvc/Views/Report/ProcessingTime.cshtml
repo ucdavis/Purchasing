@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Purchaser Processing Time Report";
+    ViewBag.DisableGlobalDataTables = true;
     ViewBag.SingleColumn = false;
     ViewBag.LoadTableTools = true;
     ViewBag.LoadFixedHeaders = true;
@@ -9,38 +10,6 @@
     
 }
 
-@section AdditionalStyles
-{
-    <style type="text/css">
-        .ui-datepicker-calendar {
-            display: none;
-        }
-
-        .year-month {
-            min-width: 110px;
-        }
-    </style>
-}
-
-@section AdditionalScripts
-{
-    @Scripts.Render("~/bundles/history")
-    <script type="text/javascript">
-        $(function () {
-            $('.year-month').datepicker({
-                changeMonth: true,
-                changeYear: true,
-                showButtonPanel: true,
-                dateFormat: "MM yy",
-                onClose: function (dateText, inst) {
-                    var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                    $(this).datepicker('setDate', new Date(year, month, 1));
-                }
-            });
-        });
-    </script>
-}
 
 @section SubNav
 {
@@ -165,4 +134,91 @@
     </tbody>
 </table>
 
+@section AdditionalStyles
+{
+    @*Datatable css being used is the old one in the bundle. If I grab the current one and use here, some input fields are blue*@ 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.css"/>
 
+    <style type="text/css">
+        .ui-datepicker-calendar {
+            display: none;
+        }
+
+        .year-month {
+            min-width: 110px;
+        }
+        button.dt-button {
+            color: white;
+        }
+    </style>
+}
+
+@section AdditionalScripts
+{
+    
+    @*The js includes jszip, datatables, buttons (for copy, excel, csv) and fixed header*@
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/fh-3.1.7/datatables.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var table = $(".dt-table, .datatable").dataTable({
+                bJQueryUI: false,
+                sPaginationType: "full_numbers",
+                oLanguage: { sSearch: "Filter Within These Results: " },
+                iDisplayLength: window.Configuration.DataTablesPageSize,
+                //sDom: 'lBfrtip',
+                sDom: 'T<"clear">lBfrtip',
+                columnDefs: [
+                    { 'bSortable': false, 'aTargets': [0] }
+                ],
+                "buttons": [
+                    {
+                        extend: 'copyHtml5'
+                    },
+                    {
+                        extend: 'excelHtml5'
+                    },
+                    {
+                        extend: 'csvHtml5'
+                    }
+                ],
+                fixedHeader: true
+            });
+
+            $.each($(".dataTables_wrapper"), function(index, item) {
+                RearranngeDataTable($(item));
+            });
+
+            //This was copied from startup.js and modified so it works better with the new export buttons. It isn't 100% working (an empty div is created)
+            function RearranngeDataTable($wrapper) {
+                var $dtt = $wrapper.find(".dt-buttons");
+                var $length = $wrapper.find(".dataTables_length");
+
+                // dtt is present, move those accordingly
+                if ($dtt.length > 0) {
+                    $("<div>").addClass("dt-buttons").append($dtt.find("button")).insertAfter($length.find("label"));
+                    //$wrapper.find(".DTTT_container").remove();
+                    $wrapper.find(".clear").remove();
+                }
+            }
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('.year-month').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: "MM yy",
+                onClose: function (dateText, inst) {
+                    var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                    $(this).datepicker('setDate', new Date(year, month, 1));
+                }
+            });
+        });
+    </script>
+}

@@ -4,72 +4,14 @@
 
 @{
     ViewBag.Title = "Processing Time By Role";
+    ViewBag.DisableGlobalDataTables = true;
     ViewBag.LoadTableTools = true;
 }
 
-@section AdditionalScripts
-{
-    @Scripts.Render("~/bundles/history")
-}
 
 <h2>ProcessingTimeByRole</h2>
 
-<script src="https://code.highcharts.com/5/highcharts.js"></script>
-<script src="https://code.highcharts.com/5/highcharts-more.js"></script>
-<script src="https://code.highcharts.com/5/modules/exporting.js"></script>
-
 <div id="container" style="height: 400px; margin: auto; min-width: 310px; max-width: 600px"></div>
-
-<script>
-    var names =  @Html.Raw(JsonConvert.SerializeObject(Model.Columns.NamesInRole));
-    var times =  @Html.Raw(JsonConvert.SerializeObject(Model.Columns.PercentilesForRole ));
-    $(function () {
-        $('#container').highcharts({
-
-            chart: {
-                type: 'boxplot'
-            },
-
-            title: null,
-
-            legend: {
-                enabled: false
-            },
-
-            xAxis: {
-                categories: names,
-                title: {
-                    text: 'User (n=#orders)<br/><span style="color: red">Overall mean: ' +  @String.Format("{0:F2}", Model.Columns.AverageTimeToRoleComplete) +'</span>',
-                   
-                }
-            },
-
-            yAxis: {
-                title: {
-                    text: 'Time to Complete (days)'
-                },
-                min: 0,
-                plotLines: [{
-                    value: @Model.Columns.AverageTimeToRoleComplete,
-                    color: 'red',
-                    width: 1,
-                }]
-            },
-            credits: {
-                enabled: false
-            },
-            series: [{
-                name: 'Observations',
-                data: times,
-                tooltip: {
-                    headerFormat: '<em>User {point.key}</em><br/>'
-                }
-            }]
-
-        });
-    });
-</script>
-
 
 <div class="">
     <div class="dt-table-filter-header display-form">
@@ -139,81 +81,200 @@
 
 <table class="dt-table no-icon-table">
     <thead>
-        <tr>
-            <th>View</th>
-            <th>
-                Date Created
-            </th>
-            <th>
-                Workgroup
-            </th>
-            <th>Time to Completion</th>
-            <th>Time to Approve</th>
-            <th>Approve</th>
-            <th>Time to Account Manager</th>
-            <th>Account Manager</th>
-            <th>Time to Purchaser</th>
-            <th>Purchaser</th>
-            <th>Exception Status</th>
+    <tr>
+        <th>View</th>
+        <th>
+            Date Created
+        </th>
+        <th>
+            Workgroup
+        </th>
+        <th>Time to Completion</th>
+        <th>Time to Approve</th>
+        <th>Approve</th>
+        <th>Time to Account Manager</th>
+        <th>Account Manager</th>
+        <th>Time to Purchaser</th>
+        <th>Purchaser</th>
+        <th>Exception Status</th>
 
-        </tr>
+    </tr>
     </thead>
     <tbody>
-        @{ var odd = false; }
-        @foreach (var item in Model.Columns.OrderTrackingEntities)
-        {
-            <tr class="@(odd ? "odd" : "even")">
-                <td>
-                    <a href='@Url.Action("Review", "Order", new {id=item.OrderId})' class="ui-icon ui-icon-document" title="Review order" target="_blank"></a>
-                </td>
-                <td>
-                    @item.OrderCreated.ToShortDateString()
-                </td>
-                <td>
-                    @item.WorkgroupName
-                </td>
+    @{ var odd = false; }
+    @foreach (var item in Model.Columns.OrderTrackingEntities)
+    {
+        <tr class="@(odd ? "odd" : "even")">
+            <td>
+                <a href='@Url.Action("Review", "Order", new {id=item.OrderId})' class="ui-icon ui-icon-document" title="Review order" target="_blank"></a>
+            </td>
+            <td>
+                @item.OrderCreated.ToShortDateString()
+            </td>
+            <td>
+                @item.WorkgroupName
+            </td>
 
-                <td>
-                    @if (item.MinutesToCompletion != null)
-                    {
-                        @TimeSpan.FromMinutes(item.MinutesToCompletion.Value).ToString("dd'd:'hh'h:'mm'm'")
-                    }
-                </td>
-                <td>
-                    @if (item.MinutesToApprove != null)
-                    {
-                        @TimeSpan.FromMinutes(item.MinutesToApprove.Value).ToString("dd'd:'hh'h:'mm'm'")
-                    }
-                </td>
-                <td>
-                    @item.ApproverName
-                </td>
-                <td>
-                    @if (item.MinutesToAccountManagerComplete != null)
-                    {
-                        @TimeSpan.FromMinutes(item.MinutesToAccountManagerComplete.Value).ToString("dd'd:'hh'h:'mm'm'")
-                    }
-                </td>
-                <td>
-                    @item.AccountManagerName
-                </td>
-                <td>
-                    @if (item.MinutesToPurchaserComplete != null)
-                    {
-                        @TimeSpan.FromMinutes(item.MinutesToPurchaserComplete.Value).ToString("dd'd:'hh'h:'mm'm'")
-                    }
-                </td>
-                <td>
-                    @item.PurchaserName
-                </td>
-                <td>
-                    @if (item.StatusCode != "CP")
-                    {
-                        @item.Status
-                    }
-                </td>
-            </tr>
-                    odd = !odd;
-        }
+            <td>
+                @if (item.MinutesToCompletion != null)
+                {
+                    @TimeSpan.FromMinutes(item.MinutesToCompletion.Value).ToString("dd'd:'hh'h:'mm'm'")
+                }
+            </td>
+            <td>
+                @if (item.MinutesToApprove != null)
+                {
+                    @TimeSpan.FromMinutes(item.MinutesToApprove.Value).ToString("dd'd:'hh'h:'mm'm'")
+                }
+            </td>
+            <td>
+                @item.ApproverName
+            </td>
+            <td>
+                @if (item.MinutesToAccountManagerComplete != null)
+                {
+                    @TimeSpan.FromMinutes(item.MinutesToAccountManagerComplete.Value).ToString("dd'd:'hh'h:'mm'm'")
+                }
+            </td>
+            <td>
+                @item.AccountManagerName
+            </td>
+            <td>
+                @if (item.MinutesToPurchaserComplete != null)
+                {
+                    @TimeSpan.FromMinutes(item.MinutesToPurchaserComplete.Value).ToString("dd'd:'hh'h:'mm'm'")
+                }
+            </td>
+            <td>
+                @item.PurchaserName
+            </td>
+            <td>
+                @if (item.StatusCode != "CP")
+                {
+                    @item.Status
+                }
+            </td>
+        </tr>
+        odd = !odd;
+    }
     </tbody>
 </table>
+
+@section AdditionalStyles
+{
+    @*Datatable css being used is the old one in the bundle. If I grab the current one and use here, some input fields are blue*@ 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.css"/>
+
+    <style>
+        button.dt-button{
+            color: white;
+        }
+    </style>
+}
+
+@section AdditionalScripts
+{
+    @*The js includes jszip, datatables, buttons (for copy, excel, csv) and fixed header*@
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/fh-3.1.7/datatables.min.js"></script>   
+    
+    <script src="https://code.highcharts.com/5/highcharts.js"></script>
+    <script src="https://code.highcharts.com/5/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/5/modules/exporting.js"></script>
+    
+    <script type="text/javascript">
+        $(function () {
+            var table = $(".dt-table, .datatable").dataTable({
+                bJQueryUI: false,
+                sPaginationType: "full_numbers",
+                oLanguage: { sSearch: "Filter Within These Results: " },
+                iDisplayLength: window.Configuration.DataTablesPageSize,
+                //sDom: 'lBfrtip',
+                sDom: 'T<"clear">lBfrtip',
+                columnDefs: [
+                    { 'bSortable': false, 'aTargets': [0] }
+                ],
+                "buttons": [
+                    {
+                        extend: 'copyHtml5'
+                    },
+                    {
+                        extend: 'excelHtml5'
+                    },
+                    {
+                        extend: 'csvHtml5'
+                    }
+                ],
+                fixedHeader: true
+            });
+
+            $.each($(".dataTables_wrapper"), function(index, item) {
+                RearranngeDataTable($(item));
+            });
+
+            //This was copied from startup.js and modified so it works better with the new export buttons. It isn't 100% working (an empty div is created)
+            function RearranngeDataTable($wrapper) {
+                var $dtt = $wrapper.find(".dt-buttons");
+                var $length = $wrapper.find(".dataTables_length");
+
+                // dtt is present, move those accordingly
+                if ($dtt.length > 0) {
+                    $("<div>").addClass("dt-buttons").append($dtt.find("button")).insertAfter($length.find("label"));
+                    //$wrapper.find(".DTTT_container").remove();
+                    $wrapper.find(".clear").remove();
+                }
+            }
+        });
+
+    </script>
+    
+    <script type="text/javascript">
+        var names =  @Html.Raw(JsonConvert.SerializeObject(Model.Columns.NamesInRole));
+        var times =  @Html.Raw(JsonConvert.SerializeObject(Model.Columns.PercentilesForRole ));
+        $(function () {
+            $('#container').highcharts({
+
+                chart: {
+                    type: 'boxplot'
+                },
+
+                title: null,
+
+                legend: {
+                    enabled: false
+                },
+
+                xAxis: {
+                    categories: names,
+                    title: {
+                        text: 'User (n=#orders)<br/><span style="color: red">Overall mean: ' +  @String.Format("{0:F2}", Model.Columns.AverageTimeToRoleComplete) +'</span>',
+                   
+                    }
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'Time to Complete (days)'
+                    },
+                    min: 0,
+                    plotLines: [{
+                        value: @Model.Columns.AverageTimeToRoleComplete,
+                        color: 'red',
+                        width: 1,
+                    }]
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Observations',
+                    data: times,
+                    tooltip: {
+                        headerFormat: '<em>User {point.key}</em><br/>'
+                    }
+                }]
+
+            });
+        });
+    </script>
+}

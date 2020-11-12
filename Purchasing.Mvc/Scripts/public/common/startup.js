@@ -1,55 +1,60 @@
 (function(purchasing, $, undefined) {
   purchasing.loadTableTools = false;
+  purchasing.disableGlobalDataTables = false;
 
   purchasing.startup = function() {
     $("input[type=checkbox]").tzCheckbox({ labels: ["Yes", "No"] });
 
-    if (window.Configuration.LoadTableTools) {
-      var table = $(".dt-table, .datatable").dataTable({
-        bJQueryUI: false,
-        sPaginationType: "full_numbers",
-        oLanguage: { sSearch: "Filter Within These Results: " },
-        iDisplayLength: window.Configuration.DataTablesPageSize,
-        sDom: 'T<"clear">lfrtip',
-        fnDrawCallback: function(oSettings) {
-          $(".showTip").qtip({
-            overwrite: false,
-            show: {
-              event: "mouseenter focus",
-              ready: false
-            },
-            hide: {
-              event: "mouseleave blur"
-            },
-            position: {
-              my: "bottom center",
-              at: "top center"
-            }
-          });
-        },
-        oTableTools: {
-          sSwfPath: window.Configuration.TableToolsSwf,
-          aButtons: ["copy", "xls"]
-        }
-      });
-
-      $.each($(".dataTables_wrapper"), function(index, item) {
-        RearranngeDataTable($(item));
-      });
-
-      if (window.Configuration.LoadFixedHeaders) {
-        new FixedHeader(table);
-      }
+    if (window.Configuration.DisableGlobalDataTables) {
+      //Don't do it
     } else {
-      var table = $(".dt-table, .datatable").dataTable({
-        bJQueryUI: false,
-        sPaginationType: "full_numbers",
-        oLanguage: { sSearch: "Filter Within These Results: " },
-        iDisplayLength: window.Configuration.DataTablesPageSize
-      });
+      if (window.Configuration.LoadTableTools) {
+        var table = $(".dt-table, .datatable").dataTable({
+          bJQueryUI: false,
+          sPaginationType: "full_numbers",
+          oLanguage: { sSearch: "Filter Within These Results: " },
+          iDisplayLength: window.Configuration.DataTablesPageSize,
+          sDom: 'T<"clear">lfrtip',
+          fnDrawCallback: function(oSettings) {
+            $(".showTip").qtip({
+              overwrite: false,
+              show: {
+                event: "mouseenter focus",
+                ready: false
+              },
+              hide: {
+                event: "mouseleave blur"
+              },
+              position: {
+                my: "bottom center",
+                at: "top center"
+              }
+            });
+          },
+          oTableTools: {
+            sSwfPath: window.Configuration.TableToolsSwf,
+            aButtons: ["copy", "xls"]
+          }
+        });
 
-      if (window.Configuration.LoadFixedHeaders) {
-        new FixedHeader(table);
+        $.each($(".dataTables_wrapper"), function(index, item) {
+          RearranngeDataTable($(item));
+        });
+
+        if (window.Configuration.LoadFixedHeaders) {
+          new FixedHeader(table);
+        }
+      } else {
+        var table = $(".dt-table, .datatable").dataTable({
+          bJQueryUI: false,
+          sPaginationType: "full_numbers",
+          oLanguage: { sSearch: "Filter Within These Results: " },
+          iDisplayLength: window.Configuration.DataTablesPageSize
+        });
+
+        if (window.Configuration.LoadFixedHeaders) {
+          new FixedHeader(table);
+        }
       }
     }
 

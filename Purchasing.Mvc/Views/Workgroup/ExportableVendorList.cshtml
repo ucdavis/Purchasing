@@ -4,15 +4,12 @@
 @{
     ViewBag.Title = string.Format("Workgroup Vendors For {0}", ViewBag.WorkgroupName);//"Workgroup Vendors";
 
+    ViewBag.DisableGlobalDataTables = true;
     ViewBag.LoadTableTools = true;
     ViewBag.LoadFixedHeaders = true;
     
 }
 
-@section AdditionalScripts
-{
-    @Scripts.Render("~/bundles/history")
-}
 
 @section SubNav
 {
@@ -25,88 +22,156 @@
 
 <table class='dt-table'>
     <thead>
-        <tr>
-            <th>Kfs Vendor</th>
-            <th>
-                Name
-            </th>
-            <th>
-                Line1
-            </th>
-            <th>
-                Line2
-            </th>
-            <th>
-                Line3
-            </th>
-            <th>
-                City
-            </th>
-            <th>
-                State
-            </th>
-            <th>
-                Zip
-            </th>
-            <th>
-                CountryCode
-            </th>
+    <tr>
+        <th>Kfs Vendor</th>
+        <th>
+            Name
+        </th>
+        <th>
+            Line1
+        </th>
+        <th>
+            Line2
+        </th>
+        <th>
+            Line3
+        </th>
+        <th>
+            City
+        </th>
+        <th>
+            State
+        </th>
+        <th>
+            Zip
+        </th>
+        <th>
+            CountryCode
+        </th>
             
 
-            <th>Phone</th>
-            <th>Fax</th>
-            <th>Email</th>
-            <th>Url</th>
+        <th>Phone</th>
+        <th>Fax</th>
+        <th>Email</th>
+        <th>Url</th>
 
-        </tr>
+    </tr>
     </thead>
     <tbody>
-        @{ var odd = false; }
-        @foreach (var item in Model) {
-            <tr class="@(odd ? "odd": "even")">
-                <td>
-                    @(string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) ? "No" : "Yes")
-                </td>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Line1
-                </td>
-                <td>
-                    @item.Line2
-                </td>
-                <td>
-                    @item.Line3
-                </td>
-                <td>
-                    @item.City
-                </td>
-                <td>
-                    @item.State
-                </td>
-                <td>
-                    @item.Zip
-                </td>
-                <td>
-                    @item.CountryCode
-                </td>
+    @{ var odd = false; }
+    @foreach (var item in Model) {
+        <tr class="@(odd ? "odd": "even")">
+            <td>
+                @(string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) ? "No" : "Yes")
+            </td>
+            <td>
+                @item.Name
+            </td>
+            <td>
+                @item.Line1
+            </td>
+            <td>
+                @item.Line2
+            </td>
+            <td>
+                @item.Line3
+            </td>
+            <td>
+                @item.City
+            </td>
+            <td>
+                @item.State
+            </td>
+            <td>
+                @item.Zip
+            </td>
+            <td>
+                @item.CountryCode
+            </td>
 
-                <td>
-                    @item.Phone
-                </td>
-                <td>
-                    @item.Fax
-                </td>
-                <td>
-                    @item.Email
-                </td>
-                <td>
-                    @item.Url
-                </td>
+            <td>
+                @item.Phone
+            </td>
+            <td>
+                @item.Fax
+            </td>
+            <td>
+                @item.Email
+            </td>
+            <td>
+                @item.Url
+            </td>
 		
-            </tr>
-            odd = !odd;
-        }
+        </tr>
+        odd = !odd;
+    }
     </tbody>
 </table>
+
+
+
+@section AdditionalStyles
+{
+    @*Datatable css being used is the old one in the bundle. If I grab the current one and use here, some input fields are blue*@ 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.css"/>
+
+    <style>
+        button.dt-button{
+            color: white;
+        }
+    </style>
+}
+
+@section AdditionalScripts
+{
+    @*The js includes jszip, datatables, buttons (for copy, excel, csv) and fixed header*@
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/fh-3.1.7/datatables.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var table = $(".dt-table, .datatable").dataTable({
+                bJQueryUI: false,
+                sPaginationType: "full_numbers",
+                oLanguage: { sSearch: "Filter Within These Results: " },
+                iDisplayLength: window.Configuration.DataTablesPageSize,
+                //sDom: 'lBfrtip',
+                sDom: 'T<"clear">lBfrtip',
+                columnDefs: [
+                    { 'bSortable': false, 'aTargets': [0] }
+                ],
+                "buttons": [
+                    {
+                        extend: 'copyHtml5'
+                    },
+                    {
+                        extend: 'excelHtml5'
+                    },
+                    {
+                        extend: 'csvHtml5'
+                    }
+                ],
+                fixedHeader: true
+            });
+
+            $.each($(".dataTables_wrapper"), function(index, item) {
+                RearranngeDataTable($(item));
+            });
+
+            //This was copied from startup.js and modified so it works better with the new export buttons. It isn't 100% working (an empty div is created)
+            function RearranngeDataTable($wrapper) {
+                var $dtt = $wrapper.find(".dt-buttons");
+                var $length = $wrapper.find(".dataTables_length");
+
+                // dtt is present, move those accordingly
+                if ($dtt.length > 0) {
+                    $("<div>").addClass("dt-buttons").append($dtt.find("button")).insertAfter($length.find("label"));
+                    //$wrapper.find(".DTTT_container").remove();
+                    $wrapper.find(".clear").remove();
+                }
+            }
+        });
+
+    </script>
+
+}
