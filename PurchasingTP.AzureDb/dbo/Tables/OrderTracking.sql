@@ -18,6 +18,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [OrderTracking_UserId_IDX]
     ON [dbo].[OrderTracking]([UserId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
@@ -52,3 +54,10 @@ CREATE NONCLUSTERED INDEX [nci_wi_OrderTracking_B5D42DBEA7740A3E914FD6E95C68E93F
     ON [dbo].[OrderTracking]([DateCreated] ASC)
     INCLUDE([Description], [OrderId], [UserId]);
 
+
+GO
+CREATE TRIGGER SetOrderDateLastAction
+ON OrderTracking
+AFTER INSERT
+AS
+   UPDATE Orders SET DateLastAction = GETUTCDATE() WHERE Id IN (SELECT OrderId from inserted)
