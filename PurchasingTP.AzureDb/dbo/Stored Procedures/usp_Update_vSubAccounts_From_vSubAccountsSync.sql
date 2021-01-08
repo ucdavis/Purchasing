@@ -1,6 +1,7 @@
-﻿-- Modifications:
+﻿
+-- Modifications:
 -- 2018-06-01 by kjt: Revised to use NOT exists as opposed to using the ID, since this is a GUID that is
--- only valid if we're trying to sync the data from the same source host and previously used; otherwise, the 
+-- only valid if we're trying to sync the data from the same source and previously used; otherwise, the 
 -- id (GUID) will most likely be different since it was generated on a different host.
 CREATE PROCEDURE [dbo].[usp_Update_vSubAccounts_From_vSubAccountsSync]
 AS

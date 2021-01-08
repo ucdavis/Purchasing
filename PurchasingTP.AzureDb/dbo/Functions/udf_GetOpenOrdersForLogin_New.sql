@@ -17,7 +17,7 @@
 --	2014-02-12 by kjt: Revised logic once again to maximize efficiency.
 --	2017-02-28 by kjt: Revised logic to improve performance.
 -- =============================================
-CREATE FUNCTION [dbo].[udf_GetOpenOrdersForLogin]
+CREATE FUNCTION [dbo].[udf_GetOpenOrdersForLogin_New]
 (
 	-- Add the parameters for the function here
 	@LoginId varchar(50) 

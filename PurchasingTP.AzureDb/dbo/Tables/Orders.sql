@@ -34,6 +34,7 @@
     [ApUser]                  VARCHAR (10)  NULL,
     [PostStatus]              VARCHAR (50)  NULL,
     [OrderNote]               VARCHAR (140) NULL,
+    [DateLastAction]          DATETIME      DEFAULT (getutcdate()) NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_Orders_OrderStatusCodes] FOREIGN KEY ([OrderStatusCodeId]) REFERENCES [dbo].[OrderStatusCodes] ([Id]),
     CONSTRAINT [FK_Orders_OrderTypes] FOREIGN KEY ([OrderTypeId]) REFERENCES [dbo].[OrderTypes] ([Id]),
@@ -42,6 +43,8 @@
     CONSTRAINT [FK_Orders_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]),
     CONSTRAINT [FK_Orders_WorkgroupVendors] FOREIGN KEY ([WorkgroupVendorId]) REFERENCES [dbo].[WorkgroupVendors] ([Id])
 );
+
+
 
 
 
