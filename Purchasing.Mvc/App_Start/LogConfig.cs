@@ -44,8 +44,6 @@ namespace Purchasing.Mvc
                 return logConfig;
             }
 
-            var environment = ConfigurationManager.AppSettings["Stackify.Environment"];
-
             logConfig.Enrich.WithProperty("Application", ConfigurationManager.AppSettings["Stackify.AppName"]);
             logConfig.Enrich.WithProperty("AppEnvironment", ConfigurationManager.AppSettings["Stackify.Environment"]);
             logConfig.Enrich.WithClientIp();
