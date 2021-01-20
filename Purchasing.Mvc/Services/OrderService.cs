@@ -916,7 +916,7 @@ namespace Purchasing.Mvc.Services
 
             if (orderIds.Count() == 0) // no results if you aren't allowed to see anything
             {
-                return new List<OrderHistory>().AsQueryable();
+                return new IndexedList<OrderHistory>();
             }
 
             // only show "pending" aka has edit rights
@@ -947,7 +947,7 @@ namespace Purchasing.Mvc.Services
 
             if (orderIds.Count() == 0) // no results if you aren't allowed to see anything
             {
-                return new List<OrderHistory>().AsQueryable();
+                return new IndexedList<OrderHistory>();
             }
 
             // filter for accessible orders
