@@ -803,6 +803,11 @@ namespace Purchasing.Mvc.Services
             // get orderids accessible by user
             var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: false);
 
+            if (orderIds.Count() == 0) // no results if you aren't allowed to see anything
+            {
+                return new List<OrderHistory>().AsQueryable();
+            }
+
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
 
@@ -831,6 +836,11 @@ namespace Purchasing.Mvc.Services
             DateTime? endDate = new DateTime?(), bool showCreated = false,
             DateTime? startLastActionDate = new DateTime?(), DateTime? endLastActionDate = new DateTime?())
         {
+            if (accessibleOrders.Length == 0) // no results if you aren't allowed to see anything
+            {
+                return new IndexedList<OrderHistory>();
+            }
+
             // only show "pending" aka has edit rights
             if (showPending) accessibleOrders = accessibleOrders.Where(a => a.EditAccess).ToArray();
 
@@ -863,7 +873,12 @@ namespace Purchasing.Mvc.Services
         {
             // get orderids accessible by user
             var orders = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: false).ToArray();
-            
+
+            if (orders.Length == 0) // no results if you aren't allowed to see anything
+            {
+                return new IndexedList<OrderHistory>();
+            }
+
             return GetIndexedListofOrders(orders, received, paid, isComplete, showPending, orderStatusCode, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
         }
 
@@ -871,6 +886,11 @@ namespace Purchasing.Mvc.Services
         {
             // get orderids accessible by user
             var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: true);
+
+            if (orderIds.Count() == 0) // no results if you aren't allowed to see anything
+            {
+                return new List<OrderHistory>().AsQueryable();
+            }
 
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
@@ -893,6 +913,11 @@ namespace Purchasing.Mvc.Services
         {
             // get orderids accessible by user
             var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: true);
+
+            if (orderIds.Count() == 0) // no results if you aren't allowed to see anything
+            {
+                return new List<OrderHistory>().AsQueryable();
+            }
 
             // only show "pending" aka has edit rights
             if (showPending) orderIds = orderIds.Where(a => a.EditAccess);
@@ -919,6 +944,11 @@ namespace Purchasing.Mvc.Services
             // get orderids accessible by user
             //var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(_userIdentity.Current, isAdmin: true);
             var orderIds = _repositoryFactory.OrderRepository.Queryable.Where(a => a.ApUser != null && a.ApUser.Id == _userIdentity.Current).Select(s => s.Id).ToArray();
+
+            if (orderIds.Count() == 0) // no results if you aren't allowed to see anything
+            {
+                return new List<OrderHistory>().AsQueryable();
+            }
 
             // filter for accessible orders
             var ordersIndexQuery = _indexService.GetOrderHistory(orderIds, startDate, endDate, startLastActionDate, endLastActionDate, orderStatusCode);

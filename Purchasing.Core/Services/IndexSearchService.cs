@@ -22,6 +22,11 @@ namespace Purchasing.Core.Services
 
         public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds)
         {
+            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
+            {
+                return new List<SearchResults.OrderResult>();
+            }
+
             var index = IndexHelper.GetIndexName(Indexes.OrderHistory);
 
             var results = _client.Search<OrderHistory>(
@@ -39,6 +44,11 @@ namespace Purchasing.Core.Services
 
         public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds)
         {
+            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
+            {
+                return new List<SearchResults.LineResult>();
+            }
+
             var index = IndexHelper.GetIndexName(Indexes.LineItems);
 
             var results = _client.Search<SearchResults.LineResult>(
@@ -56,6 +66,11 @@ namespace Purchasing.Core.Services
 
         public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, int[] allowedIds)
         {
+            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
+            {
+                return new List<SearchResults.CustomFieldResult>();
+            }
+
             var index = IndexHelper.GetIndexName(Indexes.CustomAnswers);
 
             var results = _client.Search<SearchResults.CustomFieldResult>(
@@ -73,6 +88,11 @@ namespace Purchasing.Core.Services
 
         public IList<SearchResults.CommentResult> SearchComments(string searchTerm, int[] allowedIds)
         {
+            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
+            {
+                return new List<SearchResults.CommentResult>();
+            }
+
             var index = IndexHelper.GetIndexName(Indexes.Comments);
 
             var results = _client.Search<SearchResults.CommentResult>(
@@ -90,6 +110,11 @@ namespace Purchasing.Core.Services
 
         public IList<SearchResults.CommentResult> GetLatestComments(int count, int[] allowedIds)
         {
+            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
+            {
+                return new List<SearchResults.CommentResult>();
+            }
+
             var index = IndexHelper.GetIndexName(Indexes.Comments);
 
             var results = _client.Search<SearchResults.CommentResult>(
