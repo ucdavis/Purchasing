@@ -47,7 +47,10 @@ namespace Purchasing.Mvc.Controllers
 
         public PartialViewResult RecentComments()
         {
-            var orderIds = _accessQueryService.GetOrderAccessByAdminStatus(CurrentUser.Identity.Name, isAdmin: false).Select(x => x.OrderId).ToArray();
+            // recent comments will be required to be from orders acted upon in the last three months
+            var cutoff = DateTime.UtcNow.AddMonths(-3);
+
+            var orderIds = _accessQueryService.GetRecentOrderAccessByAdminStatus(CurrentUser.Identity.Name, isAdmin: false, cutoff: cutoff).Select(x => x.OrderId).ToArray();
 
             var comments = _searchService.GetLatestComments(5, orderIds);
 
@@ -56,7 +59,10 @@ namespace Purchasing.Mvc.Controllers
 
         public JsonNetResult RecentlyCompleted()
         {
-            var accessibleOrders = _accessQueryService.GetOrderAccessByAdminStatus(CurrentUser.Identity.Name, isAdmin: false).ToArray();
+            // recently completed is only looking at orders completed in the last month
+            var cutoff = DateTime.UtcNow.AddMonths(-1);
+
+            var accessibleOrders = _accessQueryService.GetRecentOrderAccessByAdminStatus(CurrentUser.Identity.Name, isAdmin: false, cutoff: cutoff).ToArray();
             
             var deniedThisMonth =
                 _orderService.GetIndexedListofOrders(accessibleOrders, null, null,false, false, OrderStatusCode.Codes.Denied, null, null, true,

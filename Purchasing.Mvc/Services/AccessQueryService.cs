@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Dapper;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
@@ -17,6 +18,7 @@ namespace Purchasing.Mvc.Services
         IEnumerable<OpenAccess> GetOpenOrderAccess(string loginId, int orderId);
         IEnumerable<EditAccess> GetEditAccess(string loginId);
         IEnumerable<ReadAccess> GetReadAccess(string loginId);
+        IEnumerable<Access> GetRecentOrderAccessByAdminStatus(string loginId, bool isAdmin, DateTime cutoff);
     }
 
     public class AccessQueryService : IAccessQueryService
@@ -81,6 +83,14 @@ namespace Purchasing.Mvc.Services
             using (var conn = _dbService.GetConnection())
             {
                 return conn.Query<Access>("select orderid, accessuserid, accesslevel, readaccess, editaccess, isadmin  from udf_GetReadAndEditAccessOrdersForLogin(@loginId) where isadmin = @isAdmin", new { loginId, isAdmin });
+            }
+        }
+
+        public IEnumerable<Access> GetRecentOrderAccessByAdminStatus(string loginId, bool isAdmin, DateTime cutoff)
+        {
+            using (var conn = _dbService.GetConnection())
+            {
+                return conn.Query<Access>("select orderid, accessuserid, accesslevel, readaccess, editaccess, isadmin  from udf_GetReadAndEditAccessRecentOrdersForLogin(@loginId, @cutoff) where isadmin = @isAdmin", new { loginId, cutoff, isAdmin });
             }
         }
 
