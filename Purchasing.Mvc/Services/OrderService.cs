@@ -838,7 +838,7 @@ namespace Purchasing.Mvc.Services
         {
             if (accessibleOrders.Length == 0) // no results if you aren't allowed to see anything
             {
-                return new IndexedList<OrderHistory> { LastModified = DateTime.UtcNow, Results = new List<OrderHistory>() };
+                return new IndexedList<OrderHistory> { LastModified = DateTime.UtcNow.ToPacificTime(), Results = new List<OrderHistory>() };
             }
 
             // only show "pending" aka has edit rights
@@ -876,7 +876,7 @@ namespace Purchasing.Mvc.Services
 
             if (orders.Length == 0) // no results if you aren't allowed to see anything
             {
-                return new IndexedList<OrderHistory> { LastModified = DateTime.UtcNow, Results = new List<OrderHistory>() };
+                return new IndexedList<OrderHistory> { LastModified = DateTime.UtcNow.ToPacificTime(), Results = new List<OrderHistory>() };
             }
 
             return GetIndexedListofOrders(orders, received, paid, isComplete, showPending, orderStatusCode, startDate, endDate, showCreated, startLastActionDate, endLastActionDate);
@@ -916,7 +916,7 @@ namespace Purchasing.Mvc.Services
 
             if (orderIds.Count() == 0) // no results if you aren't allowed to see anything
             {
-                return new IndexedList<OrderHistory> { LastModified = DateTime.UtcNow, Results = new List<OrderHistory>() };
+                return new IndexedList<OrderHistory> { LastModified = DateTime.UtcNow.ToPacificTime(), Results = new List<OrderHistory>() };
             }
 
             // only show "pending" aka has edit rights
@@ -947,7 +947,7 @@ namespace Purchasing.Mvc.Services
 
             if (orderIds.Count() == 0) // no results if you aren't allowed to see anything
             {
-                return new IndexedList<OrderHistory> { LastModified = DateTime.UtcNow, Results = new List<OrderHistory>() };
+                return new IndexedList<OrderHistory> { LastModified = DateTime.UtcNow.ToPacificTime(), Results = new List<OrderHistory>() };
             }
 
             // filter for accessible orders
