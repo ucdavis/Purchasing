@@ -54,13 +54,8 @@
     <Reference Include="SendGridMail">
       <HintPath>..\packages\Sendgrid.5.0.0\lib\SendGridMail.dll</HintPath>
     </Reference>
-    <Reference Include="Serilog, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.1.5.7\lib\net45\Serilog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Serilog.FullNetFx, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.1.5.7\lib\net45\Serilog.FullNetFx.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
     <Reference Include="SparkPost, Version=1.0.2.24239, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SparkPost.1.0.7\lib\net45\SparkPost.dll</HintPath>
