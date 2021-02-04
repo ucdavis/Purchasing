@@ -14,6 +14,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [HistoryReceivedLineItems_UserID_IDX]
     ON [dbo].[ConditionalApproval]([PrimaryApproverId] ASC);
@@ -21,14 +23,18 @@ CREATE NONCLUSTERED INDEX [HistoryReceivedLineItems_UserID_IDX]
 
 GO
 CREATE NONCLUSTERED INDEX [ConditionalApproval_WorkgroupId_IDX]
-    ON [dbo].[ConditionalApproval]([WorkgroupId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+    ON [dbo].[ConditionalApproval]([WorkgroupId] ASC);
+
+
 
 
 
 
 GO
 CREATE NONCLUSTERED INDEX [ConditionalApproval_SecondaryApproverId_IDX]
-    ON [dbo].[ConditionalApproval]([SecondaryApproverId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+    ON [dbo].[ConditionalApproval]([SecondaryApproverId] ASC);
+
+
 
 
 

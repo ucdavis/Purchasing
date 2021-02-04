@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Orders] (
+CREATE TABLE [dbo].[Orders] (
     [Id]                      INT           IDENTITY (1, 1) NOT NULL,
     [OrderTypeId]             CHAR (3)      NOT NULL,
     [WorkgroupVendorId]       INT           NULL,
@@ -43,6 +43,8 @@
     CONSTRAINT [FK_Orders_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id]),
     CONSTRAINT [FK_Orders_WorkgroupVendors] FOREIGN KEY ([WorkgroupVendorId]) REFERENCES [dbo].[WorkgroupVendors] ([Id])
 );
+
+
 
 
 
@@ -124,5 +126,7 @@ CREATE NONCLUSTERED INDEX [Orders_OrderStatusCodeId_Incl_IdWorkgroupId_CVIDX]
 
 
 GO
-
+CREATE NONCLUSTERED INDEX [Orders_StatusCode_DateLastAction_IDX]
+    ON [dbo].[Orders]([OrderStatusCodeId] ASC, [DateLastAction] ASC)
+    INCLUDE([WorkgroupId]);
 

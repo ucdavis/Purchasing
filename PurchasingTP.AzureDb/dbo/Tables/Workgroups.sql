@@ -21,6 +21,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [Workgroups_SharedOrCluster_IDX]
     ON [dbo].[Workgroups]([IsFullFeatured] ASC);
@@ -33,7 +35,9 @@ CREATE NONCLUSTERED INDEX [Workgroups_IsActive_IDX]
 
 GO
 CREATE NONCLUSTERED INDEX [Workgroups_Administrative_IDX]
-    ON [dbo].[Workgroups]([Administrative] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+    ON [dbo].[Workgroups]([Administrative] ASC);
+
+
 
 
 

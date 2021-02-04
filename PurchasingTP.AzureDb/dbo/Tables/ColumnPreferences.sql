@@ -45,9 +45,13 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [ColumnPreferences_UserId_IDX]
-    ON [dbo].[ColumnPreferences]([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+    ON [dbo].[ColumnPreferences]([Id] ASC);
+
+
 
 
 
