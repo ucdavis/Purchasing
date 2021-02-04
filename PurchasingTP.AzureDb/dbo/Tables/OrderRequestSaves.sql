@@ -17,6 +17,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [OrderRequestSaves_PreparedById_IDX]
     ON [dbo].[OrderRequestSaves]([PreparedById] ASC);
@@ -24,7 +26,9 @@ CREATE NONCLUSTERED INDEX [OrderRequestSaves_PreparedById_IDX]
 
 GO
 CREATE NONCLUSTERED INDEX [OrderRequestSaves_UserId_IDX]
-    ON [dbo].[OrderRequestSaves]([UserId] ASC) WITH (STATISTICS_NORECOMPUTE = ON);
+    ON [dbo].[OrderRequestSaves]([UserId] ASC);
+
+
 
 
 
