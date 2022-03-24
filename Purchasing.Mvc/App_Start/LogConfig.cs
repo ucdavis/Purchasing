@@ -23,7 +23,6 @@ namespace Purchasing.Mvc
             if (_loggingSetup) return; //only setup logging once
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Stackify()
                 .WriteToElasticSearchCustom()
                 .Enrich.With<HttpSessionIdEnricher>()
                 .Enrich.With<UserNameEnricher>()
