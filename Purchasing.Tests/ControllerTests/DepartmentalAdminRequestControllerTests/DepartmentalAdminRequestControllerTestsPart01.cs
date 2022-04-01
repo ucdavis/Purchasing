@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
@@ -11,7 +10,9 @@ using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTests
 {
@@ -195,8 +196,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Act
             Controller.Create(new DepartmentalAdminRequestViewModel(), null)
-                .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Create());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -213,8 +213,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Act
             Controller.Create(new DepartmentalAdminRequestViewModel(), new List<string>())
-                .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Create());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -371,8 +370,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Act
             Controller.Create(departmentalAdminRequestViewModel, new List<string> {"1", "3"})
-                .AssertActionRedirect()
-                .ToAction<HomeController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

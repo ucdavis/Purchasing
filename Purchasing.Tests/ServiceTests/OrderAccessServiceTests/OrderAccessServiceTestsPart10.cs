@@ -7,6 +7,7 @@
 //using Rhino.Mocks;
 //using UCDArch.Core.Utils;
 //using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 //namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 //{

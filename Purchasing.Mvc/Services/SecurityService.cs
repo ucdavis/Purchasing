@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using Purchasing.Mvc;
 
 namespace Purchasing.Mvc.Services
 {
@@ -391,7 +392,7 @@ namespace Purchasing.Mvc.Services
         {
             var repositoryFactory = ServiceLocator.Current.GetInstance<IRepositoryFactory>();
 
-            var context = HttpContext.Current;
+            var context = HttpContextHelper.Current;
 
             // cached value exists?
             var cacheId = string.Format(Resources.Role_CacheId, userId);

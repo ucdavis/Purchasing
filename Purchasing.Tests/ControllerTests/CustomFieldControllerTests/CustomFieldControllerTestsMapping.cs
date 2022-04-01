@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.Controllers;
+using Purchasing.Tests.Core;
 
 namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 {

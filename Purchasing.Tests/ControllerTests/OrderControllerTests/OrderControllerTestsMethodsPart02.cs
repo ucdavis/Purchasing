@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -15,7 +14,9 @@ using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 {
@@ -33,8 +34,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(4)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.SelectWorkgroup());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -54,8 +54,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(1)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.SelectWorkgroup());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -74,8 +73,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(2)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -697,8 +695,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             var result = Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -749,8 +746,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -786,8 +782,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -828,8 +823,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -869,8 +863,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -910,8 +903,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -947,8 +939,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -984,8 +975,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1021,8 +1011,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1062,8 +1051,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1100,8 +1088,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1137,8 +1124,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1174,8 +1160,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1219,8 +1204,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1258,8 +1242,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1297,8 +1280,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1338,8 +1320,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1382,8 +1363,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1425,8 +1405,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1469,8 +1448,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1512,8 +1490,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1554,8 +1531,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1595,8 +1571,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1646,8 +1621,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1698,8 +1672,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1750,8 +1723,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1800,8 +1772,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1850,8 +1821,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1901,8 +1871,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1952,8 +1921,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1998,8 +1966,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2045,8 +2012,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2089,8 +2055,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2129,8 +2094,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2169,8 +2133,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2212,8 +2175,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2260,8 +2222,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2313,8 +2274,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2382,8 +2342,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2456,8 +2415,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -2532,8 +2490,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Act
             Controller.Request(orderViewModel)
-                .AssertActionRedirect()
-                .ToAction<OrderController>(a => a.Review(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

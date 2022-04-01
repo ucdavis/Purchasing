@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using AutoMapper.Internal;
 using Dapper;
 using Elasticsearch.Net;
 using Nest;
@@ -534,7 +533,7 @@ namespace Purchasing.Core.Services
     {
         public static string GetIndexName(Indexes indexes)
         {
-            return string.Format("opp-{0}", indexes.ToNullSafeString().ToLowerInvariant());
+            return string.Format("opp-{0}", indexes.ToString().ToLowerInvariant());
         }
     }
 

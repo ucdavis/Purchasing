@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
@@ -9,8 +8,9 @@ using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -27,8 +27,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AccountDetails(0,4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -80,8 +79,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.EditAccount(0,4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -141,8 +139,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.EditAccount(0, 4, new WorkgroupAccount())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -182,8 +179,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.EditAccount(9, 3, accountToEdit)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Accounts(9));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -264,8 +260,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AccountDelete(0, 4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -293,8 +288,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AccountDelete(0, 3)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -346,8 +340,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AccountDelete(0, 4, new WorkgroupAccount())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -378,8 +371,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AccountDelete(0, 2, new WorkgroupAccount())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -409,8 +401,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.AccountDelete(3, 2, new WorkgroupAccount())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Accounts(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -437,8 +428,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.UpdateMultipleAccounts(4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -704,8 +694,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.UpdateMultipleAccounts(4, new UpdateMultipleAccountsViewModel())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1229,8 +1218,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.UpdateMultipleAccounts(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1316,8 +1304,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.UpdateMultipleAccounts(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1403,8 +1390,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.UpdateMultipleAccounts(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -1490,8 +1476,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.UpdateMultipleAccounts(3, updateMultipleAccountsViewModel)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.UpdateMultipleAccounts(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

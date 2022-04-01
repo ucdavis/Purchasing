@@ -1,418 +1,94 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E0236983-79B2-4279-8B12-6EF256C48AE9}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Purchasing.Tests</RootNamespace>
-    <AssemblyName>Purchasing.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Purchasing\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
-    <OutputPath>bin\Test\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\Purchasing.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseCAES|AnyCPU'">
-    <OutputPath>bin\ReleaseCAES\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\Purchasing.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseAzure|AnyCPU'">
-    <OutputPath>bin\ReleaseAzure\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\Purchasing.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="AutoMapper">
-      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoMapper.Net4, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor">
-      <HintPath>..\packages\Castle.Windsor.3.2.1\lib\net45\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentNHibernate">
-      <HintPath>..\packages\FluentNHibernate.1.4.0.0\lib\net35\FluentNHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Practices.ServiceLocation">
-      <HintPath>..\packages\CommonServiceLocator.1.2\lib\portable-windows8+net40+sl5+windowsphone8\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="MvcContrib.TestHelper">
-      <HintPath>..\packages\MvcContrib.Mvc3.TestHelper-ci.3.0.100.0\lib\MvcContrib.TestHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.3.3.1.4000\lib\Net35\NHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="Rhino.Mocks">
-      <HintPath>..\packages\RhinoMocks.3.6\lib\Rhino.Mocks.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SQLitex64.1.0.66\lib\32\System.Data.SQLite.DLL</HintPath>
-    </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.2\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.2\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="UCDArch">
-      <HintPath>..\packages\UcdArch.5.1.0.145\lib\net451\UCDArch.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ContinuousDeploymentIntegrationHack.cs" />
-    <Compile Include="ControllerTests\AccountControllerTests.cs" />
-    <Compile Include="ControllerTests\AccountsControllerTests.cs" />
-    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsMapping.cs" />
-    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart01.cs" />
-    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart02.cs" />
-    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart03.cs" />
-    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart04.cs" />
-    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsPart05.cs" />
-    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\AdminControllerTests\AdminControllerTestsInit.cs" />
-    <Compile Include="ControllerTests\ApplicationControllerTests.cs" />
-    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsMapping.cs" />
-    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart01.cs" />
-    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart02.cs" />
-    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart03.cs" />
-    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsPart04.cs" />
-    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\AutoApprovalControllerTests\AutoApprovalControllerTestsInit.cs" />
-    <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsInit.cs" />
-    <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsMapping.cs" />
-    <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart01.cs" />
-    <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart02.cs" />
-    <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsPart03.cs" />
-    <Compile Include="ControllerTests\ConditionalApprovalControllerTests\ConditionalApprovalControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsInit.cs" />
-    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsMapping.cs" />
-    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsPart01.cs" />
-    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsPart02.cs" />
-    <Compile Include="ControllerTests\CustomFieldControllerTests\CustomFieldControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsInit.cs" />
-    <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsMapping.cs" />
-    <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsPart01.cs" />
-    <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsPart02.cs" />
-    <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsPart03.cs" />
-    <Compile Include="ControllerTests\DepartmentalAdminRequestControllerTests\DepartmentalAdminRequestControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\DirectorySearchControllerTests.cs" />
-    <Compile Include="ControllerTests\ErrorControllerTests.cs" />
-    <Compile Include="ControllerTests\HistoryAjaxControllerTests.cs" />
-    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsInit.cs" />
-    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsMapping.cs" />
-    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart01.cs" />
-    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart02.cs" />
-    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsPart03.cs" />
-    <Compile Include="ControllerTests\HistoryControllerTests\HistoryControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\HomeControllerTests.cs" />
-    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsPart01.cs" />
-    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsInit.cs" />
-    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMapping.cs" />
-    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsPart02.cs" />
-    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsMethodsPart03.cs" />
-    <Compile Include="ControllerTests\OrderControllerTests\OrderControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsInit.cs" />
-    <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsMapping.cs" />
-    <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsPart01.cs" />
-    <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsPart02.cs" />
-    <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsPart03.cs" />
-    <Compile Include="ControllerTests\WizardControllerTests\WizardControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsInit.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsMapping.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsMisc.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupAccountsPart01.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupAccountsPart02.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupActionsPart01.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupActionsPart02.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupActionsPart03.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupAddressPart01.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupAddressPart02.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupAddressPart03.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart01.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsReflection.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart02.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupPeoplePart03.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart01.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart02.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart03.cs" />
-    <Compile Include="ControllerTests\WorkgroupControllerTests\WorkgroupControllerTestsWorkgroupVendorsPart04.cs" />
-    <Compile Include="Core\AbstractControllerRecordFakesGuids.cs" />
-    <Compile Include="Core\AbstractControllerRecordFakesStrings.cs" />
-    <Compile Include="Core\AbstractRepositoryTests.cs" />
-    <Compile Include="Core\AssertExtensions.cs" />
-    <Compile Include="Core\AttributeAndFieldValidation.cs" />
-    <Compile Include="Core\ControllerRecordFakes.cs" />
-    <Compile Include="Core\CreateValidEntities.cs" />
-    <Compile Include="Core\NameAndType.cs" />
-    <Compile Include="Core\QueryExtensionFakes.cs" />
-    <Compile Include="Core\RepositoryLoad.cs" />
-    <Compile Include="Core\RouteTestingExtensions.cs" />
-    <Compile Include="Core\ServiceLocatorInitializer.cs" />
-    <Compile Include="Core\SpecificGuid.cs" />
-    <Compile Include="Core\StringExtension.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RepositoryTests\AccountRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\ApprovalRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\AttachmentRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\AuditRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\AutoApprovalRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\BugTrackingRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\BuildingRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\ColumnPreferencesRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\CommodityRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\ConditionalApprovalRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\ControlledSubstanceInformationRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\EmailQueueV2RepositoryTests.cs" />
-    <Compile Include="RepositoryTests\CustomFieldAnswerRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\CustomFieldRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\DepartmentalAdminRequestRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\EmailPreferencesRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\EmailQueueRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\HistoryReceivedLineItemRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\KfsDocumentRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\LineItemRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\NotificationRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\OrderCommentRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\OrderRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\OrderRequestSaveRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\OrderStatusCodeRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\OrderTrackingRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\OrderTypeRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\OrganizationRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\RoleRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\ServiceMessageRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\ShippingTypeRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\SplitRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\StateRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\SubAccountRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\UnitOfMeasureRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\UserRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\VendorAddressRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\VendorRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\WorkgroupAccountRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\WorkgroupAddressRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\WorkgroupPermissionRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\WorkgroupRepositoryTests.cs" />
-    <Compile Include="RepositoryTests\WorkgroupVendorRepositoryTests.cs" />
-    <Compile Include="ServiceTests\EventServiceTests.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved07.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved01Old.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsInit.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved02Old.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved03Old.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved04Old.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved05Old.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved06.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderApproved08.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderCreated02.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderCreated01.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderEdited01Old.cs" />
-    <Compile Include="ServiceTests\NotificationServiceTests\NotificationServiceTestsOrderEdited02Old.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsInit.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart01.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart02.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart03.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart04.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart05.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart06.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart07.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart08.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart09.cs" />
-    <Compile Include="ServiceTests\OrderAccessServiceTests\OrderAccessServiceTestsPart10.cs" />
-    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder01.cs" />
-    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder02.cs" />
-    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder03.cs" />
-    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsCreateApprovalsForNewOrder04.cs" />
-    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsInit.cs" />
-    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsMisc01.cs" />
-    <Compile Include="ServiceTests\OrderServiceTests\OrderServiceTestsReRouteApprovalsForExistingOrder01.cs" />
-    <Compile Include="ServiceTests\SecurityServiceTests.cs" />
-    <Compile Include="ServiceTests\WorkgroupAddressServiceTests.cs" />
-    <Compile Include="ServiceTests\WorkgroupServiceTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App.config">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj">
-      <Project>{b1c96724-966e-4481-89a7-df4b1c26069d}</Project>
-      <Name>Purchasing.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Purchasing.Mvc\Purchasing.Mvc.csproj">
-      <Project>{ad6f87b5-3e46-45c7-94e1-3625d8e44f33}</Project>
-      <Name>Purchasing.Mvc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj">
-      <Project>{8bec9b9f-df26-4072-9c84-eab76e1484a6}</Project>
-      <Name>Purchasing.WS</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-  <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Purchasing\</SolutionDir>
+		<RestorePackages>true</RestorePackages>
+		<PublishUrl>publish\</PublishUrl>
+		<Install>true</Install>
+		<InstallFrom>Disk</InstallFrom>
+		<UpdateEnabled>false</UpdateEnabled>
+		<UpdateMode>Foreground</UpdateMode>
+		<UpdateInterval>7</UpdateInterval>
+		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
+		<UpdatePeriodically>false</UpdatePeriodically>
+		<UpdateRequired>false</UpdateRequired>
+		<MapFileExtensions>true</MapFileExtensions>
+		<ApplicationRevision>0</ApplicationRevision>
+		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+		<IsWebBootstrapper>false</IsWebBootstrapper>
+		<UseApplicationTrust>false</UseApplicationTrust>
+		<BootstrapperEnabled>true</BootstrapperEnabled>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+		<OutputPath>bin\Test\</OutputPath>
+		<Optimize>true</Optimize>
+		<CodeAnalysisLogFile>bin\Release\Purchasing.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+		<CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+		<CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+		<CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+		<CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseCAES|AnyCPU'">
+		<OutputPath>bin\ReleaseCAES\</OutputPath>
+		<Optimize>true</Optimize>
+		<CodeAnalysisLogFile>bin\Release\Purchasing.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+		<CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+		<CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+		<CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+		<CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseAzure|AnyCPU'">
+		<OutputPath>bin\ReleaseAzure\</OutputPath>
+		<Optimize>true</Optimize>
+		<CodeAnalysisLogFile>bin\Release\Purchasing.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+		<CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+		<CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+		<CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+	</PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"/>
+	</ItemGroup>
+	<ItemGroup>
+		<BootstrapperPackage Include=".NETFramework,Version=v4.0">
+			<Visible>False</Visible>
+			<ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+			<Visible>False</Visible>
+			<ProductName>Windows Installer 3.1</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj"/>
+		<ProjectReference Include="..\Purchasing.Mvc\Purchasing.Mvc.csproj"/>
+		<ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj"/>
+		<ProjectReference Include="..\..\UCDArch\UCDArch\UCDArch.Testing\UCDArch.Testing.csproj"/>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MvcContrib.Mvc3.TestHelper-ci" Version="3.0.100"/>
+		<PackageReference Include="SQLitex64" Version="1.0.66"/>
+	</ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App"/>
+	</ItemGroup>
 </Project>

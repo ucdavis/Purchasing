@@ -4,6 +4,7 @@ using System.Net;
 using System.Web;
 using System.Web.Security;
 using Microsoft.Azure;
+using Purchasing.Mvc;
 
 namespace Purchasing.Mvc.Helpers
 {
@@ -16,7 +17,7 @@ namespace Purchasing.Mvc.Helpers
 
         public static string GetReturnUrl()
         {
-            return HttpContext.Current.Request.QueryString[StrReturnUrl];
+            return HttpContextHelper.Current.Request.QueryString[StrReturnUrl];
         }
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace Purchasing.Mvc.Helpers
         {
             string returnUrl = Login();
 
-            if (returnUrl != null) HttpContext.Current.Response.Redirect(returnUrl);
+            if (returnUrl != null) HttpContextHelper.Current.Response.Redirect(returnUrl);
         }
 
         public static string Logout()
@@ -42,7 +43,7 @@ namespace Purchasing.Mvc.Helpers
         public static string Login()
         {
             // get the context from the source
-            var context = HttpContext.Current;
+            var context = HttpContextHelper.Current;
 
             // try to load a valid ticket
             HttpCookie validCookie = context.Request.Cookies[FormsAuthentication.FormsCookieName];

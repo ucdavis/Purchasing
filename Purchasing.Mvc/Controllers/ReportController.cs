@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
@@ -12,9 +13,6 @@ using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
-using Purchasing.Mvc.Attributes;
-using Purchasing.Mvc.Models;
-using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
@@ -49,7 +47,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [AuthorizeReadOrEditOrder]
-        public FileResult Invoice(int id, bool showOrderHistory = false, bool forVendor = false)
+        public Microsoft.AspNetCore.Mvc.FileResult Invoice(int id, bool showOrderHistory = false, bool forVendor = false)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 

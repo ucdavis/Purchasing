@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
-
+using Microsoft.AspNetCore.Mvc;
+using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -25,8 +25,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.VendorList(4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -111,8 +110,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.ExportableVendorList(4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -197,8 +195,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.CreateVendor(4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -238,8 +235,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.CreateVendor(4, new WorkgroupVendor(), false)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -262,8 +258,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.CreateVendor(3, vendorToCreate, false)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -293,8 +288,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.CreateVendor(3, vendorToCreate, true)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -324,8 +318,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.CreateVendor(3, vendorToCreate, false)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -361,8 +354,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.CreateVendor(3, vendorToCreate, true)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

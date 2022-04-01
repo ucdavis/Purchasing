@@ -1,26 +1,25 @@
-﻿using System.Linq;
-using System.Web.Mvc;
+﻿using System;
+using System.Linq;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
-using Purchasing.Mvc.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Purchasing.Mvc.Attributes
 {
     /// <summary>
     /// Check for User access to any role
     /// </summary>
-    public class AuthorizeApplicationAccessAttribute : AuthorizeAttribute
+    public class AuthorizeApplicationAccessAttribute : Attribute, IAuthorizationFilter
     {
-        public override void OnAuthorization(AuthorizationContext filterContext)
+        public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
             var roles = UserSecurityService.UserRoles(filterContext.HttpContext.User.Identity.Name);
 
             if (!roles.Any())
             {
-                filterContext.Result = new HttpUnauthorizedResult(Resources.NoAccess_Application);
+                filterContext.Result = new UnauthorizedObjectResult(Resources.NoAccess_Application);
             }
-            
-            base.OnAuthorization(filterContext);
         }
     }
 }

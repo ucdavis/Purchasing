@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Mvc.Helpers;
 using UCDArch.Web.Attributes;

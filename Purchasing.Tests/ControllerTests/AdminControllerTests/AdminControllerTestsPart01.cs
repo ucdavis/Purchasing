@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Controllers;
 using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -199,8 +199,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.ModifyDepartmental(depUser, orgs)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -245,8 +244,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.ModifyDepartmental(depUser, orgs)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -300,8 +298,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.ModifyDepartmental(depUser, orgs)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -347,8 +344,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.ModifyDepartmental(depUser, orgs)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

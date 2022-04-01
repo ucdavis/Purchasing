@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using System.Web.Mvc;
 using Dapper;
-using Microsoft.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
@@ -42,7 +42,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
                 
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             using (var conn = _dbService.GetConnection())

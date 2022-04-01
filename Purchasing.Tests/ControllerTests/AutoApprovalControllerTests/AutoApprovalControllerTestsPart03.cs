@@ -1,12 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -23,8 +24,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -42,8 +42,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, false)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -61,8 +60,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -81,8 +79,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             Controller.Edit(3)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -176,8 +173,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, new AutoApproval(), true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -195,8 +191,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, new AutoApproval(), false)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -214,8 +209,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, new AutoApproval())
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -234,8 +228,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             Controller.Edit(3, new AutoApproval())
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -406,8 +399,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(3, autoApprovalToEdit, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

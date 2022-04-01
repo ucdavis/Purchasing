@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using UCDArch.Testing.Fakes;
+using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -132,8 +133,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Details(8, false)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -151,8 +151,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Details(8)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -170,8 +169,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Details(8, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -191,8 +189,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             Controller.Details(3, false)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -210,8 +207,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             Controller.Details(3, true)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

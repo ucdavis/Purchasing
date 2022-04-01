@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web.Mvc;
-using Microsoft.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
-using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -85,7 +84,7 @@ namespace Purchasing.Mvc.Controllers
         /// <returns></returns>
         public ActionResult Delete(int id)
         {
-            ActionResult redirectToAction;
+            Microsoft.AspNetCore.Mvc.ActionResult redirectToAction;
             var conditionalApproval = GetConditionalApprovalAndCheckAccess(id, out redirectToAction);
             if(conditionalApproval == null)
             {
@@ -128,7 +127,7 @@ namespace Purchasing.Mvc.Controllers
         [HttpPost]
         public ActionResult Delete(ConditionalApprovalViewModel conditionalApprovalViewModel)
         {
-            ActionResult redirectToAction;
+            Microsoft.AspNetCore.Mvc.ActionResult redirectToAction;
             var conditionalApproval = GetConditionalApprovalAndCheckAccess(conditionalApprovalViewModel.Id, out redirectToAction);
             if(conditionalApproval == null)
             {
@@ -145,16 +144,16 @@ namespace Purchasing.Mvc.Controllers
 
             if (workgroupId.HasValue)
             {
-                return this.RedirectToAction(a => a.ByWorkgroup(workgroupId.Value));
+                return this.RedirectToAction(nameof(ByWorkgroup));
             }
 
             if (!string.IsNullOrWhiteSpace(orgId))
             {
-                return this.RedirectToAction(a => a.ByOrg(orgId));
+                return this.RedirectToAction(nameof(ByOrg));
             }
 
-            //return this.RedirectToAction(a => a.Index());
-            return this.RedirectToAction<ErrorController>(a => a.Index());
+            //return this.RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
         }
 
         /// <summary>
@@ -165,7 +164,7 @@ namespace Purchasing.Mvc.Controllers
         /// <returns></returns>
         public ActionResult Edit(int id)
         {
-            ActionResult redirectToAction;
+            Microsoft.AspNetCore.Mvc.ActionResult redirectToAction;
             var conditionalApproval = GetConditionalApprovalAndCheckAccess(id, out redirectToAction, extraFetch:true);
             if(conditionalApproval == null)
             {
@@ -212,7 +211,7 @@ namespace Purchasing.Mvc.Controllers
                 return View(conditionalApprovalViewModel);
             }
 
-            ActionResult redirectToAction;
+            Microsoft.AspNetCore.Mvc.ActionResult redirectToAction;
             var conditionalApprovalToEdit = GetConditionalApprovalAndCheckAccess(conditionalApprovalViewModel.Id, out redirectToAction);
             if(conditionalApprovalToEdit == null)
             {
@@ -228,16 +227,16 @@ namespace Purchasing.Mvc.Controllers
 
             if (conditionalApprovalToEdit.Workgroup != null)
             {
-                return this.RedirectToAction(a => a.ByWorkgroup(conditionalApprovalToEdit.Workgroup.Id));
+                return this.RedirectToAction(nameof(ByWorkgroup));
             }
 
             if (conditionalApprovalToEdit.Organization != null)
             {
-                return this.RedirectToAction(a => a.ByOrg(conditionalApprovalToEdit.Organization.Id));
+                return this.RedirectToAction(nameof(ByOrg));
             }
 
-            //return this.RedirectToAction(a => a.Index());
-            return this.RedirectToAction<ErrorController>(a => a.Index());
+            //return this.RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
         }
 
         /// <summary>
@@ -263,7 +262,7 @@ namespace Purchasing.Mvc.Controllers
                 if(workgroup.Administrative)
                 {
                     ErrorMessage = "Conditional Approval may not be added to an administrative workgroup.";
-                    return this.RedirectToAction<WorkgroupController>(a => a.Details(workgroup.Id));
+                    return this.RedirectToAction(nameof(WorkgroupController.Details), nameof(WorkgroupController));
                 }
             }
             else if (!string.IsNullOrWhiteSpace(orgId))
@@ -283,8 +282,8 @@ namespace Purchasing.Mvc.Controllers
                         "You cannot create a conditional approval for type {0} because you are not associated with any {0}s.",
                         approvalType);
 
-                //return this.RedirectToAction(a => a.Index());
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                //return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
             
             return View(model);
@@ -310,7 +309,7 @@ namespace Purchasing.Mvc.Controllers
                 if(workgroup.Administrative)
                 {
                     ErrorMessage = "Conditional Approval may not be added to an administrative workgroup.";
-                    return this.RedirectToAction<WizardController>(a => a.Details(workgroup.Id));
+                    return this.RedirectToAction(nameof(WizardController.Details), nameof(WizardController));
                 }
 
             }
@@ -407,16 +406,16 @@ namespace Purchasing.Mvc.Controllers
 
             if (workgroupId.HasValue)
             {
-                return this.RedirectToAction(a => a.ByWorkgroup(workgroupId.Value));
+                return this.RedirectToAction(nameof(ByWorkgroup));
             }
             
             if (!string.IsNullOrWhiteSpace(orgId))
             {
-                return this.RedirectToAction(a => a.ByOrg(orgId));
+                return this.RedirectToAction(nameof(ByOrg));
             }
 
-            //return this.RedirectToAction(a => a.Index());
-            return this.RedirectToAction<ErrorController>(a => a.Index());
+            //return this.RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
         }
 
         private ConditionalApprovalModifyModel CreateModifyModel(string approvalType, ConditionalApprovalModifyModel existingModel = null)
@@ -482,7 +481,7 @@ namespace Purchasing.Mvc.Controllers
                     Single();
         }
 
-        private ConditionalApproval GetConditionalApprovalAndCheckAccess(int id, out ActionResult redirectToAction, bool extraFetch = false)
+        private ConditionalApproval GetConditionalApprovalAndCheckAccess(int id, out Microsoft.AspNetCore.Mvc.ActionResult redirectToAction, bool extraFetch = false)
         {
             ConditionalApproval conditionalApproval;
             if(extraFetch)
@@ -498,8 +497,8 @@ namespace Purchasing.Mvc.Controllers
             {
                 ErrorMessage = "Conditional Approval not found";
                 {
-                    //redirectToAction = this.RedirectToAction(a => a.Index());
-                    redirectToAction =  this.RedirectToAction<ErrorController>(a => a.Index());
+                    //redirectToAction = this.RedirectToAction(nameof(Index));
+                    redirectToAction =  this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
                     return null;
                 }
             }
@@ -508,7 +507,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 Message = message;
                 {
-                    redirectToAction = this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                    redirectToAction = this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
                     return null;
                 }
             }

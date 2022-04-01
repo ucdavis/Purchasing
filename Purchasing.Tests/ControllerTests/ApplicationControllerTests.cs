@@ -2,20 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Castle.Windsor;
 using Purchasing.Mvc.Controllers;
 //using Purchasing.Controllers.Filters;
 using Purchasing.Core.Domain;
 //using Purchasing.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace Purchasing.Tests.ControllerTests
 {

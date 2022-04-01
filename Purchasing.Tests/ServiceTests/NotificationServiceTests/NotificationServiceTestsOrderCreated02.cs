@@ -6,6 +6,7 @@ using Purchasing.Tests.Core;
 using Rhino.Mocks;
 using System.Linq;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 {

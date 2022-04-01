@@ -20,8 +20,9 @@ namespace Purchasing.Jobs.DailyEmailNotifications
 
             var kernel = ConfigureServices();
             _dbService = kernel.Get<IDbService>();
-            var jobHost = new JobHost();
-            jobHost.Call(typeof(Program).GetMethod("EmailNotifications"));
+            // var jobHost = new JobHost();
+            // jobHost.Call(typeof(Program).GetMethod("EmailNotifications"));
+            
         }
 
         [NoAutomaticTrigger]

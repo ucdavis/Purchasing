@@ -7,6 +7,7 @@ using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 
 namespace Purchasing.Tests.RepositoryTests

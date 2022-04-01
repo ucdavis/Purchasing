@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
-using Purchasing.Mvc.Attributes;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Mvc.Controllers;
-using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
@@ -95,11 +93,10 @@ namespace Purchasing.Mvc.Controllers
                     a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode))
             {
                 //doesn't find any
-                var tempModelState = new ModelStateDictionary();
-                workgroupVendorToCreate.TransferValidationMessagesTo(tempModelState);
-                if (!tempModelState.IsValid)
+                workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
+                if (!ModelState.IsValid)
                 {
-                    if (tempModelState.ContainsKey("WorkgroupVendor.Email"))
+                    if (ModelState.ContainsKey("WorkgroupVendor.Email"))
                     {
                         workgroupVendorToCreate.Email = null;
                         errorMessage = "Warning, Email removed. KFS Vendor's Email was invalid";

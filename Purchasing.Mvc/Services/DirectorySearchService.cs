@@ -3,7 +3,8 @@ using System.DirectoryServices.Protocols;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Web.Configuration;
+using System.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Purchasing.Mvc.Services
 {
@@ -37,14 +38,20 @@ namespace Purchasing.Mvc.Services
         private const string STR_UID = "uid";
         private const string STR_PIDM = "ucdPersonPIDM";
         private const string STR_StudentId = "ucdStudentSID";
-        private static readonly string LDAPPassword = WebConfigurationManager.AppSettings["LDAPPassword"];
-        private static readonly string LDAPUser = WebConfigurationManager.AppSettings["LDAPUser"];
+        private readonly string LDAPPassword;
+        private readonly string LDAPUser;
         private static readonly int STR_LDAPPort = 636;
         //private static readonly string STR_LDAPURL = "ldap.ucdavis.edu";
         //private static readonly string STR_LDAPIP = "128.120.32.44"; //specific node per T.Poage //"128.120.32.63";
         private static readonly string STR_LDAPOLD = "ldap-old.ucdavis.edu"; //via T.Poage: fast-delete setting in the load balancer entry
 
-        public static SearchResponse GetSearchResponse(string searchFilter, string searchBase, int sizeLimit = 500)
+        public DirectorySearchService(IOptions<LDAPSettings> ldapSettings)
+        {
+            LDAPPassword = ldapSettings.Value.LDAPPassword;
+            LDAPUser = ldapSettings.Value.LDAPUser;
+        }
+
+        public SearchResponse GetSearchResponse(string searchFilter, string searchBase, int sizeLimit = 500)
         {
             //Establishing a Connection to the LDAP Server
             //var ldapident = new LdapDirectoryIdentifier(STR_LDAPURL, STR_LDAPPort);
@@ -119,7 +126,7 @@ namespace Purchasing.Mvc.Services
             return users;
         }
 
-        public static List<DirectoryUser> LDAPSearchUsers(string employeeId = null, string firstName = null, 
+        public List<DirectoryUser> LDAPSearchUsers(string employeeId = null, string firstName = null, 
                                                             string lastName = null, string fullName = null,
                                                             string loginId = null, string email = null, bool useAnd = true)
         {
@@ -183,7 +190,7 @@ namespace Purchasing.Mvc.Services
         /// Builds the ldap search filter and then gets out the first returned user
         /// </summary>
         /// <param name="searchTerm">Either UID (kerb) or Mail</param>
-        public static DirectoryUser LDAPFindUser(string searchTerm)
+        public DirectoryUser LDAPFindUser(string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm)) return null;
 
@@ -214,7 +221,7 @@ namespace Purchasing.Mvc.Services
         /// <summary>
         /// Builds a ldap search for student PIDM and then gets out the first returned user
         /// </summary>
-        public static DirectoryUser LDAPFindStudent(string studentId)
+        public DirectoryUser LDAPFindStudent(string studentId)
         {
             if (string.IsNullOrWhiteSpace(studentId)) return null;
 
@@ -237,7 +244,7 @@ namespace Purchasing.Mvc.Services
         /// <summary>
         /// Prepare the search against all fields
         /// </summary>
-        public static List<DirectoryUser> SearchUsers(string employeeID, string firstName, string lastName, string fullName,
+        public List<DirectoryUser> SearchUsers(string employeeID, string firstName, string lastName, string fullName,
                                                       string loginID, string email)
         {
             return LDAPSearchUsers(employeeID, firstName, lastName, fullName, loginID, email);
@@ -259,7 +266,7 @@ namespace Purchasing.Mvc.Services
             return LDAPFindUser(searchTerm);
         }
 
-        public static DirectoryUser FindStudent(string studentId)
+        public DirectoryUser FindStudent(string studentId)
         {
             return LDAPFindStudent(studentId);
         }

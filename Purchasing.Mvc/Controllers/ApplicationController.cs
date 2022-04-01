@@ -1,10 +1,11 @@
 ﻿using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Helpers;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.Controller;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -13,6 +14,7 @@ namespace Purchasing.Mvc.Controllers
     [Authorize]
     public abstract class ApplicationController : SuperController
     {
+        [CloseNHibernateSession]
         public User GetCurrentUser()
         {
             return Repository.OfType<User>().Queryable.Single(x => x.Id == CurrentUser.Identity.Name);
@@ -25,11 +27,5 @@ namespace Purchasing.Mvc.Controllers
         }
 
         private const string TEMP_DATA_ERROR_MESSAGE_KEY = "ErrorMessage";
-
-        protected override void OnResultExecuted(ResultExecutedContext filterContext)
-        {
-            NHibernateSessionManager.Instance.CloseSession();
-            base.OnResultExecuted(filterContext);
-        }
     }
 }

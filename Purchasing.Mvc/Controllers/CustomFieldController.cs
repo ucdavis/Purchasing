@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
 using AutoMapper;
-using Microsoft.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
@@ -23,12 +22,14 @@ namespace Purchasing.Mvc.Controllers
 	    private readonly IRepository<CustomField> _customFieldRepository;
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
         private readonly ISecurityService _securityService;
+        private readonly IMapper _mapper;
 
-        public CustomFieldController(IRepository<CustomField> customFieldRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, ISecurityService securityService )
+        public CustomFieldController(IRepository<CustomField> customFieldRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, ISecurityService securityService,IMapper mapper)
         {
             _customFieldRepository = customFieldRepository;
             _organizationRepository = organizationRepository;
             _securityService = securityService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -43,14 +44,14 @@ namespace Purchasing.Mvc.Controllers
             if (org == null)
             {
                 Message = "Organization not found.";
-                return this.RedirectToAction<OrganizationController>(a => a.Index());
+                return this.RedirectToAction(nameof(OrganizationController.Index), nameof(OrganizationController));
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
             {
                 Message = message;
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             return View(org);
@@ -69,14 +70,14 @@ namespace Purchasing.Mvc.Controllers
             if (org == null)
             {
                 Message = "Organization not found for custom field.";
-                return this.RedirectToAction<OrganizationController>(a => a.Index());
+                return this.RedirectToAction(nameof(OrganizationController.Index), nameof(OrganizationController));
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
             {
                 Message = message;
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
 			var viewModel = CustomFieldViewModel.Create(Repository, org);
@@ -98,14 +99,14 @@ namespace Purchasing.Mvc.Controllers
             if (org == null)
             {
                 Message = "Organization not found for custom field.";
-                return this.RedirectToAction<OrganizationController>(a => a.Index());
+                return this.RedirectToAction(nameof(OrganizationController.Index), nameof(OrganizationController));
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
             {
                 Message = message;
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             var customFieldToCreate = new CustomField();
@@ -123,7 +124,7 @@ namespace Purchasing.Mvc.Controllers
                 Message = "CustomField Created Successfully";
 
                 //return RedirectToAction("Index", new {id=id});
-                return this.RedirectToAction(a => a.Index(id));
+                return this.RedirectToAction(nameof(Index));
             }
             else
             {
@@ -146,14 +147,14 @@ namespace Purchasing.Mvc.Controllers
             if (customField == null)
             {
                 ErrorMessage = "Custom Field not found.";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customField.Organization, out message))
             {
                 Message = message;
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
 			var viewModel = CustomFieldViewModel.Create(Repository, customField.Organization, customField);
@@ -175,14 +176,14 @@ namespace Purchasing.Mvc.Controllers
             if(customFieldToArchive == null)
             {                               
                 ErrorMessage = "Custom Field not found.";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customFieldToArchive.Organization, out message))
             {
                 Message = message;
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             var customFieldToEdit = new CustomField();
@@ -200,7 +201,7 @@ namespace Purchasing.Mvc.Controllers
                 _customFieldRepository.EnsurePersistent(customFieldToEdit);
 
                 Message = "CustomField Edited Successfully";
-                return this.RedirectToAction(a => a.Index(customFieldToEdit.Organization.Id));
+                return this.RedirectToAction(nameof(Index));
             }
             else
             {
@@ -222,14 +223,14 @@ namespace Purchasing.Mvc.Controllers
             if (customField == null)
             {
                 ErrorMessage = "Custom Field not found.";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customField.Organization, out message))
             {
                 Message = message;
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             return View(customField);
@@ -245,14 +246,14 @@ namespace Purchasing.Mvc.Controllers
             if (customFieldToDelete == null)
             {
                 ErrorMessage = "Custom Field not found.";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
 
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, customFieldToDelete.Organization, out message))
             {
                 Message = message;
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             customFieldToDelete.IsActive = false;
@@ -260,7 +261,7 @@ namespace Purchasing.Mvc.Controllers
 
             Message = "CustomField Removed Successfully";
 
-            return this.RedirectToAction(a => a.Index(customFieldToDelete.Organization.Id));
+            return this.RedirectToAction(nameof(Index));
 
         }
 
@@ -296,9 +297,9 @@ namespace Purchasing.Mvc.Controllers
         /// <summary>
         /// Transfer editable values from source to destination
         /// </summary>
-        private static void TransferValues(CustomField source, CustomField destination)
+        private void TransferValues(CustomField source, CustomField destination)
         {
-            Mapper.Map(source, destination);
+            _mapper.Map(source, destination);
         }
     }
 }

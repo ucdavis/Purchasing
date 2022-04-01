@@ -22,12 +22,10 @@ namespace Purchasing.Jobs.NightlySync
 
             var kernel = ConfigureServices();
             _dbService = kernel.Get<IDbService>();
-            var jobHost = new JobHost();
-            jobHost.Call(typeof(Program).GetMethod("NightlySync"));
+            NightlySync();
         }
 
-        [NoAutomaticTrigger]
-        public static void NightlySync()
+        private static void NightlySync()
         {
             using (var db = _dbService.GetConnection())
             {

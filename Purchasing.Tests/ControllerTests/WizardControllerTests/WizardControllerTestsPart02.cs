@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
@@ -11,6 +10,8 @@ using Rhino.Mocks;
 using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Fakes;
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -22,7 +23,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestAddSubOrganizationsGetRedirectsToCreateWorkgroupIfIdIsZero()
         {
             #region Arrange
-            
+
             #endregion Arrange
 
             #region Act
@@ -30,8 +31,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Assert
             Controller.AddSubOrganizations(0)
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.CreateWorkgroup());
+                .AssertActionRedirect();
             #endregion Assert		
         }
 
@@ -76,8 +76,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var result = Controller.AddSubOrganizations(3, null)
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.SubOrganizations(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -106,8 +105,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var result = Controller.AddSubOrganizations(3, new string[0])
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.SubOrganizations(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -136,8 +134,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var result = Controller.AddSubOrganizations(3, new[] { "1", "3" })
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.SubOrganizations(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -169,8 +166,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var result = Controller.AddSubOrganizations(3, new[] { "1", "2" })
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.SubOrganizations(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

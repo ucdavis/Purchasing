@@ -4,19 +4,16 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Web.Mvc;
 using Elmah;
-using Microsoft.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
-using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Purchasing.Mvc.Services;
 using Purchasing.WS;
 using Serilog;
 using UCDArch.Core.PersistanceSupport;
@@ -24,6 +21,8 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -41,6 +40,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IEventService _eventService;
         private readonly IBugTrackingService _bugTrackingService;
         private readonly IFileService _fileService;
+        private readonly IMemoryCache _memoryCache;
 
         public OrderController(
             IRepositoryFactory repositoryFactory, 
@@ -51,7 +51,8 @@ namespace Purchasing.Mvc.Controllers
             IQueryRepositoryFactory queryRepository,
             IEventService eventService,
             IBugTrackingService bugTrackingService, 
-            IFileService fileService)
+            IFileService fileService,
+            IMemoryCache memoryCache)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
@@ -62,6 +63,7 @@ namespace Purchasing.Mvc.Controllers
             _eventService = eventService;
             _bugTrackingService = bugTrackingService;
             _fileService = fileService;
+            _memoryCache = memoryCache;
         }
 
         /// <summary>
@@ -88,7 +90,7 @@ namespace Purchasing.Mvc.Controllers
             if (workgroups.Count() == 1)
             {
                 var workgroup = workgroups.Single();
-                return this.RedirectToAction(a => a.Request(workgroup.Id));
+                return this.RedirectToAction(nameof(Request));
             }
             
             return View(workgroups.OrderBy(a => a.Name).ToList());
@@ -111,7 +113,7 @@ namespace Purchasing.Mvc.Controllers
             if (approval.Order.StatusCode.Id != OrderStatusCode.Codes.AccountManager)
             {
                 ErrorMessage = "Order Status must be at account manager to change account manager.";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
             var model = OrderReRoutePurchaserModel.Create(approval.Order);
             model.ApprovalId = approvalId;
@@ -131,19 +133,19 @@ namespace Purchasing.Mvc.Controllers
             if (approval.Order.StatusCode.Id != OrderStatusCode.Codes.AccountManager)
             {
                 ErrorMessage = "Order Status must be at account manager to change account manager.";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
 
             if (approval.User != null && approval.User.Id == accountManagerId)
             {
                 ErrorMessage = "No change detected.";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
 
             if (approval.User != null && approval.User.Id != CurrentUser.Identity.Name && !approval.User.IsAway)
             {
                 ErrorMessage = "Can't reroute an approval unless it is assigned to you or the assigned user is away";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
 
             var originalRouting = approval.User != null ? approval.User.FullName : "Any Workgroup Account Manager";
@@ -157,7 +159,7 @@ namespace Purchasing.Mvc.Controllers
             _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
 
             Message = string.Format("Order {0} rerouted to Account Manager {1}", approval.Order.RequestNumber, accountManager.FullName);
-            return this.RedirectToAction<HomeController>(a => a.Landing()); //May not have access to it anymore
+            return this.RedirectToAction(nameof(HomeController.Landing), nameof(HomeController)); //May not have access to it anymore
         }
 
         /// <summary>
@@ -173,12 +175,12 @@ namespace Purchasing.Mvc.Controllers
             if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
             {
                 ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
             //if (order.Approvals.Any(a=> a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User!=null))
             //{
             //    ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
-            //    return this.RedirectToAction(a => a.Review(id));
+            //    return this.RedirectToAction(nameof(Review));
             //}
             var model = OrderReRoutePurchaserModel.Create(order);
             //var purchaserPeepsIds =
@@ -207,12 +209,12 @@ namespace Purchasing.Mvc.Controllers
             if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
             {
                 ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
             //if (order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User != null))
             //{
             //    ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
-            //    return this.RedirectToAction(a => a.Review(id));
+            //    return this.RedirectToAction(nameof(Review));
             //}
             var purchaser = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == purchaserId);
             //var peepCheck = _queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId);
@@ -231,10 +233,10 @@ namespace Purchasing.Mvc.Controllers
 
             if (order.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
             {
-                return this.RedirectToAction(a => a.Review(order.Id));
+                return this.RedirectToAction(nameof(Review));
             }
 
-            return this.RedirectToAction<HomeController>(a => a.Landing());
+            return this.RedirectToAction(nameof(HomeController.Landing), nameof(HomeController));
         }
 
         /// <summary>
@@ -248,7 +250,7 @@ namespace Purchasing.Mvc.Controllers
             if (order.StatusCode.Id != OrderStatusCode.Codes.Complete)
             {
                 ErrorMessage = "Order Status must be at complete to assign an Accounts Payable user.";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
 
             var completedBy = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).OrderBy(o => o.DateCreated).First().User.Id;
@@ -258,7 +260,7 @@ namespace Purchasing.Mvc.Controllers
                 if (order.ApUser == null || order.ApUser.Id != CurrentUser.Identity.Name)
                 {
                     ErrorMessage = "You do not have permission to assign an Accounts Payable user.";
-                    return this.RedirectToAction(a => a.Review(id));
+                    return this.RedirectToAction(nameof(Review));
                 }
             }
 
@@ -277,7 +279,7 @@ namespace Purchasing.Mvc.Controllers
             if (order.StatusCode.Id != OrderStatusCode.Codes.Complete)
             {
                 ErrorMessage = "Order Status must be at complete to assign an Accounts Payable user.";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
 
             var completedBy = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).OrderBy(o => o.DateCreated).First().User.Id;
@@ -287,7 +289,7 @@ namespace Purchasing.Mvc.Controllers
                 if (order.ApUser == null || order.ApUser.Id != CurrentUser.Identity.Name)
                 {
                     ErrorMessage = "You do not have permission to assign an Accounts Payable user.";
-                    return this.RedirectToAction(a => a.Review(id));
+                    return this.RedirectToAction(nameof(Review));
                 }
             }
 
@@ -305,7 +307,7 @@ namespace Purchasing.Mvc.Controllers
            
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-            return this.RedirectToAction(a => a.Review(id));
+            return this.RedirectToAction(nameof(Review));
         }
 
         /// <summary>
@@ -321,7 +323,7 @@ namespace Purchasing.Mvc.Controllers
             if (workgroup == null || !workgroup.IsActive)
             {
                 ErrorMessage = workgroup == null ? "workgroup not found." : "workgroup not active.";
-                return this.RedirectToAction(a => a.SelectWorkgroup());                
+                return this.RedirectToAction(nameof(SelectWorkgroup));                
             }
 
             var requesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository
@@ -331,7 +333,7 @@ namespace Purchasing.Mvc.Controllers
             if (!requesterInWorkgroup.Any())
             {
                 ErrorMessage = Resources.NoAccess_Workgroup;
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             var model = CreateOrderModifyModel(workgroup);
@@ -380,7 +382,7 @@ namespace Purchasing.Mvc.Controllers
             Message = Resources.NewOrder_Success;
 
             //return RedirectToAction("Review", new { id = order.Id });
-            return this.RedirectToAction(a => a.Review(order.Id));
+            return this.RedirectToAction(nameof(Review));
         }
 
         /// <summary>
@@ -489,7 +491,7 @@ namespace Purchasing.Mvc.Controllers
             if (order.Workgroup == null || !order.Workgroup.IsActive)
             {
                 ErrorMessage = order.Workgroup == null ? "workgroup not found." : "workgroup not active.";
-                return this.RedirectToAction(a => a.SelectWorkgroup());
+                return this.RedirectToAction(nameof(SelectWorkgroup));
             }
 
             var requesterInWorkgroup = _repositoryFactory.WorkgroupPermissionRepository
@@ -499,7 +501,7 @@ namespace Purchasing.Mvc.Controllers
             if (!requesterInWorkgroup.Any())
             {
                 ErrorMessage = Resources.NoAccess_Workgroup;
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             var model = CreateOrderModifyModel(order.Workgroup);
@@ -591,7 +593,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (!requiredAccessLevel.HasFlag(roleAndAccessLevel.OrderAccessLevel))
             {
-                return new HttpUnauthorizedResult(Resources.Authorization_PermissionDenied);
+                return new UnauthorizedObjectResult(Resources.Authorization_PermissionDenied);
             }
             
             model.Vendor = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Vendor).Single();
@@ -726,7 +728,7 @@ namespace Purchasing.Mvc.Controllers
             if (relatedOrderId == default(int))
             {
                 Message = "Order Not Found";
-                return this.RedirectToAction<SearchController>(a => a.Index());
+                return this.RedirectToAction(nameof(SearchController.Index), nameof(SearchController));
             }
 
             OrderAccessLevel accessLevel;
@@ -771,7 +773,7 @@ namespace Purchasing.Mvc.Controllers
                         Message = string.Format("This order is currently being handled by {0} in the status {1}", person,
                                                 order.StatusCode.Name);
                     }
-                    return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                    return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
                 }
             }
 
@@ -1201,10 +1203,9 @@ namespace Purchasing.Mvc.Controllers
 
             Check.Require(_securityService.HasWorkgroupAccess(workgroup));
 
-            var modelState = new ModelStateDictionary();
             vendor.Workgroup = workgroup;
-            vendor.TransferValidationMessagesTo(modelState);
-            if (!modelState.IsValid)
+            vendor.TransferValidationMessagesTo(ModelState);
+            if (!ModelState.IsValid)
             {
                 return Json(new {success = false});
             }
@@ -1233,34 +1234,33 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken] //required because upload is being done by plugin
-        public ActionResult UploadFile(int? orderId)
+        public ActionResult UploadFile(int? orderId, IFormFile qqfile)
         {
             var request = ControllerContext.HttpContext.Request;
-            var qqFile = request["qqfile"];
-            Stream fileStream = request.InputStream;
+            Stream fileStream = qqfile.OpenReadStream();
 
             var attachment = new Attachment
             {
                 DateCreated = DateTime.UtcNow.ToPacificTime(),
                 User = GetCurrentUser(),
-                FileName = qqFile,
+                FileName = qqfile.FileName,
                 ContentType = request.Headers["X-File-Type"],
                 IsBlob = true, //Default to using blob storage
                 Contents = null //We'll upload to blob storage instead of filling contents
             };
             
-            if (String.IsNullOrEmpty(qqFile)) // IE
-            {
-                Check.Require(request.Files.Count > 0, Resources.FileUpload_NoFile);
-                var file = request.Files[0];
+            // if (String.IsNullOrEmpty(qqfile.FileName)) // IE
+            // {
+            //     Check.Require(request.Files.Count > 0, Resources.FileUpload_NoFile);
+            //     var file = request.Files[0];
 
-                attachment.FileName = Path.GetFileNameWithoutExtension(file.FileName) +
-                    Path.GetExtension(file.FileName).ToLower();
+            //     attachment.FileName = Path.GetFileNameWithoutExtension(file.FileName) +
+            //         Path.GetExtension(file.FileName).ToLower();
 
-                attachment.ContentType = file.ContentType;
+            //     attachment.ContentType = file.ContentType;
 
-                fileStream = file.InputStream; //IE uses request.Files[].InputStream instead of request.InputStream
-            }
+            //     fileStream = file.InputStream; //IE uses request.Files[].InputStream instead of request.InputStream
+            // }
 
             if (string.IsNullOrWhiteSpace(attachment.ContentType))
             {
@@ -1295,13 +1295,13 @@ namespace Purchasing.Mvc.Controllers
         {
             var file = _fileService.GetAttachment(fileId);
 
-            if (file == null) return HttpNotFound(Resources.ViewFile_NotFound);
+            if (file == null) return NotFound(Resources.ViewFile_NotFound);
 
             var accessLevel = _securityService.GetAccessLevel(file.Order);
 
             if (!(OrderAccessLevel.Edit | OrderAccessLevel.Readonly).HasFlag(accessLevel))
             {
-                return new HttpUnauthorizedResult(Resources.ViewFile_AccessDenied);
+                return new UnauthorizedObjectResult(Resources.ViewFile_AccessDenied);
             }
 
             return File(file.Contents, file.ContentType, file.FileName);
@@ -1315,7 +1315,7 @@ namespace Purchasing.Mvc.Controllers
             if(!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
                 Message = "Order must be complete before receiving line items.";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, false);
@@ -1352,7 +1352,7 @@ namespace Purchasing.Mvc.Controllers
             if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
                 Message = "Order must be complete before paying for line items.";
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, true);
@@ -1389,7 +1389,7 @@ namespace Purchasing.Mvc.Controllers
             if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
                 Message = string.Format("Order must be complete before {0} line items.", "receiving");
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
             if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
             {                
@@ -1420,7 +1420,7 @@ namespace Purchasing.Mvc.Controllers
                 _repositoryFactory.OrderRepository.EnsurePersistent(order);
             }
             
-            return this.RedirectToAction(a => a.ReceiveItems(id));
+            return this.RedirectToAction(nameof(ReceiveItems));
         }
 
         [HttpPost]
@@ -1432,7 +1432,7 @@ namespace Purchasing.Mvc.Controllers
             if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
                 Message = string.Format("Order must be complete before {0} line items.", "paying for");
-                return this.RedirectToAction(a => a.Review(id));
+                return this.RedirectToAction(nameof(Review));
             }
             if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
             {
@@ -1465,7 +1465,7 @@ namespace Purchasing.Mvc.Controllers
             }
 
 
-            return this.RedirectToAction(a => a.PayInvoice(id));
+            return this.RedirectToAction(nameof(PayInvoice));
         }
 
         [HttpPost]
@@ -2173,8 +2173,11 @@ namespace Purchasing.Mvc.Controllers
             requestSave.AccountData = accountData;
             requestSave.LastUpdate = DateTime.UtcNow.ToPacificTime();
 
-            var version = ControllerContext.HttpContext.Cache["Version"] as string;
-            requestSave.Version = version ?? "N/A";
+            if (!_memoryCache.TryGetValue<string>("Version", out var version))
+            {
+                version = "N/A";
+            }
+            requestSave.Version = version;
 
             _repositoryFactory.OrderRequestSaveRepository.EnsurePersistent(requestSave, newSave);
 
@@ -2197,7 +2200,7 @@ namespace Purchasing.Mvc.Controllers
             if (savedOrder.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "Not your order";
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             return View(savedOrder);
@@ -2211,14 +2214,14 @@ namespace Purchasing.Mvc.Controllers
             if (savedOrder.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "Not your order";
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             _repositoryFactory.OrderRequestSaveRepository.Remove(savedOrder);
 
             Message = "Saved Order Deleted";
 
-            return this.RedirectToAction(a => a.SavedOrderRequests());
+            return this.RedirectToAction(nameof(SavedOrderRequests));
         }
 
         public ActionResult GetRequesters(int id)
@@ -2229,7 +2232,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (!requesterInWorkgroup.Any())
             {
-                return new HttpUnauthorizedResult("not your order");
+                return new UnauthorizedObjectResult("not your order");
             }
 
 

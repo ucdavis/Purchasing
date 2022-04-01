@@ -6,6 +6,7 @@ using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using System.Linq;
 using System.Linq.Expressions;
 

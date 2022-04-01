@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -9,6 +8,7 @@ using Purchasing.Core.Queries;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {

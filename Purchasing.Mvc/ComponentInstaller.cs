@@ -1,23 +1,23 @@
 using System.Web;
 using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using NHibernate;
 using Purchasing.Core;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Helpers;
-using Purchasing.Mvc.Services;
 using Purchasing.WS;
 using UCDArch.Core.CommonValidator;
-using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;
 using UCDArch.Core.PersistanceSupport;
+using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;
 using UCDArch.Data.NHibernate;
 
 namespace Purchasing.Mvc
 {
-    internal static class ComponentRegistrar
+    public class ComponentInstaller : IWindsorInstaller
     {
-        public static void AddComponentsTo(IWindsorContainer container)
+        public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             AddGenericRepositoriesTo(container);
 

@@ -9,7 +9,6 @@ using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
-using DataAnnotationsExtensions;
 using UCDArch.Core.Utils;
 
 namespace Purchasing.Core.Domain
@@ -58,12 +57,12 @@ namespace Purchasing.Core.Domain
         [Required]
         public virtual string DeliverTo { get; set; }
         [StringLength(50)]
-        [Email]
+        [EmailAddress]
         public virtual string DeliverToEmail { get; set; }
         [StringLength(15)]
         public virtual string DeliverToPhone { get; set; }
         [Required]
-        [Date]
+        [DataType(DataType.DateTime)]
         public virtual DateTime DateNeeded { get; set; }
         public virtual bool AllowBackorder { get; set; }
         /// <summary>

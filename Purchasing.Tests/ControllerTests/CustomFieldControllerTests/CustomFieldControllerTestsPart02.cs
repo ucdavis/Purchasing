@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Purchasing.Tests.Core;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 {
@@ -31,8 +31,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Edit(4)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -56,8 +55,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Edit(1)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -123,8 +121,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Edit(4, new CustomField())
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -149,8 +146,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Edit(1, new CustomField())
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -231,8 +227,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             var result = Controller.Edit(1, customField)
-                .AssertActionRedirect()
-                .ToAction<CustomFieldController>(a => a.Index("9"));           
+                .AssertActionRedirect();           
             #endregion Act
 
             #region Assert
@@ -272,8 +267,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Delete(4)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -297,8 +291,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Delete(1)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -364,8 +357,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Delete(4, new CustomField())
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -391,8 +383,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Delete(1, new CustomField())
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -428,8 +419,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             var result = Controller.Delete(1, new CustomField())
-                .AssertActionRedirect()
-                .ToAction<CustomFieldController>(a => a.Index("9"));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

@@ -1,14 +1,14 @@
-﻿using System.Web.Mvc;
-using System.Web.Security;
+﻿using Microsoft.AspNetCore.Authorization;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for the Account class.
     /// </summary>
-    public class AccountController : Controller 
+    public class AccountController : Microsoft.AspNetCore.Mvc.Controller
     {
         public string Message
         {
@@ -40,7 +40,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = Role.Codes.EmulationUser)]
-        public RedirectToRouteResult Emulate(string id /* Login ID*/)
+        public RedirectToActionResult Emulate(string id /* Login ID*/)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -60,7 +60,7 @@ namespace Purchasing.Mvc.Controllers
         /// Just a signout, without the hassle of signing out of CAS.  Ends emulated credentials.
         /// </summary>
         /// <returns></returns>
-        public RedirectToRouteResult EndEmulate()
+        public RedirectToActionResult EndEmulate()
         {
             FormsAuthentication.SignOut();
 

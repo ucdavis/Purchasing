@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
 using Castle.Windsor;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Attributes;
@@ -8,8 +7,9 @@ using Purchasing.Mvc.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Mvc.Helpers;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 {

@@ -6,6 +6,7 @@ using Rhino.Mocks;
 using UCDArch.Core.DomainModel;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.Core
 {

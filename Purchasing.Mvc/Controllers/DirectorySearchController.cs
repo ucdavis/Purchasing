@@ -1,17 +1,15 @@
 ﻿using System;
 using System.DirectoryServices.Protocols;
 using System.Linq;
-using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Utility;
-using Purchasing.Mvc.Attributes;
-using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using IdAndName = Purchasing.Core.Services.IdAndName;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {

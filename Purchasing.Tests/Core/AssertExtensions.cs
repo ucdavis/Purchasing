@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Web.Mvc;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Purchasing.Tests.Core
@@ -24,25 +24,42 @@ namespace Purchasing.Tests.Core
         public static void AssertErrorsAre(this ModelStateDictionary modelState, params string[] errors)
         {
             var resultsList = new List<string>();
-            foreach(var result in modelState.Values)
+            foreach (var result in modelState.Values)
             {
-                foreach(var errs in result.Errors)
+                foreach (var errs in result.Errors)
                 {
                     resultsList.Add(errs.ErrorMessage);
                 }
             }
 
             Assert.AreEqual(resultsList.Count, errors.Length, "Number of error messages do not match");
-            foreach(var error in errors)
+            foreach (var error in errors)
             {
                 Assert.IsTrue(resultsList.Contains(error), "Expected error \"" + error + "\" not found." + "Found:" + resultsList.ParseList());
             }
         }
 
+        public static void AssertSameStringAs(this string actual, string expected)
+        {
+            Assert.IsTrue(
+                string.Equals(actual, expected, StringComparison.InvariantCultureIgnoreCase),
+                string.Format("Expected {0} but was {1}", expected, actual));
+        }
+
+        public static void ShouldNotBeNull(this object Actual, string message)
+        {
+            Assert.IsNotNull(Actual, message);
+        }
+
+        public static void ShouldEqual(this object Actual, object Expected, string message)
+        {
+            Assert.AreEqual(Expected, Actual, message);
+        }
+
         private static string ParseList(this IEnumerable<string> source)
         {
             var rtValue = "";
-            foreach(var s in source)
+            foreach (var s in source)
             {
                 rtValue = rtValue + "\n" + s;
             }

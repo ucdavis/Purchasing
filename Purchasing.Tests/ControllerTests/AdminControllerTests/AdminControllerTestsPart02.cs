@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Controllers;
 using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -124,8 +125,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.ModifyAdmin(user)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -174,8 +174,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.ModifyAdmin(user)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -228,8 +227,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.ModifyAdmin(user)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -254,8 +252,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.RemoveAdmin("4")
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -273,8 +270,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.RemoveAdmin("3")
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -315,8 +311,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.RemoveAdminRole("4")
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -365,8 +360,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.RemoveAdminRole("3")
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -395,8 +389,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Act
 
             Controller.RemoveDepartmental("4")
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -415,8 +408,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Act
 
             Controller.RemoveDepartmental("3")
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -468,8 +460,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.RemoveDepartmentalRole("4")
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -526,8 +517,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.RemoveDepartmentalRole("1")
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -555,8 +545,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.Clone("4")
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

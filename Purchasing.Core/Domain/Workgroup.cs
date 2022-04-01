@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
 using FluentNHibernate.MappingModel;
 using UCDArch.Core.DomainModel;
@@ -71,7 +70,7 @@ namespace Purchasing.Core.Domain
         public virtual bool IsActive { get; set; }
 
         [StringLength(100)]
-        [Email]
+        [EmailAddress]
         [Display(Name="Notification Email List")]
         public virtual string NotificationEmailList { get; set; }
 

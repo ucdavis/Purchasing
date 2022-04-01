@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
-using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -52,7 +53,7 @@ namespace Purchasing.Mvc.Controllers
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
             {
-                return new HttpUnauthorizedResult(message);
+                return new UnauthorizedObjectResult(message);
             }
 
             //var adminOrg = _queryRepositoryFactory.AdminOrgRepository.Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name && a.IsActive && a.OrgId == id).Select(a => a.OrgId).FirstOrDefault();

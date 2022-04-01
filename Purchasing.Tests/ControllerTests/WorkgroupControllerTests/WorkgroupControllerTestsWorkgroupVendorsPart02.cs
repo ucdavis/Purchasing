@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
@@ -9,7 +8,8 @@ using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using Rhino.Mocks.Constraints;
 using UCDArch.Testing;
-
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -26,8 +26,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.EditWorkgroupVendor(0,4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -49,8 +48,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.EditWorkgroupVendor(15, 1)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(1));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -98,8 +96,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.EditWorkgroupVendor(0, 4, new WorkgroupVendor())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -122,8 +119,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.EditWorkgroupVendor(15, 1, new WorkgroupVendor())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(1));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -262,8 +258,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.EditWorkgroupVendor(15, 1, workgroupVendor)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(15));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

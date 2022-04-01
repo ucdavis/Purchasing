@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
-using System.Web.SessionState;
 using Dapper;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for the Stats class
     /// </summary>
-    [SessionState(SessionStateBehavior.Disabled)]
     public class StatsController : ApplicationController
     {
         private readonly IDbService _dbService;
@@ -26,7 +24,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HandleTransactionsManually]
-        [OutputCache(Duration = 14400)] //4 hours
+        [ResponseCache(Duration = 14400)] //4 hours
         public JsonNetResult Overall()
         {
             var stats = new OverallStatistics { LastUpdated = DateTime.UtcNow };

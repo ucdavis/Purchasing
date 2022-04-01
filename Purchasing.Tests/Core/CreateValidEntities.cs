@@ -3,6 +3,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.Core
 {

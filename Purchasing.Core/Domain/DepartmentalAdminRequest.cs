@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
 using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
@@ -52,7 +51,7 @@ namespace Purchasing.Core.Domain
 
         [Required]
         [StringLength(50)]
-        [Email]
+        [EmailAddress]
         public virtual string Email { get; set; }
 
         [Display(Name = "Department Size")]

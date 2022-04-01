@@ -10,9 +10,10 @@ using UCDArch.Core.DomainModel;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 using Castle.Windsor;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using Rhino.Mocks;
 using UCDArch.Core.CommonValidator;
 //using UCDArch.Core.NHibernateValidator.CommonValidatorAdapter;

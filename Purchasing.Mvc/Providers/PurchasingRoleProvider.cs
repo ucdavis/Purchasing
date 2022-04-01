@@ -4,7 +4,7 @@ using System.Data.Odbc;
 using System.Linq;
 using System.Web.Security;
 using Dapper;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 

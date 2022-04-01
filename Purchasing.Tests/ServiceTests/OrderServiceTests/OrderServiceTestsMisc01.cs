@@ -5,6 +5,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {

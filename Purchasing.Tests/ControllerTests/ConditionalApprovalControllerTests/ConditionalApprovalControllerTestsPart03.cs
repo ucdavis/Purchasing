@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
@@ -11,7 +10,8 @@ using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.Utils;
 using UCDArch.Testing.Fakes;
-
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
@@ -138,8 +138,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Act
             var results = Controller.Create(1, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Details(1));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -163,8 +162,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Act
             Controller.Create(1, null)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -183,8 +181,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Act
             Controller.Create(null, "test")
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

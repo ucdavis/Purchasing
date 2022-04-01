@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
-using System.Web.Caching;
 using FluentNHibernate.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core;
@@ -19,6 +17,7 @@ using Rhino.Mocks.Interfaces;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 
 namespace Purchasing.Tests.ServiceTests

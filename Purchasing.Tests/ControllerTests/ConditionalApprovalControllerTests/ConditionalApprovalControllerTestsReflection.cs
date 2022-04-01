@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Web.Mvc;
 using Castle.Windsor;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {

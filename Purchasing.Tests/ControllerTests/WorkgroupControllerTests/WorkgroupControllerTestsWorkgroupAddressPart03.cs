@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using UCDArch.Testing;
-
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -23,8 +23,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AddressDetails(4, 6)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -41,8 +40,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.AddressDetails(3, 6)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -127,8 +125,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.EditAddress(4, 6)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -145,8 +142,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.EditAddress(3, 6)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -228,8 +224,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.EditAddress(4, 6, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -246,8 +241,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.EditAddress(3, 6, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -347,8 +341,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.EditAddress(2, 4, address)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -385,8 +378,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.EditAddress(2, 4, address)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

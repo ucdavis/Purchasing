@@ -23,12 +23,11 @@ namespace Purchasing.Mvc
             if (_loggingSetup) return; //only setup logging once
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Stackify()
                 .WriteToElasticSearchCustom()
                 .Enrich.With<HttpSessionIdEnricher>()
                 .Enrich.With<UserNameEnricher>()
                 .Enrich.FromLogContext()
-                .Filter.ByExcluding(e => e.Exception != null && e.Exception.GetBaseException() is HttpException) //filter out those 404s and headers exceptions
+                //.Filter.ByExcluding(e => e.Exception != null && e.Exception.GetBaseException() is HttpException) //filter out those 404s and headers exceptions
                 .CreateLogger();
 
             _loggingSetup = true;

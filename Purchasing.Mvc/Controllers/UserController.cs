@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
-using Microsoft.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Helpers;
-using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
 using UCDArch.Web.ActionResults;
-using MvcContrib;
 using UCDArch.Web.Helpers;
 
 namespace Purchasing.Mvc.Controllers
@@ -99,7 +97,7 @@ namespace Purchasing.Mvc.Controllers
         {
             if (user.Id.ToLower() != CurrentUser.Identity.Name.ToLower())
             {
-                return this.RedirectToAction<ErrorController>(a => a.NotAuthorized());
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
             }
 
             var userToEdit = GetCurrent();
@@ -117,7 +115,7 @@ namespace Purchasing.Mvc.Controllers
             _userRepository.EnsurePersistent(userToEdit);
             Message = "Email Updated";
 
-            return this.RedirectToAction(a => a.Profile());
+            return this.RedirectToAction(nameof(Profile));
 
         }
 

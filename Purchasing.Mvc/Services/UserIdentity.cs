@@ -1,6 +1,7 @@
 using System.Security.Principal;
 using System.Web;
 using System.Web.Security;
+using Purchasing.Mvc;
 
 namespace Purchasing.Mvc.Services
 {
@@ -14,8 +15,8 @@ namespace Purchasing.Mvc.Services
 
     public class UserIdentity : IUserIdentity
     {
-        public string Current { get { return HttpContext.Current.User.Identity.Name; } }
-        public IPrincipal CurrentPrincipal { get { return HttpContext.Current.User; } }
+        public string Current { get { return HttpContextHelper.Current.User.Identity.Name; } }
+        public IPrincipal CurrentPrincipal { get { return HttpContextHelper.Current.User; } }
         public bool IsUserInRole(string userId, string roleId)
         {
             return Roles.IsUserInRole(userId, roleId);
@@ -23,7 +24,7 @@ namespace Purchasing.Mvc.Services
 
         public void RemoveUserRoleFromCache(string roleCacheId, string userId)
         {
-            HttpContext.Current.Session.Remove(string.Format(roleCacheId, userId));
+            HttpContextHelper.Current.Session.Remove(string.Format(roleCacheId, userId));
         }
 
     }

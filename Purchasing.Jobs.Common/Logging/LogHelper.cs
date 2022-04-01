@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using System.Runtime.Remoting.Channels;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
 
@@ -15,7 +14,6 @@ namespace Purchasing.Jobs.Common.Logging
             if (_loggingSetup) return; //only setup logging once
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Stackify()
                 .WriteToElasticSearchCustom()
                 .CreateLogger();
 

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Web.Mvc;
 using AutoMapper;
-using Microsoft.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Mvc.Attributes;
@@ -19,11 +18,13 @@ namespace Purchasing.Mvc.Controllers
     {
 	    private readonly IRepository<AutoApproval> _autoApprovalRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly IMapper _mapper;
 
-        public AutoApprovalController(IRepository<AutoApproval> autoApprovalRepository, IRepositoryWithTypedId<User,string> userRepository)
+        public AutoApprovalController(IRepository<AutoApproval> autoApprovalRepository, IRepositoryWithTypedId<User,string> userRepository, IMapper mapper)
         {
             _autoApprovalRepository = autoApprovalRepository;
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -66,13 +67,13 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApproval == null)
             {
-                return this.RedirectToAction(a => a.Index(showAll));
+                return this.RedirectToAction(nameof(Index));
             }
 
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
 
             ViewBag.ShowAll = showAll;
@@ -124,7 +125,7 @@ namespace Purchasing.Mvc.Controllers
                 {
                     Message = Message + " Warning, will expire in 5 days or less";
                 }
-                return this.RedirectToAction(a => a.Index(showAll));
+                return this.RedirectToAction(nameof(Index));
             }
             else
             {
@@ -150,13 +151,13 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApproval == null)
             {
-                return this.RedirectToAction(a => a.Index(showAll));
+                return this.RedirectToAction(nameof(Index));
             }
 
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
 
             var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
@@ -182,13 +183,13 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApprovalToEdit == null)
             {
-                return this.RedirectToAction(a => a.Index(showAll));
+                return this.RedirectToAction(nameof(Index));
             }
 
             if(autoApprovalToEdit.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
 
             TransferValues(autoApproval, autoApprovalToEdit);
@@ -203,7 +204,7 @@ namespace Purchasing.Mvc.Controllers
 
                 Message = "AutoApproval Edited Successfully";
 
-                return this.RedirectToAction(a => a.Index(showAll));
+                return this.RedirectToAction(nameof(Index));
             }
             else
             {
@@ -229,18 +230,18 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApproval == null)
             {
-                return this.RedirectToAction(a => a.Index(showAll));
+                return this.RedirectToAction(nameof(Index));
             }
 
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
             if(!autoApproval.IsActive)
             {
                 Message = "Already deactivated";
-                return this.RedirectToAction(a => a.Index(showAll));
+                return this.RedirectToAction(nameof(Index));
             }
 
             ViewBag.ShowAll = showAll;
@@ -264,13 +265,13 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApprovalToDelete == null)
             {
-                return this.RedirectToAction(a => a.Index(showAll));
+                return this.RedirectToAction(nameof(Index));
             }
 
             if(autoApprovalToDelete.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction<ErrorController>(a => a.Index());
+                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
             }
 
             if(autoApprovalToDelete.IsActive)
@@ -281,15 +282,15 @@ namespace Purchasing.Mvc.Controllers
 
                 Message = "AutoApproval Deactivated Successfully";
             }
-            return this.RedirectToAction(a => a.Index(showAll));
+            return this.RedirectToAction(nameof(Index));
         }
         
         /// <summary>
         /// Transfer editable values from source to destination
         /// </summary>
-        private static void TransferValues(AutoApproval source, AutoApproval destination)
+        private void TransferValues(AutoApproval source, AutoApproval destination)
         {
-            Mapper.Map(source, destination);
+            _mapper.Map(source, destination);
         }
 
 

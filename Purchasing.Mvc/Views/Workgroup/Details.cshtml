@@ -1,4 +1,5 @@
-﻿@using Purchasing.Core.Domain
+@using Microsoft.AspNetCore.Mvc.Razor
+@using Purchasing.Core.Domain
 @using Purchasing.Mvc.Models
 @model WorkgroupDetailsViewModel
 
@@ -6,64 +7,65 @@
     ViewBag.Title = Model.Workgroup.Name;
 }
 
-@helper ContainerFor(string name, int count, string action = null, string roleFilter = null, bool special = false, string label = null, bool disable = false){
-    if (special && (disable == null || disable == false))
-    {
-          <a href="@Url.Action("ByWorkgroup", "ConditionalApproval", new { id = Model.Workgroup.Id }, null)">
-
-            <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
-        
-                <ul>
-        
-                    <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
-
-                    <li class="prop-value">@count
-                    </li>
-
-                </ul>
-        
-            </div>
-        </a>
-    }
-    else
-    {
-        if (disable)
-        {
-
-                <div title="Administrative workgroups do not allow @(!string.IsNullOrWhiteSpace(label) ? label : name) to be added." class=" disable workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
-        
-                    <ul>
-        
-                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
-
-                        <li class="prop-value">@count
-                        </li>
-
-                    </ul>
-        
-                </div>
-
-        }
-        else
-        {
-            <a href="@Url.Action(action ?? name, "Workgroup", new {id = Model.Workgroup.Id, roleFilter = roleFilter})">
-                <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
-        
-                    <ul>
-        
-                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
-
-                        <li class="prop-value">@count
-                        </li>
-
-                    </ul>
-        
-                </div>
-            </a>
-        }
-
-    }
-}
+@{ HelperResult ContainerFor(string name, int count, string action = null, string roleFilter = null, bool special = false, string label = null, bool disable = false){
+	    if (special && (disable == null || disable == false))
+	    {
+	          <a href="@Url.Action("ByWorkgroup", "ConditionalApproval", new { id = Model.Workgroup.Id }, null)">
+	
+	            <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
+	        
+	                <ul>
+	        
+	                    <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
+	
+	                    <li class="prop-value">@count
+	                    </li>
+	
+	                </ul>
+	        
+	            </div>
+	        </a>
+	    }
+	    else
+	    {
+	        if (disable)
+	        {
+	
+	                <div title="Administrative workgroups do not allow @(!string.IsNullOrWhiteSpace(label) ? label : name) to be added." class=" disable workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
+	        
+	                    <ul>
+	        
+	                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
+	
+	                        <li class="prop-value">@count
+	                        </li>
+	
+	                    </ul>
+	        
+	                </div>
+	
+	        }
+	        else
+	        {
+	            <a href="@Url.Action(action ?? name, "Workgroup", new {id = Model.Workgroup.Id, roleFilter = roleFilter})">
+	                <div class="workgroup-info gradientbackground ui-corner-all box-shadow @(count == 0 ? "box-red-innershadow" : string.Empty)">
+	        
+	                    <ul>
+	        
+	                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(!string.IsNullOrWhiteSpace(label) ? label : name)</li>
+	
+	                        <li class="prop-value">@count
+	                        </li>
+	
+	                    </ul>
+	        
+	                </div>
+	            </a>
+	        }
+	
+	    }
+		return new HelperResult(w => Task.CompletedTask);
+} }
 
 @section SubNav
 {

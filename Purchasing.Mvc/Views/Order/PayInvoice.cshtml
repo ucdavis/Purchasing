@@ -1,4 +1,5 @@
-﻿@using Purchasing.Core.Domain
+@using Microsoft.AspNetCore.Mvc.Razor
+@using Purchasing.Core.Domain
 @model OrderReceiveModel
 
 
@@ -80,27 +81,28 @@
     </script>
 }
 
-@helper UnaccountedAmount(decimal total, decimal? received)
-{
-    var rtValue = string.Format("<td ");
-    if (received != null)
-    {
-        var diff = total - received;
-        if (diff > 0)
-        {
-            rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", diff));
-        }
-        else
-        {
-            rtValue = string.Format("{0} class='unaccounted green bold'>{1}</td>", rtValue, string.Format("{0:0.###}", diff * -1));
-        }
-    }
-    else
-    {
-        rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", total));
-    }
-    @Html.Raw(rtValue)
-}
+@{ HelperResult UnaccountedAmount(decimal total, decimal? received)
+	{
+	    var rtValue = string.Format("<td ");
+	    if (received != null)
+	    {
+	        var diff = total - received;
+	        if (diff > 0)
+	        {
+	            rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", diff));
+	        }
+	        else
+	        {
+	            rtValue = string.Format("{0} class='unaccounted green bold'>{1}</td>", rtValue, string.Format("{0:0.###}", diff * -1));
+	        }
+	    }
+	    else
+	    {
+	        rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", total));
+	    }
+	    @Html.Raw(rtValue)
+		return new HelperResult(w => Task.CompletedTask);
+} }
 
 <div id="status-message">
     We have made some functional changes to this page. Here is a short video describing the changes: <a href="https://youtu.be/bAKKMUo6-2E" target="_blank">https://youtu.be/bAKKMUo6-2E</a>.

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Routing;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
@@ -14,6 +12,7 @@ using Purchasing.Mvc.Services;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {

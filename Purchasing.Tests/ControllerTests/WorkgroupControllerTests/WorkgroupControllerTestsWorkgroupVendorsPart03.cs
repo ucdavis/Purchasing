@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -29,8 +29,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.DeleteWorkgroupVendor(0,4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -72,8 +71,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.DeleteWorkgroupVendor(0, 4, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -103,8 +101,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.DeleteWorkgroupVendor(3, 2, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -141,8 +138,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.DeleteWorkgroupVendor(4, 3, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(4));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

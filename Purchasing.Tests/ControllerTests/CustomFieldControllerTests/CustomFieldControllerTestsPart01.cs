@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using Purchasing.Tests.Core;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 {
@@ -29,8 +29,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Index("4")
-                .AssertActionRedirect()
-                .ToAction<OrganizationController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -51,8 +50,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Index("2")
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -110,8 +108,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Create("4")
-                .AssertActionRedirect()
-                .ToAction<OrganizationController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -131,8 +128,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Create("2")
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -195,8 +191,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Create("4", new CustomField())
-                .AssertActionRedirect()
-                .ToAction<OrganizationController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -216,8 +211,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             Controller.Create("2", new CustomField())
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.NotAuthorized());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -278,8 +272,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Act
             var result = Controller.Create("2", customField)
-                .AssertActionRedirect()
-                .ToAction<CustomFieldController>(a => a.Index("2"));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -20,7 +21,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestIndexReturnsView()
         {
             #region Arrange
-            
+
             #endregion Arrange
 
             #region Act
@@ -225,8 +226,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var result = Controller.CreateWorkgroup(workgroup)
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.AddSubOrganizations(99));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert

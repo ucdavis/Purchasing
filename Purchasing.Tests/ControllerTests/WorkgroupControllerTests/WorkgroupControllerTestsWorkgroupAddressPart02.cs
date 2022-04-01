@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Rhino.Mocks;
+using UCDArch.Testing.Extensions;
 
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
@@ -22,8 +23,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.DeleteAddress(4, 6)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -40,8 +40,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.DeleteAddress(3, 6)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -126,8 +125,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.DeleteAddress(4, 6, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -145,8 +143,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.DeleteAddress(3, 6, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -166,8 +163,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.DeleteAddress(2, 4, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -193,8 +189,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.DeleteAddress(2, 5, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -220,8 +215,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.DeleteAddress(2, 6, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
