@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Encodings.Web;
-using System.Web;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +20,7 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
 using IdAndName = Purchasing.Core.Services.IdAndName;
+using Microsoft.AspNetCore.Http;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -751,7 +751,7 @@ namespace Purchasing.Mvc.Controllers
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found.";
-                return this.RedirectToAction<WorkgroupController>(nameof(WorkgroupController.Index));
+                return this.RedirectToAction(nameof(WorkgroupController.Index));
             }
 
             var workgroupVendorList = _workgroupVendorRepository.Queryable.Where(a => a.Workgroup == workgroup && a.IsActive);
@@ -792,7 +792,7 @@ namespace Purchasing.Mvc.Controllers
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found.";
-                return this.RedirectToAction<WorkgroupController>(nameof(WorkgroupController.Index));
+                return this.RedirectToAction(nameof(WorkgroupController.Index));
             }
 
             if(workgroup.Administrative)
@@ -822,7 +822,7 @@ namespace Purchasing.Mvc.Controllers
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found.";
-                return this.RedirectToAction<WorkgroupController>(nameof(WorkgroupController.Index));
+                return this.RedirectToAction(nameof(WorkgroupController.Index));
             }
 
             if(workgroup.Administrative)
@@ -1090,7 +1090,7 @@ namespace Purchasing.Mvc.Controllers
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found.";
-                return this.RedirectToAction<WorkgroupController>(nameof(WorkgroupController.Index));
+                return this.RedirectToAction(nameof(WorkgroupController.Index));
             }
 
             if(workgroup.Administrative)
@@ -1109,7 +1109,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult BulkVendor(int id, HttpPostedFileBase file)
+        public ActionResult BulkVendor(int id, IFormFile file)
         {
             // Verify that the user selected a file 
 
@@ -1118,7 +1118,7 @@ namespace Purchasing.Mvc.Controllers
             if (workgroup == null)
             {
                 ErrorMessage = "Workgroup could not be found.";
-                return this.RedirectToAction<WorkgroupController>(nameof(WorkgroupController.Index));
+                return this.RedirectToAction(nameof(WorkgroupController.Index));
             }
 
             if(workgroup.Administrative)
@@ -1132,9 +1132,9 @@ namespace Purchasing.Mvc.Controllers
                 ErrorMessage = "Must be a valid Excel (.xls) file";
                 return this.RedirectToAction(nameof(VendorList));
             }
-            if (file != null && file.ContentLength > 0)
+            if (file != null && file.Length > 0)
             {
-                Stream uploadFileStream = file.InputStream;
+                Stream uploadFileStream = file.OpenReadStream();
 
                 
                 HSSFWorkbook wBook = new HSSFWorkbook(uploadFileStream);

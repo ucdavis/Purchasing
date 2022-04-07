@@ -52,27 +52,26 @@
 	<ItemGroup>
 		<PackageReference Include="bootstrap" Version="5.1.3"/>
 		<PackageReference Include="ietws" Version="0.2.8"/>
-		<PackageReference Include="iTextSharp" Version="5.5.13.3"/>
+		<PackageReference Include="itext7" Version="7.2.1"/>
 		<PackageReference Include="jQuery" Version="3.6.0"/>
 		<PackageReference Include="jQuery.Validation" Version="1.19.3"/>
-		<PackageReference Include="Lucene.Net" Version="3.0.3"/>
-		<PackageReference Include="Microsoft.AspNet.Mvc.Futures" Version="5.0.0"/>
+		<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016"/>
 		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.12"/>
 		<PackageReference Include="Modernizr" Version="2.8.3"/>
 		<PackageReference Include="Respond" Version="1.4.2"/>
 		<PackageReference Include="Sendgrid" Version="9.27.0"/>
-		<PackageReference Include="Serilog.Enrichers.ClientInfo" Version="1.1.4"/>
 		<PackageReference Include="System.DirectoryServices.Protocols" Version="6.0.1"/>
 		<PackageReference Include="Antlr4" Version="4.6.6"/>
 		<PackageReference Include="AzureActiveDirectorySearcher" Version="1.0.0"/>
-		<PackageReference Include="MiniProfiler" Version="4.2.22"/>
+		<PackageReference Include="MiniProfiler.AspNetCore" Version="4.2.22"/>
 		<PackageReference Include="NPOI" Version="2.5.5"/>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.3"/>
-		<PackageReference Include="SerilogWeb.Classic" Version="5.1.66"/>
+    <PackageReference Include="Serilog.AspNetCore" Version="5.0.0"/>
+    <PackageReference Include="Serilog.Enrichers.ClientInfo" Version="1.1.4"/>
 		<PackageReference Include="Castle.Windsor.Extensions.DependencyInjection" Version="5.1.1"/>
+    <PackageReference Include="BundlerMinifier.Core " Version="3.2.449"/>
 	</ItemGroup>
-	<Target Name="EnsureOctoPackImported" BeforeTargets="BeforeBuild" Condition="'$(OctoPackImported)' == ''">
-		<Error Condition="!Exists('..\packages\OctoPack.3.0.71\tools\OctoPack.targets') And ('$(RunOctoPack)' != '' And $(RunOctoPack))" Text="You are trying to build with OctoPack, but the NuGet targets file that OctoPack depends on is not available on this computer. This is probably because the OctoPack package has not been committed to source control, or NuGet Package Restore is not enabled. Please enable NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001"/>
-		<Error Condition="Exists('..\packages\OctoPack.3.0.71\tools\OctoPack.targets') And ('$(RunOctoPack)' != '' And $(RunOctoPack))" Text="OctoPack cannot be run because NuGet packages were restored prior to the build running, and the targets file was unavailable when the build started. Please build the project again to include these packages in the build. You may also need to make sure that your build server does not delete packages prior to each build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002"/>
-	</Target>
+  <Target Name="BundleMinify" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' ">
+    <Exec Command="dotnet bundle" />
+  </Target>
 </Project>

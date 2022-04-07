@@ -24,11 +24,13 @@ namespace Purchasing.Mvc.Controllers
 	    private readonly IRepository<ServiceMessage> _serviceMessageRepository;
 
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
 
-        public ServiceMessageController(IRepository<ServiceMessage> serviceMessageRepository, IMapper mapper)
+        public ServiceMessageController(IRepository<ServiceMessage> serviceMessageRepository, IMapper mapper, IMemoryCache cache)
         {
             _serviceMessageRepository = serviceMessageRepository;
             _mapper = mapper;
+            _cache = cache;
         }
     
         //
@@ -39,27 +41,6 @@ namespace Purchasing.Mvc.Controllers
             var serviceMessageList = _serviceMessageRepository.Queryable;
 
             return View(serviceMessageList.ToList());
-        }
-
-        [ChildActionOnly]
-        [HandleTransactionsManually]
-        public ActionResult ServiceMessages()
-        {
-            if(HttpContext.Cache[CacheKey]==null)
-            {
-                using (var ts = new TransactionScope())
-                {
-                    var currentDate = DateTime.UtcNow.ToPacificTime().Date;
-                    var serviceMessageListToCache = _serviceMessageRepository.Queryable.Where(a => a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate == null || a.EndDisplayDate >= currentDate)).ToList();
-                    HttpContextHelper.Current.Cache.Insert(CacheKey, serviceMessageListToCache, null, DateTime.UtcNow.ToPacificTime().Date.AddDays(1), Cache.NoSlidingExpiration);
-
-                    ts.CommitTransaction();
-                }
-            }
-            
-            var serviceMessageList = HttpContext.Cache[CacheKey];
-            
-            return PartialView("~/Views/Shared/_ServiceMessages.cshtml", serviceMessageList); 
         }
 
         //
@@ -87,7 +68,7 @@ namespace Purchasing.Mvc.Controllers
                 _serviceMessageRepository.EnsurePersistent(serviceMessageToCreate);
 
                 // invalidate the cache
-                HttpContextHelper.Current.Cache.Remove(CacheKey);
+                _cache.Remove(CacheKey);
 
                 Message = "ServiceMessage Created Successfully";
 
@@ -134,7 +115,7 @@ namespace Purchasing.Mvc.Controllers
                 _serviceMessageRepository.EnsurePersistent(serviceMessageToEdit);
 
                 // invalidate the cache
-                HttpContextHelper.Current.Cache.Remove(CacheKey);
+                _cache.Remove(CacheKey);
 
                 Message = "ServiceMessage Edited Successfully";
 
@@ -154,7 +135,7 @@ namespace Purchasing.Mvc.Controllers
         /// <summary>
         /// Transfer editable values from source to destination
         /// </summary>
-        private static void TransferValues(ServiceMessage source, ServiceMessage destination)
+        private void TransferValues(ServiceMessage source, ServiceMessage destination)
         {
 			//Recommendation: Use AutoMapper
             _mapper.Map(source, destination);

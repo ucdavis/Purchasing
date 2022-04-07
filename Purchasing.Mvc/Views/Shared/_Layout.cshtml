@@ -46,7 +46,7 @@
 
 	<div class="wrapper">	
 
-    @Html.Action("ServiceMessages", "ServiceMessage")
+    @await Component.InvokeAsync("ServiceMessages")
 	
 		<header id="branding">
 			

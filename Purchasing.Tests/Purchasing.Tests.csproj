@@ -85,8 +85,7 @@
 		<ProjectReference Include="..\..\UCDArch\UCDArch\UCDArch.Testing\UCDArch.Testing.csproj"/>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="MvcContrib.Mvc3.TestHelper-ci" Version="3.0.100"/>
-		<PackageReference Include="SQLitex64" Version="1.0.66"/>
+		<PackageReference Include="System.Data.Sqlite" Version="1.0.115.5"/>
 	</ItemGroup>
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App"/>

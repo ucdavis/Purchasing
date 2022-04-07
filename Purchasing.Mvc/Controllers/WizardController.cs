@@ -312,7 +312,6 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        [ValidateInput(false)]
         public ActionResult AddPeople(int id, WizardWorkgroupPeoplePostModel workgroupPeoplePostModel, string roleFilter, string bulkEmail, string bulkKerb)
         {
             var notAddedKvp = new List<KeyValuePair<string, string>>();
