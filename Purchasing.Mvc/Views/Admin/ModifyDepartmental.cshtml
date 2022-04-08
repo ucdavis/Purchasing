@@ -8,6 +8,13 @@
 @section AdditionalStyles
 {
     @Styles.Render("~/Css/multiselector")    
+    <environment include="Development">
+        <link rel="stylesheet" href="~/Css/multiselector.min.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/bundles/multiselector.min.js" />
+    </environment>
+
 }
 
 @section SubNav

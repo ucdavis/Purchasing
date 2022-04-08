@@ -22,6 +22,8 @@ using Castle.Windsor;
 using Castle.Windsor.Installer;
 using UCDArch.Data.NHibernate;
 using Purchasing.Core.Domain;
+using Purchasing.Mvc.Logging;
+using Serilog;
 
 namespace Purchasing.Mvc
 {
@@ -46,11 +48,18 @@ namespace Purchasing.Mvc
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews(options => { })
-                .AddNewtonsoftJson(options =>
-                {
-                    options.UseMemberCasing();
-                })
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<SerilogControllerActionFilter>();
+            })
+            .AddNewtonsoftJson(options =>
+            {
+                options.UseMemberCasing();
+                options.SerializerSettings.Error += (sender, args) =>
+                    {
+                        Log.Logger.Warning(args.ErrorContext.Error, "JSON Serialization Error: {message}", args.ErrorContext.Error.Message);
+                    };
+            })
             // Allow standard Windsor behavior for services injected into controllers...
             .AddControllersAsServices();
 
@@ -63,36 +72,39 @@ namespace Purchasing.Mvc
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<CorrelationIdMiddleware>();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseStatusCodePages(context =>
+            else
             {
-                switch (context.HttpContext.Response.StatusCode)
+                app.UseStatusCodePages(context =>
                 {
-                    case StatusCodes.Status403Forbidden:
-                        context.HttpContext.Response.Redirect("/Error/NotAuthorized");
-                        break;
-                    case StatusCodes.Status404NotFound:
-                        context.HttpContext.Response.Redirect("/Error/Forbidden");
-                        break;
-                    default:
-                        context.HttpContext.Response.Redirect("/Error/Index");
-                        break;
-                }
-                return Task.CompletedTask;
-            });
+                    switch (context.HttpContext.Response.StatusCode)
+                    {
+                        case StatusCodes.Status403Forbidden:
+                            context.HttpContext.Response.Redirect("/Error/NotAuthorized");
+                            break;
+                        case StatusCodes.Status404NotFound:
+                            context.HttpContext.Response.Redirect("/Error/Forbidden");
+                            break;
+                        default:
+                            context.HttpContext.Response.Redirect("/Error/Index");
+                            break;
+                    }
+                    return Task.CompletedTask;
+                });
+            }
 
             app.UseStaticFiles();
-            
-            app.UseAuthentication();
-            
+            app.UseSerilogRequestLogging();
+
             app.UseRouting();
-            
+            app.UseAuthentication();
+
             app.UseAuthorization();
-            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

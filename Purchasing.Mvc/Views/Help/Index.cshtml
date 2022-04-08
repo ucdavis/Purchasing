@@ -1,6 +1,9 @@
-﻿@using Microsoft.Azure
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
 @{
     ViewBag.Title = "PrePurchasing Help";
+    var feedbackUrl = configuration.GetValue<string>("feedbackUrl");
+    var faqUrl = configuration.GetValue<string>("FAQUrl");
 }
 
 
@@ -13,7 +16,7 @@
 <div id="keeper">
 <section id="suggestion" class="container split" style="margin-right: 17px;">
     <header>
-        <a href="@CloudConfigurationManager.GetSetting("feedbackUrl")">
+        <a href="@feedbackUrl">
         <img src='@Url.Content("~/Images/feedback.png")' alt='feedback'/>
         </a>
     </header>
@@ -64,7 +67,7 @@
     </section>
     <section id="faq" class="container split">
         <header>
-            <a class="button" href="@CloudConfigurationManager.GetSetting("FAQUrl")" target="_blank">
+            <a class="button" href="@faqUrl" target="_blank">
                 Knowledge Base
             </a>
         </header>

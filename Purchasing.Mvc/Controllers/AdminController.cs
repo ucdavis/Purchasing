@@ -23,6 +23,7 @@ using Serilog;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -41,6 +42,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IWorkgroupService _workgroupService;
         private readonly SendGridSettings _sendGridSettings;
+        private readonly IConfiguration _configuration;
 
         public AdminController(
             IRepositoryWithTypedId<User, string> userRepository,
@@ -51,7 +53,8 @@ namespace Purchasing.Mvc.Controllers
             IUserIdentity userIdentity,
             IRepositoryFactory repositoryFactory,
             IWorkgroupService workgroupService,
-            IOptions<SendGridSettings> sendGridSettings)
+            IOptions<SendGridSettings> sendGridSettings,
+            IConfiguration configuration)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -62,6 +65,7 @@ namespace Purchasing.Mvc.Controllers
             _repositoryFactory = repositoryFactory;
             _workgroupService = workgroupService;
             _sendGridSettings = sendGridSettings.Value;
+            _configuration = configuration;
         }
 
         //
@@ -586,7 +590,7 @@ namespace Purchasing.Mvc.Controllers
         public virtual bool NeedToCheckWorkgroupPermissions(string key)
         {
             Log.Information("NeedToCheckWorkgroupPermissions Starting");
-            if (string.IsNullOrWhiteSpace(key) || key != ConfigurationManager.AppSettings["ValidationKey"])
+            if (string.IsNullOrWhiteSpace(key) || key != _configuration.GetValue<string>("ValidationKey"))
             {
                 Log.Warning("NeedToCheckWorkgroupPermissions Validation Key missing");
                 return true;
@@ -704,12 +708,12 @@ namespace Purchasing.Mvc.Controllers
             //var _searcher =
             //    new GraphSearchClient(
             //        new ActiveDirectoryConfigurationValues(
-            //            tenantName: CloudConfigurationManager.GetSetting("AzureSearchTenantName"),
-            //            tenantId: CloudConfigurationManager.GetSetting("AzureSearchTenantId"),
-            //            clientId: CloudConfigurationManager.GetSetting("AzureSearchClientId"),
-            //            clientSecret: CloudConfigurationManager.GetSetting("AzureSearchClientSecret")));
+            //            tenantName: configuration.GetValue<string>("AzureSearchTenantName"),
+            //            tenantId: configuration.GetValue<string>("AzureSearchTenantId"),
+            //            clientId: configuration.GetValue<string>("AzureSearchClientId"),
+            //            clientSecret: configuration.GetValue<string>("AzureSearchClientSecret")));
 
-            var _searcher = new IetClient(CloudConfigurationManager.GetSetting("IetWsKey"));
+            var _searcher = new IetClient(_configuration.GetValue<string>("IetWsKey"));
             if (id != null && id.Contains("@"))
             {
                 var ucdContactResult = await _searcher.Contacts.Search(ContactSearchField.email, id);

@@ -2,6 +2,8 @@
 using System.Configuration;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
+using UCDArch.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Jobs.Common.Logging
 {
@@ -28,7 +30,8 @@ namespace Purchasing.Jobs.Common.Logging
 
         public static LoggerConfiguration WriteToElasticSearchCustom(this LoggerConfiguration logConfig)
         {
-            var esUrl = ConfigurationManager.AppSettings["Stackify.ElasticUrl"];
+            var configuration = SmartServiceLocator<IConfiguration>.GetService();
+            var esUrl = configuration.GetValue<string>("Stackify.ElasticUrl");
 
             // only continue if a valid http url is setup in the config
             if (esUrl == null || !esUrl.StartsWith("http"))
@@ -36,8 +39,8 @@ namespace Purchasing.Jobs.Common.Logging
                 return logConfig;
             }
 
-            logConfig.Enrich.WithProperty("Application", ConfigurationManager.AppSettings["Stackify.AppName"]);
-            logConfig.Enrich.WithProperty("AppEnvironment", ConfigurationManager.AppSettings["Stackify.Environment"]);
+            logConfig.Enrich.WithProperty("Application", configuration.GetValue<string>("Stackify.AppName"));
+            logConfig.Enrich.WithProperty("AppEnvironment", configuration.GetValue<string>("Stackify.Environment"));
 
             return logConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(esUrl))
             {

@@ -5,6 +5,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Mvc.Services
 {
@@ -28,14 +29,14 @@ namespace Purchasing.Mvc.Services
         private readonly IRepositoryWithTypedId<Attachment, Guid> _attachmentRepository;
         private readonly CloudBlobContainer _container;
 
-        public FileService(IRepositoryWithTypedId<Attachment, Guid> attachmentRepository)
+        public FileService(IRepositoryWithTypedId<Attachment, Guid> attachmentRepository, IConfiguration configuration)
         {
             _attachmentRepository = attachmentRepository;
 
             var storageConnectionString =
                 string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}",
-                              CloudConfigurationManager.GetSetting("AzureStorageAccountName"),
-                              CloudConfigurationManager.GetSetting("AzureStorageKey"));
+                              configuration.GetValue<string>("AzureStorageAccountName"),
+                              configuration.GetValue<string>("AzureStorageKey"));
 
             var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
 

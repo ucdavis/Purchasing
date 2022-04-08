@@ -1,6 +1,7 @@
-﻿@using System.Web.Configuration
-@using Purchasing.Core.Helpers
+﻿@using Purchasing.Core.Helpers
 @using Purchasing.Mvc.Services
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
 @{
     Layout = null;
 
@@ -251,7 +252,7 @@
     <script type="text/javascript">
     (function (w) {
         var d = w['Configuration'] || (w['Configuration'] = {});
-        d.AnalyticsKey = '@WebConfigurationManager.AppSettings["AnalyticsKey"]';
+        d.AnalyticsKey = '@configuration.GetValue<string>("AnalyticsKey")';
         d.ActiveIssuesCountUrl = "/Help/GetActiveIssuesCount";
         d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
         d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());

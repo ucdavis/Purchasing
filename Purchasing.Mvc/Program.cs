@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Purchasing.Mvc.Logging;
 
 namespace Purchasing.Mvc
 {
@@ -18,11 +20,42 @@ namespace Purchasing.Mvc
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.OrdinalIgnoreCase);
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables();
+
+            //only add secrets in development
+            if (isDevelopment)
+            {
+                builder.AddUserSecrets<Program>();
+            }
+            var configuration = builder.Build();
+
+            LogConfig.ConfigureLogging(configuration);
+
+            try
+            {
+                Log.Information("Building web host");
+                var host = CreateHostBuilder(args).Build();
+
+                Log.Information("Starting web host");
+                host.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .UseWindsorContainerServiceProvider()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

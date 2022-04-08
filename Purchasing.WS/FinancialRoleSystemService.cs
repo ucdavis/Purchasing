@@ -3,14 +3,20 @@ using System.Configuration;
 using System.ServiceModel;
 using Purchasing.WS.FinancialRoleService;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.WS
 {
     public class FinancialRoleSystemService : IFinancialRoleSystemService
     {
-        private readonly string _url = ConfigurationManager.AppSettings["AfsRoleUrl"];
-        private readonly string _token = ConfigurationManager.AppSettings["AfsToken"];
+        private readonly string _url;
+        private readonly string _token;
 
+        public FinancialRoleSystemService(IConfiguration configuration)
+        {
+            this._url = configuration.GetValue<string>("AfsRoleUrl");
+            this._token = configuration.GetValue<string>("AfsToken");
+        }
 
         private financialSystemRoleServiceSOAPClient InitializeClient()
         {

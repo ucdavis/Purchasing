@@ -1,9 +1,12 @@
-﻿@using System.Configuration
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
 @using Purchasing.Core.Domain
 @model ReviewOrderViewModel
 
 @if (!Model.Complete)
 {
+    var personLookupUrl = configuration.GetValue<string>("PersonLookupUrl");
+      
     <section id="approvals" class="ui-corner-all display-form">
 
         <header class="ui-corner-top ui-widget-header showInNav">Approvals</header>
@@ -25,7 +28,7 @@
                                 }
                                 else
                                 {
-                                    <a class="showTip ui-icon ui-icon-info" href="@ConfigurationManager.AppSettings["PersonLookupUrl"]@approval.User.Email" target="_blank" title='Opens a new window to the campus directory performing a search for this person.'></a>
+                                    <a class="showTip ui-icon ui-icon-info" href="@personLookupUrl@approval.User.Email" target="_blank" title='Opens a new window to the campus directory performing a search for this person.'></a>
                                 }
                             </td>
                             <td>@(approval.Completed ? "Approved" : "Pending")</td>

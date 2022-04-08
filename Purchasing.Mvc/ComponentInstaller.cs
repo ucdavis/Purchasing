@@ -73,8 +73,8 @@ namespace Purchasing.Mvc
             //#else
             //            container.Register(
             //                Component.For<INotificationSender>().ImplementedBy<EmailNotificationSender>().Named("notificationSender")
-            //                    .OnCreate(service => service.SetAuthentication(ConfigurationManager.AppSettings["SendGridUserName"],
-            //                                                                   ConfigurationManager.AppSettings["SendGridPassword"])));
+            //                    .OnCreate(service => service.SetAuthentication(configuration.GetValue<string>("SendGridUserName"),
+            //                                                                   configuration.GetValue<string>("SendGridPassword"))));
             //#endif
         }
 

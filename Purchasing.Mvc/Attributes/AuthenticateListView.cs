@@ -5,6 +5,7 @@ using System.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
+using UCDArch.Core;
 
 namespace Purchasing.Mvc.Attributes
 {
@@ -14,7 +15,7 @@ namespace Purchasing.Mvc.Attributes
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var configuration = filterContext.HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;
+            var configuration = SmartServiceLocator<IConfiguration>.GetService();
 
             var req = filterContext.HttpContext.Request;
             if (String.IsNullOrEmpty(req.Headers["Authorization"]))

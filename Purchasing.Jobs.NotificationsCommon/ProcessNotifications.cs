@@ -4,22 +4,23 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using Dapper;
-using Microsoft.Azure;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
 using Purchasing.Jobs.Common.Logging;
 using SparkPost;
 using Serilog;
+using UCDArch.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Jobs.NotificationsCommon
 {
     public static class ProcessNotifications
     {
-        static readonly string SparkPostApiKey = CloudConfigurationManager.GetSetting("SparkPostApiKey");
-
         public static void ProcessEmails(IDbService dbService, EmailPreferences.NotificationTypes notificationType)
         {
-            var sendEmail = CloudConfigurationManager.GetSetting("opp-send-email");
+            var configuration = SmartServiceLocator<IConfiguration>.GetService();
+            var sparkPostApiKey = configuration.GetValue<string>("SparkPostApiKey");
+            var sendEmail = configuration.GetValue<string>("opp-send-email");
 
             //Don't execute unless email is turned on
             if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase))
@@ -70,7 +71,7 @@ namespace Purchasing.Jobs.NotificationsCommon
         }
 
         private static void BatchEmail(IDbConnection connection, string email, List<dynamic> pendingForUser)
-        {            
+        {
             var pendingOrderIds = pendingForUser.Select(x => x.OrderId).Distinct();
 
             //Do batches inside of their own transactions
@@ -88,7 +89,7 @@ namespace Purchasing.Jobs.NotificationsCommon
                               .ToList();
 
                 var message = new StringBuilder();
-                message.Append(string.Format("<p>{0}</p>", "Here is your summary for the PrePurchasing system."));                
+                message.Append(string.Format("<p>{0}</p>", "Here is your summary for the PrePurchasing system."));
                 foreach (var order in pendingOrders)
                 {
                     var extraStyle1 = string.Empty;
@@ -161,8 +162,8 @@ namespace Purchasing.Jobs.NotificationsCommon
                                 Name = "UCD PrePurchasing No Reply"
                             },
                         Subject = pendingOrders.Count == 1
-                            ? String.Format((string) "PrePurchasing Notification for Order #{0}",
-                                new[] {pendingOrders.Single().RequestNumber})
+                            ? String.Format((string)"PrePurchasing Notification for Order #{0}",
+                                new[] { pendingOrders.Single().RequestNumber })
                             : "PrePurchasing Notifications",
                         Html = message.ToString()
                     }
@@ -171,7 +172,7 @@ namespace Purchasing.Jobs.NotificationsCommon
 
                 emailTransmission.Recipients.Add(new Recipient { Address = new Address { Email = email } });
 
-                var client = new Client(SparkPostApiKey);
+                var client = new Client(SmartServiceLocator<IConfiguration>.GetService().GetValue<string>("SparkPostApiKey"));
                 try
                 {
                     client.Transmissions.Send(emailTransmission).Wait();
@@ -179,10 +180,10 @@ namespace Purchasing.Jobs.NotificationsCommon
                 catch (Exception ex)
                 {
                     Log.Error(ex, "There was a problem emailing {email}", email);
-                    ts.Rollback(); 
+                    ts.Rollback();
                     return;
                 }
-                
+
 
                 ts.Commit();
             }

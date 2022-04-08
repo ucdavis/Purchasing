@@ -1,4 +1,5 @@
-﻿@using System.Configuration
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
 @model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
 
 @{
@@ -78,7 +79,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], email.Value);
+                    var url = string.Format("{0}{1}", configuration.GetValue<string>("PersonLookupUrl"), email.Value);
                                 var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>
@@ -116,7 +117,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], email.Value);
+                    var url = string.Format("{0}{1}", configuration.GetValue<string>("PersonLookupUrl"), email.Value);
                     var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>
@@ -153,7 +154,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], email.Value);
+                    var url = string.Format("{0}{1}", configuration.GetValue<string>("PersonLookupUrl"), email.Value);
                     var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>

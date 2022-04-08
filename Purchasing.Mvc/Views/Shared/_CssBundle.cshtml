@@ -1,0 +1,13 @@
+﻿@model string
+
+@switch (Model)
+{
+  case "test":
+    <environment names="Development">
+      <link rel="stylesheet" href="~/Css/multiselector.min.css" />
+    </environment>
+    <environment names="Staging,Production">
+      <link rel="stylesheet" href="~/bundles/multiselector.min.cs" />
+    </environment>
+    break;
+}

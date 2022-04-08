@@ -8,7 +8,6 @@ using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.WS;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using Purchasing.Tests;
 using UCDArch.Core.Utils;

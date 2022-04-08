@@ -11,6 +11,8 @@ using Nest.JsonNetSerializer;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
+using UCDArch.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Core.Services
 {
@@ -67,7 +69,7 @@ namespace Purchasing.Core.Services
         {
             _dbService = dbService;
 
-            var pool = new SingleNodeConnectionPool(new Uri(ConfigurationManager.AppSettings["ElasticSearchUrl"]));
+            var pool = new SingleNodeConnectionPool(new Uri(SmartServiceLocator<IConfiguration>.GetService().GetValue<string>("ElasticSearchUrl")));
             var settings = new ConnectionSettings(pool, JsonNetSerializer.Default);
 
             settings.DefaultIndex("prepurchasing");
@@ -176,7 +178,7 @@ namespace Purchasing.Core.Services
                             updatedOrderIdsParameter.AppendFormat("({0}),", updatedOrderId);
                         }
                         updatedOrderIdsParameter.Remove(updatedOrderIdsParameter.Length - 1, 1);
-                            //take off the last comma
+                        //take off the last comma
 
                         orderHistoryEntries =
                             conn.Query<OrderHistory>(string.Format(@"DECLARE @OrderIds OrderIdsTableType
@@ -298,7 +300,7 @@ namespace Purchasing.Core.Services
             var indexName = IndexHelper.GetIndexName(index);
 
             // hopefully this works despite count not having a generic option.  I overwrote the index inside the action instead.
-            return (int) _client.Count<OrderHistory>(x => x.Index(indexName)).Count;
+            return (int)_client.Count<OrderHistory>(x => x.Index(indexName)).Count;
         }
 
         public ElasticClient GetIndexClient()
@@ -326,16 +328,16 @@ namespace Purchasing.Core.Services
         private IEnumerable<OrderTrackingEntity> ProcessTrackingEntities(IEnumerable<OrderTrackingDto> orderTrackingDtos)
         {
             //do work
-            string[] completeList = {"completed", "cancelled", "denied"};
+            string[] completeList = { "completed", "cancelled", "denied" };
             var ordersWithTracking = from o in orderTrackingDtos
                                      group o by o.OrderId
                                          into orders
-                                         select new { OrderId = orders.Key, TrackingInfo = orders.ToList() };
+                                     select new { OrderId = orders.Key, TrackingInfo = orders.ToList() };
             var entities = new List<OrderTrackingEntity>();
             foreach (var order in ordersWithTracking)
             {
                 var lastTrackingItem = order.TrackingInfo.First();
-                var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.TrackingStatusComplete && completeList.Contains(x.Description) );
+                var orderCompleted = order.TrackingInfo.FirstOrDefault(x => x.TrackingStatusComplete && completeList.Contains(x.Description));
                 var orderApprove = order.TrackingInfo.FirstOrDefault(x => x.Description == "approved" && x.TrackingStatusCode == "AP");
                 var orderAccountManager =
                     order.TrackingInfo.FirstOrDefault(
@@ -398,7 +400,7 @@ namespace Purchasing.Core.Services
             }
 
             return entities;
-        } 
+        }
 
         void WriteIndex<T>(string sqlSelect, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
         {
@@ -420,7 +422,7 @@ namespace Purchasing.Core.Services
             }
 
             var index = IndexHelper.GetIndexName(indexes);
-            
+
             if (recreate) //TODO: might have to check to see if index exists first time
             {
                 _client.Indices.Delete(index);
@@ -447,7 +449,7 @@ namespace Purchasing.Core.Services
 
                         if (id is int)
                         {
-                            bulkOperation.Index<T>(b => b.Document(localItem).Id((int) id).Index(index));
+                            bulkOperation.Index<T>(b => b.Document(localItem).Id((int)id).Index(index));
                         }
                         else
                         {
@@ -463,7 +465,7 @@ namespace Purchasing.Core.Services
 
     public class OrderTrackingDto
     {
-       
+
         public int Id { get; set; }
         public int OrderId { get; set; }
         public string Description { get; set; }
@@ -480,7 +482,7 @@ namespace Purchasing.Core.Services
         public string CurrentStatusCodeId { get; set; }
     }
 
-    
+
     public class OrderTrackingEntity
     {
         public int OrderId { get; set; }
@@ -502,7 +504,7 @@ namespace Purchasing.Core.Services
         public string StatusCode { get; set; }
     }
 
-    public class OrderTrackingAggregation 
+    public class OrderTrackingAggregation
     {
         public IList<OrderTrackingEntity> OrderTrackingEntities { get; set; }
         public double? AverageTimeToCompletion { get; set; }
@@ -516,11 +518,11 @@ namespace Purchasing.Core.Services
     {
         public IList<OrderTrackingEntity> OrderTrackingEntities { get; set; }
         public double? AverageTimeToRoleComplete { get; set; }
-        public IList<double[]>  PercentilesForRole { get; set; }
+        public IList<double[]> PercentilesForRole { get; set; }
         public string[] NamesInRole { get; set; }
     }
 
-    
+
 
     public class OrderTrackingByRoleAggregation
     {

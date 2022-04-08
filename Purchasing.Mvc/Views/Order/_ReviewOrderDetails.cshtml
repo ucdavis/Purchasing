@@ -1,6 +1,11 @@
 ﻿@using Microsoft.Azure
 @using Purchasing.Mvc.Helpers
 @model ReviewOrderViewModel
+
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
+
+
 <section id="order-details" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header showInNav">
@@ -127,7 +132,7 @@
                                 {
                                     //TODO: Change /kfs-prd/ to /fin/
                                     //I can't test it now to see if it works, but hopefully moving that part to the config setting will be enough
-                                    var kfsLookup = string.Format("{0}/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={1}", CloudConfigurationManager.GetSetting("AfsLookupUrl"),Model.Vendor.VendorId);                                    
+                                    var kfsLookup = string.Format("{0}/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={1}", configuration.GetValue<string>("AfsLookupUrl"),Model.Vendor.VendorId);                                    
                                     <span>(KFS Id: <a href="@kfsLookup" target="_blank"> @Model.Vendor.VendorId</a>)</span>
                                 }
                             </div>
