@@ -13,7 +13,7 @@
 
 @section AdditionalScripts{
     
-    @Scripts.Render("~/bundles/landing")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/landing")
 
     <script type="text/javascript">
         $(function () {

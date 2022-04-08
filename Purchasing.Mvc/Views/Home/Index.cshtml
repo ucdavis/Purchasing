@@ -18,7 +18,7 @@
 
 	<link rel="shortcut icon" href="@Url.Content("~/favicon.ico")">
     
-    @Styles.Render("~/Css/main")
+    @await Html.PartialAsync("_CssBundle", "~/Css/main")
     
     <style type="text/css">
 		#branding
@@ -73,14 +73,14 @@
 		
 	</style>
 
-    @Scripts.Render("~/bundles/jqueryui")
-    @Scripts.Render("~/bundles/head")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryui")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/head")
 
 </head>
 <body>
     <div class="wrapper">
 	
-        @Html.Partial("_ServiceMessages")
+        @await Component.InvokeAsync("ServiceMessages")
 	
         <header id="branding">
 			
@@ -262,7 +262,7 @@
     }(window));
     </script>
     
-    @Scripts.Render("~/bundles/common")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/common")
 
     <script>
 

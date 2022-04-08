@@ -8,12 +8,12 @@
 }
 
 @section AdditionalStyles{
-    @Styles.Render("~/Css/multiselector")
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")
 }
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/multiselector")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/multiselector")
     
  
     <script type="text/javascript">

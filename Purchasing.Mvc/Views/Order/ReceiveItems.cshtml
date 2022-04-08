@@ -20,16 +20,16 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/single/fileuploader/fileuploader")
-    @Styles.Render("~/Css/single/receive-payment")
+    @await Html.PartialAsync("_CssBundle", "~/Css/single/fileuploader/fileuploader")
+    @await Html.PartialAsync("_CssBundle", "~/Css/single/receive-payment")
 
 }
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/jqueryTmpl")
-    @Scripts.Render("~/bundles/fileuploader-js")
-   @Scripts.Render("~/bundles/single/receiveItems")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryTmpl")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/fileuploader-js")
+   @await Html.PartialAsync("_JsBundle", "~/bundles/single/receiveItems")
 
 <script type="text/javascript">
 

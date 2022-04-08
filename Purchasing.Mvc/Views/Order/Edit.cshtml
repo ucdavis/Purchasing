@@ -5,12 +5,12 @@
 }
 
 @section AdditionalStyles{
-    @Styles.Render("~/Css/order") 
+    @await Html.PartialAsync("_CssBundle", "~/Css/order") 
 }
 
 
 @section AdditionalScripts{
-    @Scripts.Render("~/bundles/order")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/order")
 
     <script type="text/javascript">
         $.validator.setDefaults({ ignore: ':hidden :not(.chzn-done)' }); //do not ignore hidden chosen select lists

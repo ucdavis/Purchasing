@@ -14,7 +14,7 @@
 }
 
 @{
-    @Scripts.Render("~/bundles/jquery-qtip")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jquery-qtip")
     <script type="text/javascript">
         $(document).ready(function () {
             $(".showTip").qtip({

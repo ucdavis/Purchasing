@@ -11,7 +11,7 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/multiselector")
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")
 
     <style type="text/css">
         .selector {
@@ -45,7 +45,7 @@
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/multiselector")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/multiselector")
     <script type="text/javascript">
 
         $(function () {

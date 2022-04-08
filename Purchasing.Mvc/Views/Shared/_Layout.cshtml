@@ -24,7 +24,7 @@
         
     }
     
-    @Styles.Render("~/Css/main")
+    @await Html.PartialAsync("_CssBundle", "~/Css/main")
 
     <style type="text/css">
         #branding
@@ -35,8 +35,8 @@
     
     @RenderSection("AdditionalStyles", false)
     
-    @Scripts.Render("~/bundles/jqueryui")
-    @Scripts.Render("~/bundles/head")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryui")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/head")
 
 	@if (false)
  { //Load the jquery docs for intellisense
@@ -255,7 +255,7 @@
     }(window));
     </script>
     
-    @Scripts.Render("~/bundles/common")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/common")
 
     @RenderSection("AdditionalScripts", false)
     

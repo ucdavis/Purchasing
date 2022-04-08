@@ -6,7 +6,7 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/single/fileuploader/fileuploader")
+    @await Html.PartialAsync("_CssBundle", "~/Css/single/fileuploader/fileuploader")
 
     <style type="text/css">
         .navigation li {display: inline-block;width: auto;padding: 0 0 0 10px;}
@@ -134,7 +134,7 @@
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/orderreview")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/orderreview")
 
 
     <script type="text/javascript">

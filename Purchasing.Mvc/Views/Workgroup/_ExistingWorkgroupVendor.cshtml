@@ -2,7 +2,7 @@
 @model WorkgroupVendorViewModel
 
 @{
-   @Scripts.Render("~/bundles/jqueryTmpl")
+   @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryTmpl")
 }
 @using (Html.BeginForm())
 {

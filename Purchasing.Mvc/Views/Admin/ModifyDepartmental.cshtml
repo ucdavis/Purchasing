@@ -7,14 +7,7 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/multiselector")    
-    <environment include="Development">
-        <link rel="stylesheet" href="~/Css/multiselector.min.css" />
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="~/bundles/multiselector.min.js" />
-    </environment>
-
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")    
 }
 
 @section SubNav
@@ -30,7 +23,7 @@
 
 @section AdditionalScripts{
  
-    @Scripts.Render("~/bundles/multiselector")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/multiselector")
 
     <script type="text/javascript">
 

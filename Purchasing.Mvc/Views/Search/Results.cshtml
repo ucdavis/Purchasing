@@ -7,7 +7,7 @@
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/highlight")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/highlight")
     <style type="text/css">
      h2 {margin-bottom: 0px;}
     #body form {text-align: center;}

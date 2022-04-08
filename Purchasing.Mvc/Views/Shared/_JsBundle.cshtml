@@ -1,0 +1,193 @@
+﻿@model string
+
+@switch (Model)
+{
+  case "~/bundles/jquery":
+    <environment names="Staging,Production">
+      <script src="~/bundles/jquery.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/jquery-{version}.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/jqueryval":
+    <environment names="Staging,Production">
+      <script src="~/bundles/jqueryval.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/jquery.validate*"></script>
+    </environment>
+    break;
+
+  case "~/bundles/jqueryui":
+    <environment names="Staging,Production">
+      <script src="~/bundles/jqueryui.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/external/jquery/jquery-1.7.1.js"></script>
+      <script src="~/Scripts/external/jquery-ui/jquery-ui-1.8.17.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/head":
+    <environment names="Staging,Production">
+      <script src="~/bundles/head.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/head/*.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/common":
+    <environment names="Staging,Production">
+      <script src="~/bundles/common.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/common/*.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/order":
+    <environment names="Staging,Production">
+      <script src="~/bundles/order.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/order/*.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/orderreview":
+    <environment names="Staging,Production">
+      <script src="~/bundles/orderreview.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/fileuploader.js"></script>,
+      <script src="~/Scripts/public/single/OrderReview.js"></script>,
+      <script src="~/Scripts/public/single/jquery.tmpl.min.js"></script>,
+      <script src="~/Scripts/public/single/SausageCustom.js"></script>,
+      <script src="~/Scripts/public/single/jquery.stickyfloat.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/history":
+    <environment names="Staging,Production">
+      <script src="~/bundles/history.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/TableTools.js"></script>
+      <script src="~/Scripts/public/single/ZeroClipboard.js"></script>
+      <script src="~/Scripts/public/single/RearrangeDataTable.js"></script>
+      <script src="~/Scripts/public/single/FixedHeader.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/single/receiveItems":
+    <environment names="Staging,Production">
+      <script src="~/bundles/single/receiveItems.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/receiveitems.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/single/payInvoice":
+    <environment names="Staging,Production">
+      <script src="~/bundles/single/payInvoice.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/payinvoice.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/highlight":
+    <environment names="Staging,Production">
+      <script src="~/bundles/highlight.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/jquery.highlight.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/modernizr":
+    <environment names="Staging,Production">
+      <script src="~/bundles/modernizr.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/modernizr-*"></script>
+    </environment>
+    break;
+
+  case "~/bundles/bootstrap":
+    <environment names="Staging,Production">
+      <script src="~/bundles/bootstrap.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/bootstrap.js"></script>,
+      <script src="~/Scripts/respond.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/single/chosen":
+    <environment names="Staging,Production">
+      <script src="~/bundles/single/chosen.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/chosen.jquery.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/multiselector":
+    <environment names="Staging,Production">
+      <script src="~/bundles/multiselector.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/jquery.multiselector.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/customField":
+    <environment names="Staging,Production">
+      <script src="~/bundles/customField.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/jquery.tablednd_0_5.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/fileuploader-js":
+    <environment names="Staging,Production">
+      <script src="~/bundles/fileuploader-js.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/fileuploader.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/landing":
+    <environment names="Staging,Production">
+      <script src="~/bundles/landing.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/Landing.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/jqueryTmpl":
+    <environment names="Staging,Production">
+      <script src="~/bundles/jqueryTmpl.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/single/jquerytmpl.js"></script>
+    </environment>
+    break;
+
+  case "~/bundles/jquery-qtip":
+    <environment names="Staging,Production">
+      <script src="~/bundles/jquery-qtip.min.js"></script>
+    </environment>
+    <environment names="Development">
+      <script src="~/Scripts/public/common/jquery.qtip.js"></script>
+    </environment>
+    break;
+}
