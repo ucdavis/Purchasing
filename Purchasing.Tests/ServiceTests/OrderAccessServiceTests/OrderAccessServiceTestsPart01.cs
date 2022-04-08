@@ -1,8 +1,7 @@
 ﻿//using System.Collections.Generic;
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
 //using Purchasing.Core.Domain;
-//using Rhino.Mocks;
-
+//
 //namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 //{
 

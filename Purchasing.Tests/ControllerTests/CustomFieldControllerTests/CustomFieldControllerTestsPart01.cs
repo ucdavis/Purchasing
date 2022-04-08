@@ -6,7 +6,6 @@ using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;

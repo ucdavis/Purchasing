@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Controllers;
-using Rhino.Mocks;
 using UCDArch.Testing.Fakes;
 using UCDArch.Testing.Extensions;
 

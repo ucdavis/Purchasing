@@ -7,7 +7,6 @@ using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.Utils;
 using UCDArch.Testing.Fakes;
 using UCDArch.Testing.Extensions;

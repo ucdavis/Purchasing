@@ -9,7 +9,6 @@ using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
 using Purchasing.WS;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;

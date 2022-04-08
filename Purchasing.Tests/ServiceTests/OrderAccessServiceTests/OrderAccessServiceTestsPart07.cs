@@ -2,8 +2,7 @@
 //using System.Linq;
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
 //using Purchasing.Core.Domain;
-//using Rhino.Mocks;
-
+//
 //namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 //{
 //    public partial class OrderAccessServiceTests

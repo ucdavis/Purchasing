@@ -14,7 +14,6 @@ using UCDArch.Testing.Extensions;
 
 using Castle.Windsor;
 using CommonServiceLocator;
-using Rhino.Mocks;
 using UCDArch.Core.CommonValidator;
 //using UCDArch.Core.NHibernateValidator.CommonValidatorAdapter;
 using UCDArch.Web.IoC;

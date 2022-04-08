@@ -6,7 +6,6 @@ using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Controllers;
-using Rhino.Mocks;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;

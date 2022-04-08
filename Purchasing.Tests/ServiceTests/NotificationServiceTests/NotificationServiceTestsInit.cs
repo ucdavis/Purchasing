@@ -8,7 +8,6 @@ using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;

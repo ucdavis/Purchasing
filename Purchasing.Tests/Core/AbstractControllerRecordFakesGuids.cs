@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Rhino.Mocks;
 using UCDArch.Core.DomainModel;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;

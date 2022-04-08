@@ -1,7 +1,6 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using CommonServiceLocator;
-using Rhino.Mocks;
 using UCDArch.Core.CommonValidator;
 using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;
 using UCDArch.Core.PersistanceSupport;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Rhino.Mocks;
 using System.Linq;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
