@@ -21,6 +21,7 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
 using UCDArch.Data.NHibernate;
+using UCDArch.Web.ModelBinder;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Logging;
 using Serilog;
@@ -38,8 +39,6 @@ namespace Purchasing.Mvc
 
         public void ConfigureContainer(IWindsorContainer container)
         {
-            ModelBinders.Binders.DefaultBinder = new UCDArchModelBinder();
-
             NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Approval).Assembly);
             container.Install(
                 new ComponentInstaller(),
@@ -59,6 +58,7 @@ namespace Purchasing.Mvc
                     {
                         Log.Logger.Warning(args.ErrorContext.Error, "JSON Serialization Error: {message}", args.ErrorContext.Error.Message);
                     };
+                options.SerializerSettings.ContractResolver = new EntityJsonContractResolver();
             })
             // Allow standard Windsor behavior for services injected into controllers...
             .AddControllersAsServices();

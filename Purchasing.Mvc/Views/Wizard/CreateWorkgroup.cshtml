@@ -51,7 +51,7 @@
                     </div>
                     <div class="editor-field">
                         @*.chzn-select     *@                   
-                        @this.Select("Workgroup.PrimaryOrganization").Options(Model.Organizations, x => x.Value, x => x.Text).Selected(Model.Workgroup.PrimaryOrganization == null ? string.Empty : Model.Workgroup.PrimaryOrganization.Id).Class("chzn-select")
+                        @Html.Select("Workgroup.PrimaryOrganization", o => o.Options(Model.Organizations, x => x.Value, x => x.Text).Selected(Model.Workgroup.PrimaryOrganization == null ? string.Empty : Model.Workgroup.PrimaryOrganization.Id).Class("chzn-select"))
                         @Html.ValidationMessageFor(x => x.Workgroup.PrimaryOrganization)
                     </div>
                 </li>

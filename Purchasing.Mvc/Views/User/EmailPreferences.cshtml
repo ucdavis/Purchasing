@@ -79,7 +79,7 @@
                         @Html.LabelFor(model => model.NotificationType)
                     </div>
                     <div class="editor-field showTip" title="">
-                        @this.Select("NotificationType").Options(Enum.GetNames(typeof(EmailPreferences.NotificationTypes)).ToList()).Selected(Model.NotificationType.ToString())
+                        @Html.Select("NotificationType", o => o.Options(Enum.GetNames(typeof(EmailPreferences.NotificationTypes)).ToList()).Selected(Model.NotificationType.ToString()))
                         @Html.ValidationMessageFor(model => model.NotificationType)
                     </div>
                 </li>

@@ -38,7 +38,7 @@
                         <li>
                             <div class="display-label">Complete order as </div>
                             <div class="display-details">
-                                @this.Select("orderType").Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("KFS")
+                                @Html.Select("orderType", o => o.Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("KFS"))
                                 <select id="kfsDocType" name="kfsdoctype">
                                     <option value="">-- Select A Document Type --</option>                                  
                                     <option value="PR">Purchase Request</option>

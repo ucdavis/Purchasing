@@ -74,7 +74,7 @@
                 @Html.Label("Select Role:") <span>*</span>
             </div>
             <div class="editor-field">
-                @this.Select("Role").Options(Model.Roles, x=> x.Id, x=> x.Name).FirstOption("--Select Role--").Selected(Model.Role != null ? Model.Role.Id.ToString() : string.Empty)   
+                @Html.Select("Role", o => o.Options(Model.Roles, x=> x.Id, x=> x.Name).FirstOption("--Select Role--").Selected(Model.Role != null ? Model.Role.Id.ToString() : string.Empty))   
                 @Html.ValidationMessageFor(x=> x.Role)             
             </div>
         </li>

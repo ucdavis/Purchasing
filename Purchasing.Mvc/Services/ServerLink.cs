@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using Purchasing.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Services
 {
@@ -11,21 +12,12 @@ namespace Purchasing.Mvc.Services
     
     public class ServerLink : IServerLink
     {
-        public string Address
+        public ServerLink(IUrlHelper urlHelper)
         {
-            get
-            {
-                return FullyQualifiedUri("~/Order/Lookup/").ToString();
-            }
+            var scheme = urlHelper.ActionContext.HttpContext.Request.Scheme;
+            Address = urlHelper.Action("Lookup", "Order", null, scheme);
         }
 
-        public static Uri FullyQualifiedUri(string relativeOrAbsolutePath)
-        {
-            Uri baseUri = HttpContextHelper.Current.Request.Url;
-            string path = UrlHelper.GenerateContentUrl(relativeOrAbsolutePath, new HttpContextWrapper(HttpContextHelper.Current));
-            Uri instance = null;
-            bool ok = Uri.TryCreate(baseUri, path, out instance);
-            return instance; // instance will be null if the uri could not be created
-        }
+        public string Address { get; }
     }
 }

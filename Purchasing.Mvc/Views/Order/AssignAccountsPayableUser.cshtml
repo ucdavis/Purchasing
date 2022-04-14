@@ -51,7 +51,7 @@
                     <label>Accounts Payable User to (Re)Route to:</label><span>*</span>
                 </div>
                 <div class="editor-field">
-                    @this.Select("ApUserId").Options(Model.PurchaserPeeps, x=>x.Id, x=>x.FullName).Selected(null).FirstOption("-- Clear --").Class("chzn-select")
+                    @Html.Select("ApUserId", o => o.Options(Model.PurchaserPeeps, x=>x.Id, x=>x.FullName).Selected(null).FirstOption("-- Clear --").Class("chzn-select"))
                 </div>
             </li>
             <li>				

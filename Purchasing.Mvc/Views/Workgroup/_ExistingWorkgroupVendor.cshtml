@@ -24,7 +24,7 @@
 				<li>
 				    <div class="editor-label">@Html.LabelFor(a => a.WorkgroupVendor.VendorId)</div>
 				    <div class="editor-field">
-                        @*@this.Select("WorkgroupVendor.VendorId").Options(Model.Vendors, x => x.Id, x => x.Name).FirstOption("--Select Vendor--").Selected(Model.WorkgroupVendor.VendorId)*@
+                        @*@Html.Select("WorkgroupVendor.VendorId", o => o.Options(Model.Vendors, x => x.Id, x => x.Name).FirstOption("--Select Vendor--").Selected(Model.WorkgroupVendor.VendorId))*@
 
                         <input type="text" id="VendorSearch"/>
                         @Html.Hidden("WorkgroupVendor.VendorId")
@@ -37,7 +37,7 @@
                 <li>
                     <div class="editor-label">@Html.LabelFor(a => a.WorkgroupVendor.VendorAddressTypeCode)</div>
                     <div class="editor-field">
-                        @this.Select("WorkgroupVendor.VendorAddressTypeCode").FirstOption("--Select Address--").Options(Model.VendorAddresses).Selected(Model.WorkgroupVendor.VendorAddressTypeCode).Disabled(true)
+                        @Html.Select("WorkgroupVendor.VendorAddressTypeCode", o => o.FirstOption("--Select Address--").Options(Model.VendorAddresses).Selected(Model.WorkgroupVendor.VendorAddressTypeCode).Disabled(true))
                         @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorAddressTypeCode)
                     </div>
                 </li>

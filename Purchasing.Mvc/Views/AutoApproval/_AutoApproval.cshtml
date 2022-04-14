@@ -75,7 +75,7 @@ Example: Dinosaur 1  *@
                     <span style="display:block; padding-left:1em; color:#000;"> (or) </span>
 				</div>
 				<div class="editor-field">
-					@this.Select("AutoApproval.Account").Options(Model.Accounts, x => x.Id, x => x.NameAndId).FirstOption("--Select Account--").Selected(Model.AutoApproval != null && Model.AutoApproval.Account != null ? Model.AutoApproval.Account.Id : string.Empty)
+					@Html.Select("AutoApproval.Account", o => o.Options(Model.Accounts, x => x.Id, x => x.NameAndId).FirstOption("--Select Account--").Selected(Model.AutoApproval != null && Model.AutoApproval.Account != null ? Model.AutoApproval.Account.Id : string.Empty))
 					@Html.ValidationMessageFor(model => model.AutoApproval.Account)
 				</div>
 			</li>
@@ -84,7 +84,7 @@ Example: Dinosaur 1  *@
 					@Html.LabelFor(model => model.AutoApproval.TargetUser)*
 				</div>
 				<div class="editor-field">
-                    @this.Select("AutoApproval.TargetUser").Options(Model.Users, x => x.Id, x => x.FullNameAndId).FirstOption("--Select Target User--").Selected(Model.AutoApproval != null && Model.AutoApproval.TargetUser != null ? Model.AutoApproval.TargetUser.Id : string.Empty)
+                    @Html.Select("AutoApproval.TargetUser", o => o.Options(Model.Users, x => x.Id, x => x.FullNameAndId).FirstOption("--Select Target User--").Selected(Model.AutoApproval != null && Model.AutoApproval.TargetUser != null ? Model.AutoApproval.TargetUser.Id : string.Empty))
 					@*@Html.TextBoxFor(x=>x.AutoApproval.TargetUser) [KerbID, no lookup yet]*@
 					@Html.ValidationMessageFor(model => model.AutoApproval.TargetUser)
 				</div>

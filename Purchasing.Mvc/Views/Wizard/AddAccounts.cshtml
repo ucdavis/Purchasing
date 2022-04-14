@@ -78,7 +78,7 @@
 					    @Html.LabelFor(x => x.WorkgroupAccount.Approver)
 					</div>
 					<div class="editor-field">
-                        @this.Select("WorkgroupAccount.Approver").Options(Model.Approvers, x=>x.Id, x=>x.FullName).FirstOption("--Select Approver--").Selected(Model.WorkgroupAccount.Approver != null ? Model.WorkgroupAccount.Approver.Id : string.Empty)
+                        @Html.Select("WorkgroupAccount.Approver", o => o.Options(Model.Approvers, x=>x.Id, x=>x.FullName).FirstOption("--Select Approver--").Selected(Model.WorkgroupAccount.Approver != null ? Model.WorkgroupAccount.Approver.Id : string.Empty))
 					</div>
 				</li>
                 <li>
@@ -86,7 +86,7 @@
 					    @Html.LabelFor(x => x.WorkgroupAccount.AccountManager)
 					</div>
 					<div class="editor-field">
-						@this.Select("WorkgroupAccount.AccountManager").Options(Model.AccountManagers, x => x.Id, x => x.FullName).FirstOption("--Select Account Manager--").Selected(Model.WorkgroupAccount.AccountManager != null ? Model.WorkgroupAccount.AccountManager.Id : string.Empty)
+						@Html.Select("WorkgroupAccount.AccountManager", o => o.Options(Model.AccountManagers, x => x.Id, x => x.FullName).FirstOption("--Select Account Manager--").Selected(Model.WorkgroupAccount.AccountManager != null ? Model.WorkgroupAccount.AccountManager.Id : string.Empty))
 					</div>
 				</li>
                 <li>
@@ -94,7 +94,7 @@
 					    @Html.LabelFor(x => x.WorkgroupAccount.Purchaser)
 					</div>
 					<div class="editor-field">
-						@this.Select("WorkgroupAccount.Purchaser").Options(Model.Purchasers, x => x.Id, x => x.FullName).FirstOption("--Select Purchaser--").Selected(Model.WorkgroupAccount.Purchaser != null ? Model.WorkgroupAccount.Purchaser.Id : string.Empty)
+						@Html.Select("WorkgroupAccount.Purchaser", o => o.Options(Model.Purchasers, x => x.Id, x => x.FullName).FirstOption("--Select Purchaser--").Selected(Model.WorkgroupAccount.Purchaser != null ? Model.WorkgroupAccount.Purchaser.Id : string.Empty))
 					</div>
 				</li>               
             </ul>
