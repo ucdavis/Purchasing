@@ -16,14 +16,6 @@
     
     <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")">
     
-    @{
-        var roles = Purchasing.Mvc.Services.UserSecurityService.UserRoles(User.Identity.Name);
-        var aRoles = new List<string>() { Role.Codes.Admin, Role.Codes.DepartmentalAdmin, Role.Codes.Approver };
-        // user have something that requires the admin menu?
-        var hasAdmin = roles.Any(a => aRoles.Contains(a));
-        
-    }
-    
     @await Html.PartialAsync("_CssBundle", "~/Css/main")
 
     <style type="text/css">
@@ -45,6 +37,14 @@
     
 </head>
 <body>
+    @{
+        var roles = Purchasing.Mvc.Services.UserSecurityService.UserRoles(User.Identity.Name);
+        var aRoles = new List<string>() { Role.Codes.Admin, Role.Codes.DepartmentalAdmin, Role.Codes.Approver };
+        // user have something that requires the admin menu?
+        var hasAdmin = roles.Any(a => aRoles.Contains(a));
+        
+    }
+    
 
 	<div class="wrapper">	
 
@@ -114,7 +114,7 @@
                     </ul>
                 
                 </li>
-                @if (hasAdmin)
+                @if (@hasAdmin)
                 {
                 <li class="drop-down-menu">
                     @*@Html.ActionLink("Administration", "Index", "Admin", new {}, new {@class="navigation-button"})*@

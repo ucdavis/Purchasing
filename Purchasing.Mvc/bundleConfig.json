@@ -1,136 +1,136 @@
 [
   {
-    "outputFileName": "~/bundles/jquery.min.js",
-    "inputFileNames": ["~/Scripts/jquery-{version}.js"]
+    "outputFileName": "wwwroot/bundles/jquery.min.js",
+    "inputFiles": ["wwwroot/Scripts/jquery-1.7.1.min.js"]
   },
   {
-    "outputFileName": "~/bundles/jqueryval.min.js",
-    "inputFileNames": ["~/Scripts/jquery.validate*"]
+    "outputFileName": "wwwroot/bundles/jqueryval.min.js",
+    "inputFiles": ["wwwroot/Scripts/jquery.validate*"]
   },
   {
-    "outputFileName": "~/bundles/jqueryui.min.js",
-    "inputFileNames": [
-      "~/Scripts/external/jquery/jquery-1.7.1.js",
-      "~/Scripts/external/jquery-ui/jquery-ui-1.8.17.js"
+    "outputFileName": "wwwroot/bundles/jqueryui.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/external/jquery/jquery-1.7.1.js",
+      "wwwroot/Scripts/external/jquery-ui/jquery-ui-1.8.17.js"
     ]
   },
   {
-    "outputFileName": "~/bundles/head.min.js",
-    "inputFileNames": ["~/Scripts/public/head/*.js"]
+    "outputFileName": "wwwroot/bundles/head.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/head/*.js"]
   },
   {
-    "outputFileName": "~/bundles/common.min.js",
-    "inputFileNames": ["~/Scripts/public/common/*.js"]
+    "outputFileName": "wwwroot/bundles/common.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/common/*.js"]
   },
   {
-    "outputFileName": "~/bundles/order.min.js",
-    "inputFileNames": ["~/Scripts/public/order/*.js"]
+    "outputFileName": "wwwroot/bundles/order.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/order/*.js"]
   },
   {
-    "outputFileName": "~/bundles/orderreview.min.js",
-    "inputFileNames": [
-      "~/Scripts/public/single/fileuploader.js",
-      "~/Scripts/public/single/OrderReview.js",
-      "~/Scripts/public/single/jquery.tmpl.min.js",
-      "~/Scripts/public/single/SausageCustom.js",
-      "~/Scripts/public/single/jquery.stickyfloat.js"
+    "outputFileName": "wwwroot/bundles/orderreview.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/public/single/fileuploader.js",
+      "wwwroot/Scripts/public/single/OrderReview.js",
+      "wwwroot/Scripts/public/single/jquery.tmpl.min.js",
+      "wwwroot/Scripts/public/single/SausageCustom.js",
+      "wwwroot/Scripts/public/single/jquery.stickyfloat.js"
     ]
   },
   {
-    "outputFileName": "~/bundles/history.min.js",
-    "inputFileNames": [
-      "~/Scripts/public/single/TableTools.js",
-      "~/Scripts/public/single/ZeroClipboard.js",
-      "~/Scripts/public/single/RearrangeDataTable.js",
-      "~/Scripts/public/single/FixedHeader.js"
+    "outputFileName": "wwwroot/bundles/history.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/public/single/TableTools.js",
+      "wwwroot/Scripts/public/single/ZeroClipboard.js",
+      "wwwroot/Scripts/public/single/RearrangeDataTable.js",
+      "wwwroot/Scripts/public/single/FixedHeader.js"
     ]
   },
   {
-    "outputFileName": "~/bundles/single/receiveItems.min.js",
-    "inputFileNames": ["~/Scripts/public/single/receiveitems.js"]
+    "outputFileName": "wwwroot/bundles/single/receiveItems.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/single/receiveitems.js"]
   },
   {
-    "outputFileName": "~/bundles/single/payInvoice.min.js",
-    "inputFileNames": ["~/Scripts/public/single/payinvoice.js"]
+    "outputFileName": "wwwroot/bundles/single/payInvoice.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/single/payinvoice.js"]
   },
   {
-    "outputFileName": "~/bundles/highlight.min.js",
-    "inputFileNames": ["~/Scripts/public/single/jquery.highlight.js"]
+    "outputFileName": "wwwroot/bundles/highlight.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/single/jquery.highlight.js"]
   },
   {
-    "outputFileName": "~/bundles/modernizr.min.js",
-    "inputFileNames": ["~/Scripts/modernizr-*"]
+    "outputFileName": "wwwroot/bundles/modernizr.min.js",
+    "inputFiles": ["wwwroot/Scripts/modernizr-*"]
   },
   {
-    "outputFileName": "~/bundles/bootstrap.min.js",
-    "inputFileNames": ["~/Scripts/bootstrap.js", "~/Scripts/respond.js"]
+    "outputFileName": "wwwroot/bundles/bootstrap.min.js",
+    "inputFiles": ["wwwroot/Scripts/bootstrap.js", "wwwroot/Scripts/respond.js"]
   },
   {
-    "outputFileName": "~/bundles/main.min.css",
-    "inputFileNames": [
-      "~/Css/Site.css",
-      "~/Css/jquery-ui-1.8.16.caes.css",
-      "~/Css/jquery.qtip.min.css",
-      "~/Css/jquery.tzCheckbox.css",
-      "~/Css/Datatables.css",
-      "~/Css/custom.css",
-      "~/Css/icons.css"
+    "outputFileName": "wwwroot/bundles/main.min.css",
+    "inputFiles": [
+      "wwwroot/Css/Site.css",
+      "wwwroot/Css/jquery-ui-1.8.16.caes.css",
+      "wwwroot/Css/jquery.qtip.min.css",
+      "wwwroot/Css/jquery.tzCheckbox.css",
+      "wwwroot/Css/Datatables.css",
+      "wwwroot/Css/custom.css",
+      "wwwroot/Css/icons.css"
     ]
   },
   {
-    "outputFileName": "~/bundles/order.min.css",
-    "inputFileNames": [
-      "~/Css/single/fileuploader/fileuploader.css",
-      "~/Css/single/orderrequest.css",
-      "~/Css/single/chosen.css"
+    "outputFileName": "wwwroot/bundles/order.min.css",
+    "inputFiles": [
+      "wwwroot/Css/single/fileuploader/fileuploader.css",
+      "wwwroot/Css/single/orderrequest.css",
+      "wwwroot/Css/single/chosen.css"
     ]
   },
   {
-    "outputFileName": "~/bundles/single/chosen.min.css",
-    "inputFileNames": ["~/Css/single/chosen.css"]
+    "outputFileName": "wwwroot/bundles/single/chosen.min.css",
+    "inputFiles": ["wwwroot/Css/single/chosen.css"]
   },
   {
-    "outputFileName": "~/bundles/single/fileuploader/fileuploader.min.css",
-    "inputFileNames": ["~/Css/single/fileuploader/fileuploader.css"]
+    "outputFileName": "wwwroot/bundles/single/fileuploader/fileuploader.min.css",
+    "inputFiles": ["wwwroot/Css/single/fileuploader/fileuploader.css"]
   },
   {
-    "outputFileName": "~/bundles/single/orderrequest.min.css",
-    "inputFileNames": ["~/Css/single/orderrequest.css"]
+    "outputFileName": "wwwroot/bundles/single/orderrequest.min.css",
+    "inputFiles": ["wwwroot/Css/single/orderrequest.css"]
   },
   {
-    "outputFileName": "~/bundles/multiselector.min.css",
-    "inputFileNames": ["~/Css/single/jquery.multiselector.css"]
+    "outputFileName": "wwwroot/bundles/multiselector.min.css",
+    "inputFiles": ["wwwroot/Css/single/jquery.multiselector.css"]
   },
   {
-    "outputFileName": "~/bundles/single/receive-payment.min.css",
-    "inputFileNames": ["~/Css/single/receive-payment.css"]
+    "outputFileName": "wwwroot/bundles/single/receive-payment.min.css",
+    "inputFiles": ["wwwroot/Css/single/receive-payment.css"]
   },
   {
-    "outputFileName": "~/bundles/single/chosen.min.js",
-    "inputFileNames": ["~/Scripts/public/single/chosen.jquery.js"]
+    "outputFileName": "wwwroot/bundles/single/chosen.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/single/chosen.jquery.js"]
   },
   {
-    "outputFileName": "~/bundles/multiselector.min.js",
-    "inputFileNames": ["~/Scripts/public/single/jquery.multiselector.js"]
+    "outputFileName": "wwwroot/bundles/multiselector.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/single/jquery.multiselector.js"]
   },
   {
-    "outputFileName": "~/bundles/customField.min.js",
-    "inputFileNames": ["~/Scripts/public/single/jquery.tablednd_0_5.js"]
+    "outputFileName": "wwwroot/bundles/customField.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/single/jquery.tablednd_0_5.js"]
   },
   {
-    "outputFileName": "~/bundles/fileuploader-js.min.js",
-    "inputFileNames": ["~/Scripts/public/single/fileuploader.js"]
+    "outputFileName": "wwwroot/bundles/fileuploader-js.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/single/fileuploader.js"]
   },
   {
-    "outputFileName": "~/bundles/landing.min.js",
-    "inputFileNames": ["~/Scripts/public/single/Landing.js"]
+    "outputFileName": "wwwroot/bundles/landing.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/single/Landing.js"]
   },
   {
-    "outputFileName": "~/bundles/jqueryTmpl.min.js",
-    "inputFileNames": ["~/Scripts/public/single/jquerytmpl.js"]
+    "outputFileName": "wwwroot/bundles/jqueryTmpl.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/single/jquerytmpl.js"]
   },
   {
-    "outputFileName": "~/bundles/jquery-qtip.min.js",
-    "inputFileNames": ["~/Scripts/public/common/jquery.qtip.js"]
+    "outputFileName": "wwwroot/bundles/jquery-qtip.min.js",
+    "inputFiles": ["wwwroot/Scripts/public/common/jquery.qtip.js"]
   }
 ]
