@@ -57,14 +57,14 @@
     </script>
 }
 
-@Html.Partial("_StatusBar", Model.Workgroup.Id)
+@await Html.PartialAsync("_StatusBar", Model.Workgroup.Id)
 
 @using (Html.BeginForm())
 {
 	@Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
     @Html.Hidden("id", @Model.Workgroup.Id)
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
     <section>
     
 	    <header class="ui-corner-all ui-widget-header">Add Suborganizations <a href="#" id="help-organizations-page" class="ui-icon ui-icon-help showTip" title="You can add any number of additional organizations to this workgroup. This provides the ability for administrative workgroups from other organizations to view this workgroup. You are limited to the organizations that have been added to your account."></a></header>
@@ -91,7 +91,7 @@
             <select id="SelectedOrganizations" name="selectedOrganizations" multiple="">
                 @foreach (var a in Model.Organizations)
                 {
-                    <option @(a.Selected ? "selected" : "") value="@a.Value">@a.Text</option>
+                    <option selected="@(a.Selected)" value="@a.Value">@a.Text</option>
                 }
             </select>
         </div>
@@ -106,5 +106,5 @@
 
 
     </section>
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
 }

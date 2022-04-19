@@ -64,7 +64,7 @@
                 </tr>
             </thead>
             <tbody id="main-orders-body">
-                @Html.Partial("_OrderHistoryRows", urgentOrders.Take(orderShowCount))
+                @await Html.PartialAsync("_OrderHistoryRows", urgentOrders.Take(orderShowCount))
             </tbody>
             <tfoot>
                 <tr>
@@ -81,12 +81,12 @@
         </table>
         <table>
             <tbody id="pending-orders">
-                @Html.Partial("_OrderHistoryRows", Model.PendingOrders.Take(orderShowCount))
+                @await Html.PartialAsync("_OrderHistoryRows", Model.PendingOrders.Take(orderShowCount))
             </tbody>
         </table>
         <table>
             <tbody id="your-open-orders">
-                @Html.Partial("_OrderHistoryRows", Model.YourOpenOrders.Take(orderShowCount))
+                @await Html.PartialAsync("_OrderHistoryRows", Model.YourOpenOrders.Take(orderShowCount))
             </tbody>
         </table>
     </div>

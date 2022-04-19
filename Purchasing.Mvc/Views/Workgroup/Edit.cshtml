@@ -110,7 +110,7 @@ Example: Dinosaur 1  *@
 	<div class="section-contents">
 
 		<ul>
-			@Html.Partial("_WorkgroupForm")
+			@await Html.PartialAsync("_WorkgroupForm")
 
 			@Html.HiddenFor(model => model.Workgroup.Id)
 			<li>

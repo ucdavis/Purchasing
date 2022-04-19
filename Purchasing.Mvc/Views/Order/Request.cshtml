@@ -15,7 +15,7 @@
         $.validator.setDefaults({ ignore: ':hidden :not(.chzn-done)' }); //do not ignore hidden chosen select lists for validation
 
         $(function () {
-            @Html.Partial("_Options")
+            @await Html.PartialAsync("_Options")
 
             purchasing.init();
 
@@ -29,15 +29,15 @@
     @await Html.PartialAsync("_JsBundle", "~/bundles/order")
 }
 
-@Html.Partial("_SideNavigation")
+@await Html.PartialAsync("_SideNavigation")
 
 <div class="orders-right">
 @using (Html.BeginForm("Request", "Order", new { Model.Workgroup.Id }, FormMethod.Post, true, new { id = "order-form" }))
 {
-    @Html.Partial("_OrderForm")
+    @await Html.PartialAsync("_OrderForm")
 }
 </div>
 
-@Html.Partial("_OrderTemplates")
+@await Html.PartialAsync("_OrderTemplates")
 
-@Html.Partial("_OrderDialogs")
+@await Html.PartialAsync("_OrderDialogs")

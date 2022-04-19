@@ -43,8 +43,8 @@
 }
 
 
-	@Html.Partial("_StatusBar", Model.Workgroup.Id) 
-	@Html.Partial("_Navigation")
+	@await Html.PartialAsync("_StatusBar", Model.Workgroup.Id) 
+	@await Html.PartialAsync("_Navigation")
     
 
     @{
@@ -160,7 +160,7 @@
 
 
 @Html.AntiForgeryToken()
-@Html.Partial("_PeopleTable", Model.UserRoles)
+@await Html.PartialAsync("_PeopleTable", Model.UserRoles)
 
 <div id="away-dialog" title="Set Away Status" style="display:none;">
 
@@ -174,4 +174,4 @@
 	</ul>
 	
 </div>
-@Html.Partial("_Navigation")
+@await Html.PartialAsync("_Navigation")

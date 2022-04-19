@@ -9,8 +9,8 @@
     ViewBag.LastStep = true;
 }
 
-    @Html.Partial("_StatusBar", (int)ViewBag.WorkgroupId)
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_StatusBar", (int)ViewBag.WorkgroupId)
+    @await Html.PartialAsync("_Navigation")
     <nav class="col2">
         <ul class='navigation'>
             <li>
@@ -46,5 +46,5 @@
 }
 	</tbody>
 </table>
-@Html.Partial("_Navigation")
+@await Html.PartialAsync("_Navigation")
 

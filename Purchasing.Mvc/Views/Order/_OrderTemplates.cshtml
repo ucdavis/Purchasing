@@ -1,7 +1,7 @@
 ﻿@model OrderModifyModel
 
-@Html.Partial("_GenericSelectTemplate")
+@await Html.PartialAsync("_GenericSelectTemplate")
 
-@Html.Partial("_UnitOfMeasureSelectTemplate", Model.Units)
+@await Html.PartialAsync("_UnitOfMeasureSelectTemplate", Model.Units)
 
-@Html.Partial("_AccountSearchTemplate")
+@await Html.PartialAsync("_AccountSearchTemplate")

@@ -148,12 +148,12 @@
 
 <div id="kfsVendorForm" @(Model.NewVendor.HasValue && !Model.NewVendor.Value ? "style=display:block;" : "style=display:none;")>
 
-    @Html.Partial("_ExistingWorkgroupVendor")
+    @await Html.PartialAsync("_ExistingWorkgroupVendor")
 
 </div>
 
 <div id="newVendorForm" @(Model.NewVendor.HasValue && Model.NewVendor.Value ? "style=display:block;" : "style=display:none;")>
 
-    @Html.Partial("_NewWorkgroupVendor")
+    @await Html.PartialAsync("_NewWorkgroupVendor")
 
 </div>

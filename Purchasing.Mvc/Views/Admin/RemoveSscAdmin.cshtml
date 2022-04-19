@@ -8,7 +8,7 @@
 <h3>Note! This will not remove the user from the Departmental Admin role, only prevent them from being batch updated.</h3>
 
 @using (Html.BeginForm("RemoveSscAdminRole", "Admin", new { id = Model.Id})) {
-    @Html.Partial("_RemoveUserForm")
+    @await Html.PartialAsync("_RemoveUserForm")
 }
 
 

@@ -169,9 +169,9 @@
 
 @if (string.IsNullOrWhiteSpace(Model.ShowLast))
 {
-    @Html.Partial("_OrderFilter", Model)
+    @await Html.PartialAsync("_OrderFilter", Model)
 }
     
-@Html.Partial("_OrdersTable", Model)
+@await Html.PartialAsync("_OrdersTable", Model)
 
-@Html.Partial("_PeepsDialog")
+@await Html.PartialAsync("_PeepsDialog")

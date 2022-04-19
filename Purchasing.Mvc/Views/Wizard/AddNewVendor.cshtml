@@ -71,7 +71,7 @@
 }
 
 
-    @Html.Partial("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
+    @await Html.PartialAsync("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
     
     @{
         var helpText = "To add a non KFS vendor enter the fields below.</br></br>" +
@@ -87,7 +87,7 @@
     @Html.ValidationSummary(true)
     @Html.Hidden("newVendor", true)
     @Html.Hidden("WorkgroupVendor.Workgroup", Model.WorkgroupVendor.Workgroup.Id)
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
     <section class="ui-corner-all">
     
         <header class="ui-corner-top ui-widget-header">New Vendor <a href="#" id="help-vendor-page" class="ui-icon ui-icon-help showTip" title="@helpText" ></a></header>
@@ -239,6 +239,6 @@
 
     </section>
     
-     @Html.Partial("_Navigation")
+     @await Html.PartialAsync("_Navigation")
        
 }

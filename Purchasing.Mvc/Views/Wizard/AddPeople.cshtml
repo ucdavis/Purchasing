@@ -75,14 +75,14 @@
 
 
 
-@Html.Partial("_StatusBar", Model.Workgroup.Id)
+@await Html.PartialAsync("_StatusBar", Model.Workgroup.Id)
 
 
 @using(Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
     <section>
         @{
             var helpText = "";
@@ -223,7 +223,7 @@
 
 
     </section>
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
 }
 
 

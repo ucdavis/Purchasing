@@ -15,8 +15,8 @@
     //ViewBag.IsAdministrative// set in controller
 }
 
-	 @Html.Partial("_StatusBar", (int)ViewBag.WorkgroupId)
-	 @Html.Partial("_Navigation")
+	 @await Html.PartialAsync("_StatusBar", (int)ViewBag.WorkgroupId)
+	 @await Html.PartialAsync("_Navigation")
      <nav class="col2">
          <ul class='navigation'>
              <li>
@@ -36,7 +36,7 @@
     </nav>
 
 
-@Html.Partial("_VendorTable", Model)
+@await Html.PartialAsync("_VendorTable", Model)
 
-@Html.Partial("_Navigation")
+@await Html.PartialAsync("_Navigation")
    

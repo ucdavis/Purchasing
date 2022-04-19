@@ -45,13 +45,13 @@
                        "If those people are not selected, it will default to anyone in the workgroup with those roles.";
     }
 
-@Html.Partial("_StatusBar", Model.Workgroup.Id)
+@await Html.PartialAsync("_StatusBar", Model.Workgroup.Id)
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 	@Html.ValidationSummary(true)
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
 
     <section class="padded">
         <header class="ui-corner-all ui-widget-header">Add Account <a href="#" id="help-accounts-page" class="ui-icon ui-icon-help showTip" title="@helpText" ></a></header>
@@ -102,5 +102,5 @@
         </div>
 
     </section>
-     @Html.Partial("_Navigation")
+     @await Html.PartialAsync("_Navigation")
 }

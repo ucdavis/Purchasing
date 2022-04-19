@@ -111,7 +111,7 @@
     We have made some functional changes to this page. Here is a short video describing the changes: <a href="https://youtu.be/bAKKMUo6-2E" target="_blank">https://youtu.be/bAKKMUo6-2E</a>.
 </div>
 
-    @Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)
+    @await Html.PartialAsync("_ReviewOrderDetails", Model.ReviewOrderViewModel)
 
 
     <section id="line-items" class="ui-corner-all display-form">
@@ -257,8 +257,8 @@
 
     </section>
 
-    @Html.Partial("_ReceivedItemsHistoryDialog")
+    @await Html.PartialAsync("_ReceivedItemsHistoryDialog")
 
-    @Html.Partial("_ReviewAttachments", Model.ReviewOrderViewModel)
+    @await Html.PartialAsync("_ReviewAttachments", Model.ReviewOrderViewModel)
 
-    @Html.Partial("_ReviewNotes", Model.ReviewOrderViewModel)
+    @await Html.PartialAsync("_ReviewNotes", Model.ReviewOrderViewModel)

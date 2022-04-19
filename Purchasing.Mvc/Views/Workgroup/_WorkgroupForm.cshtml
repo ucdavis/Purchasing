@@ -1,6 +1,6 @@
 ﻿@using Purchasing.Mvc.Models
 @model WorkgroupModifyModel
-@Html.Partial("_CommonWorkgroupForm")
+@await Html.PartialAsync("_CommonWorkgroupForm")
 <li>
     <div class="editor-label">
         @Html.LabelFor(model => model.Workgroup.IsActive)
@@ -29,7 +29,7 @@
             <select id="SelectedOrganizations" name="selectedOrganizations" multiple="">
                 @foreach (var a in Model.Organizations)
                 {
-                    <option @(a.Selected ? "selected" : "") value="@a.Value">@a.Text</option>
+                    <option selected="@(a.Selected)" value="@a.Value">@a.Text</option>
                 }
             </select>
         </div>

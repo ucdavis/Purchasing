@@ -41,7 +41,7 @@
     @Html.HiddenFor(x => x.DepartmentalAdminRequest.LastName)
     @Html.HiddenFor(x => x.DepartmentalAdminRequest.Email)
 
-    @Html.Partial("_daRequest")
+    @await Html.PartialAsync("_daRequest")
 }
 
 

@@ -50,24 +50,24 @@
 
         if (roles.Contains(Role.Codes.Requester))
         {
-            @Html.Partial("_RequesterPreferences")     
+            @await Html.PartialAsync("_RequesterPreferences")     
         }
 
         if (roles.Contains(Role.Codes.Approver) || ViewBag.IsConditionalApprover)
         {
-            @Html.Partial("_ApproverPreferences")
+            @await Html.PartialAsync("_ApproverPreferences")
         }
 
         if (roles.Contains(Role.Codes.AccountManager))
         {
-            @Html.Partial("_AccountManagerPreferences")
+            @await Html.PartialAsync("_AccountManagerPreferences")
         }
 
         if (roles.Contains(Role.Codes.Purchaser))
         {
-            @Html.Partial("_PurchaserPreferences")
+            @await Html.PartialAsync("_PurchaserPreferences")
         }
-        @Html.Partial("_GeneralEmailPreferences")
+        @await Html.PartialAsync("_GeneralEmailPreferences")
         <section>
     
         <div class="section-contents">

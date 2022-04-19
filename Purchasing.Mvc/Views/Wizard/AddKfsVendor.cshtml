@@ -11,7 +11,7 @@
 }
 
 
-    @Html.Partial("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
+    @await Html.PartialAsync("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
     
     @{
         var helpText = "To add a existing KFS Vendor to this workgroup, type part of the vendor name in the Kfs vendor field. After at least 3 characters are entered a list of matches will appear. Select one of these.</br></br>" +
@@ -26,7 +26,7 @@
 	@Html.ValidationSummary(true)
     @Html.Hidden("newVendor", false)
     @Html.Hidden("WorkgroupVendor.Workgroup", Model.WorkgroupVendor.Workgroup.Id)
-     @Html.Partial("_Navigation")
+     @await Html.PartialAsync("_Navigation")
     <section class="ui-corner-all">
 	    <header class="ui-corner-top ui-widget-header">Kfs Vendor <a href="#" id="help-kfsvendor-page" class="ui-icon ui-icon-help showTip" title="@helpText" ></a></header>
         
@@ -64,7 +64,7 @@
 
     </section>
        
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
 }
 
 <script type="text/javascript">
