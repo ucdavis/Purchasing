@@ -7,7 +7,6 @@ using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {

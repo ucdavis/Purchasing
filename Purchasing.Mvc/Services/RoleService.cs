@@ -6,22 +6,38 @@ using Dapper;
 using CommonServiceLocator;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
+using System.Data.Common;
 
-namespace Purchasing.Mvc.Providers
+namespace Purchasing.Mvc.Services
 {
-    public class PurchasingRoleProvider : RoleProvider
-    {
-        protected IDbService DbService { get; set; }
 
-        public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
+    // Was originally PurchasingRoleProvider
+    public interface IRoleService
+    {
+        public bool IsUserInRole(string username, string roleName);
+        public string[] GetRolesForUser(string username);
+        public void CreateRole(string roleName);
+        public bool DeleteRole(string roleName, bool throwOnPopulatedRole);
+        public bool RoleExists(string roleName);
+        public void AddUsersToRoles(string[] usernames, string[] roleNames);
+        public void RemoveUsersFromRoles(string[] usernames, string[] roleNames);
+        public string[] GetUsersInRole(string roleName);
+        public string[] GetAllRoles();
+        public string[] FindUsersInRole(string roleName, string usernameToMatch);
+    }
+
+    public class RoleService: IRoleService
+    {
+        private readonly IDbService _dbService;
+
+        public RoleService(IDbService dbService)
         {
-            DbService = ServiceLocator.Current.GetInstance<IDbService>();
-            base.Initialize(name, config);
+            _dbService = dbService;
         }
 
-        public override bool IsUserInRole(string username, string roleName)
+        public bool IsUserInRole(string username, string roleName)
         {
-            using (var conn = DbService.GetConnection())
+            using (var conn = _dbService.GetConnection())
             {
                 var result = conn.Query<int>(
                     @"select count(UserId) from Permissions inner join Users on Permissions.UserId = Users.Id 
@@ -32,9 +48,9 @@ namespace Purchasing.Mvc.Providers
             }
         }
 
-        public override string[] GetRolesForUser(string username)
+        public string[] GetRolesForUser(string username)
         {
-            using (var conn = DbService.GetConnection())
+            using (var conn = _dbService.GetConnection())
             {
                 var result =
                     conn.Query<string>(
@@ -45,14 +61,14 @@ namespace Purchasing.Mvc.Providers
             }
         }
 
-        public override void CreateRole(string roleName)
+        public void CreateRole(string roleName)
         {
             throw new InvalidOperationException("Cannot create roles through the role provider");
         }
 
-        public override bool DeleteRole(string roleName, bool throwOnPopulatedRole)
+        public bool DeleteRole(string roleName, bool throwOnPopulatedRole)
         {
-            using (var conn = DbService.GetConnection())
+            using (var conn = _dbService.GetConnection())
             {
                 if (throwOnPopulatedRole)
                 {
@@ -68,7 +84,7 @@ namespace Purchasing.Mvc.Providers
                     conn.Execute("delete from Permissions where RoleId = @rolename", new { rolename = roleName });//Delete users in role
                     conn.Execute("delete from Roles where RoleId = @rolename", new { rolename = roleName });//Delete the role
                 }
-                catch (OdbcException)
+                catch (DbException)
                 {
                     return false;
                 }
@@ -77,9 +93,9 @@ namespace Purchasing.Mvc.Providers
             }
         }
 
-        public override bool RoleExists(string roleName)
+        public bool RoleExists(string roleName)
         {
-            using (var conn = DbService.GetConnection())
+            using (var conn = _dbService.GetConnection())
             {
                 var result = conn.Query<int>("select count(RoleId) from Roles where RoleId = @rolename",
                                              new {rolename = roleName});
@@ -88,9 +104,9 @@ namespace Purchasing.Mvc.Providers
             }
         }
 
-        public override void AddUsersToRoles(string[] usernames, string[] roleNames)
+        public void AddUsersToRoles(string[] usernames, string[] roleNames)
         {
-            using (var conn = DbService.GetConnection())
+            using (var conn = _dbService.GetConnection())
             {
                 foreach (string username in usernames)
                 {
@@ -104,9 +120,9 @@ namespace Purchasing.Mvc.Providers
             }
         }
 
-        public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames)
+        public void RemoveUsersFromRoles(string[] usernames, string[] roleNames)
         {
-            using (var conn = DbService.GetConnection())
+            using (var conn = _dbService.GetConnection())
             {
                 foreach (string username in usernames)
                 {
@@ -120,9 +136,9 @@ namespace Purchasing.Mvc.Providers
             }
         }
 
-        public override string[] GetUsersInRole(string roleName)
+        public string[] GetUsersInRole(string roleName)
         {
-            using (var conn = DbService.GetConnection())
+            using (var conn = _dbService.GetConnection())
             {
                 var result =
                     conn.Query<string>(
@@ -133,9 +149,9 @@ namespace Purchasing.Mvc.Providers
             }
         }
 
-        public override string[] GetAllRoles()
+        public string[] GetAllRoles()
         {
-            using (var conn = DbService.GetConnection())
+            using (var conn = _dbService.GetConnection())
             {
                 var result = conn.Query<string>("select Id from Roles");
 
@@ -143,9 +159,9 @@ namespace Purchasing.Mvc.Providers
             }
         }
 
-        public override string[] FindUsersInRole(string roleName, string usernameToMatch)
+        public string[] FindUsersInRole(string roleName, string usernameToMatch)
         {
-            using (var conn = DbService.GetConnection())
+            using (var conn = _dbService.GetConnection())
             {
                 var result =
                     conn.Query<string>(
@@ -156,7 +172,7 @@ namespace Purchasing.Mvc.Providers
             }
         }
 
-        public override string ApplicationName
+        public string ApplicationName
         {
             get { return "Purchasing"; }
             set { throw new InvalidOperationException("You are not allowed to set the application name"); }

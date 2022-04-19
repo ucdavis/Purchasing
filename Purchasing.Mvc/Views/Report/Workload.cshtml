@@ -14,7 +14,7 @@
 @using (Html.BeginForm("Workload", "Report", FormMethod.Get))
 {
     <section class="report-head">
-    @Html.Select("WorkgroupId", o => o.Options(Model.Workgroups.OrderBy(x=>x.Name), x => x.Id, x => x.Name).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--"))  
+    @Html.Select("WorkgroupId", o => o.Options(Model.Workgroups.OrderBy(x=>x.Name), x => x.Id.ToString(), x => x.Name).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--"))  
     
     <input type="submit" value="Update" class="button"/>
     </section>

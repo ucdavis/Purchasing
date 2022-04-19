@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1EFCD7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jobs", "Jobs", "{3201A95E-A908-42BC-9363-D8B5720F6881}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Tests", "Purchasing.Tests\Purchasing.Tests.csproj", "{E0236983-79B2-4279-8B12-6EF256C48AE9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Core", "Purchasing.Core\Purchasing.Core.csproj", "{B1C96724-966E-4481-89A7-DF4B1C26069D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.WS", "Purchasing.WS\Purchasing.WS.csproj", "{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}"
@@ -45,15 +43,6 @@ Global
 		Test|Any CPU = Test|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.ReleaseAzure|Any CPU.ActiveCfg = ReleaseAzure|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.ReleaseAzure|Any CPU.Build.0 = ReleaseAzure|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.ReleaseCAES|Any CPU.ActiveCfg = ReleaseCAES|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.ReleaseCAES|Any CPU.Build.0 = ReleaseCAES|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Test|Any CPU.ActiveCfg = Test|Any CPU
 		{B1C96724-966E-4481-89A7-DF4B1C26069D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1C96724-966E-4481-89A7-DF4B1C26069D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1C96724-966E-4481-89A7-DF4B1C26069D}.Release|Any CPU.ActiveCfg = Release|Any CPU

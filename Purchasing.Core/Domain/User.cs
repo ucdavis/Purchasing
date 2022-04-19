@@ -37,7 +37,7 @@ namespace Purchasing.Core.Domain
         [StringLength(10)]
         [Display(Name = "KerberosID")]
         [DomainSignature]
-        public override string Id { get; protected set; }
+        public override string Id { get; set; }
 
         [Required]
         [StringLength(50)]

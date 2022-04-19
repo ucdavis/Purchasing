@@ -8,7 +8,7 @@
             @Html.LabelFor(model => model.Workgroup)
         </div>
         <div class="editor-field">
-            @Html.Select("Workgroup", o => o.Options(Model.Workgroups, x=>x.Id, x=>x.Name).Selected(ViewBag.WorkgroupId))
+            @Html.Select("Workgroup", o => o.Options(Model.Workgroups, x=>x.Id.ToString(), x=>x.Name).Selected(ViewBag.WorkgroupId))
             @Html.ValidationMessageFor(model => model.Workgroup)
         </div>
     </li>

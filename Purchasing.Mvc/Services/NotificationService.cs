@@ -626,7 +626,6 @@ namespace Purchasing.Mvc.Services
                         default: return false;
                     }
 
-                    break;
                 case OrderStatusCode.Codes.AccountManager:
 
                     switch (eventCode)

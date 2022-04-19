@@ -11,6 +11,8 @@ using Purchasing.Mvc.Utility;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using UCDArch.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace Purchasing.Mvc.Services
 {
@@ -531,7 +533,7 @@ namespace Purchasing.Mvc.Services
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)
         {
             //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
-            HttpContextHelper.Current.Session.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+            SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.Session.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
         }
 
 

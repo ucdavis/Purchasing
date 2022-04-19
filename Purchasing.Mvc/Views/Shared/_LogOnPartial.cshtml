@@ -1,4 +1,4 @@
-﻿@if(Request.IsAuthenticated) {
+﻿@if(@Context.User.Identity.IsAuthenticated) {
 <div id="personalbar">
 	<!-- Example Welcome user message -->
 	<div class="col1">

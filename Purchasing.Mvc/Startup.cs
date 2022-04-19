@@ -25,6 +25,9 @@ using UCDArch.Web.ModelBinder;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Logging;
 using Serilog;
+using AspNetCore.Security.CAS;
+using Purchasing.Mvc.Handlers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Purchasing.Mvc
 {
@@ -63,8 +66,35 @@ namespace Purchasing.Mvc
             // Allow standard Windsor behavior for services injected into controllers...
             .AddControllersAsServices();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
+            // add cas auth backed by a cookie signin scheme
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+                {
+                    options.LoginPath = new PathString("/LogOn");
+                })
+            .AddCAS();
+            services.AddAuthorization(options =>
+            {
+                // Assets can be managed by role or auth token (API)
+                options.AddPolicy(Role.Codes.Admin, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.Admin)));
+                options.AddPolicy(Role.Codes.DepartmentalAdmin, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.DepartmentalAdmin)));
+                options.AddPolicy(Role.Codes.Requester, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.Requester)));
+                options.AddPolicy(Role.Codes.Approver, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.Approver)));
+                options.AddPolicy(Role.Codes.AccountManager, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.AccountManager)));
+                options.AddPolicy(Role.Codes.Purchaser, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.Purchaser)));
+                options.AddPolicy(Role.Codes.EmulationUser, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.EmulationUser)));
+                options.AddPolicy(Role.Codes.Reviewer, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.Reviewer)));
+                options.AddPolicy(Role.Codes.SscAdmin, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.SscAdmin)));
+                options.AddPolicy(Role.Codes.AdminWorkgroup, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.AdminWorkgroup)));
+                options.AddPolicy(Role.Codes.AdhocAccountManager, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.AdhocAccountManager)));
+            });
+
+            services.AddScoped<IAuthorizationHandler, VerifyRoleAccessHandler>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.Configure<LDAPSettings>(Configuration);
             services.Configure<SendGridSettings>(Configuration);

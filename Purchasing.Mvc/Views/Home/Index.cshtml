@@ -252,7 +252,7 @@
     <script type="text/javascript">
     (function (w) {
         var d = w['Configuration'] || (w['Configuration'] = {});
-        d.AnalyticsKey = '@configuration.GetValue<string>("AnalyticsKey")';
+        d.AnalyticsKey = '@(configuration.GetValue<string>("AnalyticsKey"))';
         d.ActiveIssuesCountUrl = "/Help/GetActiveIssuesCount";
         d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
         d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());

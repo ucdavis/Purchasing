@@ -8,7 +8,7 @@
 }
 
 @{ HelperResult ContainerFor(string name, int count, string action = null, string roleFilter = null, bool special = false, string label = null, bool disable = false){
-	    if (special && (disable == null || disable == false))
+	    if (special && (disable == false))
 	    {
 	          <a href="@Url.Action("ByWorkgroup", "ConditionalApproval", new { id = Model.Workgroup.Id }, null)">
 	

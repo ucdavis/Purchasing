@@ -67,6 +67,7 @@ namespace Purchasing.Mvc
 
             container.Register(Component.For<IFinancialSystemService>().ImplementedBy<FinancialSystemService>().Named("financialSystemService"));
             container.Register(Component.For<IBugTrackingService>().ImplementedBy<BugTrackingService>().Named("bugTrackingService"));
+            container.Register(Component.For<IRoleService>().ImplementedBy<RoleService>().Named("roleService"));
 
             //#if DEBUG   
             //            container.Register(Component.For<INotificationSender>().ImplementedBy<DevNotificationSender>().Named("notificationSender"));

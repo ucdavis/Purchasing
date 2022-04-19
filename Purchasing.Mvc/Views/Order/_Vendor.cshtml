@@ -18,7 +18,7 @@
             <li>
                 <div class="editor-label">&nbsp;</div>
                 <div class="editor-field">
-                    @Html.Select("vendor", o => o.Options(Model.Vendors, x=>x.Id, x=>x.ShortDisplayName).Selected(Model.Order.Vendor != null ? Model.Order.Vendor.Id : 0).FirstOption("Unspecified").Title("Select a vendor to purchase from. Selecting 'Unspecified' indicates no specific vendor will be associated").Styles(width => "300px"))
+                    @Html.Select("vendor", o => o.Options(Model.Vendors, x=>x.Id.ToString(), x=>x.ShortDisplayName).Selected(Model.Order.Vendor != null ? Model.Order.Vendor.Id.ToString() : "0").FirstOption("Unspecified").Title("Select a vendor to purchase from. Selecting 'Unspecified' indicates no specific vendor will be associated").Styles(width => "300px"))
                     <span class="field-validation-valid" data-valmsg-for="vendor" data-valmsg-replace="true"></span>
                     (or)
                     <a id="add-vendor" class="button" href="#">Add new vendor</a>

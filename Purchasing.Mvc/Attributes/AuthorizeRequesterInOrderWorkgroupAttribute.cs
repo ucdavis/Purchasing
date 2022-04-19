@@ -6,6 +6,7 @@ using UCDArch.Core.PersistanceSupport;
 using CommonServiceLocator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using UCDArch.Core;
 
 namespace Purchasing.Mvc.Attributes
 {
@@ -15,7 +16,7 @@ namespace Purchasing.Mvc.Attributes
         
         public AuthorizeRequesterInOrderWorkgroupAttribute()
         {
-            _repositoryFactory = ServiceLocator.Current.GetInstance<IRepositoryFactory>();
+            _repositoryFactory = SmartServiceLocator<IRepositoryFactory>.GetService();
         }
 
         public void OnAuthorization(AuthorizationFilterContext filterContext)

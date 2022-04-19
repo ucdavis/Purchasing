@@ -33,7 +33,7 @@ namespace Purchasing.Core.Domain
         [Required]
         [StringLength(10)]
         [Display(Name = "KerberosID")]
-        public override string Id { get; protected set; }
+        public override string Id { get; set; }
 
         [Required]
         [StringLength(50)]

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Web;
 using StackExchange.Profiling;
 using Purchasing.Mvc;
+using UCDArch.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace Purchasing.Mvc.Helpers
 {
@@ -19,14 +22,14 @@ namespace Purchasing.Mvc.Helpers
             var mp = MiniProfiler.Current;
             if (mp != null)
             {
-                var stack = HttpContextHelper.Current.Items[StackKey] as Stack<IDisposable>;
+                var stack = SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.Items[StackKey] as Stack<IDisposable>;
                 if (stack == null)
                 {
                     stack = new Stack<IDisposable>();
-                    HttpContextHelper.Current.Items[StackKey] = stack;
+                    SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.Items[StackKey] = stack;
                 }
 
-                var prof = MiniProfiler.Current.Step("Controller: " + filterContext.Controller + "." + filterContext.ActionDescriptor.ActionName);
+                var prof = MiniProfiler.Current.Step("Controller: " + filterContext.Controller + "." + (filterContext.ActionDescriptor as ControllerActionDescriptor).ActionName);
                 stack.Push(prof);
 
             }
@@ -36,7 +39,7 @@ namespace Purchasing.Mvc.Helpers
         public override void OnActionExecuted(Microsoft.AspNetCore.Mvc.Filters.ActionExecutedContext filterContext)
         {
             base.OnActionExecuted(filterContext);
-            var stack = HttpContextHelper.Current.Items[StackKey] as Stack<IDisposable>;
+            var stack = SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.Items[StackKey] as Stack<IDisposable>;
             if (stack != null && stack.Count > 0)
             {
                 stack.Pop().Dispose();

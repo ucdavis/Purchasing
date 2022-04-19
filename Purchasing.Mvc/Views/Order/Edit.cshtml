@@ -30,7 +30,7 @@
 @Html.Partial("_SideNavigation")
 
 <div class="orders-right">
-@using (Html.BeginForm("Edit", "Order", new { Model.Order.Id }, FormMethod.Post, new { id = "order-form" }))
+@using (Html.BeginForm("Edit", "Order", new { Model.Order.Id }, FormMethod.Post, true, new { id = "order-form" }))
 {
     <input data-bind="value: adjustRouting" id="adjustRouting" name="adjustRouting" type="hidden" />
 

@@ -16,7 +16,7 @@
 
 //         public static string GetReturnUrl()
 //         {
-//             return HttpContextHelper.Current.Request.QueryString[StrReturnUrl];
+//             return SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.Request.QueryString[StrReturnUrl];
 //         }
 
 //         /// <summary>
@@ -27,7 +27,7 @@
 //         {
 //             string returnUrl = Login();
 
-//             if (returnUrl != null) HttpContextHelper.Current.Response.Redirect(returnUrl);
+//             if (returnUrl != null) SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.Response.Redirect(returnUrl);
 //         }
 
 //         public static string Logout()
@@ -42,7 +42,7 @@
 //         public static string Login()
 //         {
 //             // get the context from the source
-//             var context = HttpContextHelper.Current;
+//             var context = SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext;
 
 //             // try to load a valid ticket
 //             HttpCookie validCookie = context.Request.Cookies[FormsAuthentication.FormsCookieName];

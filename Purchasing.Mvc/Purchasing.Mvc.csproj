@@ -71,6 +71,7 @@
     <PackageReference Include="Serilog.Exceptions" Version="8.1.0"/>
 		<PackageReference Include="Castle.Windsor.Extensions.DependencyInjection" Version="5.1.1"/>
     <PackageReference Include="BundlerMinifier.Core " Version="3.2.449"/>
+    <PackageReference Include="AspNetCore.Security.CAS" Version="2.0.5" />
 	</ItemGroup>
   <Target Name="BundleMinify" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' ">
     <Exec Command="dotnet bundle" />

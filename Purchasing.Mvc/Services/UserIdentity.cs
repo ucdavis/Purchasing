@@ -1,6 +1,9 @@
 using System.Security.Principal;
 using System.Web;
+using CommonServiceLocator;
+using Microsoft.AspNetCore.Http;
 using Purchasing.Mvc;
+using UCDArch.Core;
 
 namespace Purchasing.Mvc.Services
 {
@@ -14,16 +17,16 @@ namespace Purchasing.Mvc.Services
 
     public class UserIdentity : IUserIdentity
     {
-        public string Current { get { return HttpContextHelper.Current.User.Identity.Name; } }
-        public IPrincipal CurrentPrincipal { get { return HttpContextHelper.Current.User; } }
+        public string Current { get { return SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.User.Identity.Name; } }
+        public IPrincipal CurrentPrincipal { get { return SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.User; } }
         public bool IsUserInRole(string userId, string roleId)
         {
-            return Roles.IsUserInRole(userId, roleId);
+            return SmartServiceLocator<IRoleService>.GetService().IsUserInRole(userId, roleId);
         }
 
         public void RemoveUserRoleFromCache(string roleCacheId, string userId)
         {
-            HttpContextHelper.Current.Session.Remove(string.Format(roleCacheId, userId));
+            SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.Session.Remove(string.Format(roleCacheId, userId));
         }
 
     }

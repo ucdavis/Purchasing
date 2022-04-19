@@ -5,6 +5,7 @@ using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using UCDArch.Core;
 
 namespace Purchasing.Mvc.Attributes
 {
@@ -14,7 +15,7 @@ namespace Purchasing.Mvc.Attributes
 
         public AuthorizeWorkgroupAccessAttribute()
         {
-            _securityService = ServiceLocator.Current.GetInstance<ISecurityService>();
+            _securityService = SmartServiceLocator<ISecurityService>.GetService();
         }
         public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
