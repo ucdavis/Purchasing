@@ -23,6 +23,7 @@ using UCDArch.Web.Attributes;
 using UCDArch.Web.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using System.Threading.Tasks;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -1234,7 +1235,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [BypassAntiForgeryToken] //required because upload is being done by plugin
-        public ActionResult UploadFile(int? orderId, IFormFile qqfile)
+        public async Task<ActionResult> UploadFile(int? orderId, IFormFile qqfile)
         {
             var request = ControllerContext.HttpContext.Request;
             Stream fileStream = qqfile.OpenReadStream();
@@ -1283,7 +1284,7 @@ namespace Purchasing.Mvc.Controllers
             }
 
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
-            _fileService.UploadAttachment(attachment.Id, fileStream);
+            await _fileService.UploadAttachment(attachment.Id, fileStream);
 
             return Json(new { success = true, id = attachment.Id }, "text/html");
         }
@@ -1291,9 +1292,9 @@ namespace Purchasing.Mvc.Controllers
         /// <summary>
         /// Allows a user to download any attachment file by providing the file ID
         /// </summary>
-        public ActionResult ViewFile(Guid fileId)
+        public async Task<ActionResult> ViewFile(Guid fileId)
         {
-            var file = _fileService.GetAttachment(fileId);
+            var file = await _fileService.GetAttachment(fileId);
 
             if (file == null) return NotFound(Resources.ViewFile_NotFound);
 
