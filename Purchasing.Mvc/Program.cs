@@ -29,8 +29,7 @@ namespace Purchasing.Mvc
             //only add secrets in development
             if (isDevelopment)
             {
-                //builder.AddUserSecrets<Program>();
-                builder.AddUserSecrets(System.Reflection.Assembly.GetExecutingAssembly());
+                builder.AddUserSecrets<Program>();
             }
             var configuration = builder.Build();
 

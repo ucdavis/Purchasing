@@ -4,9 +4,16 @@
 		<OutputType>Library</OutputType>
 		<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
 		<RestorePackages>true</RestorePackages>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Title>Purchasing.Jobs.NotificationsCommon</Title>
+    <Product>Purchasing.Jobs.NotificationsCommon</Product>
+    <Copyright>Copyright ©  2015</Copyright>
     <Deterministic>false</Deterministic>
 	</PropertyGroup>
+  <PropertyGroup Condition=" '$(Version)' == '' ">
+    <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">1.1.0</VersionPrefix>
+    <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix)-$(VersionSuffix)</Version>
+    <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
+  </PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj"/>
 		<ProjectReference Include="..\Purchasing.Jobs.Common\Purchasing.Jobs.Common.csproj"/>

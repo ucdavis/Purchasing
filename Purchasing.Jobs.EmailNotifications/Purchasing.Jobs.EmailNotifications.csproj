@@ -4,9 +4,16 @@
 		<OutputType>Exe</OutputType>
 		<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
 		<RestorePackages>true</RestorePackages>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Title>Purchasing.Jobs.EmailNotifications</Title>
+    <Product>Purchasing.Jobs.EmailNotifications</Product>
+    <Copyright>Copyright ©  2015</Copyright>
     <Deterministic>false</Deterministic>
 	</PropertyGroup>
+  <PropertyGroup Condition=" '$(Version)' == '' ">
+    <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">1.1.0</VersionPrefix>
+    <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix)-$(VersionSuffix)</Version>
+    <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
+  </PropertyGroup>
 	<ItemGroup>
 		<None Update="settings.job">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
