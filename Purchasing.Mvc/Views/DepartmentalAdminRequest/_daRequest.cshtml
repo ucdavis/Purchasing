@@ -85,7 +85,7 @@
                 <div class="display-details">
                     @Html.DisplayFor(model => model.DepartmentalAdminRequest.Email)
                     @{
-                        var url = string.Format("{0}{1}", configuration.GetValue<string>("PersonLookupUrl"), Model.DepartmentalAdminRequest.Email);
+                        var url = string.Format("{0}{1}", configuration["PersonLookupUrl"], Model.DepartmentalAdminRequest.Email);
                     }
                     <a class="button" href="@url" target="_blank">Lookup</a>
 

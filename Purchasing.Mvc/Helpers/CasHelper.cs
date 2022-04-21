@@ -9,7 +9,7 @@
 // {
 //     public static class CasHelper
 //     {
-//         private static readonly string CasFromAppSetting = configuration.GetValue<string>("CasUrl");
+//         private static readonly string CasFromAppSetting = configuration["CasUrl"];
 
 //         private const string StrTicket = "ticket";
 //         private const string StrReturnUrl = "ReturnURL";

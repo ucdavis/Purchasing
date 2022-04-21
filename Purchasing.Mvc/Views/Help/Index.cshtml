@@ -2,8 +2,8 @@
 @inject IConfiguration configuration
 @{
     ViewBag.Title = "PrePurchasing Help";
-    var feedbackUrl = configuration.GetValue<string>("feedbackUrl");
-    var faqUrl = configuration.GetValue<string>("FAQUrl");
+    var feedbackUrl = configuration["feedbackUrl"];
+    var faqUrl = configuration["FAQUrl"];
 }
 
 

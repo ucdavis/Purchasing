@@ -13,7 +13,7 @@ namespace Purchasing.Mvc.Attributes
     {
         public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
-            var localIpFilter = SmartServiceLocator<IConfiguration>.GetService().GetValue<string>("IpFilter");
+            var localIpFilter = SmartServiceLocator<IConfiguration>.GetService()["IpFilter"];
             var clientIp = filterContext.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 
             // not authorized

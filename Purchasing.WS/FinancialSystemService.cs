@@ -22,8 +22,8 @@ namespace Purchasing.WS
 
         public FinancialSystemService(IConfiguration configuration)
         {
-            _url = configuration.GetValue<string>("AfsUrl");
-            _token = configuration.GetValue<string>("AfsToken");
+            _url = configuration["AfsUrl"];
+            _token = configuration["AfsToken"];
         }
 
         private purchasingDocumentsInterfaceServiceSOAPClient InitializeClient(bool extendedWait = false)

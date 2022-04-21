@@ -5,6 +5,7 @@
 		<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
 		<RestorePackages>true</RestorePackages>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Deterministic>false</Deterministic>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj"/>

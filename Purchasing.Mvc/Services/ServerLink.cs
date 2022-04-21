@@ -2,6 +2,8 @@
 using System.Web;
 using Purchasing.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
 namespace Purchasing.Mvc.Services
 {
@@ -12,10 +14,9 @@ namespace Purchasing.Mvc.Services
     
     public class ServerLink : IServerLink
     {
-        public ServerLink(IUrlHelper urlHelper)
+        public ServerLink(IHttpContextAccessor contextAccessor, LinkGenerator linkGenerator)
         {
-            var scheme = urlHelper.ActionContext.HttpContext.Request.Scheme;
-            Address = urlHelper.Action("Lookup", "Order", null, scheme);
+            Address = linkGenerator.GetUriByAction(contextAccessor.HttpContext, "Lookup", "Order");
         }
 
         public string Address { get; }

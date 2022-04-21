@@ -63,7 +63,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("{0}{1}", configuration.GetValue<string>("PersonLookupUrl"), email.Value);
+                    var url = string.Format("{0}{1}", configuration["PersonLookupUrl"], email.Value);
                                 var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>
@@ -100,7 +100,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("{0}{1}", configuration.GetValue<string>("PersonLookupUrl"), email.Value);
+                    var url = string.Format("{0}{1}", configuration["PersonLookupUrl"], email.Value);
                                 var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>
@@ -137,7 +137,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("{0}{1}", configuration.GetValue<string>("PersonLookupUrl"), email.Value);
+                    var url = string.Format("{0}{1}", configuration["PersonLookupUrl"], email.Value);
                                 var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>

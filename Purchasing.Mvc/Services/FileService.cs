@@ -37,8 +37,8 @@ namespace Purchasing.Mvc.Services
 
             var storageConnectionString =
                 string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}",
-                              configuration.GetValue<string>("AzureStorageAccountName"),
-                              configuration.GetValue<string>("AzureStorageKey"));
+                              configuration["AzureStorageAccountName"],
+                              configuration["AzureStorageKey"]);
 
             _blobServiceClient = new BlobServiceClient(storageConnectionString);
         }

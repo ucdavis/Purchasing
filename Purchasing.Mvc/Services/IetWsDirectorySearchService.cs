@@ -15,7 +15,7 @@ namespace Purchasing.Mvc.Services
 
         public IetWsDirectorySearchService(IConfiguration configuration)
         {
-            ietClient = new IetClient(configuration.GetValue<string>("IetWsKey"));
+            ietClient = new IetClient(configuration["IetWsKey"]);
 
         }
 

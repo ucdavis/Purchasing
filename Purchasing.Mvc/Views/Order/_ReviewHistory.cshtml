@@ -3,7 +3,7 @@
 @model ReviewOrderViewModel
 
 @{
-    var personLookupUrl = configuration.GetValue<string>("PersonLookupUrl");
+    var personLookupUrl = configuration["PersonLookupUrl"];
 }
 
 <section id="history" class="ui-corner-all display-form">

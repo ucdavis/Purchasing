@@ -23,12 +23,13 @@ namespace Purchasing.Mvc.Logging
             if (_loggingSetup) return; //only setup logging once
 
             Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
                 .WriteToElasticSearchCustom(configuration)
                 .Enrich.WithClientIp()
                 .Enrich.WithClientAgent()
                 .Enrich.WithExceptionDetails()
-                .Enrich.WithProperty("Application", configuration.GetValue<string>("Stackify.AppName"))
-                .Enrich.WithProperty("AppEnvironment", configuration.GetValue<string>("Stackify.Environment"))
+                .Enrich.WithProperty("Application", configuration["Stackify.AppName"])
+                .Enrich.WithProperty("AppEnvironment", configuration["Stackify.Environment"])
                 .Enrich.FromLogContext()
                 //.Filter.ByExcluding(e => e.Exception != null && e.Exception.GetBaseException() is HttpException) //filter out those 404s and headers exceptions
                 .CreateLogger();
@@ -38,7 +39,7 @@ namespace Purchasing.Mvc.Logging
 
         public static LoggerConfiguration WriteToElasticSearchCustom(this LoggerConfiguration logConfig, IConfiguration configuration)
         {
-            var esUrl = configuration.GetValue<string>("Stackify.ElasticUrl");
+            var esUrl = configuration["Stackify.ElasticUrl"];
 
             // only continue if a valid http url is setup in the config
             if (esUrl == null || !esUrl.StartsWith("http"))
@@ -46,8 +47,8 @@ namespace Purchasing.Mvc.Logging
                 return logConfig;
             }
 
-            logConfig.Enrich.WithProperty("Application", configuration.GetValue<string>("Stackify.AppName"));
-            logConfig.Enrich.WithProperty("AppEnvironment", configuration.GetValue<string>("Stackify.Environment"));
+            logConfig.Enrich.WithProperty("Application", configuration["Stackify.AppName"]);
+            logConfig.Enrich.WithProperty("AppEnvironment", configuration["Stackify.Environment"]);
 
 
             return logConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(esUrl))

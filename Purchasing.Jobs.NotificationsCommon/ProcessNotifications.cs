@@ -19,8 +19,8 @@ namespace Purchasing.Jobs.NotificationsCommon
         public static void ProcessEmails(IDbService dbService, EmailPreferences.NotificationTypes notificationType)
         {
             var configuration = SmartServiceLocator<IConfiguration>.GetService();
-            var sparkPostApiKey = configuration.GetValue<string>("SparkPostApiKey");
-            var sendEmail = configuration.GetValue<string>("opp-send-email");
+            var sparkPostApiKey = configuration["SparkPostApiKey"];
+            var sendEmail = configuration["opp-send-email"];
 
             //Don't execute unless email is turned on
             if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase))
@@ -172,7 +172,7 @@ namespace Purchasing.Jobs.NotificationsCommon
 
                 emailTransmission.Recipients.Add(new Recipient { Address = new Address { Email = email } });
 
-                var client = new Client(SmartServiceLocator<IConfiguration>.GetService().GetValue<string>("SparkPostApiKey"));
+                var client = new Client(SmartServiceLocator<IConfiguration>.GetService()["SparkPostApiKey"]);
                 try
                 {
                     client.Transmissions.Send(emailTransmission).Wait();

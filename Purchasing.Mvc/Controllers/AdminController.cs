@@ -590,7 +590,7 @@ namespace Purchasing.Mvc.Controllers
         public virtual bool NeedToCheckWorkgroupPermissions(string key)
         {
             Log.Information("NeedToCheckWorkgroupPermissions Starting");
-            if (string.IsNullOrWhiteSpace(key) || key != _configuration.GetValue<string>("ValidationKey"))
+            if (string.IsNullOrWhiteSpace(key) || key != _configuration["ValidationKey"])
             {
                 Log.Warning("NeedToCheckWorkgroupPermissions Validation Key missing");
                 return true;
@@ -708,12 +708,12 @@ namespace Purchasing.Mvc.Controllers
             //var _searcher =
             //    new GraphSearchClient(
             //        new ActiveDirectoryConfigurationValues(
-            //            tenantName: configuration.GetValue<string>("AzureSearchTenantName"),
-            //            tenantId: configuration.GetValue<string>("AzureSearchTenantId"),
-            //            clientId: configuration.GetValue<string>("AzureSearchClientId"),
-            //            clientSecret: configuration.GetValue<string>("AzureSearchClientSecret")));
+            //            tenantName: configuration["AzureSearchTenantName"],
+            //            tenantId: configuration["AzureSearchTenantId"],
+            //            clientId: configuration["AzureSearchClientId"],
+            //            clientSecret: configuration["AzureSearchClientSecret"]));
 
-            var _searcher = new IetClient(_configuration.GetValue<string>("IetWsKey"));
+            var _searcher = new IetClient(_configuration["IetWsKey"]);
             if (id != null && id.Contains("@"))
             {
                 var ucdContactResult = await _searcher.Contacts.Search(ContactSearchField.email, id);

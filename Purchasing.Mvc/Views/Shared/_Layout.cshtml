@@ -245,13 +245,13 @@
     <script type="text/javascript">
     (function (w) {
         var d = w['Configuration'] || (w['Configuration'] = {});
-        d.AnalyticsKey = '@(configuration.GetValue<string>("AnalyticsKey"))';
+        d.AnalyticsKey = '@(configuration["AnalyticsKey"])';
         d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
         d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
         d.DisableGlobalDataTables = @(ViewBag.DisableGlobalDataTables == null ? "false" : ViewBag.DisableGlobalDataTables.ToString().ToLower());
         d.TableToolsSwf = '@(Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf"))';
         d.LoadFixedHeaders = @(ViewBag.LoadFixedHeaders == null ? "false" : ViewBag.LoadFixedHeaders.ToString().ToLower());
-        d.PersonLookup = '@(configuration.GetValue<string>("PersonLookupUrl"))';
+        d.PersonLookup = '@(configuration["PersonLookupUrl"])';
     }(window));
     </script>
     

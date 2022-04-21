@@ -14,8 +14,8 @@ namespace Purchasing.WS
 
         public FinancialRoleSystemService(IConfiguration configuration)
         {
-            this._url = configuration.GetValue<string>("AfsRoleUrl");
-            this._token = configuration.GetValue<string>("AfsToken");
+            this._url = configuration["AfsRoleUrl"];
+            this._token = configuration["AfsToken"];
         }
 
         private financialSystemRoleServiceSOAPClient InitializeClient()

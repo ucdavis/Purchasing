@@ -28,6 +28,8 @@ using Serilog;
 using AspNetCore.Security.CAS;
 using Purchasing.Mvc.Handlers;
 using Microsoft.AspNetCore.Authorization;
+using CommonServiceLocator;
+using UCDArch.Web.IoC;
 
 namespace Purchasing.Mvc
 {
@@ -42,6 +44,7 @@ namespace Purchasing.Mvc
 
         public void ConfigureContainer(IWindsorContainer container)
         {
+            ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
             NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Approval).Assembly);
             container.Install(
                 new ComponentInstaller(),
@@ -75,7 +78,9 @@ namespace Purchasing.Mvc
                 {
                     options.LoginPath = new PathString("/LogOn");
                 })
-            .AddCAS();
+            .AddCAS(options => {
+                options.CasServerUrlBase = Configuration["CasUrl"];
+            });
             services.AddAuthorization(options =>
             {
                 // Assets can be managed by role or auth token (API)
@@ -90,6 +95,14 @@ namespace Purchasing.Mvc
                 options.AddPolicy(Role.Codes.SscAdmin, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.SscAdmin)));
                 options.AddPolicy(Role.Codes.AdminWorkgroup, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.AdminWorkgroup)));
                 options.AddPolicy(Role.Codes.AdhocAccountManager, policy => policy.Requirements.Add(new RoleAccessRequirement(Role.Codes.AdhocAccountManager)));
+            });
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
 
             services.AddScoped<IAuthorizationHandler, VerifyRoleAccessHandler>();
@@ -135,6 +148,7 @@ namespace Purchasing.Mvc
             app.UseAuthentication();
 
             app.UseAuthorization();
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

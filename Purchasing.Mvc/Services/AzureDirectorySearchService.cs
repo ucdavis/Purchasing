@@ -16,10 +16,10 @@ namespace Purchasing.Mvc.Services
             _searcher =
                 new GraphSearchClient(
                     new ActiveDirectoryConfigurationValues(
-                        tenantName: configuration.GetValue<string>("AzureSearchTenantName"),
-                        tenantId: configuration.GetValue<string>("AzureSearchTenantId"),
-                        clientId: configuration.GetValue<string>("AzureSearchClientId"),
-                        clientSecret: configuration.GetValue<string>("AzureSearchClientSecret")));
+                        tenantName: configuration["AzureSearchTenantName"],
+                        tenantId: configuration["AzureSearchTenantId"],
+                        clientId: configuration["AzureSearchClientId"],
+                        clientSecret: configuration["AzureSearchClientSecret"]));
         }
         public List<DirectoryUser> SearchUsers(string searchTerm)
         {

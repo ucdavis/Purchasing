@@ -39,7 +39,7 @@ namespace Purchasing.Mvc
 
             container.Register(Component.For<IIndexService>().ImplementedBy<ElasticSearchIndexService>().Named("indexService"));
 
-            container.Register(Component.For<IFileService>().ImplementedBy<FileService>().Named("fileService").LifestyleSingleton());
+            container.Register(Component.For<IFileService>().ImplementedBy<FileService>().Named("fileService"));//.LifestyleSingleton());
 
             container.Register(Component.For<IRepositoryFactory>().ImplementedBy<RepositoryFactory>().Named("repositoryFactory"));
             container.Register(Component.For<IQueryRepositoryFactory>().ImplementedBy<QueryRepositoryFactory>().Named("queryRepositoryFactory"));
@@ -74,8 +74,8 @@ namespace Purchasing.Mvc
             //#else
             //            container.Register(
             //                Component.For<INotificationSender>().ImplementedBy<EmailNotificationSender>().Named("notificationSender")
-            //                    .OnCreate(service => service.SetAuthentication(configuration.GetValue<string>("SendGridUserName"),
-            //                                                                   configuration.GetValue<string>("SendGridPassword"))));
+            //                    .OnCreate(service => service.SetAuthentication(configuration["SendGridUserName"],
+            //                                                                   configuration["SendGridPassword"])));
             //#endif
         }
 

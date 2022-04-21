@@ -18,7 +18,7 @@ namespace Purchasing.Core.Services
             //If connection string is null, use the default sql ce connection
             if (connectionString == null)
             {
-                connectionString = SmartServiceLocator<IConfiguration>.GetService().GetValue<string>("ConnectionStrings:MainDB");
+                connectionString = SmartServiceLocator<IConfiguration>.GetService()["ConnectionStrings:MainDB"];
             }
 
             var connection = new SqlConnection(connectionString);

@@ -13,6 +13,8 @@ using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using UCDArch.Core;
 using Microsoft.Extensions.Configuration;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Purchasing.Core.Services
 {
@@ -68,8 +70,18 @@ namespace Purchasing.Core.Services
         public ElasticSearchIndexService(IDbService dbService)
         {
             _dbService = dbService;
+            //uriBuilder.Host = WebUtility.UrlEncode(SmartServiceLocator<IConfiguration>.GetService()["ElasticSearchUrl"].Replace("https://", ""));
+            var match = Regex.Match(
+                    SmartServiceLocator<IConfiguration>.GetService()["ElasticSearchUrl"],
+                    "^(?<protocol>.+?//)(?<username>.+?):(?<password>.+?)@(?<address>.+)$");
+            
+            var uriBuilder = new UriBuilder();
+            uriBuilder.Host = 
+            uriBuilder.Scheme = "https";
+            uriBuilder.UserName = "cguanXG4TR";
+            uriBuilder.Password = "U9ydHJNWCqvE3oMSx5Zzhu";
 
-            var pool = new SingleNodeConnectionPool(new Uri(SmartServiceLocator<IConfiguration>.GetService().GetValue<string>("ElasticSearchUrl")));
+            var pool = new SingleNodeConnectionPool(uriBuilder.Uri);
             var settings = new ConnectionSettings(pool, JsonNetSerializer.Default);
 
             settings.DefaultIndex("prepurchasing");

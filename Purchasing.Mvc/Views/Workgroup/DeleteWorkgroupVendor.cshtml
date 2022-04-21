@@ -30,7 +30,7 @@
         @if (!string.IsNullOrWhiteSpace(Model.VendorId))
         {
 			
-            var kfsLookup = string.Format("{0}/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={1}",configuration.GetValue<string>("AfsLookupUrl") ,Model.VendorId);                                    
+            var kfsLookup = string.Format("{0}/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={1}",configuration["AfsLookupUrl"] ,Model.VendorId);                                    
             <li>
                 <div class="display-label">Vendor Id</div>
                 <div class="display-details">
