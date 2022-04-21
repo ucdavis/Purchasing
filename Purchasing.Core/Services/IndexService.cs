@@ -70,16 +70,16 @@ namespace Purchasing.Core.Services
         public ElasticSearchIndexService(IDbService dbService)
         {
             _dbService = dbService;
-            //uriBuilder.Host = WebUtility.UrlEncode(SmartServiceLocator<IConfiguration>.GetService()["ElasticSearchUrl"].Replace("https://", ""));
+
             var match = Regex.Match(
                     SmartServiceLocator<IConfiguration>.GetService()["ElasticSearchUrl"],
-                    "^(?<protocol>.+?//)(?<username>.+?):(?<password>.+?)@(?<address>.+)$");
+                    "^(?<scheme>.+?//)(?<username>.+?):(?<password>.+?)@(?<host>.+)$");
             
             var uriBuilder = new UriBuilder();
-            uriBuilder.Host = 
-            uriBuilder.Scheme = "https";
-            uriBuilder.UserName = "cguanXG4TR";
-            uriBuilder.Password = "U9ydHJNWCqvE3oMSx5Zzhu";
+            uriBuilder.Scheme = match.Groups["scheme"].Value;
+            uriBuilder.UserName = match.Groups["username"].Value;
+            uriBuilder.Password = match.Groups["password"].Value;
+            uriBuilder.Host = match.Groups["host"].Value;
 
             var pool = new SingleNodeConnectionPool(uriBuilder.Uri);
             var settings = new ConnectionSettings(pool, JsonNetSerializer.Default);
