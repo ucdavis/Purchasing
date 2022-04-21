@@ -51,6 +51,7 @@
     <ProjectReference Include="..\Purchasing.Jobs.UpdateLookupIndexes\Purchasing.Jobs.UpdateLookupIndexes.csproj" />
     <ProjectReference Include="..\Purchasing.Jobs.UpdateOrderIndexes\Purchasing.Jobs.UpdateOrderIndexes.csproj" />
     <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj" />
+    <ProjectReference Include="..\UCDArch\UCDArch.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,11 +61,11 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-
+<!-- 
   <ItemGroup>
     <ProjectReference Include="..\..\UCDArch\UCDArch\UCDArch.Web\UCDArch.Web.csproj" />
     <ProjectReference Include="..\..\UCDArch\UCDArch\UCDArch.Core.DataAnnotationsValidator\UCDArch.Core.DataAnnotationsValidator.csproj" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <ItemGroup>
     <PackageReference Include="bootstrap" Version="5.1.3" />

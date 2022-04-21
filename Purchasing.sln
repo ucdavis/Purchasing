@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.DailyEmailN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.NotificationsCommon", "Purchasing.Jobs.NotificationsCommon\Purchasing.Jobs.NotificationsCommon.csproj", "{029BA1FC-A03F-490D-AF92-FA69E6565ABA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCDArch", "UCDArch\UCDArch.csproj", "{1CB10538-1934-4C0B-97CB-A440A31FA384}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,16 @@ Global
 		{029BA1FC-A03F-490D-AF92-FA69E6565ABA}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
 		{029BA1FC-A03F-490D-AF92-FA69E6565ABA}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{029BA1FC-A03F-490D-AF92-FA69E6565ABA}.Test|Any CPU.Build.0 = Release|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.ReleaseAzure|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.ReleaseAzure|Any CPU.Build.0 = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.ReleaseCAES|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.ReleaseCAES|Any CPU.Build.0 = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

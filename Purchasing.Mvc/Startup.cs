@@ -21,7 +21,6 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
 using UCDArch.Data.NHibernate;
-using UCDArch.Web.ModelBinder;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Logging;
 using Serilog;
@@ -30,6 +29,7 @@ using Purchasing.Mvc.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using CommonServiceLocator;
 using UCDArch.Web.IoC;
+using UCDArch.Web.ModelBinder;
 
 namespace Purchasing.Mvc
 {
