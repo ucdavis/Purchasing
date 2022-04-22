@@ -4,6 +4,7 @@ using Serilog;
 using Serilog.Sinks.Elasticsearch;
 using UCDArch.Core;
 using Microsoft.Extensions.Configuration;
+using Serilog.Exceptions;
 
 namespace Purchasing.Jobs.Common.Logging
 {
@@ -11,12 +12,16 @@ namespace Purchasing.Jobs.Common.Logging
     {
         private static bool _loggingSetup = false;
 
-        public static void ConfigureLogging()
+        public static void ConfigureLogging(IConfiguration configuration)
         {
             if (_loggingSetup) return; //only setup logging once
 
             Log.Logger = new LoggerConfiguration()
-                .WriteToElasticSearchCustom()
+                .WriteTo.Console()
+                .WriteToElasticSearchCustom(configuration)
+                .Enrich.WithExceptionDetails()
+                .Enrich.WithProperty("Application", configuration["Stackify.AppName"])
+                .Enrich.WithProperty("AppEnvironment", configuration["Stackify.Environment"])
                 .CreateLogger();
 
             AppDomain.CurrentDomain.UnhandledException +=
@@ -28,9 +33,8 @@ namespace Purchasing.Jobs.Common.Logging
             _loggingSetup = true;
         }
 
-        public static LoggerConfiguration WriteToElasticSearchCustom(this LoggerConfiguration logConfig)
+        public static LoggerConfiguration WriteToElasticSearchCustom(this LoggerConfiguration logConfig, IConfiguration configuration)
         {
-            var configuration = SmartServiceLocator<IConfiguration>.GetService();
             var esUrl = configuration["Stackify.ElasticUrl"];
 
             // only continue if a valid http url is setup in the config

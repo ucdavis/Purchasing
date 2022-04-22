@@ -22,6 +22,7 @@
     <Title>Purchasing.Jobs.UpdateLookupIndexes</Title>
     <Product>Purchasing.Jobs.UpdateLookupIndexes</Product>
     <Copyright>Copyright ©  2015</Copyright>
+    <UserSecretsId>8db1af8d-c21d-4a0d-a9d9-54009eb737eb</UserSecretsId>
 	</PropertyGroup>
   <PropertyGroup Condition=" '$(Version)' == '' ">
     <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">1.1.0</VersionPrefix>

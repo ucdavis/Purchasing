@@ -7,6 +7,7 @@
     <Title>Purchasing.Jobs.DailyEmailNotifications</Title>
     <Product>Purchasing.Jobs.DailyEmailNotifications</Product>
     <Copyright>Copyright ©  2015</Copyright>
+    <UserSecretsId>8db1af8d-c21d-4a0d-a9d9-54009eb737eb</UserSecretsId>
     <Deterministic>false</Deterministic>
 	</PropertyGroup>
   <PropertyGroup Condition=" '$(Version)' == '' ">

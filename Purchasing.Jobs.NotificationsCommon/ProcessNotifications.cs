@@ -25,7 +25,7 @@ namespace Purchasing.Jobs.NotificationsCommon
             //Don't execute unless email is turned on
             if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase))
             {
-                Console.WriteLine("No emails sent because opp-send-email is not set to 'Yes'");
+                Log.Information("No emails sent because opp-send-email is not set to 'Yes'");
                 return;
             }
 
