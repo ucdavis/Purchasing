@@ -78,7 +78,8 @@ namespace Purchasing.Mvc
                 {
                     options.LoginPath = new PathString("/LogOn");
                 })
-            .AddCAS(options => {
+            .AddCAS(options =>
+            {
                 options.CasServerUrlBase = Configuration["CasUrl"];
             });
             services.AddAuthorization(options =>
@@ -123,6 +124,7 @@ namespace Purchasing.Mvc
             }
             else
             {
+                app.UseExceptionHandler("/Error/Index");
                 app.UseStatusCodePages(context =>
                 {
                     switch (context.HttpContext.Response.StatusCode)
@@ -131,7 +133,7 @@ namespace Purchasing.Mvc
                             context.HttpContext.Response.Redirect("/Error/NotAuthorized");
                             break;
                         case StatusCodes.Status404NotFound:
-                            context.HttpContext.Response.Redirect("/Error/Forbidden");
+                            context.HttpContext.Response.Redirect("/Error/FileNotFound");
                             break;
                         default:
                             context.HttpContext.Response.Redirect("/Error/Index");
