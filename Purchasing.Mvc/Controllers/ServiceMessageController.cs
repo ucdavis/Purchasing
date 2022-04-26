@@ -35,7 +35,7 @@ namespace Purchasing.Mvc.Controllers
     
         //
         // GET: /ServiceMessage/
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Index()
         {
             var serviceMessageList = _serviceMessageRepository.Queryable;
@@ -45,7 +45,7 @@ namespace Purchasing.Mvc.Controllers
 
         //
         // GET: /ServiceMessage/Create
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Create()
         {
 			var viewModel = ServiceMessageViewModel.Create(Repository);
@@ -55,7 +55,7 @@ namespace Purchasing.Mvc.Controllers
 
         //
         // POST: /ServiceMessage/Create
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         [HttpPost]
         public ActionResult Create(ServiceMessage serviceMessage)
         {
@@ -85,7 +85,7 @@ namespace Purchasing.Mvc.Controllers
 
         //
         // GET: /ServiceMessage/Edit/5
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Edit(int id)
         {
             var serviceMessage = _serviceMessageRepository.GetNullableById(id);
@@ -100,7 +100,7 @@ namespace Purchasing.Mvc.Controllers
         
         //
         // POST: /ServiceMessage/Edit/5
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         [HttpPost]
         public ActionResult Edit(int id, ServiceMessage serviceMessage)
         {

@@ -15,7 +15,7 @@ using System;
 namespace Purchasing.Mvc.Controllers
 {
     [HandleTransactionsManually]
-    [Authorize(Roles = Role.Codes.Admin)]
+    [Authorize(Policy = Role.Codes.Admin)]
     public class SystemController : SuperController
     {
         private readonly IIndexService _indexService;

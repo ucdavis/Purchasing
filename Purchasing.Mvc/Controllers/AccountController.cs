@@ -50,7 +50,7 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.EmulationUser)]
+        [Authorize(Policy = Role.Codes.EmulationUser)]
         public async Task<IActionResult> Emulate(string id /* Login ID*/)
         {
             if (!string.IsNullOrEmpty(id))

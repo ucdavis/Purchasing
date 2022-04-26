@@ -22,7 +22,7 @@ namespace Purchasing.Mvc.Controllers
     /// <summary>
     /// Controller for the Wizard class
     /// </summary>
-    [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+    [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
     [AuthorizeWorkgroupAccess]
     public class WizardController : ApplicationController
     {

@@ -27,7 +27,7 @@ namespace Purchasing.Mvc.Controllers
     /// <summary>
     /// Controller for the Workgroup class
     /// </summary>
-    [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+    [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
     [AuthorizeWorkgroupAccess]
     public class WorkgroupController : ApplicationController
     {

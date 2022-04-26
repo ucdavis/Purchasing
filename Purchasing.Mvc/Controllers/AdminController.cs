@@ -30,7 +30,7 @@ namespace Purchasing.Mvc.Controllers
     /// <summary>
     /// Controller for the Admin class
     /// </summary>
-    [Authorize(Roles = Role.Codes.Admin)]
+    [Authorize(Policy = Role.Codes.Admin)]
     public class AdminController : ApplicationController
     {
         private readonly IRepositoryWithTypedId<User, string> _userRepository;

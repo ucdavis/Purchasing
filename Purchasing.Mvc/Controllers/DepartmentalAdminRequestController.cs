@@ -43,7 +43,7 @@ namespace Purchasing.Mvc.Controllers
         /// #1
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Index(string filter = null)
         {
             var departmentalAdminRequestList = _departmentalAdminRequestRepository.Queryable;
@@ -162,7 +162,7 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Approve(string id)
         {
             var daRequest = _departmentalAdminRequestRepository.GetNullableById(id);
@@ -301,7 +301,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="existingOrgs"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Approve(DepartmentalAdminRequestViewModel request, List<string> orgs, List<string> existingOrgs)
         {
             var requestToUpdate =
@@ -374,7 +374,7 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Deny(string id)
         {
             var daRequest = _departmentalAdminRequestRepository.GetNullableById(id);
@@ -437,7 +437,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Deny(DepartmentalAdminRequestViewModel request)
         {
             var requestToUpdate = _departmentalAdminRequestRepository.Queryable.Single(a => a.Id == request.DepartmentalAdminRequest.Id);
@@ -459,7 +459,7 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Details(string id)
         {
             var daRequest = _departmentalAdminRequestRepository.GetNullableById(id);
@@ -602,7 +602,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id"></param>
         /// <param name="overRide"> </param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult TookTraining(string id, string overRide = "Default")
         {
             id = id.ToLower();

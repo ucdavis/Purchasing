@@ -57,7 +57,7 @@ namespace Purchasing.Mvc.Controllers
             return View();
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult PurchaserWorkLoad(DateTime? reportDate)
         {
@@ -115,7 +115,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult Workload(int? workgroupId = null)
         {
@@ -137,7 +137,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         public ActionResult Permissions(bool hideInherited = false)
         {
             var viewModel = ReportPermissionsViewModel.Create(_repositoryFactory, _workgroupService, hideInherited);
@@ -145,7 +145,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByWorkgroup(DateTime? startDate, DateTime? endDate, bool showAdmin)
         {
@@ -261,7 +261,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByPrimaryOrg(DateTime? startDate, DateTime? endDate)
         {
@@ -348,7 +348,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByVendor(DateTime? startDate, DateTime? endDate)
         {
@@ -426,7 +426,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult ProcessingTime(int? workgroupId = null, DateTime? month = null,
             bool? onlyShowReRouted = null)
@@ -458,7 +458,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult ProcessingTimeSummary(int? workgroupId = null, DateTime? startDate = null,
             DateTime? endDate = null)
@@ -501,7 +501,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult ProcessingTimeByRole(int? workgroupId = null, DateTime? startDate = null,
             DateTime? endDate = null, string role = "purchaser")
