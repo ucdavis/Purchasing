@@ -97,7 +97,7 @@ namespace Purchasing.Mvc.Controllers
         {
             if (user.Id.ToLower() != CurrentUser.Identity.Name.ToLower())
             {
-                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), typeof(ErrorController).ControllerName());
             }
 
             var userToEdit = GetCurrent();

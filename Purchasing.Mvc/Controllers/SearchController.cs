@@ -54,7 +54,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 if (Repository.OfType<Order>().Queryable.Any(a => a.RequestNumber == q.Trim().ToUpper()))
                 {
-                    return this.RedirectToAction(nameof(OrderController.Lookup), nameof(OrderController));
+                    return this.RedirectToAction(nameof(OrderController.Lookup), typeof(OrderController).ControllerName());
                 }
             }
  

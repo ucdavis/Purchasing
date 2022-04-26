@@ -148,7 +148,7 @@ namespace Purchasing.Mvc.Controllers
                 //TODO: Generate email to either all admins or a specific person that a DA request has arrived
 
                 Message = "Request created.";
-                return this.RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
+                return this.RedirectToAction(nameof(HomeController.Index), typeof(HomeController).ControllerName());
             }
 
             ErrorMessage = "There were Errors, please correct and try again.";

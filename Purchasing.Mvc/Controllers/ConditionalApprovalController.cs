@@ -153,7 +153,7 @@ namespace Purchasing.Mvc.Controllers
             }
 
             //return this.RedirectToAction(nameof(Index));
-            return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+            return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace Purchasing.Mvc.Controllers
             }
 
             //return this.RedirectToAction(nameof(Index));
-            return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+            return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace Purchasing.Mvc.Controllers
                 if(workgroup.Administrative)
                 {
                     ErrorMessage = "Conditional Approval may not be added to an administrative workgroup.";
-                    return this.RedirectToAction(nameof(WorkgroupController.Details), nameof(WorkgroupController));
+                    return this.RedirectToAction(nameof(WorkgroupController.Details), typeof(WorkgroupController).ControllerName());
                 }
             }
             else if (!string.IsNullOrWhiteSpace(orgId))
@@ -283,7 +283,7 @@ namespace Purchasing.Mvc.Controllers
                         approvalType);
 
                 //return this.RedirectToAction(nameof(Index));
-                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
             }
             
             return View(model);
@@ -309,7 +309,7 @@ namespace Purchasing.Mvc.Controllers
                 if(workgroup.Administrative)
                 {
                     ErrorMessage = "Conditional Approval may not be added to an administrative workgroup.";
-                    return this.RedirectToAction(nameof(WizardController.Details), nameof(WizardController));
+                    return this.RedirectToAction(nameof(WizardController.Details), typeof(WizardController).ControllerName());
                 }
 
             }
@@ -415,7 +415,7 @@ namespace Purchasing.Mvc.Controllers
             }
 
             //return this.RedirectToAction(nameof(Index));
-            return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+            return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
         }
 
         private ConditionalApprovalModifyModel CreateModifyModel(string approvalType, ConditionalApprovalModifyModel existingModel = null)
@@ -498,7 +498,7 @@ namespace Purchasing.Mvc.Controllers
                 ErrorMessage = "Conditional Approval not found";
                 {
                     //redirectToAction = this.RedirectToAction(nameof(Index));
-                    redirectToAction =  this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+                    redirectToAction =  this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
                     return null;
                 }
             }
@@ -507,7 +507,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 Message = message;
                 {
-                    redirectToAction = this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
+                    redirectToAction = this.RedirectToAction(nameof(ErrorController.NotAuthorized), typeof(ErrorController).ControllerName());
                     return null;
                 }
             }

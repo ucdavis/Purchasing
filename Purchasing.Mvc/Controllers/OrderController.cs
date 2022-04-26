@@ -160,7 +160,7 @@ namespace Purchasing.Mvc.Controllers
             _repositoryFactory.ApprovalRepository.EnsurePersistent(approval);
 
             Message = string.Format("Order {0} rerouted to Account Manager {1}", approval.Order.RequestNumber, accountManager.FullName);
-            return this.RedirectToAction(nameof(HomeController.Landing), nameof(HomeController)); //May not have access to it anymore
+            return this.RedirectToAction(nameof(HomeController.Landing), typeof(HomeController).ControllerName()); //May not have access to it anymore
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(Review));
             }
 
-            return this.RedirectToAction(nameof(HomeController.Landing), nameof(HomeController));
+            return this.RedirectToAction(nameof(HomeController.Landing), typeof(HomeController).ControllerName());
         }
 
         /// <summary>
@@ -334,7 +334,7 @@ namespace Purchasing.Mvc.Controllers
             if (!requesterInWorkgroup.Any())
             {
                 ErrorMessage = Resources.NoAccess_Workgroup;
-                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), typeof(ErrorController).ControllerName());
             }
 
             var model = CreateOrderModifyModel(workgroup);
@@ -502,7 +502,7 @@ namespace Purchasing.Mvc.Controllers
             if (!requesterInWorkgroup.Any())
             {
                 ErrorMessage = Resources.NoAccess_Workgroup;
-                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), typeof(ErrorController).ControllerName());
             }
 
             var model = CreateOrderModifyModel(order.Workgroup);
@@ -729,7 +729,7 @@ namespace Purchasing.Mvc.Controllers
             if (relatedOrderId == default(int))
             {
                 Message = "Order Not Found";
-                return this.RedirectToAction(nameof(SearchController.Index), nameof(SearchController));
+                return this.RedirectToAction(nameof(SearchController.Index), typeof(SearchController).ControllerName());
             }
 
             OrderAccessLevel accessLevel;
@@ -774,7 +774,7 @@ namespace Purchasing.Mvc.Controllers
                         Message = string.Format("This order is currently being handled by {0} in the status {1}", person,
                                                 order.StatusCode.Name);
                     }
-                    return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
+                    return this.RedirectToAction(nameof(ErrorController.NotAuthorized), typeof(ErrorController).ControllerName());
                 }
             }
 
@@ -2201,7 +2201,7 @@ namespace Purchasing.Mvc.Controllers
             if (savedOrder.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "Not your order";
-                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), typeof(ErrorController).ControllerName());
             }
 
             return View(savedOrder);
@@ -2215,7 +2215,7 @@ namespace Purchasing.Mvc.Controllers
             if (savedOrder.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "Not your order";
-                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), typeof(ErrorController).ControllerName());
             }
 
             _repositoryFactory.OrderRequestSaveRepository.Remove(savedOrder);

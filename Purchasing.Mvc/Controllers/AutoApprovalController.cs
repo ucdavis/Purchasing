@@ -73,7 +73,7 @@ namespace Purchasing.Mvc.Controllers
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
             }
 
             ViewBag.ShowAll = showAll;
@@ -157,7 +157,7 @@ namespace Purchasing.Mvc.Controllers
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
             }
 
             var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
@@ -189,7 +189,7 @@ namespace Purchasing.Mvc.Controllers
             if(autoApprovalToEdit.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
             }
 
             TransferValues(autoApproval, autoApprovalToEdit);
@@ -236,7 +236,7 @@ namespace Purchasing.Mvc.Controllers
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
             }
             if(!autoApproval.IsActive)
             {
@@ -271,7 +271,7 @@ namespace Purchasing.Mvc.Controllers
             if(autoApprovalToDelete.User.Id != CurrentUser.Identity.Name)
             {
                 ErrorMessage = "No Access";
-                return this.RedirectToAction(nameof(ErrorController.Index), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
             }
 
             if(autoApprovalToDelete.IsActive)

@@ -42,7 +42,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 Message = "You are currently not an active user for this program. If you believe this is incorrect contact your departmental administrator to add you.";
                 
-                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), nameof(ErrorController));
+                return this.RedirectToAction(nameof(ErrorController.NotAuthorized), typeof(ErrorController).ControllerName());
             }
 
             using (var conn = _dbService.GetConnection())
