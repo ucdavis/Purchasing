@@ -1,138 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<OutputType>Library</OutputType>
-		<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Purchasing\</SolutionDir>
-		<RestorePackages>true</RestorePackages>
-		<PublishUrl>publish\</PublishUrl>
-		<Install>true</Install>
-		<InstallFrom>Disk</InstallFrom>
-		<UpdateEnabled>false</UpdateEnabled>
-		<UpdateMode>Foreground</UpdateMode>
-		<UpdateInterval>7</UpdateInterval>
-		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
-		<UpdatePeriodically>false</UpdatePeriodically>
-		<UpdateRequired>false</UpdateRequired>
-		<MapFileExtensions>true</MapFileExtensions>
-		<ApplicationRevision>0</ApplicationRevision>
-		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-		<IsWebBootstrapper>false</IsWebBootstrapper>
-		<UseApplicationTrust>false</UseApplicationTrust>
-		<BootstrapperEnabled>true</BootstrapperEnabled>
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\Purchasing\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
     <Title>Purchasing.WS</Title>
     <Product>Purchasing.WS</Product>
     <Copyright>Copyright ©  2012</Copyright>
-	</PropertyGroup>
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-	</PropertyGroup>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Version)' == '' ">
     <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">1.1.0</VersionPrefix>
     <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix)-$(VersionSuffix)</Version>
     <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
   </PropertyGroup>
-	<ItemGroup>
-		<Compile Update="Service References\AzureStorage\Reference.cs">
-			<AutoGen>True</AutoGen>
-			<DesignTime>True</DesignTime>
-			<DependentUpon>Reference.svcmap</DependentUpon>
-		</Compile>
-		<Compile Update="Service References\FinancialRoleService\Reference.cs">
-			<AutoGen>True</AutoGen>
-			<DesignTime>True</DesignTime>
-			<DependentUpon>Reference.svcmap</DependentUpon>
-		</Compile>
-		<Compile Update="Service References\PurchaseDocumentService\Reference.cs">
-			<AutoGen>True</AutoGen>
-			<DesignTime>True</DesignTime>
-			<DependentUpon>Reference.svcmap</DependentUpon>
-		</Compile>
-	</ItemGroup>
-	<ItemGroup>
-		<WCFMetadata Include="Service References\"/>
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="Service References\AzureStorage\Microsoft.SqlServer.Management.Dac.ServiceTypes.xsd">
-			<SubType>Designer</SubType>
-		</None>
-		<None Update="Service References\AzureStorage\Purchasing.WS.AzureStorage.ExportResponse.datasource">
-			<DependentUpon>Reference.svcmap</DependentUpon>
-		</None>
-		<None Update="Service References\AzureStorage\service.xsd">
-			<SubType>Designer</SubType>
-		</None>
-		<None Update="Service References\AzureStorage\service1.xsd">
-			<SubType>Designer</SubType>
-		</None>
-		<None Update="Service References\FinancialRoleService\Purchasing.WS.FinancialRoleService.simpleAccountInfo.datasource">
-			<DependentUpon>Reference.svcmap</DependentUpon>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<WCFMetadataStorage Include="Service References\AzureStorage\"/>
-		<WCFMetadataStorage Include="Service References\FinancialRoleService\"/>
-		<WCFMetadataStorage Include="Service References\PurchaseDocumentService\"/>
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="Service References\PurchaseDocumentService\Purchasing.WS.PurchaseDocumentService.documentCreationResult.datasource">
-			<DependentUpon>Reference.svcmap</DependentUpon>
-		</None>
-		<None Update="Service References\PurchaseDocumentService\Purchasing.WS.PurchaseDocumentService.purchaseRequisitionStatusInfo.datasource">
-			<DependentUpon>Reference.svcmap</DependentUpon>
-		</None>
-		<None Update="Service References\PurchaseDocumentService\Reference.svcmap">
-			<Generator>WCF Proxy Generator</Generator>
-			<LastGenOutput>Reference.cs</LastGenOutput>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj"/>
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="Service References\FinancialRoleService\Reference.svcmap">
-			<Generator>WCF Proxy Generator</Generator>
-			<LastGenOutput>Reference.cs</LastGenOutput>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<BootstrapperPackage Include=".NETFramework,Version=v4.0">
-			<Visible>False</Visible>
-			<ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
-			<Install>true</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5 SP1</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-			<Visible>False</Visible>
-			<ProductName>Windows Installer 3.1</ProductName>
-			<Install>true</Install>
-		</BootstrapperPackage>
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="Service References\AzureStorage\Reference.svcmap">
-			<Generator>WCF Proxy Generator</Generator>
-			<LastGenOutput>Reference.cs</LastGenOutput>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<Content Include="appsettings.json"/>
-		<Content Include="App_Readme\Elmah.txt"/>
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Serilog" Version="2.10.0"/>
-		<PackageReference Include="System.ServiceModel.Duplex" Version="4.9.0"/>
-		<PackageReference Include="System.ServiceModel.NetTcp" Version="4.9.0"/>
-		<PackageReference Include="System.ServiceModel.Federation" Version="4.9.0"/>
-		<PackageReference Include="WindowsAzure.Storage" Version="9.3.3"/>
-	</ItemGroup>
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App"/>
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Update="Service References\AzureStorage\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Update="Service References\FinancialRoleService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Update="Service References\PurchaseDocumentService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Service References\AzureStorage\Microsoft.SqlServer.Management.Dac.ServiceTypes.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Service References\AzureStorage\Purchasing.WS.AzureStorage.ExportResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Update="Service References\AzureStorage\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Service References\AzureStorage\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Service References\FinancialRoleService\Purchasing.WS.FinancialRoleService.simpleAccountInfo.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\AzureStorage\" />
+    <WCFMetadataStorage Include="Service References\FinancialRoleService\" />
+    <WCFMetadataStorage Include="Service References\PurchaseDocumentService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Service References\PurchaseDocumentService\Purchasing.WS.PurchaseDocumentService.documentCreationResult.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Update="Service References\PurchaseDocumentService\Purchasing.WS.PurchaseDocumentService.purchaseRequisitionStatusInfo.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Update="Service References\PurchaseDocumentService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Service References\FinancialRoleService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Service References\AzureStorage\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appsettings.json" />
+    <Content Include="App_Readme\Elmah.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.9.0" />
+    <PackageReference Include="System.ServiceModel.Federation" Version="4.9.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ServiceModel.Http" Version="4.8.*" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.8.*" />
+  </ItemGroup>
 </Project>
