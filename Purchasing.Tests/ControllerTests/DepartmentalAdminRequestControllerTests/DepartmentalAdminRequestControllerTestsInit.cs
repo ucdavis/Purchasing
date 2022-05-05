@@ -38,23 +38,23 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         protected override void SetupController()
         {
             DepartmentalAdminRequestRepository =
-                MockRepository.GenerateStub<IRepositoryWithTypedId<DepartmentalAdminRequest, string>>();
-            OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-            RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
+                new Moq.Mock<IRepositoryWithTypedId<DepartmentalAdminRequest, string>>().Object;
+            OrganizationRepository = new Moq.Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
+            RoleRepository = new Moq.Mock<IRepositoryWithTypedId<Role, string>>().Object;
 
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
             RepositoryFactory.OrganizationRepository = OrganizationRepository;
             RepositoryFactory.UserRepository = UserRepository;
             RepositoryFactory.RoleRepository = RoleRepository;
 
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            QueryRepositoryFactory.OrganizationDescendantRepository = MockRepository.GenerateStub<IRepository<OrganizationDescendant>>();
+            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
+            QueryRepositoryFactory.OrganizationDescendantRepository = new Moq.Mock<IRepository<OrganizationDescendant>>().Object;
 
-            DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
-            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
+            DirectorySearchService = new Moq.Mock<IDirectorySearchService>().Object;
+            UserIdentity = new Moq.Mock<IUserIdentity>().Object;
             Controller =
-                new TestControllerBuilder().CreateController<DepartmentalAdminRequestController>(
+                new DepartmentalAdminRequestController(
                     DepartmentalAdminRequestRepository,
                     RepositoryFactory,
                     QueryRepositoryFactory,
@@ -62,14 +62,9 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                     UserIdentity);
         }
 
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-        }
-
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
             base.RegisterAdditionalServices(container);
         }
 
@@ -77,13 +72,13 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         {
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(1));
-            roles[0].SetIdTo(Role.Codes.DepartmentalAdmin);
+            roles[0].Id = Role.Codes.DepartmentalAdmin;
             roles[0].IsAdmin = true;
             new FakeRoles(0, RoleRepository, roles, true);
             //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            //    Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
 
-            //Controller.Repository.Expect(a => a.OfType<DepartmentalAdminRequest>()).Return(DepartmentalAdminRequestRepository).Repeat.Any();	
+            //Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<DepartmentalAdminRequest>()).Returns(DepartmentalAdminRequestRepository);	
         }
         #endregion Init
     }

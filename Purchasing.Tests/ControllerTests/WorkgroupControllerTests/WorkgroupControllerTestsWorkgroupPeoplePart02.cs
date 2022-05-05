@@ -220,7 +220,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForPeopleList();
             var postModel = new WorkgroupPeoplePostModel();
             postModel.Role = new Role();
-            postModel.Role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            postModel.Role.Id = Role.Codes.DepartmentalAdmin;
             postModel.Role.Level = 1;            
             #endregion Arrange
 
@@ -253,7 +253,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForPeopleList();
             var postModel = new WorkgroupPeoplePostModel();
             postModel.Role = new Role();
-            postModel.Role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            postModel.Role.Id = Role.Codes.DepartmentalAdmin;
             postModel.Role.Level = 1;
             postModel.Users = new List<string>();
             postModel.Users.Add("1");
@@ -268,7 +268,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            SearchService.AssertWasNotCalled(a => a.FindUser(Arg<string>.Is.Anything));
+            Moq.Mock.Get(SearchService).Verify(a => a.FindUser(Moq.It.IsAny<string>()), Moq.Times.Never());
             
             Controller.ModelState.AssertErrorsAre("Invalid Role Selected");
             Assert.IsNotNull(result);
@@ -297,10 +297,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             ldapUser.FirstName = "Me";
             ldapUser.LastName = "You";
             ldapUser.LoginId = "Logger";
-            SearchService.Expect(a => a.FindUser("Me")).Return(ldapUser);
+            Moq.Mock.Get(SearchService).Setup(a => a.FindUser("Me")).Returns(ldapUser);
             var postModel = new WorkgroupPeoplePostModel();
             postModel.Role = new Role();
-            postModel.Role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            postModel.Role.Id = Role.Codes.DepartmentalAdmin;
             postModel.Role.Level = 1;
             postModel.Users = new List<string>();
             postModel.Users.Add("1");
@@ -316,7 +316,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            SearchService.AssertWasCalled(a => a.FindUser("Me"));
+            Moq.Mock.Get(SearchService).Verify(a => a.FindUser("Me"));
 
             Controller.ModelState.AssertErrorsAre("Invalid Role Selected");
             Assert.IsNotNull(result);
@@ -397,25 +397,26 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
+            var message = "Fake Message";
             int failCount = 2;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
-            WorkgroupService.Expect(a => a.TryToAddPeople(
-                Arg<int>.Is.Anything, 
-                Arg<Role>.Is.Anything, 
-                Arg<Workgroup>.Is.Anything, 
-                Arg<int>.Is.Anything, 
-                Arg<string>.Is.Anything, 
-                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                Arg<List<KeyValuePair<string, string>>>.Is.Anything)).Return(7).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(true);
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(
+                Moq.It.IsAny<int>(),
+                Moq.It.IsAny<Role>(),
+                Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<int>(),
+                Moq.It.IsAny<string>(),
+                ref failCount,
+                ref failCount,
+                Moq.It.IsAny<List<KeyValuePair<string, string>>>())
+                ).Returns(7);
 
             var ldapUser = new DirectoryUser();
             ldapUser.FirstName = "Me";
             ldapUser.LastName = "You";
             ldapUser.LoginId = "Logger";
             ldapUser.EmailAddress = "tester@testy.com";
-            SearchService.Expect(a => a.FindUser("Me")).Return(ldapUser);
+            Moq.Mock.Get(SearchService).Setup(a => a.FindUser("Me")).Returns(ldapUser);
             var postModel = new WorkgroupPeoplePostModel();
             postModel.Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
             postModel.Users = new List<string>();
@@ -435,24 +436,31 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual(Role.Codes.AccountManager, result.RouteValues["roleFilter"]);
 
-            WorkgroupService.AssertWasCalled(a => a.TryToAddPeople(
-                Arg<int>.Is.Anything,
-                Arg<Role>.Is.Anything,
-                Arg<Workgroup>.Is.Anything,
-                Arg<int>.Is.Anything,
-                Arg<string>.Is.Anything,
-                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                Arg<List<KeyValuePair<string, string>>>.Is.Anything), x => x.Repeat.Times(4));
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.TryToAddPeople(
+                Moq.It.IsAny<int>(),
+                Moq.It.IsAny<Role>(),
+                Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<int>(),
+                Moq.It.IsAny<string>(),
+                ref failCount,
+                 ref failCount,
+                Moq.It.IsAny<List<KeyValuePair<string, string>>>()), Moq.Times.Exactly(4));
+//TODO: Arrange
 
-            var args = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.TryToAddPeople(Arg<int>.Is.Anything,
-                Arg<Role>.Is.Anything,
-                Arg<Workgroup>.Is.Anything,
-                Arg<int>.Is.Anything,
-                Arg<string>.Is.Anything,
-                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                Arg<List<KeyValuePair<string, string>>>.Is.Anything));
+            var args = new Dictionary<int, object[]>();
+
+            var argsIndex = 0;
+
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(Moq.It.IsAny<int>(),
+                Moq.It.IsAny<Role>(),
+                Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<int>(),
+                Moq.It.IsAny<string>(),
+                ref failCount,
+                ref failCount,
+                Moq.It.IsAny<List<KeyValuePair<string, string>>>()))
+                .Callback((object[] x) => args[argsIndex++] = x);
+//ENDTODO
  
             Assert.AreEqual(4, args.Count());
             Assert.AreEqual(3, args[0][0]);

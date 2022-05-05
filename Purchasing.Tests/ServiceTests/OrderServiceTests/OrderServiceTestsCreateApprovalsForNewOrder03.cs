@@ -19,12 +19,12 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             #region Arrange
             var order = CreateValidEntities.Order(1);
-            order.SetIdTo(99);
+            order.Id = 99;
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             order.Splits[0].Account = null;
             order.Splits[0].Order = order;
-            order.Workgroup.SetIdTo(1);
+            order.Workgroup.Id = 1;
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             new FakeAccounts(3, AccountRepository);
 
@@ -36,10 +36,10 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
-            EventService.AssertWasNotCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
-            EventService.AssertWasCalled(a => a.OrderCreated(order));
+            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser(Moq.It.IsAny<string>()), Moq.Times.Never()); // the account was not found in the workgroup or the account table
+            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(3));
+            Moq.Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()), Moq.Times.Never());
+            Moq.Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(3, order.Approvals.Count);
             Assert.AreEqual(OrderStatusCode.Codes.Approver, order.Approvals[0].StatusCode.Id);
@@ -58,17 +58,17 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             #region Arrange
             var order = CreateValidEntities.Order(1);
-            order.SetIdTo(99);
+            order.Id = 99;
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             order.Splits[0].Account = null;
             order.Splits[0].Order = order;
-            order.Workgroup.SetIdTo(1);
+            order.Workgroup.Id = 1;
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             new FakeAccounts(3, AccountRepository);
 
             new FakeUsers(3, UserRepository);
-            UserIdentity.Expect(a => a.Current).Return("22"); //NOT same as approver
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("22"); //NOT same as approver
 
             new FakeAutoApprovals(3, AutoAprovalRepository);
             #endregion Arrange
@@ -78,10 +78,10 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
-            EventService.AssertWasNotCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
-            EventService.AssertWasCalled(a => a.OrderCreated(order));
+            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser(Moq.It.IsAny<string>()), Moq.Times.Never()); // the account was not found in the workgroup or the account table
+            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(3));
+            Moq.Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()), Moq.Times.Never());
+            Moq.Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(3, order.Approvals.Count);
             Assert.AreEqual(OrderStatusCode.Codes.Approver, order.Approvals[0].StatusCode.Id);
@@ -101,17 +101,17 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #region Arrange
             var order = CreateValidEntities.Order(1);
             order.CreatedBy = CreateValidEntities.User(1);
-            order.SetIdTo(99);
+            order.Id = 99;
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             order.Splits[0].Account = null;
             order.Splits[0].Order = order;
-            order.Workgroup.SetIdTo(1);
+            order.Workgroup.Id = 1;
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             new FakeAccounts(3, AccountRepository);
 
             new FakeUsers(3, UserRepository);
-            UserIdentity.Expect(a => a.Current).Return("1");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("1");
 
             new FakeAutoApprovals(3, AutoAprovalRepository);
             #endregion Arrange
@@ -121,10 +121,10 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(2));
-            EventService.AssertWasCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
-            EventService.AssertWasCalled(a => a.OrderCreated(order));
+            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser(Moq.It.IsAny<string>()), Moq.Times.Never()); // the account was not found in the workgroup or the account table
+            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(2));
+            Moq.Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()));
+            Moq.Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(3, order.Approvals.Count);
             Assert.AreEqual(OrderStatusCode.Codes.Approver, order.Approvals[0].StatusCode.Id);
@@ -144,17 +144,17 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #region Arrange
             var order = CreateValidEntities.Order(1);
             order.CreatedBy = CreateValidEntities.User(109);
-            order.SetIdTo(99);
+            order.Id = 99;
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             order.Splits[0].Account = null;
             order.Splits[0].Order = order;
-            order.Workgroup.SetIdTo(1);
+            order.Workgroup.Id = 1;
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             new FakeAccounts(3, AccountRepository);
 
             new FakeUsers(3, UserRepository);
-            UserIdentity.Expect(a => a.Current).Return("3");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("3");
 
             var autoApprovals = new List<AutoApproval>();
             autoApprovals.Add(CreateValidEntities.AutoApproval(1));
@@ -171,9 +171,13 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(2));
-            EventService.AssertWasCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
-            var args = (Approval)EventService.GetArgumentsForCallsMadeOn(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything))[0][1];
+            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(2));
+            Moq.Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()));
+//TODO: Arrange
+            Approval args = default;
+            Moq.Mock.Get(EventService).Setup(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()))
+                .Callback<Order, Approval>((_, x) => args = x);
+//ENDTODO
             Assert.AreEqual(OrderStatusCode.Codes.Approver, args.StatusCode.Id);
 
             Assert.AreEqual(3, order.Approvals.Count);

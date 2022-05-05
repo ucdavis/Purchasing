@@ -151,7 +151,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "7");
             workgroup.Name = null;
             Controller.ModelState.AddModelError("Fake", "Error");
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(null).Dummy)).Return(true);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny)).Returns(true);
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
@@ -171,7 +171,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
 
-            WorkgroupService.AssertWasNotCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.CreateWorkgroup(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<string[]>()), Moq.Times.Never());
             #endregion Assert		
         }
 
@@ -184,7 +184,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "1");
             workgroup.Name = null;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(null).Dummy)).Return(false);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny)).Returns(false);
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
@@ -204,7 +204,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
 
-            WorkgroupService.AssertWasNotCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.CreateWorkgroup(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<string[]>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -218,9 +218,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "7");
-            workgroup.SetIdTo(99);
-            WorkgroupService.Expect(a => a.CreateWorkgroup(workgroup, null)).Return(workgroup).Repeat.Any();
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(null).Dummy)).Return(true); 
+            workgroup.Id = 99;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.CreateWorkgroup(workgroup, null)).Returns(workgroup);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny)).Returns(true); 
             #endregion Arrange
 
             #region Act
@@ -233,8 +233,12 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.AreEqual(99, result.RouteValues["id"]);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
 
-            WorkgroupService.AssertWasCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
-            var args = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything))[0];
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.CreateWorkgroup(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<string[]>()));
+//TODO: Arrange
+            object[] args = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.CreateWorkgroup(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<string[]>()))
+                .Callback((object[] x) => args = x);
+//ENDTODO
             Assert.AreEqual("Name1", ((Workgroup)args[0]).Name);
             Assert.IsNull(args[1]);
             Assert.AreEqual("Name1 workgroup was created", Controller.Message);

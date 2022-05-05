@@ -282,8 +282,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForAddress();
             var address = CreateValidEntities.WorkgroupAddress(4);
-            address.SetIdTo(4);
-            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Return(4);
+            address.Id = 4;
+            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Returns(4);
             #endregion Arrange
 
             #region Act
@@ -306,9 +306,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForAddress();
             var address = CreateValidEntities.WorkgroupAddress(4);
-            address.SetIdTo(4);
-            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Return(0);
-            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2])).Return(6);
+            address.Id = 4;
+            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Returns(0);
+            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2])).Returns(6);
             #endregion Arrange
 
             #region Act
@@ -332,10 +332,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForAddress();
             var address = CreateValidEntities.WorkgroupAddress(4);
             address.Name = "Fake";
-            address.SetIdTo(4);
-            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Return(0);
-            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[1])).Return(5);
-            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2])).Return(0);
+            address.Id = 4;
+            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Returns(0);
+            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[1])).Returns(5);
+            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2])).Returns(0);
             #endregion Arrange
 
             #region Act
@@ -347,8 +347,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
             Assert.AreEqual("Address updated", Controller.Message);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+//TODO: Arrange
+            Workgroup args = default;
+            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
+//ENDTODO 
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());
             Assert.AreEqual("Name4", args.Addresses[0].Name);
@@ -369,10 +373,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForAddress();
             var address = CreateValidEntities.WorkgroupAddress(4);
             address.Name = "Fake";
-            address.SetIdTo(4);
-            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Return(0);
-            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[1])).Return(0);
-            WorkgroupAddressService.Expect(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2])).Return(0);
+            address.Id = 4;
+            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0])).Returns(0);
+            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[1])).Returns(0);
+            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2])).Returns(0);
             #endregion Arrange
 
             #region Act
@@ -384,8 +388,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
             Assert.AreEqual("Address updated.", Controller.Message);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+//TODO: Arrange
+            Workgroup args = default;
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual(4, args.Addresses.Count());
             Assert.AreEqual("Name4", args.Addresses[0].Name);

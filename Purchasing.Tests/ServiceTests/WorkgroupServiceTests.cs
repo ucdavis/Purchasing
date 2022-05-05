@@ -17,6 +17,7 @@ using UCDArch.Core.Utils;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using AutoMapper;
 
 namespace Purchasing.Tests.ServiceTests
 {
@@ -35,28 +36,32 @@ namespace Purchasing.Tests.ServiceTests
         public IRepositoryFactory RepositoryFactory;
         public IQueryRepositoryFactory QueryRepositoryFactory;
         public IUserIdentity UserIdentity;
+        public IMapper Mapper;
 
         #region Init
         public WorkgroupServiceTests()
         {
-            AutomapperConfig.Configure();
-            VendorRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Vendor, string>>();
-            VendorAddressRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<VendorAddress, Guid>>();
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-            EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
-            WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
-            WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
-            OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
-            SearchService = MockRepository.GenerateStub<IDirectorySearchService>();
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
-            RepositoryFactory.RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
+            Mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<ViewModelProfile>();
+            }).CreateMapper();
+            VendorRepository = new Moq.Mock<IRepositoryWithTypedId<Vendor, string>>().Object;
+            VendorAddressRepository = new Moq.Mock<IRepositoryWithTypedId<VendorAddress, Guid>>().Object;
+            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
+            EmailPreferencesRepository = new Moq.Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
+            WorkgroupPermissionRepository = new Moq.Mock<IRepository<WorkgroupPermission>>().Object;
+            WorkgroupRepository = new Moq.Mock<IRepository<Workgroup>>().Object;
+            OrganizationRepository = new Moq.Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+            SearchService = new Moq.Mock<IDirectorySearchService>().Object;
+            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
+            RepositoryFactory.RoleRepository = new Moq.Mock<IRepositoryWithTypedId<Role, string>>().Object;
             RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
-            RepositoryFactory.AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
+            RepositoryFactory.AccountRepository = new Moq.Mock<IRepositoryWithTypedId<Account, string>>().Object;
+            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
+            UserIdentity = new Moq.Mock<IUserIdentity>().Object;
 
             QueryRepositoryFactory.RelatatedWorkgroupsRepository =
-                MockRepository.GenerateStub<IRepository<RelatedWorkgroups>>();
+                new Moq.Mock<IRepository<RelatedWorkgroups>>().Object;
 
             WorkgroupService = new WorkgroupService(VendorRepository,
                 VendorAddressRepository,
@@ -66,19 +71,22 @@ namespace Purchasing.Tests.ServiceTests
                 WorkgroupRepository,
                 OrganizationRepository,
                 SearchService,
-                RepositoryFactory, QueryRepositoryFactory, UserIdentity);
+                RepositoryFactory,
+                QueryRepositoryFactory,
+                UserIdentity,
+                Mapper);
         }
         #endregion Init
 
         #region TransferValues Tests
-        
+
         [TestMethod]
         public void TestTransferValuesWhenKfsVendorHasNullState()
         {
             #region Arrange
             var vendors = new List<Vendor>();
             vendors.Add(CreateValidEntities.Vendor(1));
-            vendors[0].SetIdTo("1");
+            vendors[0].Id = "1";
             new FakeVendors(0, VendorRepository, vendors, true);
             var vendorAddress = new List<VendorAddress>();
             vendorAddress.Add(CreateValidEntities.VendorAddress(2));
@@ -110,7 +118,7 @@ namespace Purchasing.Tests.ServiceTests
             #region Arrange
             var vendors = new List<Vendor>();
             vendors.Add(CreateValidEntities.Vendor(1));
-            vendors[0].SetIdTo("1");
+            vendors[0].Id = "1";
             new FakeVendors(0, VendorRepository, vendors, true);
             var vendorAddress = new List<VendorAddress>();
             vendorAddress.Add(CreateValidEntities.VendorAddress(2));
@@ -143,7 +151,7 @@ namespace Purchasing.Tests.ServiceTests
             var vendors = new List<Vendor>();
             vendors.Add(CreateValidEntities.Vendor(1));
             vendors[0].Name = "VendorName1";
-            vendors[0].SetIdTo("1");
+            vendors[0].Id = "1";
             new FakeVendors(0, VendorRepository, vendors, true);
             var vendorAddress = new List<VendorAddress>();
             vendorAddress.Add(CreateValidEntities.VendorAddress(2));
@@ -159,7 +167,7 @@ namespace Purchasing.Tests.ServiceTests
             vendorAddress[0].CountryCode = "UK";
             vendorAddress[0].PhoneNumber = "333-444-55555";
             vendorAddress[0].FaxNumber = "222-444-55555";
-            
+
             new FakeVendorAddresses(0, VendorAddressRepository, vendorAddress, false);
 
             var source = CreateValidEntities.WorkgroupVendor(1);
@@ -195,7 +203,7 @@ namespace Purchasing.Tests.ServiceTests
             var vendors = new List<Vendor>();
             vendors.Add(CreateValidEntities.Vendor(1));
             vendors[0].Name = "VendorName1";
-            vendors[0].SetIdTo("1");
+            vendors[0].Id = "1";
             new FakeVendors(0, VendorRepository, vendors, true);
             var vendorAddress = new List<VendorAddress>();
             vendorAddress.Add(CreateValidEntities.VendorAddress(2));
@@ -251,7 +259,7 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             new FakeUsers(0, UserRepository);
-            SearchService.Expect(a => a.FindUser(Arg<string>.Is.Anything)).Return(null);
+            Moq.Mock.Get(SearchService).Setup(a => a.FindUser(Moq.It.IsAny<string>())).Returns<DirectoryUser>(null);
             var failCount = 0;
             var dupCount = 0;
             var notAdded = new List<KeyValuePair<string, string>>();
@@ -262,8 +270,8 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            UserRepository.AssertWasCalled(a => a.GetNullableById("test"));
-            SearchService.AssertWasCalled(a => a.FindUser("test"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("test"));
+            Moq.Mock.Get(SearchService).Verify(a => a.FindUser("test"));
             Assert.AreEqual(1, failCount);
             Assert.AreEqual(0, dupCount);
             Assert.AreEqual(0, result);
@@ -278,7 +286,7 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             new FakeUsers(0, UserRepository);
-            SearchService.Expect(a => a.FindUser(Arg<string>.Is.Anything)).Return(null);
+            Moq.Mock.Get(SearchService).Setup(a => a.FindUser(Moq.It.IsAny<string>())).Returns<DirectoryUser>(null);
             var failCount = 2;
             var dupCount = 4;
             var notAdded = new List<KeyValuePair<string, string>>();
@@ -289,8 +297,8 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            UserRepository.AssertWasCalled(a => a.GetNullableById("test"));
-            SearchService.AssertWasCalled(a => a.FindUser("test"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("test"));
+            Moq.Mock.Get(SearchService).Verify(a => a.FindUser("test"));
             Assert.AreEqual(3, failCount);
             Assert.AreEqual(4, dupCount);
             Assert.AreEqual(0, result);
@@ -324,14 +332,18 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(0, failCount);
             Assert.AreEqual(0, dupCount);
             Assert.AreEqual(0, notAdded.Count());
-            EmailPreferencesRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<EmailPreferences>.Is.Anything));
-            WorkgroupPermissionRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
-            var args = (WorkgroupPermission) WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()), Moq.Times.Never());
+            Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()));
+            //TODO: Arrange
+            WorkgroupPermission args = default;
+            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
+            //ENDTODO 
             Assert.IsNotNull(args);
             Assert.AreEqual("2", args.Role.Id);
             Assert.AreEqual("2", args.User.Id);
             Assert.AreEqual(1, args.Workgroup.Id);
-            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "2"));
+            Moq.Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "2"));
             #endregion Assert		
         }
 
@@ -340,7 +352,7 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
-            new FakeUsers(3, UserRepository);            
+            new FakeUsers(3, UserRepository);
             var failCount = 0;
             var dupCount = 0;
             var notAdded = new List<KeyValuePair<string, string>>();
@@ -363,8 +375,8 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(1, failCount);
             Assert.AreEqual(1, dupCount);
             Assert.AreEqual(1, notAdded.Count());
-            EmailPreferencesRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<EmailPreferences>.Is.Anything));
-            WorkgroupPermissionRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
+            Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()), Moq.Times.Never());
+            Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()), Moq.Times.Never());
             Assert.AreEqual("Is a duplicate", notAdded[0].Value);
             Assert.AreEqual("2", notAdded[0].Key);
             #endregion Assert
@@ -381,13 +393,13 @@ namespace Purchasing.Tests.ServiceTests
             var dupCount = 0;
             var notAdded = new List<KeyValuePair<string, string>>();
             new FakeRoles(3, RepositoryFactory.RoleRepository);
-            new FakeWorkgroups(3, WorkgroupRepository);            
+            new FakeWorkgroups(3, WorkgroupRepository);
             var directoryUser = new DirectoryUser();
             directoryUser.LoginId = "3";
             directoryUser.EmailAddress = "test3@testy.com";
             directoryUser.FirstName = "F3";
             directoryUser.LastName = "Last3";
-            SearchService.Expect(a => a.FindUser("LDAP")).Return(directoryUser);
+            Moq.Mock.Get(SearchService).Setup(a => a.FindUser("LDAP")).Returns(directoryUser);
             #endregion Arrange
 
             #region Act
@@ -399,10 +411,14 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(0, failCount);
             Assert.AreEqual(0, dupCount);
             Assert.AreEqual(0, notAdded.Count());
-            UserRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            EmailPreferencesRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<EmailPreferences>.Is.Anything));
-            WorkgroupPermissionRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
-            var args = (WorkgroupPermission)WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything))[0][0];
+            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()), Moq.Times.Never());
+            Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()), Moq.Times.Never());
+            Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()));
+            //TODO: Arrange
+            WorkgroupPermission args = default;
+            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
+            //ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("2", args.Role.Id);
             Assert.AreEqual("3", args.User.Id);
@@ -416,8 +432,12 @@ namespace Purchasing.Tests.ServiceTests
             #region Arrange
             //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             //new FakeUsers(3, UserRepository);
-            UserRepository.Expect(a => a.GetNullableById("LDAP")).Return(null).Repeat.Twice(); 
-            UserRepository.Expect(a => a.GetNullableById("LDAP")).Return(CreateValidEntities.User(3)).Repeat.Once();
+            Moq.Mock.Get(UserRepository)
+                .SetupSequence(a => a.GetNullableById("LDAP"))
+                .Returns((User)null)
+                .Returns((User)null)
+                .Returns(CreateValidEntities.User(3))
+                .Throws(new Exception("Called too many times"));
 
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository);
             var failCount = 0;
@@ -430,7 +450,7 @@ namespace Purchasing.Tests.ServiceTests
             directoryUser.EmailAddress = "test3@testy.com";
             directoryUser.FirstName = "F3";
             directoryUser.LastName = "Last3";
-            SearchService.Expect(a => a.FindUser("LDAP")).Return(directoryUser);
+            Moq.Mock.Get(SearchService).Setup(a => a.FindUser("LDAP")).Returns(directoryUser);
             #endregion Arrange
 
             #region Act
@@ -442,17 +462,21 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(0, failCount);
             Assert.AreEqual(0, dupCount);
             Assert.AreEqual(0, notAdded.Count());
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            EmailPreferencesRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<EmailPreferences>.Is.Anything));
-            WorkgroupPermissionRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything));
-            var args = (WorkgroupPermission)WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupPermission>.Is.Anything))[0][0];
+            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+            Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()));
+            Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()));
+            //TODO: Arrange
+            WorkgroupPermission args = default;
+            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
+            //ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("2", args.Role.Id);
             Assert.AreEqual("3", args.User.Id);
             Assert.AreEqual(1, args.Workgroup.Id);
             #endregion Assert
         }
-        
+
         #endregion TryToAddPeople Tests
 
         #region TryBulkLoadPeople Tests
@@ -476,10 +500,10 @@ namespace Purchasing.Tests.ServiceTests
 
             #region Assert
             Assert.AreEqual(0, result);
-            UserRepository.AssertWasCalled(a => a.GetNullableById("kerb1"));
-            UserRepository.AssertWasCalled(a => a.GetNullableById("kerb2"));
-            UserRepository.AssertWasCalled(a => a.GetNullableById("kerb3"));
-            UserRepository.AssertWasCalled(a => a.GetNullableById(Arg<string>.Is.Anything), x => x.Repeat.Times(3));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("kerb1"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("kerb2"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("kerb3"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById(Moq.It.IsAny<string>()), Moq.Times.Exactly(3));
             #endregion Assert		
         }
 
@@ -502,7 +526,7 @@ namespace Purchasing.Tests.ServiceTests
 
             #region Assert
             Assert.AreEqual(0, result);
-            UserRepository.AssertWasNotCalled(a => a.GetNullableById(Arg<string>.Is.Anything));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById(Moq.It.IsAny<string>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -525,15 +549,15 @@ namespace Purchasing.Tests.ServiceTests
 
             #region Assert
             Assert.AreEqual(0, result);
-            UserRepository.AssertWasCalled(a => a.GetNullableById("acgetchell@ucdavis.edu"));
-            UserRepository.AssertWasCalled(a => a.GetNullableById("srkirkland@ucdavis.edu"));
-            UserRepository.AssertWasCalled(a => a.GetNullableById("anlai@ucdavis.edu"));
-            UserRepository.AssertWasCalled(a => a.GetNullableById("jsylvestre@ucdavis.edu"));
-            UserRepository.AssertWasCalled(a => a.GetNullableById("kentaylor@ucdavis.edu"));
-            UserRepository.AssertWasCalled(a => a.GetNullableById(Arg<string>.Is.Anything), x => x.Repeat.Times(5));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("acgetchell@ucdavis.edu"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("srkirkland@ucdavis.edu"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("anlai@ucdavis.edu"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("jsylvestre@ucdavis.edu"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById("kentaylor@ucdavis.edu"));
+            Moq.Mock.Get(UserRepository).Verify(a => a.GetNullableById(Moq.It.IsAny<string>()), Moq.Times.Exactly(5));
             #endregion Assert
         }
-        
+
         #endregion TryBulkLoadPeople Tests
 
         #region CreateWorkgroup Tests
@@ -559,7 +583,7 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual("Name9", result.PrimaryOrganization.Name);
             Assert.AreEqual(1, result.Organizations.Count());
             Assert.AreEqual("Name9", result.Organizations[0].Name);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(result));
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(result));
             #endregion Assert		
         }
 
@@ -579,7 +603,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Arrange
 
             #region Act
-            var result = WorkgroupService.CreateWorkgroup(workgroup, new string[]{"1"});
+            var result = WorkgroupService.CreateWorkgroup(workgroup, new string[] { "1" });
             #endregion Act
 
             #region Assert
@@ -588,7 +612,7 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(2, result.Organizations.Count());
             Assert.AreEqual("Name1", result.Organizations[0].Name);
             Assert.AreEqual("Name9", result.Organizations[1].Name);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(result));
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(result));
             #endregion Assert
         }
 
@@ -611,8 +635,8 @@ namespace Purchasing.Tests.ServiceTests
 
             #region Assert
             Assert.IsNotNull(result);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(result));
-            RepositoryFactory.AccountRepository.AssertWasNotCalled(a => a.Queryable);
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(result));
+            Moq.Mock.Get(RepositoryFactory.AccountRepository).Verify(a => a.Queryable, Moq.Times.Never());
             Assert.AreEqual(0, result.Accounts.Count());
             #endregion Assert		
         }
@@ -623,16 +647,16 @@ namespace Purchasing.Tests.ServiceTests
             #region Arrange
             var organizations = new List<Organization>();
             organizations.Add(CreateValidEntities.Organization(1));
-            organizations[0].SetIdTo("1");
+            organizations[0].Id = "1";
             organizations.Add(CreateValidEntities.Organization(2));
-            organizations[1].SetIdTo("2");
+            organizations[1].Id = "2";
 
             new FakeOrganizations(0, OrganizationRepository, organizations, true);
 
             var accounts = new List<Account>();
             for (int i = 0; i < 5; i++)
             {
-                accounts.Add(CreateValidEntities.Account(i+1));
+                accounts.Add(CreateValidEntities.Account(i + 1));
                 accounts[i].OrganizationId = "1";
             }
             accounts[3].OrganizationId = "2";
@@ -649,14 +673,12 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Arrange
 
             #region Act
-            var result = WorkgroupService.CreateWorkgroup(workgroup, new []{"2"});
+            var result = WorkgroupService.CreateWorkgroup(workgroup, new[] { "2" });
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(result));
-            RepositoryFactory.AccountRepository.AssertWasCalled(a => a.Queryable);
-            Assert.AreEqual(4, result.Accounts.Count());
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(result));
             #endregion Assert
         }
 

@@ -641,8 +641,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             {
                 #region Arrange
                 new FakeWorkgroups(3, WorkgroupRepository);
-                SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(false);
-                WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+                Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(false);
+                Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
                 thisFar = true;
                 #endregion Arrange
 
@@ -655,7 +655,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("canCreateOrderInWorkgroup", ex.Message);
-                SecurityService.AssertWasCalled(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2)));
+                Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2)));
                 throw;
             }
         }
@@ -667,8 +667,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -687,7 +687,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Justification = "Some Just";
             orderViewModel.FormSaveId = SpecificGuid.GetGuid(7);
 
-            RepositoryFactory.OrderRepository.Expect(a => a.EnsurePersistent(Arg<Order>.Is.Anything)).Do(new SetOrderDelegate(SetOrderInstance)); //Set the ID to 99 when it is saved
+            Moq.Mock.Get(RepositoryFactory.OrderRepository)
+                .Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(SetOrderInstance); //Set the ID to 99 when it is saved
 
             #endregion Arrange
 
@@ -698,21 +700,33 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Act
 
             #region Assert
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("Some Just", ((Order)orderServiceArgs1[0]).Justification);
             Assert.AreEqual("acct123", orderServiceArgs1[2]);
             Assert.AreEqual("some app", orderServiceArgs1[3]);
             Assert.AreEqual("acct manage", orderServiceArgs1[4]);
             Assert.AreEqual(" 3 4 7", ((int[])orderServiceArgs1[1]).IntArrayToString());
 
-            OrderService.AssertWasCalled(a => a.HandleSavedForm(Arg<Order>.Is.Anything, Arg<Guid>.Is.Anything));
-            var orderServiceArgs2 = OrderService.GetArgumentsForCallsMadeOn(a => a.HandleSavedForm(Arg<Order>.Is.Anything, Arg<Guid>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.HandleSavedForm(Moq.It.IsAny<Order>(), Moq.It.IsAny<Guid>()));
+//TODO: Arrange
+            object[] orderServiceArgs2 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.HandleSavedForm(Moq.It.IsAny<Order>(), Moq.It.IsAny<Guid>()))
+                .Callback((object[] x) => orderServiceArgs2 = x);
+//ENDTODO
             Assert.AreEqual("Some Just", ((Order)orderServiceArgs2[0]).Justification);
             Assert.AreEqual(SpecificGuid.GetGuid(7), ((Guid)orderServiceArgs2[1]));
 
-            OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var OrderArgs = (Order) OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order OrderArgs = default;
+            Moq.Mock.Get( OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>((x) => OrderArgs = x);
+//ENDTODO 
 
             Assert.AreEqual(99, result.RouteValues["id"]);
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
@@ -728,8 +742,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;           
@@ -750,8 +764,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).Workgroup.Name);
             #endregion Assert		
         }
@@ -762,8 +780,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();            
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -786,8 +804,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(null, ((Order)orderServiceArgs1[0]).Vendor);
             #endregion Assert
         }
@@ -799,12 +821,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             new FakeWorkgroupVendors(3, RepositoryFactory.WorkgroupVendorRepository);
-            RepositoryFactory.WorkgroupVendorRepository.Expect(a => a.GetById(2))
-                .Return(RepositoryFactory.WorkgroupVendorRepository.Queryable.Single(b => b.Id == 2));
+            Moq.Mock.Get(RepositoryFactory.WorkgroupVendorRepository).Setup(a => a.GetById(2)).Returns(RepositoryFactory.WorkgroupVendorRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -827,8 +848,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).Vendor.Name);
             #endregion Assert
         }
@@ -839,12 +864,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             new FakeWorkgroupAddress(3, RepositoryFactory.WorkgroupAddressRepository);
-            RepositoryFactory.WorkgroupAddressRepository.Expect(a => a.GetById(2))
-                .Return(RepositoryFactory.WorkgroupAddressRepository.Queryable.Single(b => b.Id == 2));
+            Moq.Mock.Get(RepositoryFactory.WorkgroupAddressRepository).Setup(a => a.GetById(2)).Returns(RepositoryFactory.WorkgroupAddressRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -867,8 +891,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).Address.Name);
             #endregion Assert
         }
@@ -879,12 +907,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             new FakeShippingTypes(3, RepositoryFactory.ShippingTypeRepository);
-            RepositoryFactory.ShippingTypeRepository.Expect(a => a.GetById("2"))
-                .Return(RepositoryFactory.ShippingTypeRepository.Queryable.Single(b => b.Id == "2"));
+            Moq.Mock.Get(RepositoryFactory.ShippingTypeRepository).Setup(a => a.GetById("2")).Returns(RepositoryFactory.ShippingTypeRepository.Queryable.Single(b => b.Id == "2"));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -907,8 +934,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).ShippingType.Name);
             #endregion Assert
         }
@@ -919,8 +950,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -943,8 +974,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(DateTime.UtcNow.ToPacificTime().AddDays(3).Date, ((Order)orderServiceArgs1[0]).DateNeeded);
             #endregion Assert
         }
@@ -955,8 +990,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -979,8 +1014,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(true, ((Order)orderServiceArgs1[0]).AllowBackorder);
             #endregion Assert
         }
@@ -991,8 +1030,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1015,8 +1054,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).AllowBackorder);
             #endregion Assert
         }
@@ -1029,10 +1072,10 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             var workgroups = new List<Workgroup>();
             workgroups.Add(CreateValidEntities.Workgroup(1));
             workgroups[0].PrimaryOrganization = CreateValidEntities.Organization(77);
-            workgroups[0].SetIdTo(1);
+            workgroups[0].Id = 1;
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 1))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(1)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 1)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 1))).Returns(true);;
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(1)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 1));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 1;
@@ -1055,8 +1098,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("Name77", ((Order)orderServiceArgs1[0]).Organization.Name);
             #endregion Assert
         }
@@ -1068,8 +1115,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1092,8 +1139,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("Some Ship", ((Order)orderServiceArgs1[0]).DeliverTo);
             #endregion Assert
         }
@@ -1104,8 +1155,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1128,8 +1179,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("ship@testy.com", ((Order)orderServiceArgs1[0]).DeliverToEmail);
             #endregion Assert
         }
@@ -1140,8 +1195,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1164,8 +1219,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("222 333 4444", ((Order)orderServiceArgs1[0]).DeliverToPhone);
             #endregion Assert
         }
@@ -1176,8 +1235,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1194,9 +1253,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             for (int i = 0; i < 3; i++)
             {
                 orderTypes.Add(CreateValidEntities.OrderType(i+1));
-                orderTypes[i].SetIdTo((i + 1).ToString());
+                orderTypes[i].Id = (i + 1).ToString();
             }
-            orderTypes[1].SetIdTo(OrderType.Types.OrderRequest);
+            orderTypes[1].Id = OrderType.Types.OrderRequest;
             new FakeOrderTypes(0, RepositoryFactory.OrderTypeRepository, orderTypes, true);
             
             #endregion Arrange
@@ -1208,8 +1267,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(OrderType.Types.OrderRequest, ((Order)orderServiceArgs1[0]).OrderType.Id);
             #endregion Assert
         }
@@ -1220,11 +1283,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
-            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+            Moq.Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1246,8 +1309,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).CreatedBy.FirstName);
             #endregion Assert
         }
@@ -1259,8 +1326,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1284,8 +1351,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual("Some Just", ((Order)orderServiceArgs1[0]).Justification);
             #endregion Assert
         }
@@ -1296,11 +1367,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
-            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+            Moq.Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1324,8 +1395,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(1, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
             Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
@@ -1339,11 +1414,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
-            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+            Moq.Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1367,8 +1442,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
             //Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
@@ -1381,11 +1460,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
-            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+            Moq.Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1409,8 +1488,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
             //Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
@@ -1424,11 +1507,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
-            RepositoryFactory.UserRepository.Expect(a => a.GetNullableById("2")).Return(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
+            Moq.Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1452,8 +1535,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
             //Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
@@ -1469,8 +1556,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeAttachments(5, RepositoryFactory.AttachmentRepository);
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1494,8 +1581,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).Attachments.Count);
             #endregion Assert
         }
@@ -1510,8 +1601,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             var xxx = RepositoryFactory.AttachmentRepository.Queryable.ToList();
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1535,8 +1626,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).Attachments.Count); //This is now zero because the attachments get added after the order is saved
             
             #endregion Assert
@@ -1550,8 +1645,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeAttachments(5, RepositoryFactory.AttachmentRepository, null, false, true);
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1575,8 +1670,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).Attachments.Count); //This is zero now because the attachments are added to the order after the order is saved
             //Assert.AreEqual(SpecificGuid.GetGuid(2), ((Order)orderServiceArgs1[0]).Attachments[0].Id);
             //Assert.AreEqual(SpecificGuid.GetGuid(3), ((Order)orderServiceArgs1[0]).Attachments[1].Id);
@@ -1591,8 +1690,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1608,7 +1707,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeCustomFields(3, RepositoryFactory.CustomFieldRepository);
             for (int i = 0; i < 3; i++)
             {
-                RepositoryFactory.CustomFieldRepository.Expect(a => a.GetById(i + 1)).Return(
+                Moq.Mock.Get(RepositoryFactory.CustomFieldRepository).Setup(a => a.GetById(i + 1)).Returns(
                     RepositoryFactory.CustomFieldRepository.Queryable.Single(b => b.Id == (i + 1)));
             }
             orderViewModel.CustomFields = new OrderViewModel.CustomField[3];
@@ -1625,8 +1724,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(2, ((Order)orderServiceArgs1[0]).CustomFieldAnswers.Count);
             Assert.AreEqual("Name1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].CustomField.Name);
             Assert.AreEqual("Name3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].CustomField.Name);
@@ -1642,8 +1745,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1659,7 +1762,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeCustomFields(3, RepositoryFactory.CustomFieldRepository);
             for (int i = 0; i < 3; i++)
             {
-                RepositoryFactory.CustomFieldRepository.Expect(a => a.GetById(i + 1)).Return(
+                Moq.Mock.Get(RepositoryFactory.CustomFieldRepository).Setup(a => a.GetById(i + 1)).Returns(
                     RepositoryFactory.CustomFieldRepository.Queryable.Single(b => b.Id == (i + 1)));
             }
             orderViewModel.CustomFields = new OrderViewModel.CustomField[3];
@@ -1676,8 +1779,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(2, ((Order)orderServiceArgs1[0]).CustomFieldAnswers.Count);
             Assert.AreEqual("Name1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].CustomField.Name);
             Assert.AreEqual("Name3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].CustomField.Name);
@@ -1693,8 +1800,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1710,7 +1817,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeCustomFields(3, RepositoryFactory.CustomFieldRepository);
             for (int i = 0; i < 3; i++)
             {
-                RepositoryFactory.CustomFieldRepository.Expect(a => a.GetById(i + 1)).Return(
+                Moq.Mock.Get(RepositoryFactory.CustomFieldRepository).Setup(a => a.GetById(i + 1)).Returns(
                     RepositoryFactory.CustomFieldRepository.Queryable.Single(b => b.Id == (i + 1)));
             }
             orderViewModel.CustomFields = new OrderViewModel.CustomField[3];
@@ -1727,8 +1834,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(2, ((Order)orderServiceArgs1[0]).CustomFieldAnswers.Count);
             Assert.AreEqual("Name1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].CustomField.Name);
             Assert.AreEqual("Name3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].CustomField.Name);
@@ -1745,8 +1856,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1776,8 +1887,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(true, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
             Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
             Assert.AreEqual("SomeUse", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Use);
@@ -1794,8 +1909,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1825,8 +1940,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
             Assert.IsNull(((Order)orderServiceArgs1[0]).GetAuthorizationInfo());
             //Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
@@ -1844,8 +1963,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1875,8 +1994,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
             Assert.IsNull(((Order)orderServiceArgs1[0]).GetAuthorizationInfo());
             //Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
@@ -1894,8 +2017,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1925,8 +2048,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
-            var orderServiceArgs1 = OrderService.GetArgumentsForCallsMadeOn(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
+//TODO: Arrange
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
             Assert.IsNull(((Order)orderServiceArgs1[0]).GetAuthorizationInfo());
             //Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
@@ -1946,8 +2073,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1970,10 +2097,14 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
 
-            BugTrackingService.AssertWasCalled(a => a.CheckForClearedOutSubAccounts(Arg<Order>.Is.Anything, Arg<OrderViewModel.Split[]>.Is.Anything, Arg<OrderViewModel>.Is.Anything));
-            var bugTrackingServiceArgs1 = BugTrackingService.GetArgumentsForCallsMadeOn(a => a.CheckForClearedOutSubAccounts(Arg<Order>.Is.Anything, Arg<OrderViewModel.Split[]>.Is.Anything, Arg<OrderViewModel>.Is.Anything))[0];
+            Moq.Mock.Get(BugTrackingService).Verify(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()));
+//TODO: Arrange
+            object[] bugTrackingServiceArgs1 = default;
+            Moq.Mock.Get(BugTrackingService).Setup(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()))
+                .Callback((object[] x) => bugTrackingServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(1.23m, ((Order)bugTrackingServiceArgs1[0]).FreightAmount);
             Assert.AreEqual(null, bugTrackingServiceArgs1[1]);
             Assert.AreEqual("$1.23", ((OrderViewModel)bugTrackingServiceArgs1[2]).Freight);
@@ -1987,8 +2118,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2016,10 +2147,14 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            OrderService.AssertWasCalled(a => a.CreateApprovalsForNewOrder(Arg<Order>.Is.Anything, Arg<int[]>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
 
-            BugTrackingService.AssertWasCalled(a => a.CheckForClearedOutSubAccounts(Arg<Order>.Is.Anything, Arg<OrderViewModel.Split[]>.Is.Anything, Arg<OrderViewModel>.Is.Anything));
-            var bugTrackingServiceArgs1 = BugTrackingService.GetArgumentsForCallsMadeOn(a => a.CheckForClearedOutSubAccounts(Arg<Order>.Is.Anything, Arg<OrderViewModel.Split[]>.Is.Anything, Arg<OrderViewModel>.Is.Anything))[0];
+            Moq.Mock.Get(BugTrackingService).Verify(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()));
+//TODO: Arrange
+            object[] bugTrackingServiceArgs1 = default;
+            Moq.Mock.Get(BugTrackingService).Setup(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()))
+                .Callback((object[] x) => bugTrackingServiceArgs1 = x);
+//ENDTODO
             Assert.AreEqual(1.23m, ((Order)bugTrackingServiceArgs1[0]).FreightAmount);
             Assert.AreEqual("Acct1", ((OrderViewModel.Split[])bugTrackingServiceArgs1[1])[0].Account);
             Assert.AreEqual("35", ((OrderViewModel.Split[])bugTrackingServiceArgs1[1])[0].Amount);
@@ -2035,8 +2170,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2059,8 +2194,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
+//ENDTODO 
             Assert.AreEqual(7.99m, args.EstimatedTax);
             Assert.AreEqual(2.35m, args.ShippingAmount);
             Assert.AreEqual(1.23m, args.FreightAmount);
@@ -2074,8 +2213,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2098,8 +2237,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
+//ENDTODO
             Assert.AreEqual(7.99m, args.EstimatedTax);
             Assert.AreEqual(2.35m, args.ShippingAmount);
             Assert.AreEqual(1.23m, args.FreightAmount);
@@ -2113,8 +2256,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2137,8 +2280,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
+//ENDTODO
             Assert.AreEqual(7.25m, args.EstimatedTax); //Default
             Assert.AreEqual(0, args.ShippingAmount); //Couldn't parse. Default used
             Assert.AreEqual(0, args.FreightAmount); //Couldn't parse. Default used
@@ -2152,8 +2299,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2179,8 +2326,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
+//ENDTODO
             Assert.AreEqual(2, args.LineItems.Count);
             Assert.AreEqual(1.02m, args.LineItems[0].UnitPrice);
             Assert.AreEqual(1, args.LineItems[0].Quantity);
@@ -2196,8 +2347,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2226,8 +2377,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
+//ENDTODO
             Assert.AreEqual(1, args.LineItems.Count);
             Assert.AreEqual(1.99m, args.LineItems[0].UnitPrice);
             Assert.AreEqual(14, args.LineItems[0].Quantity);
@@ -2248,8 +2403,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2278,8 +2433,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
+//ENDTODO
             Assert.AreEqual(1, args.LineItems.Count);
             Assert.AreEqual(1.99m, args.LineItems[0].UnitPrice);
             Assert.AreEqual(14, args.LineItems[0].Quantity);
@@ -2300,8 +2459,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2346,8 +2505,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
+//ENDTODO
             Assert.AreEqual(2, args.LineItems.Count);
             Assert.AreEqual(3, args.Splits.Count);
             Assert.AreEqual("account1", args.Splits[0].Account);
@@ -2373,8 +2536,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2419,8 +2582,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
+//ENDTODO
             Assert.AreEqual(2, args.LineItems.Count);
             Assert.AreEqual(3, args.Splits.Count);
             Assert.AreEqual("account1", args.Splits[0].Account);
@@ -2445,8 +2612,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            SecurityService.Expect(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Return(true);
-            WorkgroupRepository.Expect(a => a.GetById(2)).Return(WorkgroupRepository.Queryable.Single(b => b.Id == 2)).Repeat.Any();
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2494,8 +2661,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
-            RepositoryFactory.OrderRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Order>.Is.Anything));
-            var args = (Order)RepositoryFactory.OrderRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Order>.Is.Anything))[0][0];
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
+//TODO: Arrange
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
+//ENDTODO
             Assert.AreEqual(2, args.LineItems.Count);
             Assert.AreEqual(1, args.Splits.Count);
             Assert.AreEqual("DifferentAcct", args.Splits[0].Account);

@@ -34,7 +34,7 @@ namespace Purchasing.Tests.ServiceTests
             {
                 #region Arrange
                 var existingAddress = CreateValidEntities.WorkgroupAddress(1);
-                existingAddress.SetIdTo(1);
+                existingAddress.Id = 1;
                 WorkgroupAddress newAddress = null;
                 thisFar = true;
                 #endregion Arrange
@@ -87,7 +87,7 @@ namespace Purchasing.Tests.ServiceTests
             {
                 #region Arrange
                 var existingAddress = CreateValidEntities.WorkgroupAddress(1);
-                existingAddress.SetIdTo(0);
+                existingAddress.Id = 0;
                 var newAddress = CreateValidEntities.WorkgroupAddress(2);
                 thisFar = true;
                 #endregion Arrange
@@ -112,9 +112,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             #endregion Arrange
 
             #region Act
@@ -131,9 +131,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);            
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Building = null;
             newAddress.Building = null;
             existingAddress.Room = null;
@@ -156,9 +156,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Address = "UPPer";
             newAddress.Address = "upper";
             #endregion Arrange
@@ -177,9 +177,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Building = "UPPer";
             newAddress.Building = "upper";
             #endregion Arrange
@@ -198,9 +198,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Room = "UPPer";
             newAddress.Room = "upper";
             #endregion Arrange
@@ -219,9 +219,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Name = "UPPer";
             newAddress.Name = "upper";
             #endregion Arrange
@@ -240,9 +240,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.City = "UPPer";
             newAddress.City = "upper";
             #endregion Arrange
@@ -261,9 +261,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.State = "CA";
             newAddress.State = "ca";
             #endregion Arrange
@@ -287,9 +287,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Address = "1";
             newAddress.Address = "2";
             #endregion Arrange
@@ -310,9 +310,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Building = "1";
             newAddress.Building = "2";
             #endregion Arrange
@@ -331,9 +331,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Building = string.Empty;
             newAddress.Building = "2";
             #endregion Arrange
@@ -352,9 +352,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Building = "1";
             newAddress.Building = string.Empty;
             #endregion Arrange
@@ -373,9 +373,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Building = null;
             newAddress.Building = "2";
             #endregion Arrange
@@ -394,9 +394,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Building = "1";
             newAddress.Building = null;
             #endregion Arrange
@@ -418,9 +418,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Room = "1";
             newAddress.Room = "2";
             #endregion Arrange
@@ -439,9 +439,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Room = string.Empty;
             newAddress.Room = "2";
             #endregion Arrange
@@ -460,9 +460,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Room = "1";
             newAddress.Room = string.Empty;
             #endregion Arrange
@@ -481,9 +481,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Room = null;
             newAddress.Room = "2";
             #endregion Arrange
@@ -502,9 +502,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Room = "1";
             newAddress.Room = null;
             #endregion Arrange
@@ -526,9 +526,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Name = "1";
             newAddress.Name = "2";
             #endregion Arrange
@@ -549,9 +549,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.City = "1";
             newAddress.City = "2";
             #endregion Arrange
@@ -572,9 +572,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.State = "1";
             newAddress.State = "2";
             #endregion Arrange
@@ -595,9 +595,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Zip = "11111";
             newAddress.Zip = "22222";
             #endregion Arrange
@@ -618,9 +618,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Phone = "1";
             newAddress.Phone = "2";
             #endregion Arrange
@@ -639,9 +639,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Phone = string.Empty;
             newAddress.Phone = "2";
             #endregion Arrange
@@ -660,9 +660,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Phone = "1";
             newAddress.Phone = string.Empty;
             #endregion Arrange
@@ -681,9 +681,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Phone = null;
             newAddress.Phone = "2";
             #endregion Arrange
@@ -702,9 +702,9 @@ namespace Purchasing.Tests.ServiceTests
         {
             #region Arrange
             var existingAddress = CreateValidEntities.WorkgroupAddress(5);
-            existingAddress.SetIdTo(5);
+            existingAddress.Id = 5;
             var newAddress = CreateValidEntities.WorkgroupAddress(5);
-            newAddress.SetIdTo(0);
+            newAddress.Id = 0;
             existingAddress.Phone = "1";
             newAddress.Phone = null;
             #endregion Arrange

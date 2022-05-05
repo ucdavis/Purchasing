@@ -44,7 +44,7 @@ namespace Purchasing.Tests.RepositoryTests
         protected override VendorAddress GetValid(int? counter)
         {
             var rtValue = CreateValidEntities.VendorAddress(counter);
-            rtValue.SetIdTo(Guid.NewGuid());
+            rtValue.Id = Guid.NewGuid();
             rtValue.Vendor = VendorRepository.Queryable.First();
 
             return rtValue;

@@ -150,7 +150,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             var users = new List<User>();
             users.Add(CreateValidEntities.User(1));
-            users[0].SetIdTo("3");
+            users[0].Id = "3";
             users[0].Roles = new List<Role>();
             users[0].Roles.Add(new Role(Role.Codes.DepartmentalAdmin));
             users[0].Organizations = new List<Organization>();
@@ -218,7 +218,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Arrange
             var dars = new List<DepartmentalAdminRequest>();
             dars.Add(CreateValidEntities.DepartmentalAdminRequest(3));
-            dars[0].SetIdTo("3");
+            dars[0].Id = "3";
             dars[0].Complete = true;
             new FakeDepartmentalAdminRequests(0, DepartmentalAdminRequestRepository, dars, true);
             var dar = new DepartmentalAdminRequestViewModel
@@ -232,8 +232,8 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual("Request was already completed", Controller.Message);
-            DepartmentalAdminRequestRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything));
-            DepartmentalAdminRequestRepository.AssertWasNotCalled(a => a.Remove(Arg<DepartmentalAdminRequest>.Is.Anything));
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()), Moq.Times.Never());
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.Remove(Moq.It.IsAny<DepartmentalAdminRequest>()), Moq.Times.Never());
             #endregion Assert		
         }
 
@@ -243,7 +243,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #region Arrange
             var dars = new List<DepartmentalAdminRequest>();
             dars.Add(CreateValidEntities.DepartmentalAdminRequest(3));
-            dars[0].SetIdTo("3");
+            dars[0].Id = "3";
             dars[0].Complete = false;
             new FakeDepartmentalAdminRequests(0, DepartmentalAdminRequestRepository, dars, true);
             var dar = new DepartmentalAdminRequestViewModel { DepartmentalAdminRequest = new DepartmentalAdminRequest("3") };
@@ -256,11 +256,15 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual("Request Denied for FirstName3 LastName3 (3)", Controller.Message);
-            DepartmentalAdminRequestRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything));
-            var args = (DepartmentalAdminRequest) DepartmentalAdminRequestRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()));
+//TODO: Arrange
+            DepartmentalAdminRequest args = default;
+            Moq.Mock.Get( DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
+                .Callback<DepartmentalAdminRequest>(x => args = x);
+//ENDTODO 
             Assert.IsTrue(args.Complete);
 
-            DepartmentalAdminRequestRepository.AssertWasNotCalled(a => a.Remove(Arg<DepartmentalAdminRequest>.Is.Anything));
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.Remove(Moq.It.IsAny<DepartmentalAdminRequest>()), Moq.Times.Never());
             #endregion Assert
         }
         
@@ -472,7 +476,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             var users = new List<User>();
             users.Add(CreateValidEntities.User(1));
-            users[0].SetIdTo("3");
+            users[0].Id = "3";
             users[0].Roles = new List<Role>();
             users[0].Roles.Add(new Role(Role.Codes.DepartmentalAdmin));
             users[0].Organizations = new List<Organization>();
@@ -527,8 +531,8 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Person requesting Departmental Access ID not found. ID = testvalue", ex.Message);
-                DirectorySearchService.AssertWasCalled(a => a.FindUser("testvalue"));
-                DirectorySearchService.AssertWasNotCalled(a => a.FindUser("TeSTvALue"));
+                Moq.Mock.Get(DirectorySearchService).Verify(a => a.FindUser("testvalue"));
+                Moq.Mock.Get(DirectorySearchService).Verify(a => a.FindUser("TeSTvALue"), Moq.Times.Never());
                 throw;
             }
         }
@@ -542,7 +546,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             directoryUser.FirstName = "Jimmy";
             directoryUser.LastName = "James";
             directoryUser.EmailAddress = "test@testy.com";
-            DirectorySearchService.Expect(a => a.FindUser("testvalue")).Return(directoryUser);
+            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("testvalue")).Returns(directoryUser);
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
 
             #endregion Arrange
@@ -553,15 +557,19 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual("Request created/Updated.", Controller.Message);
-            DepartmentalAdminRequestRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything));
-            var args = (DepartmentalAdminRequest) DepartmentalAdminRequestRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()));
+//TODO: Arrange
+            DepartmentalAdminRequest args = default;
+            Moq.Mock.Get( DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
+                .Callback<DepartmentalAdminRequest>(x => args = x);
+//ENDTODO 
             Assert.AreEqual("testvalue", args.Id);
             Assert.IsTrue(args.AttendedTraining);
             Assert.AreEqual("test@testy.com", args.Email);
             Assert.AreEqual("Jimmy", args.FirstName);
             Assert.AreEqual("James", args.LastName);
-            DirectorySearchService.AssertWasCalled(a => a.FindUser("testvalue"));
-            DirectorySearchService.AssertWasNotCalled(a => a.FindUser("TeSTvALue"));
+            Moq.Mock.Get(DirectorySearchService).Verify(a => a.FindUser("testvalue"));
+            Moq.Mock.Get(DirectorySearchService).Verify(a => a.FindUser("TeSTvALue"), Moq.Times.Never());
             #endregion Assert		
         }
 
@@ -574,7 +582,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             directoryUser.FirstName = "Jimmy";
             directoryUser.LastName = "James";
             directoryUser.EmailAddress = "test@testy.com";
-            DirectorySearchService.Expect(a => a.FindUser("2")).Return(directoryUser);
+            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("2")).Returns(directoryUser);
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
 
             #endregion Arrange
@@ -585,8 +593,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual("Request created/Updated.", Controller.Message);
-            DepartmentalAdminRequestRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything));
-            var args = (DepartmentalAdminRequest)DepartmentalAdminRequestRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything))[0][0];
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()));
+//TODO: Arrange
+            DepartmentalAdminRequest args = default;
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
+                .Callback<DepartmentalAdminRequest>(x => args = x);
+//ENDTODO
             Assert.AreEqual("2", args.Id);
             Assert.IsTrue(args.AttendedTraining);
             Assert.AreEqual("test@testy.com", args.Email);

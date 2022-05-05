@@ -44,7 +44,7 @@ namespace Purchasing.Tests.RepositoryTests
         protected override Vendor GetValid(int? counter)
         {
             var rtValue = CreateValidEntities.Vendor(counter);
-            rtValue.SetIdTo(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.Id = counter.HasValue ? counter.Value.ToString() : "99";
 
             return rtValue;
         }
@@ -632,7 +632,7 @@ namespace Purchasing.Tests.RepositoryTests
             for (int i = 0; i < addedCount; i++)
             {
                 relatedRecords.Add(CreateValidEntities.VendorAddress(i + 1));
-                relatedRecords[i].SetIdTo(Guid.NewGuid());
+                relatedRecords[i].Id = Guid.NewGuid();
                 relatedRecords[i].Vendor = record;
                 VendorAddressRepository.EnsurePersistent(relatedRecords[i]);
             }
@@ -698,7 +698,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 relatedRecords.Add(CreateValidEntities.VendorAddress(i + 1));
                 relatedRecords[i].Vendor = record;
-                relatedRecords[i].SetIdTo(Guid.NewGuid());
+                relatedRecords[i].Id = Guid.NewGuid();
                 VendorAddressRepository.EnsurePersistent(relatedRecords[i]);
             }
             foreach (var relatedRecord in relatedRecords)
@@ -759,7 +759,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 relatedRecords.Add(CreateValidEntities.VendorAddress(i + 1));
                 relatedRecords[i].Vendor = record;
-                relatedRecords[i].SetIdTo(Guid.NewGuid());
+                relatedRecords[i].Id = Guid.NewGuid();
                 VendorAddressRepository.EnsurePersistent(relatedRecords[i]);
             }
             foreach (var relatedRecord in relatedRecords)

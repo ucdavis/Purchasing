@@ -787,7 +787,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var record = CreateValidEntities.Account(4);
-            record.SetIdTo("IdTest");
+            record.Id = "IdTest";
             #endregion Arrange
 
             #region Act
@@ -918,7 +918,7 @@ namespace Purchasing.Tests.RepositoryTests
             #region Arrange
             OrganizationRepository.DbContext.BeginTransaction();
             var organization = CreateValidEntities.Organization(1);
-            organization.SetIdTo(" ");
+            organization.Id = " ";
             OrganizationRepository.EnsurePersistent(organization);
             OrganizationRepository.DbContext.CommitTransaction();
             var account = GetValid(9);
@@ -973,7 +973,7 @@ namespace Purchasing.Tests.RepositoryTests
             #region Arrange
             OrganizationRepository.DbContext.BeginTransaction();
             var organization = CreateValidEntities.Organization(1);
-            organization.SetIdTo("x".RepeatTimes(999));
+            organization.Id = "x".RepeatTimes(999);
             OrganizationRepository.EnsurePersistent(organization);
             OrganizationRepository.DbContext.CommitTransaction();
             var account = GetValid(9);

@@ -29,7 +29,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival1()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -68,7 +68,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival2()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -111,7 +111,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival3()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -121,7 +121,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             var conditionalApproval = new Approval();
             conditionalApproval.Order = new Order();
-            conditionalApproval.Order.SetIdTo(order.Id);
+            conditionalApproval.Order.Id = order.Id;
             conditionalApproval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             conditionalApproval.User = UserRepository.GetNullableById("zoidberg");
             conditionalApproval.SecondaryUser = UserRepository.GetNullableById("flanders");
@@ -171,7 +171,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival4()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).Setup(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -181,7 +181,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             var conditionalApproval = new Approval();
             conditionalApproval.Order = new Order();
-            conditionalApproval.Order.SetIdTo(order.Id);
+            conditionalApproval.Order.Id = order.Id;
             conditionalApproval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             conditionalApproval.User = UserRepository.GetNullableById("hsimpson");
             conditionalApproval.SecondaryUser = UserRepository.GetNullableById("hsimpson");
@@ -217,7 +217,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival5()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).Setup(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -281,7 +281,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival6()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -290,7 +290,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             CreateApprovals(approvals, OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), order);
             var conditionalApproval = new Approval();
             conditionalApproval.Order = new Order();
-            conditionalApproval.Order.SetIdTo(order.Id);
+            conditionalApproval.Order.Id = order.Id;
             conditionalApproval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             conditionalApproval.User = UserRepository.GetNullableById("zoidberg");
             conditionalApproval.SecondaryUser = UserRepository.GetNullableById("flanders");
@@ -358,7 +358,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival7()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -367,7 +367,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             CreateApprovals(approvals, OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), order);
             var conditionalApproval = new Approval();
             conditionalApproval.Order = new Order();
-            conditionalApproval.Order.SetIdTo(order.Id);
+            conditionalApproval.Order.Id = order.Id;
             conditionalApproval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             conditionalApproval.User = UserRepository.GetNullableById("zoidberg");
             conditionalApproval.SecondaryUser = UserRepository.GetNullableById("zoidberg");
@@ -432,7 +432,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival8()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -441,7 +441,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             CreateApprovals(approvals, OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), order);
             var conditionalApproval = new Approval();
             conditionalApproval.Order = new Order();
-            conditionalApproval.Order.SetIdTo(order.Id);
+            conditionalApproval.Order.Id = order.Id;
             conditionalApproval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             conditionalApproval.User = UserRepository.GetNullableById("zoidberg");
             conditionalApproval.SecondaryUser = UserRepository.GetNullableById("zoidberg");
@@ -510,7 +510,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival9()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -519,7 +519,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             CreateApprovals(approvals, OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), order);
             var conditionalApproval = new Approval();
             conditionalApproval.Order = new Order();
-            conditionalApproval.Order.SetIdTo(order.Id);
+            conditionalApproval.Order.Id = order.Id;
             conditionalApproval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             conditionalApproval.User = UserRepository.GetNullableById("zoidberg");
             conditionalApproval.SecondaryUser = UserRepository.GetNullableById("zoidberg");
@@ -593,7 +593,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival10()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -602,7 +602,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             CreateApprovals(approvals, OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), order);
             var conditionalApproval = new Approval();
             conditionalApproval.Order = new Order();
-            conditionalApproval.Order.SetIdTo(order.Id);
+            conditionalApproval.Order.Id = order.Id;
             conditionalApproval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             conditionalApproval.User = UserRepository.GetNullableById("zoidberg");
             conditionalApproval.SecondaryUser = UserRepository.GetNullableById("zoidberg");
@@ -677,7 +677,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival11()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -686,7 +686,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             CreateApprovals(approvals, OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), order);
             var conditionalApproval = new Approval();
             conditionalApproval.Order = new Order();
-            conditionalApproval.Order.SetIdTo(order.Id);
+            conditionalApproval.Order.Id = order.Id;
             conditionalApproval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             conditionalApproval.User = UserRepository.GetNullableById("zoidberg");
             conditionalApproval.SecondaryUser = UserRepository.GetNullableById("zoidberg");
@@ -766,7 +766,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedProcessArrival12()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("bender");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -775,7 +775,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             CreateApprovals(approvals, OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver), order);
             var conditionalApproval = new Approval();
             conditionalApproval.Order = new Order();
-            conditionalApproval.Order.SetIdTo(order.Id);
+            conditionalApproval.Order.Id = order.Id;
             conditionalApproval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             conditionalApproval.User = UserRepository.GetNullableById("zoidberg");
             conditionalApproval.SecondaryUser = UserRepository.GetNullableById("zoidberg");
@@ -783,7 +783,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             var accountManager = new Approval();
             accountManager.Order = new Order();
-            accountManager.Order.SetIdTo(order.Id);
+            accountManager.Order.Id = order.Id;
             accountManager.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.AccountManager);
             accountManager.User = UserRepository.GetNullableById("AccManag".ToLower());
             accountManager.SecondaryUser = UserRepository.GetNullableById("AccManag".ToLower());
@@ -791,7 +791,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             var purchaser = new Approval();
             purchaser.Order = new Order();
-            purchaser.Order.SetIdTo(order.Id);
+            purchaser.Order.Id = order.Id;
             purchaser.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.AccountManager);
             purchaser.User = UserRepository.GetNullableById("pur");
             purchaser.SecondaryUser = UserRepository.GetNullableById("pur");

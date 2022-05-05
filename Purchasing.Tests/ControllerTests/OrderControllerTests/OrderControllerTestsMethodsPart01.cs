@@ -43,9 +43,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 for (int i = 0; i < 3; i++)
                 {
                     users.Add(CreateValidEntities.User(i+1));
-                    users[i].SetIdTo((i + 1).ToString());
+                    users[i].Id = (i + 1).ToString();
                 }
-                UserRepository2.Expect(a => a.Queryable).Return(users.AsQueryable()).Repeat.Any();
+                Moq.Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
                 thisFar = true;
                 #endregion Arrange
 
@@ -73,10 +73,10 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             for (int i = 0; i < 3; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString());
+                users[i].Id = (i + 1).ToString();
                 users[i].WorkgroupPermissions = new List<WorkgroupPermission>();
             }
-            UserRepository2.Expect(a => a.Queryable).Return(users.AsQueryable()).Repeat.Any();
+            Moq.Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
             
             #endregion Arrange
 
@@ -102,7 +102,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             var users = new List<User>();
             users.Add(CreateValidEntities.User(2));
-            users[0].SetIdTo("Me");
+            users[0].Id = "Me";
             var permissions = new List<WorkgroupPermission>();
             for (int i = 0; i < 5; i++)
             {
@@ -114,7 +114,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             permissions[2].Workgroup.IsActive = false; //Don't use
             permissions[3].Workgroup.Administrative = true; //Can't request
             users[0].WorkgroupPermissions = permissions;
-            UserRepository2.Expect(a => a.Queryable).Return(users.AsQueryable()).Repeat.Any();
+            Moq.Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
             #endregion Arrange
 
             #region Act
@@ -141,21 +141,21 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             var users = new List<User>();
             users.Add(CreateValidEntities.User(2));
-            users[0].SetIdTo("Me");
+            users[0].Id = "Me";
             var permissions = new List<WorkgroupPermission>();
             for (int i = 0; i < 5; i++)
             {
                 permissions.Add(CreateValidEntities.WorkgroupPermission(i + 1));
                 permissions[i].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Requester);
                 permissions[i].Workgroup = CreateValidEntities.Workgroup(i + 1);
-                permissions[i].Workgroup.SetIdTo(i + 1);
+                permissions[i].Workgroup.Id = i + 1;
             }
             permissions[0].Role = RoleRepository.Queryable.Single(a => a.Id == Role.Codes.Admin);
             permissions[2].Workgroup.IsActive = false; //Don't use
             permissions[3].Workgroup.Administrative = true; //Can't request
             permissions[4].Workgroup.IsActive = false;
             users[0].WorkgroupPermissions = permissions;
-            UserRepository2.Expect(a => a.Queryable).Return(users.AsQueryable()).Repeat.Any();
+            Moq.Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
             #endregion Arrange
 
             #region Act
@@ -205,7 +205,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Approver);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Approver;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -227,7 +227,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Cancelled);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Cancelled;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -249,7 +249,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Complete);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Complete;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -271,7 +271,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.CompleteNotUploadedKfs);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.CompleteNotUploadedKfs;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -293,7 +293,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.ConditionalApprover);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.ConditionalApprover;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -315,7 +315,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Denied);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Denied;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -337,7 +337,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Requester);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Requester;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -359,9 +359,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         //    #region Arrange
         //    var orders = new List<Order>();
         //    orders.Add(CreateValidEntities.Order(1));
-        //    orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+        //    orders[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
         //    orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-        //    orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+        //    orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.Purchaser;
         //    orders[0].Approvals[0].User = CreateValidEntities.User(99);
         //    new FakeOrders(0, OrderRepository, orders);
         //    #endregion Arrange
@@ -386,9 +386,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
             new FakeOrders(0, OrderRepository, orders);
             new FakeUsers(3, UserRepository);
@@ -415,11 +415,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             SetupRoles();
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
-            orders[0].Workgroup.SetIdTo(2);
+            orders[0].Workgroup.Id = 2;
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
             orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
@@ -487,11 +487,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeUsers(12, UserRepository);
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.Purchaser;
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
-            orders[0].Workgroup.SetIdTo(2);
+            orders[0].Workgroup.Id = 2;
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
             orders[0].Workgroup.Permissions[0].User = UserRepository.Queryable.Single(a => a.Id == "1");
@@ -581,7 +581,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Approver);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Approver;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -594,8 +594,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            ApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Approval>.Is.Anything));
-            OrderService.AssertWasNotCalled(a => a.ReRouteSingleApprovalForExistingOrder(Arg<Approval>.Is.Anything, Arg<User>.Is.Anything, Arg<bool>.Is.Anything));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -605,7 +605,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Cancelled);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Cancelled;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -618,8 +618,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            ApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Approval>.Is.Anything));
-            OrderService.AssertWasNotCalled(a => a.ReRouteSingleApprovalForExistingOrder(Arg<Approval>.Is.Anything, Arg<User>.Is.Anything, Arg<bool>.Is.Anything));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -629,7 +629,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Complete);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Complete;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -642,8 +642,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            ApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Approval>.Is.Anything));
-            OrderService.AssertWasNotCalled(a => a.ReRouteSingleApprovalForExistingOrder(Arg<Approval>.Is.Anything, Arg<User>.Is.Anything, Arg<bool>.Is.Anything));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -653,7 +653,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.CompleteNotUploadedKfs);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.CompleteNotUploadedKfs;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -666,8 +666,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            ApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Approval>.Is.Anything));
-            OrderService.AssertWasNotCalled(a => a.ReRouteSingleApprovalForExistingOrder(Arg<Approval>.Is.Anything, Arg<User>.Is.Anything, Arg<bool>.Is.Anything));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -677,7 +677,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.ConditionalApprover);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.ConditionalApprover;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -690,8 +690,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            ApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Approval>.Is.Anything));
-            OrderService.AssertWasNotCalled(a => a.ReRouteSingleApprovalForExistingOrder(Arg<Approval>.Is.Anything, Arg<User>.Is.Anything, Arg<bool>.Is.Anything));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -701,7 +701,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Denied);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Denied;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -714,8 +714,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            ApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Approval>.Is.Anything));
-            OrderService.AssertWasNotCalled(a => a.ReRouteSingleApprovalForExistingOrder(Arg<Approval>.Is.Anything, Arg<User>.Is.Anything, Arg<bool>.Is.Anything));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -725,7 +725,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Requester);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Requester;
             new FakeOrders(0, OrderRepository, orders);
             #endregion Arrange
 
@@ -738,8 +738,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            ApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Approval>.Is.Anything));
-            OrderService.AssertWasNotCalled(a => a.ReRouteSingleApprovalForExistingOrder(Arg<Approval>.Is.Anything, Arg<User>.Is.Anything, Arg<bool>.Is.Anything));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -749,9 +749,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         //    #region Arrange
         //    var orders = new List<Order>();
         //    orders.Add(CreateValidEntities.Order(1));
-        //    orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+        //    orders[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
         //    orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-        //    orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+        //    orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.Purchaser;
         //    orders[0].Approvals[0].User = CreateValidEntities.User(99);
         //    new FakeOrders(0, OrderRepository, orders);
         //    #endregion Arrange
@@ -766,8 +766,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         //    Assert.IsNotNull(result);
         //    Assert.AreEqual(1, result.RouteValues["id"]);
         //    Assert.AreEqual("Order purchaser can not already be assigned to change purchaser.", Controller.ErrorMessage);
-        //    ApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Approval>.Is.Anything));
-        //    OrderService.AssertWasNotCalled(a => a.ReRouteSingleApprovalForExistingOrder(Arg<Approval>.Is.Anything, Arg<User>.Is.Anything, Arg<bool>.Is.Anything));
+        //    Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>(), Moq.Times.Never()));
+        //    Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>(), Moq.Times.Never()));
         //    #endregion Assert
         //}
 
@@ -781,9 +781,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 #region Arrange
                 var orders = new List<Order>();
                 orders.Add(CreateValidEntities.Order(1));
-                orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+                orders[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
                 orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-                orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+                orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
                 orders[0].Approvals[0].User = CreateValidEntities.User(99);
                 new FakeOrders(0, OrderRepository, orders);
                 new FakeUsers(3, UserRepository);
@@ -814,13 +814,13 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 #region Arrange
                 var orders = new List<Order>();
                 orders.Add(CreateValidEntities.Order(1));
-                orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+                orders[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
                 orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-                orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+                orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
                 orders[0].Approvals[0].User = CreateValidEntities.User(99);
-                orders[0].Workgroup.SetIdTo(2);
+                orders[0].Workgroup.Id = 2;
                 orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-                orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+                orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.Purchaser;
                 orders[0].Approvals[0].User = null;
                 new FakeOrders(0, OrderRepository, orders);
                 new FakeUsers(12, UserRepository);
@@ -879,13 +879,13 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             SetupRoles();
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
-            orders[0].Workgroup.SetIdTo(2);
+            orders[0].Workgroup.Id = 2;
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[1].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orders[0].Approvals[1].StatusCode.Id = OrderStatusCode.Codes.Purchaser;
             orders[0].Approvals[1].User = null;
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
@@ -935,8 +935,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
-            ApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(orders[0].Approvals[1]));
-            OrderService.AssertWasCalled(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1")));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[1]));
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), false));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
@@ -950,13 +950,13 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeUsers(12, UserRepository);
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
-            orders[0].Workgroup.SetIdTo(2);
+            orders[0].Workgroup.Id = 2;
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.Purchaser;
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
@@ -1006,8 +1006,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
-            ApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(orders[0].Approvals[0]));
-            OrderService.AssertWasCalled(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[0], UserRepository.Queryable.Single(b => b.Id == "1")));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[0]));
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[0], UserRepository.Queryable.Single(b => b.Id == "1"), false));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
@@ -1022,13 +1022,13 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             SetupRoles();
             var orders = new List<Order>();
             orders.Add(CreateValidEntities.Order(1));
-            orders[0].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orders[0].StatusCode.Id = OrderStatusCode.Codes.Purchaser;
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[0].StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            orders[0].Approvals[0].StatusCode.Id = OrderStatusCode.Codes.AccountManager;
             orders[0].Approvals[0].User = CreateValidEntities.User(99);
-            orders[0].Workgroup.SetIdTo(2);
+            orders[0].Workgroup.Id = 2;
             orders[0].Approvals.Add(CreateValidEntities.Approval(1));
-            orders[0].Approvals[1].StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orders[0].Approvals[1].StatusCode.Id = OrderStatusCode.Codes.Purchaser;
             orders[0].Approvals[1].User = null;
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(1));
             orders[0].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(12));
@@ -1078,8 +1078,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
-            ApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(orders[0].Approvals[1]));
-            OrderService.AssertWasCalled(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), true));
+            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[1]));
+            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), true));
 
             #endregion Assert
         }

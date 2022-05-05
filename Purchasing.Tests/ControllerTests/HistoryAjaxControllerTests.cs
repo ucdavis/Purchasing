@@ -43,27 +43,22 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            //QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            OrderService = MockRepository.GenerateStub<IOrderService>();
-            SearchService = MockRepository.GenerateStub<ISearchService>();
-            AccessQueryService = MockRepository.GenerateStub<IAccessQueryService>();
-            //QueryRepositoryFactory.OrderTrackingHistoryRepository = MockRepository.GenerateStub<IRepository<OrderTrackingHistory>>();
-            //QueryRepositoryFactory.CommentHistoryRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<CommentHistory, Guid>>();
-            //QueryRepositoryFactory.OrderHistoryRepository = MockRepository.GenerateStub<IRepository<OrderHistory>>();
-            DbService = MockRepository.GenerateStub<IDbService>();
+            //QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
+            OrderService = new Moq.Mock<IOrderService>().Object;
+            SearchService = new Moq.Mock<ISearchService>().Object;
+            AccessQueryService = new Moq.Mock<IAccessQueryService>().Object;
+            //QueryRepositoryFactory.OrderTrackingHistoryRepository = new Moq.Mock<IRepository<OrderTrackingHistory>>().Object;
+            //QueryRepositoryFactory.CommentHistoryRepository = new Moq.Mock<IRepositoryWithTypedId<CommentHistory, Guid>>().Object;
+            //QueryRepositoryFactory.OrderHistoryRepository = new Moq.Mock<IRepository<OrderHistory>>().Object;
+            DbService = new Moq.Mock<IDbService>().Object;
 
-            Controller = new TestControllerBuilder().CreateController<HistoryAjaxController>(SearchService, AccessQueryService, OrderService, DbService);
+            Controller = new HistoryAjaxController(SearchService, AccessQueryService, OrderService, DbService);
 
-        }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
 
             //Fixes problem where .Fetch is used in a query
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
@@ -249,12 +244,10 @@ namespace Purchasing.Tests.ControllerTests
             rtValue2.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             //rtValue2.Results = QueryRepositoryFactory.OrderHistoryRepository.Queryable.Take(3).ToList();
 
-            OrderService.Expect(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
-                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null))
-                                                       .Return(rtValue1);
-            OrderService.Expect(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
-                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null))
-                                                       .Return(rtValue2);
+            Moq.Mock.Get(OrderService).Setup(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
+                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null)).Returns(rtValue1);
+            Moq.Mock.Get(OrderService).Setup(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
+                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null)).Returns(rtValue2);
             #endregion Arrange
 
             #region Act
@@ -267,9 +260,9 @@ namespace Purchasing.Tests.ControllerTests
             dynamic data = JObject.FromObject(results.Data);
             Assert.AreEqual(5, (int)data.deniedThisMonth);
             Assert.AreEqual(3, (int)data.completedThisMonth);
-            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
+            Moq.Mock.Get(OrderService).Verify(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                                        new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null));
-            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
+            Moq.Mock.Get(OrderService).Verify(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                                        new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null));
             #endregion Assert
         }
@@ -349,11 +342,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<ValidateAntiForgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Count() > 0, "ValidateAntiForgeryTokenAttribute not found.");
             #endregion Assert
         }
 
@@ -402,23 +395,6 @@ namespace Purchasing.Tests.ControllerTests
 
             #region Assert
             Assert.IsTrue(result.Count() > 0, "ProfileAttribute not found.");
-            #endregion Assert
-        }
-
-        [TestMethod]
-        public void TestControllerHasSessionStateAttribute()
-        {
-            #region Arrange
-            var controllerClass = _controllerClass;
-            #endregion Arrange
-
-            #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<SessionStateAttribute>();
-            #endregion Act
-
-            #region Assert
-            Assert.IsTrue(result.Count() > 0, "SessionStateAttribute not found.");
-            Assert.AreEqual("Disabled", result.ElementAt(0).Behavior.ToString());
             #endregion Assert
         }
 

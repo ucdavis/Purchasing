@@ -38,20 +38,15 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            SubAccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<SubAccount, Guid>>();
-            SearchService = MockRepository.GenerateStub<ISearchService>();
+            SubAccountRepository = new Moq.Mock<IRepositoryWithTypedId<SubAccount, Guid>>().Object;
+            SearchService = new Moq.Mock<ISearchService>().Object;
 
-            Controller = new TestControllerBuilder().CreateController<AccountsController>(SubAccountRepository, SearchService);
-        }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            Controller = new AccountsController(SubAccountRepository, SearchService);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
             base.RegisterAdditionalServices(container);
         }
 
@@ -79,7 +74,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestSearchKfsAccountsReturnsExpectedResults1()
         {
             #region Arrange
-            SearchService.Expect(a => a.SearchAccounts("Test")).Return(new List<IdAndName>());
+            Moq.Mock.Get(SearchService).Setup(a => a.SearchAccounts("Test")).Returns(new List<IdAndName>());
             #endregion Arrange
 
             #region Act
@@ -102,7 +97,7 @@ namespace Purchasing.Tests.ControllerTests
             {
                 accounts.Add(new IdAndName((i+1).ToString(CultureInfo.InvariantCulture), "name"));
             }
-            SearchService.Expect(a => a.SearchAccounts("Test")).Return(accounts);
+            Moq.Mock.Get(SearchService).Setup(a => a.SearchAccounts("Test")).Returns(accounts);
             #endregion Arrange           
             
             #region Act
@@ -240,11 +235,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<ValidateAntiForgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Any(), "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Any(), "ValidateAntiForgeryTokenAttribute not found.");
             #endregion Assert
         }
 

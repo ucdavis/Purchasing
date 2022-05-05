@@ -436,7 +436,7 @@ namespace Purchasing.Tests.RepositoryTests
             #region Arrange
             AccountRepository.DbContext.BeginTransaction();
             var account = CreateValidEntities.Account(1);
-            account.SetIdTo(" ");
+            account.Id = " ";
             AccountRepository.EnsurePersistent(account);
             var split = GetValid(9);
             split.Account = " ";
@@ -486,7 +486,7 @@ namespace Purchasing.Tests.RepositoryTests
             #region Arrange
             AccountRepository.DbContext.BeginTransaction();
             var account = CreateValidEntities.Account(1);
-            account.SetIdTo("x".RepeatTimes(10));
+            account.Id = "x".RepeatTimes(10);
             AccountRepository.EnsurePersistent(account);
             var split = GetValid(9);
             split.Account = "x".RepeatTimes(10);

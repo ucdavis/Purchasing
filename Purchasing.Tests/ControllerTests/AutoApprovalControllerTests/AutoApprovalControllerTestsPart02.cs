@@ -325,8 +325,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval) AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+//TODO: Arrange
+            AutoApproval args = default;
+            Moq.Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
+//ENDTODO 
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -363,8 +367,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(false, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+//TODO: Arrange
+            AutoApproval args = default;
+            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -402,8 +410,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+//TODO: Arrange
+            AutoApproval args = default;
+            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -440,8 +452,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+//TODO: Arrange
+            AutoApproval args = default;
+            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -478,8 +494,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+//TODO: Arrange
+            AutoApproval args = default;
+            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -516,8 +536,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+//TODO: Arrange
+            AutoApproval args = default;
+            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -554,8 +578,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+//TODO: Arrange
+            AutoApproval args = default;
+            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);

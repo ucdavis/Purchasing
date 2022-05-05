@@ -31,11 +31,11 @@ namespace Purchasing.Tests.ServiceTests
         #region Init
         public SecurityServiceTests()
         {
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
-            AccessQueryService = MockRepository.GenerateStub<IAccessQueryService>();
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
-            DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
+            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
+            AccessQueryService = new Moq.Mock<IAccessQueryService>().Object;
+            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
+            UserIdentity = new Moq.Mock<IUserIdentity>().Object;
+            DirectorySearchService = new Moq.Mock<IDirectorySearchService>().Object;
 
             SecurityService = new SecurityService(RepositoryFactory, UserIdentity, DirectorySearchService, AccessQueryService, QueryRepositoryFactory);
 

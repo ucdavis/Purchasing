@@ -17,7 +17,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedAccountManagerNoEmailPrefs1()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("burns");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("burns");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -56,7 +56,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedAccountManagerEmailPrefs1()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("burns");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("burns");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();
@@ -87,7 +87,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedAccountManagerEmailPrefs2()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("burns");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("burns");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();
@@ -119,7 +119,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedAccountManagerEmailPrefs3()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("burns");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("burns");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();
@@ -150,7 +150,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedAccountManagerEmailPrefs4()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("burns");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("burns");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();
@@ -180,7 +180,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedAccountManagerEmailPrefs5()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("burns");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("burns");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();

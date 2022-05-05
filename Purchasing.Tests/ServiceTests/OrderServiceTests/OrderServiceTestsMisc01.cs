@@ -25,8 +25,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderEdited(order));
-            EventService.AssertWasNotCalled(a => a.OrderEdited(order2));
+            Moq.Mock.Get(EventService).Verify(a => a.OrderEdited(order));
+            Moq.Mock.Get(EventService).Verify(a => a.OrderEdited(order2), Moq.Times.Never());
             #endregion Assert		
         }
 

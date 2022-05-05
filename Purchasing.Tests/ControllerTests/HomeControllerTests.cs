@@ -45,7 +45,7 @@ namespace Purchasing.Tests.ControllerTests
         //    QueryRepositoryFactory.PendingOrderRepository = PendingOrderRepository;
         //    QueryRepositoryFactory.OpenOrderByUserRepository = OpenOrderByUserRepository;
 
-        //    Controller = new TestControllerBuilder().CreateController<HomeController>(UserRepository, QueryRepositoryFactory);
+        //    Controller = new HomeController(UserRepository, QueryRepositoryFactory);
             
         //}
 
@@ -124,7 +124,7 @@ namespace Purchasing.Tests.ControllerTests
         //    var users = new List<User>();
         //    users.Add(CreateValidEntities.User(2));
         //    users[0].IsActive = false;
-        //    users[0].SetIdTo("Me");
+        //    users[0].Id = "Me";
         //    new FakeUsers(0, UserRepository, users, true);
         //    #endregion Arrange
 
@@ -148,7 +148,7 @@ namespace Purchasing.Tests.ControllerTests
         //    var users = new List<User>();
         //    users.Add(CreateValidEntities.User(2));
         //    users[0].IsActive = true;
-        //    users[0].SetIdTo("Me");
+        //    users[0].Id = "Me";
         //    new FakeUsers(0, UserRepository, users, true);
 
         //    new FakePendingOrders(3, PendingOrderRepository);
@@ -174,7 +174,7 @@ namespace Purchasing.Tests.ControllerTests
         //    var users = new List<User>();
         //    users.Add(CreateValidEntities.User(2));
         //    users[0].IsActive = true;
-        //    users[0].SetIdTo("Me");
+        //    users[0].Id = "Me";
         //    new FakeUsers(0, UserRepository, users, true);
 
         //    var pendingOrders = new List<PendingOrder>();

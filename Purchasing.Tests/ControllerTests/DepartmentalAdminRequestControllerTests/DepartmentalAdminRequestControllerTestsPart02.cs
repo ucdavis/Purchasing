@@ -152,7 +152,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             var users = new List<User>();
             users.Add(CreateValidEntities.User(1));
-            users[0].SetIdTo("3");
+            users[0].Id = "3";
             users[0].Roles = new List<Role>();
             users[0].Roles.Add(new Role(Role.Codes.DepartmentalAdmin));
             users[0].Organizations = new List<Organization>();
@@ -197,7 +197,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
                 var daRequest = new DepartmentalAdminRequestViewModel();
                 daRequest.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(9);
-                daRequest.DepartmentalAdminRequest.SetIdTo("9");
+                daRequest.DepartmentalAdminRequest.Id = "9";
                 thisFar = true;
                 #endregion Arrange
 
@@ -222,7 +222,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
             var daRequest = new DepartmentalAdminRequestViewModel();
             daRequest.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(9);
-            daRequest.DepartmentalAdminRequest.SetIdTo("3");
+            daRequest.DepartmentalAdminRequest.Id = "3";
             #endregion Arrange
 
             #region Act
@@ -244,7 +244,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
             var daRequest = new DepartmentalAdminRequestViewModel();
             daRequest.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(9);
-            daRequest.DepartmentalAdminRequest.SetIdTo("3");
+            daRequest.DepartmentalAdminRequest.Id = "3";
             #endregion Arrange
 
             #region Act
@@ -268,7 +268,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             new FakeDepartmentalAdminRequests(9, DepartmentalAdminRequestRepository);
             var daRequest = new DepartmentalAdminRequestViewModel();
             daRequest.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(9);
-            daRequest.DepartmentalAdminRequest.SetIdTo("9");
+            daRequest.DepartmentalAdminRequest.Id = "9";
             new FakeUsers(3, UserRepository);
             new FakeOrganizations(10, OrganizationRepository);
             #endregion Arrange
@@ -280,8 +280,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual("FirstName9 LastName9 (9) Granted Departmental Admin Access", Controller.Message);
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            var userArgs = (User) UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0];
+            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+//TODO: Arrange
+            User userArgs = default;
+            Moq.Mock.Get( UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+                .Callback<User>(x => userArgs = x);
+//ENDTODO
             Assert.IsNotNull(userArgs);
             Assert.AreEqual("9", userArgs.Id);
             Assert.AreEqual("FirstName9", userArgs.FirstName);
@@ -290,11 +294,15 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual(1, userArgs.Roles.Count);
             Assert.AreEqual(Role.Codes.DepartmentalAdmin, userArgs.Roles[0].Id);
 
-            DepartmentalAdminRequestRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything));
-            var darArgs = (DepartmentalAdminRequest) DepartmentalAdminRequestRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything))[0][0];
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()));
+//TODO: Arrange
+            DepartmentalAdminRequest darArgs = default;
+            Moq.Mock.Get( DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
+                .Callback<DepartmentalAdminRequest>(x => darArgs = x);
+//ENDTODO
             Assert.IsNotNull(darArgs);
             Assert.IsTrue(darArgs.Complete);
-            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "9"));
+            Moq.Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "9"));
             #endregion Assert		
         }
 
@@ -305,7 +313,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             new FakeDepartmentalAdminRequests(9, DepartmentalAdminRequestRepository);
             var daRequest = new DepartmentalAdminRequestViewModel();
             daRequest.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(9);
-            daRequest.DepartmentalAdminRequest.SetIdTo("3");
+            daRequest.DepartmentalAdminRequest.Id = "3";
             new FakeUsers(3, UserRepository);
             new FakeOrganizations(10, OrganizationRepository);
             #endregion Arrange
@@ -317,8 +325,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual("FirstName3 LastName3 (3) Granted Departmental Admin Access", Controller.Message);
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            var userArgs = (User)UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0];
+            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+//TODO: Arrange
+            User userArgs = default;
+            Moq.Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+                .Callback<User>(x => userArgs = x);
+//ENDTODO
             Assert.IsNotNull(userArgs);
             Assert.AreEqual("3", userArgs.Id);
             Assert.AreEqual("FirstName3", userArgs.FirstName);
@@ -331,11 +343,15 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual("1", userArgs.Organizations[0].Id);
             Assert.AreEqual("5", userArgs.Organizations[1].Id);
 
-            DepartmentalAdminRequestRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything));
-            var darArgs = (DepartmentalAdminRequest)DepartmentalAdminRequestRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything))[0][0];
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()));
+//TODO: Arrange
+            DepartmentalAdminRequest darArgs = default;
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
+                .Callback<DepartmentalAdminRequest>(x => darArgs = x);
+//ENDTODO
             Assert.IsNotNull(darArgs);
             Assert.IsTrue(darArgs.Complete);
-            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
+            Moq.Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
             #endregion Assert
         }
 
@@ -346,11 +362,11 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             new FakeDepartmentalAdminRequests(9, DepartmentalAdminRequestRepository);
             var daRequest = new DepartmentalAdminRequestViewModel();
             daRequest.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(9);
-            daRequest.DepartmentalAdminRequest.SetIdTo("3");
+            daRequest.DepartmentalAdminRequest.Id = "3";
             new FakeOrganizations(10, OrganizationRepository);
             var users = new List<User>();
             users.Add(CreateValidEntities.User(3));
-            users[0].SetIdTo("3");
+            users[0].Id = "3";
             users[0].Roles.Add(RoleRepository.GetById(Role.Codes.DepartmentalAdmin));
             users[0].Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "1"));
             users[0].Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "2"));
@@ -364,8 +380,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual("FirstName3 LastName3 (3) Replaced Departmental Admin Access", Controller.Message);
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            var userArgs = (User)UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0];
+            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+//TODO: Arrange
+            User userArgs = default;
+            Moq.Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+                .Callback<User>(x => userArgs = x);
+//ENDTODO
             Assert.IsNotNull(userArgs);
             Assert.AreEqual("3", userArgs.Id);
             Assert.AreEqual("FirstName3", userArgs.FirstName);
@@ -378,11 +398,15 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual("1", userArgs.Organizations[0].Id);
             Assert.AreEqual("5", userArgs.Organizations[1].Id);
 
-            DepartmentalAdminRequestRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything));
-            var darArgs = (DepartmentalAdminRequest)DepartmentalAdminRequestRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything))[0][0];
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()));
+//TODO: Arrange
+            DepartmentalAdminRequest darArgs = default;
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
+                .Callback<DepartmentalAdminRequest>(x => darArgs = x);
+//ENDTODO
             Assert.IsNotNull(darArgs);
             Assert.IsTrue(darArgs.Complete);
-            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
+            Moq.Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
             #endregion Assert
         }
 
@@ -393,12 +417,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             new FakeDepartmentalAdminRequests(9, DepartmentalAdminRequestRepository);
             var daRequest = new DepartmentalAdminRequestViewModel();
             daRequest.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(9);
-            daRequest.DepartmentalAdminRequest.SetIdTo("3");
+            daRequest.DepartmentalAdminRequest.Id = "3";
             daRequest.MergeExistingOrgs = true; //Merge Them
             new FakeOrganizations(10, OrganizationRepository);
             var users = new List<User>();
             users.Add(CreateValidEntities.User(3));
-            users[0].SetIdTo("3");
+            users[0].Id = "3";
             users[0].Roles.Add(RoleRepository.GetById(Role.Codes.DepartmentalAdmin));
             users[0].Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "1"));
             users[0].Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "2"));
@@ -412,8 +436,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual("FirstName3 LastName3 (3) Updated Departmental Admin Access", Controller.Message);
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            var userArgs = (User)UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0];
+            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+//TODO: Arrange
+            User userArgs = default;
+            Moq.Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+                .Callback<User>(x => userArgs = x);
+//ENDTODO
             Assert.IsNotNull(userArgs);
             Assert.AreEqual("3", userArgs.Id);
             Assert.AreEqual("FirstName3", userArgs.FirstName);
@@ -427,11 +455,15 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual("5", userArgs.Organizations[1].Id);
             Assert.AreEqual("2", userArgs.Organizations[2].Id);
 
-            DepartmentalAdminRequestRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything));
-            var darArgs = (DepartmentalAdminRequest)DepartmentalAdminRequestRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything))[0][0];
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()));
+//TODO: Arrange
+            DepartmentalAdminRequest darArgs = default;
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
+                .Callback<DepartmentalAdminRequest>(x => darArgs = x);
+//ENDTODO
             Assert.IsNotNull(darArgs);
             Assert.IsTrue(darArgs.Complete);
-            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
+            Moq.Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
             #endregion Assert
         }
 

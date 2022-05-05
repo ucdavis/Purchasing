@@ -10,6 +10,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 {
@@ -87,11 +88,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<ValidateAntiForgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Count() > 0, "ValidateAntiForgeryTokenAttribute not found.");
             #endregion Assert
         }
 
@@ -142,23 +143,6 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Assert.IsTrue(result.Count() > 0, "ProfileAttribute not found.");
             #endregion Assert
         }
-
-        //[TestMethod] //This was moved to a different controller
-        //public void TestControllerHasSessionStateAttribute()
-        //{
-        //    #region Arrange
-        //    var controllerClass = ControllerClass;
-        //    #endregion Arrange
-
-        //    #region Act
-        //    var result = controllerClass.GetCustomAttributes(true).OfType<SessionStateAttribute>();
-        //    #endregion Act
-
-        //    #region Assert
-        //    Assert.IsTrue(result.Count() > 0, "SessionStateAttribute not found.");
-        //    Assert.AreEqual("Disabled", result.ElementAt(0).Behavior.ToString());
-        //    #endregion Assert
-        //}
 
         #endregion Controller Class Tests
 

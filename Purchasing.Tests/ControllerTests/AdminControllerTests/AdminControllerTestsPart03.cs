@@ -91,7 +91,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             #region Arrange
             new FakeUsers(3, UserRepository);
-            SearchService.Expect(a => a.FindUser("test")).Return(null);
+            Moq.Mock.Get(SearchService).Setup(a => a.FindUser("test")).Returns<DirectoryUser>(null);
             #endregion Arrange
 
             #region Act
@@ -100,7 +100,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.IsNull(result);
-            SearchService.AssertWasCalled(a => a.FindUser("test"));
+            Moq.Mock.Get(SearchService).Verify(a => a.FindUser("test"));
             #endregion Assert		
         }
 
@@ -114,7 +114,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             user.FirstName = "FN";
             user.LastName = "LN";
             new FakeUsers(3, UserRepository);
-            SearchService.Expect(a => a.FindUser("test")).Return(user);
+            Moq.Mock.Get(SearchService).Setup(a => a.FindUser("test")).Returns(user);
             #endregion Arrange
 
             #region Act
@@ -125,7 +125,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("[{\"id\":\"test\",\"FirstName\":\"FN\",\"LastName\":\"LN\",\"Email\":\"test@testy.com\",\"IsActive\":true}]", result.JsonResultString);
-            SearchService.AssertWasCalled(a => a.FindUser("test"));
+            Moq.Mock.Get(SearchService).Verify(a => a.FindUser("test"));
             #endregion Assert
         }
         #endregion FindUser Tests 

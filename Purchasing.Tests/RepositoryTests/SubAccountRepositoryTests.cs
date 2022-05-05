@@ -47,7 +47,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             var rtValue = CreateValidEntities.SubAccount(counter);
             rtValue.AccountNumber = AccountRepository.Queryable.First().Id;
-            rtValue.SetIdTo(Guid.NewGuid());
+            rtValue.Id = Guid.NewGuid();
 
             return rtValue;
         }
@@ -111,7 +111,7 @@ namespace Purchasing.Tests.RepositoryTests
             for (int i = 0; i < 5; i++)
             {
                 var account = CreateValidEntities.Account(i + 1);
-                account.SetIdTo(string.Format("Acc{0}", (i + 1).ToString(CultureInfo.InvariantCulture)));
+                account.Id = string.Format("Acc{0}", (i + 1).ToString(CultureInfo.InvariantCulture));
                 AccountRepository.EnsurePersistent(account);
             }
             SubAccountRepository.DbContext.BeginTransaction();
@@ -265,7 +265,7 @@ namespace Purchasing.Tests.RepositoryTests
             #region Arrange
             AccountRepository.DbContext.BeginTransaction();
             var account = CreateValidEntities.Account(1);
-            account.SetIdTo("x");
+            account.Id = "x";
             AccountRepository.EnsurePersistent(account);
             var subAccount = GetValid(9);
             subAccount.AccountNumber = "x";
@@ -291,7 +291,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             AccountRepository.DbContext.BeginTransaction();
             var account = CreateValidEntities.Account(1);
-            account.SetIdTo("x".RepeatTimes(10));
+            account.Id = "x".RepeatTimes(10);
             AccountRepository.EnsurePersistent(account);
             #region Arrange
             var subAccount = GetValid(9);

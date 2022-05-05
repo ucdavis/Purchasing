@@ -40,7 +40,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var workgroupVendors = new List<WorkgroupVendor>();
             workgroupVendors.Add(CreateValidEntities.WorkgroupVendor(1));
             workgroupVendors[0].Workgroup = CreateValidEntities.Workgroup(9);
-            workgroupVendors[0].Workgroup.SetIdTo(15);
+            workgroupVendors[0].Workgroup.Id = 15;
             new FakeWorkgroupVendors(15, WorkgroupVendorRepository, workgroupVendors);
             #endregion Arrange
 
@@ -99,7 +99,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Workgroup Vendor not found.", Controller.ErrorMessage);
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -111,7 +111,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var workgroupVendors = new List<WorkgroupVendor>();
             workgroupVendors.Add(CreateValidEntities.WorkgroupVendor(1));
             workgroupVendors[0].Workgroup = CreateValidEntities.Workgroup(9);
-            workgroupVendors[0].Workgroup.SetIdTo(15);
+            workgroupVendors[0].Workgroup.Id = 15;
             new FakeWorkgroupVendors(0, WorkgroupVendorRepository, workgroupVendors);
             #endregion Arrange
 
@@ -124,7 +124,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(15, result.RouteValues["id"]);
             Assert.AreEqual("Cannot edit KFS Vendors.  Please delete the vendor and add a new vendor.", Controller.ErrorMessage);
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -215,7 +215,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupVendor.VendorId = null;
             workgroupVendor.VendorAddressTypeCode = null;
             workgroupVendor.Name = null;
-            WorkgroupService.Expect(a => a.TransferValues(Arg<WorkgroupVendor>.Is.Anything, ref Arg<WorkgroupVendor>.Ref(Is.Anything(), workgroupVendor).Dummy));
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.TransferValues(Moq.It.IsAny<WorkgroupVendor>(), ref Moq.It.Ref<WorkgroupVendor>.IsAny));
             #endregion Arrange
 
             #region Act
@@ -237,7 +237,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             new FakeVendors(3, VendorRepository);
             var workgroup = CreateValidEntities.Workgroup(15);
-            workgroup.SetIdTo(15);
+            workgroup.Id = 15;
 
             var workgroupVendors = new List<WorkgroupVendor>();
             workgroupVendors.Add(CreateValidEntities.WorkgroupVendor(5));
@@ -247,11 +247,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeWorkgroupVendors(0, WorkgroupVendorRepository, workgroupVendors);
 
             var workgroupVendor = CreateValidEntities.WorkgroupVendor(9);
-            workgroupVendor.Workgroup.SetIdTo(15);
+            workgroupVendor.Workgroup.Id = 15;
             workgroupVendor.VendorId = null;
             workgroupVendor.VendorAddressTypeCode = null;
             workgroupVendor.Name = "Changed";
-            WorkgroupService.Expect(a => a.TransferValues(Arg<WorkgroupVendor>.Is.Anything, ref Arg<WorkgroupVendor>.Ref(Is.Anything(), workgroupVendor).Dummy));
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.TransferValues(Moq.It.IsAny<WorkgroupVendor>(), ref Moq.It.Ref<WorkgroupVendor>.IsAny));
             #endregion Arrange
 
             #region Act
@@ -265,9 +265,17 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.AreEqual("WorkgroupVendor Edited Successfully", Controller.Message);
 
-            WorkgroupVendorRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything), x => x.Repeat.Times(2));
-            var oldArgs = (WorkgroupVendor) WorkgroupVendorRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything))[0][0];
-            var newArgs = (WorkgroupVendor)WorkgroupVendorRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything))[1][0]; 
+            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Exactly(2));
+//TODO: Arrange
+            WorkgroupVendor oldArgs = default;
+            Moq.Mock.Get( WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => oldArgs = x);
+//ENDTODO
+//TODO: Arrange
+            WorkgroupVendor newArgs = default;
+            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => newArgs = x);
+//ENDTODO 
 
             Assert.IsNotNull(oldArgs);
             Assert.AreEqual("Name5", oldArgs.Name);

@@ -116,10 +116,10 @@ namespace Purchasing.Tests.RepositoryTests
         private void LoadSpecificUsers()
         {
             var user = CreateValidEntities.User(55);
-            user.SetIdTo("55");
+            user.Id = "55";
             UserRepository.EnsurePersistent(user);
             var user2 = CreateValidEntities.User(98);
-            user2.SetIdTo("98");
+            user2.Id = "98";
             UserRepository.EnsurePersistent(user2);
         }
         #endregion Init and Overrides	

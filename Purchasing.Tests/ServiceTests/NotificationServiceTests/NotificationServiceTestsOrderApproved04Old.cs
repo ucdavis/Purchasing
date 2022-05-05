@@ -20,7 +20,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedConditionalApproverNoEmailPrefs1()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("hsimpson");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("hsimpson");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -54,7 +54,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedConditionalApproverEmailPrefs1()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("hsimpson");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("hsimpson");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();
@@ -85,7 +85,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedConditionalApproverEmailPrefs2()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("hsimpson");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("hsimpson");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();
@@ -117,7 +117,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedConditionalApproverEmailPrefs3()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("hsimpson");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("hsimpson");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();
@@ -149,7 +149,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedConditionalApproverEmailPrefs4()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("hsimpson");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("hsimpson");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();
@@ -178,7 +178,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedConditionalApproverEmailPrefs5()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("hsimpson");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("hsimpson");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();

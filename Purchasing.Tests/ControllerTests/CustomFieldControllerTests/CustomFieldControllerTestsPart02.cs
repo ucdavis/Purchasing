@@ -47,9 +47,9 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy)).Return(false);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(false);
             #endregion Arrange
 
             #region Act
@@ -59,12 +59,16 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Assert
             Assert.AreEqual("Fail Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy))[0];
+            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny));
+//TODO: Arrange
+            object[] args = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny))
+                .Callback((object[] x) => args = x);
+//ENDTODO
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             #endregion Assert
@@ -79,9 +83,9 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy)).Return(true);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(true);
             #endregion Arrange
 
             #region Act
@@ -98,12 +102,16 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Assert.IsTrue(result.CustomField.IsActive);
             Assert.AreEqual(0, result.CustomField.Rank);
             Assert.IsFalse(result.CustomField.IsRequired);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy))[0];
+            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny));
+//TODO: Arrange
+            object[] args = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny))
+                .Callback((object[] x) => args = x);
+//ENDTODO
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             #endregion Assert
@@ -125,7 +133,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Assert
             Assert.AreEqual("Custom Field not found.", Controller.ErrorMessage);
-            CustomFieldRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything));
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -138,9 +146,9 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy)).Return(false);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(false);
             #endregion Arrange
 
             #region Act
@@ -150,15 +158,19 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Assert
             Assert.AreEqual("Fail Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy))[0];
+            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny));
+//TODO: Arrange
+            object[] args = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny))
+                .Callback((object[] x) => args = x);
+//ENDTODO
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
-            CustomFieldRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything));
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -171,9 +183,9 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy)).Return(true);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(true);
             var customField = CreateValidEntities.CustomField(9);
             customField.Name = null;
             #endregion Arrange
@@ -192,16 +204,20 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Assert.IsTrue(result.CustomField.IsActive);
             Assert.AreEqual(0, result.CustomField.Rank);
             Assert.IsFalse(result.CustomField.IsRequired);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy))[0];
+            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny));
+//TODO: Arrange
+            object[] args = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny))
+                .Callback((object[] x) => args = x);
+//ENDTODO
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             Controller.ModelState.AssertErrorsAre("The Name field is required.");
-            CustomFieldRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything));
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -213,15 +229,15 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             var customFields = new List<CustomField>();
             customFields.Add(CreateValidEntities.CustomField(1));
             customFields[0].Organization = CreateValidEntities.Organization(9);
-            customFields[0].Organization.SetIdTo("9");
+            customFields[0].Organization.Id = "9";
             customFields[0].IsActive = true;
             new FakeCustomFields(0, CustomFieldRepository, customFields);
             var customField = CreateValidEntities.CustomField(8);
             customField.Organization = null;
 
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy)).Return(true);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(true);
             #endregion Arrange
 
             #region Act
@@ -233,17 +249,26 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual("9", result.RouteValues["id"]);
             Assert.AreEqual("CustomField Edited Successfully", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy));
-            var ssargs = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy))[0];
+            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny));
+//TODO: Arrange
+            object[] ssargs = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny))
+                .Callback((object[] x) => ssargs = x);
+//ENDTODO
             Assert.IsNull(ssargs[0]);
             Assert.AreEqual("Name9", ((Organization)ssargs[1]).Name);
 
-            CustomFieldRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything), x => x.Repeat.Times(2));
-            var args = CustomFieldRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything)); 
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Exactly(2));
+//TODO: Arrange
+            var args = new Dictionary<int, object[]>();
+            var argsIndex = 0;
+            Moq.Mock.Get(CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
+                .Callback((object[] x) => args[argsIndex++] = x);
+//ENDTODO
             Assert.AreEqual(2, args.Count());
             Assert.AreEqual("Name1", ((CustomField)args[0][0]).Name);
             Assert.AreEqual(false, ((CustomField)args[0][0]).IsActive);
@@ -283,9 +308,9 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy)).Return(false);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(false);
             #endregion Arrange
 
             #region Act
@@ -295,12 +320,16 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Assert
             Assert.AreEqual("Fail Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy))[0];
+            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny));
+//TODO: Arrange
+            object[] args = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny))
+                .Callback((object[] x) => args = x);
+//ENDTODO
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             #endregion Assert
@@ -315,9 +344,9 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy)).Return(true);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(true);
             #endregion Arrange
 
             #region Act
@@ -333,12 +362,16 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Assert.IsTrue(result.IsActive);
             Assert.AreEqual(0, result.Rank);
             Assert.IsFalse(result.IsRequired);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy))[0];
+            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny));
+//TODO: Arrange
+            object[] args = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny))
+                .Callback((object[] x) => args = x);
+//ENDTODO
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             #endregion Assert
@@ -361,8 +394,8 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Assert
             Assert.AreEqual("Custom Field not found.", Controller.ErrorMessage);
-            CustomFieldRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything));
-            CustomFieldRepository.AssertWasNotCalled(a => a.Remove(Arg<CustomField>.Is.Anything));
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.Remove(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -375,9 +408,9 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy)).Return(false);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(false);
             #endregion Arrange
 
             #region Act
@@ -387,16 +420,20 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Assert
             Assert.AreEqual("Fail Message", Controller.Message);
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy));
-            var args = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy))[0];
+            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny));
+//TODO: Arrange
+            object[] args = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny))
+                .Callback((object[] x) => args = x);
+//ENDTODO
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
-            CustomFieldRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything));
-            CustomFieldRepository.AssertWasNotCalled(a => a.Remove(Arg<CustomField>.Is.Anything));
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.Remove(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -407,13 +444,13 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             var customFields = new List<CustomField>();
             customFields.Add(CreateValidEntities.CustomField(1));
             customFields[0].Organization = CreateValidEntities.Organization(9);
-            customFields[0].Organization.SetIdTo("9");
+            customFields[0].Organization.Id = "9";
             customFields[0].IsActive = true;
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy)).Return(true);
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(true);
             #endregion Arrange
 
             #region Act
@@ -426,22 +463,30 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Assert.AreEqual("9", result.RouteValues["id"]);
             Assert.AreEqual("CustomField Removed Successfully", Controller.Message);
 
-            SecurityService.AssertWasCalled(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out("Fail Message").Dummy));
-            var ssargs = SecurityService.GetArgumentsForCallsMadeOn(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything,
-                Arg<Organization>.Is.Anything,
-                out Arg<string>.Out(null).Dummy))[0];
+            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny));
+//TODO: Arrange
+            object[] ssargs = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny))
+                .Callback((object[] x) => ssargs = x);
+//ENDTODO
             Assert.IsNull(ssargs[0]);
             Assert.AreEqual("Name9", ((Organization)ssargs[1]).Name);
 
-            CustomFieldRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything));
-            var args = (CustomField) CustomFieldRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()));
+//TODO: Arrange
+            CustomField args = default;
+            Moq.Mock.Get( CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
+                .Callback<CustomField>(x => args = x);
+//ENDTODO 
             Assert.IsNotNull(args);
             Assert.AreEqual("Name1", args.Name);
             Assert.IsFalse(args.IsActive);
 
-            CustomFieldRepository.AssertWasNotCalled(a => a.Remove(Arg<CustomField>.Is.Anything));
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.Remove(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
             #endregion Assert
         }
         #endregion Delete Get Tests
@@ -463,7 +508,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("false", result.JsonResultString);
-            CustomFieldRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything));
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
             #endregion Assert		
         }
 
@@ -484,7 +529,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("true", result.JsonResultString);
-            CustomFieldRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything));
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
             #endregion Assert		
         }
 
@@ -494,7 +539,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #region Arrange
             var customFields = new List<CustomField>();
             var org = CreateValidEntities.Organization(9);
-            org.SetIdTo("9");
+            org.Id = "9";
             for (int i = 0; i < 5; i++)
             {
                 customFields.Add(CreateValidEntities.CustomField(i+1));
@@ -504,7 +549,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             customFields[4].Rank = 1;
             customFields[0].Organization = CreateValidEntities.Organization(8);
-            customFields[0].Organization.SetIdTo("8");
+            customFields[0].Organization.Id = "8";
             new FakeCustomFields(0, CustomFieldRepository, customFields);
             var idsToReorder = new List<int>() { 1, 4,3,2,5,99 };
             #endregion Arrange
@@ -517,8 +562,13 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("true", result.JsonResultString);
-            CustomFieldRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything), x => x.Repeat.Times(4));            
-            var args = CustomFieldRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything)); 
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Exactly(4));            
+//TODO: Arrange
+            var args = new Dictionary<int, object[]>();
+            var argsIndex = 0;
+            Moq.Mock.Get(CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
+                .Callback((object[] x) => args[argsIndex++] = x);
+//ENDTODO)); 
             Assert.IsNotNull(args);
             Assert.AreEqual(4, ((CustomField)args[0][0]).Id);
             Assert.AreEqual(1, ((CustomField)args[0][0]).Rank);
@@ -538,7 +588,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #region Arrange
             var customFields = new List<CustomField>();
             var org = CreateValidEntities.Organization(9);
-            org.SetIdTo("9");
+            org.Id = "9";
             for (int i = 0; i < 5; i++)
             {
                 customFields.Add(CreateValidEntities.CustomField(i + 1));
@@ -548,12 +598,12 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             customFields[4].Rank = 1;
             customFields[0].Organization = CreateValidEntities.Organization(8);
-            customFields[0].Organization.SetIdTo("8");
+            customFields[0].Organization.Id = "8";
             new FakeCustomFields(0, CustomFieldRepository, customFields);
             var idsToReorder = new List<int>() { 1, 4, 3, 2, 5, 99 };
 
-            CustomFieldRepository.Expect(a => a.EnsurePersistent(Arg<CustomField>.Is.Anything))
-                .Throw(new ApplicationException("Fake Exception"));
+            Moq.Mock.Get(CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
+                .Throws(new ApplicationException("Fake Exception"));
 
             #endregion Arrange
 
@@ -565,7 +615,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("false", result.JsonResultString);
-            CustomFieldRepository.AssertWasCalled(a => a.GetNullableById(Arg<int>.Is.Anything), x => x.Repeat.Times(2));
+            Moq.Mock.Get(CustomFieldRepository).Verify(a => a.GetNullableById(Moq.It.IsAny<int>()), Moq.Times.Exactly(2));
             #endregion Assert		
         }
 

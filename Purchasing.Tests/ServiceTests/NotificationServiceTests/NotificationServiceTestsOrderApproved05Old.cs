@@ -14,7 +14,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedKualiNoEmailPrefs1()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("awong");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("awong");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Complete));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -69,7 +69,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedKualiEmailPrefs1A()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("awong");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("awong");
             SetupUsers();
 
             var emailPrefs = new List<EmailPreferences>();
@@ -102,7 +102,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedKualiEmailPrefs1B()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("awong");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("awong");
             SetupUsers();
 
             //var emailPrefs = new List<EmailPreferences>();

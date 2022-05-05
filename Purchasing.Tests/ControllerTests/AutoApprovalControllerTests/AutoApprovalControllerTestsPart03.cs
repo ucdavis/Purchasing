@@ -244,7 +244,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
-            autoApprovalToEdit.SetIdTo(99);
+            autoApprovalToEdit.Id = 99;
             autoApprovalToEdit.MaxAmount = (decimal) 12.44;
             autoApprovalToEdit.TargetUser = null;
             autoApprovalToEdit.Account = null;
@@ -280,7 +280,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsFalse(Controller.ViewBag.IsCreate);
 
             Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
             #endregion Assert		
         }
 
@@ -292,7 +292,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
-            autoApprovalToEdit.SetIdTo(99);
+            autoApprovalToEdit.Id = 99;
             autoApprovalToEdit.MaxAmount = (decimal)12.44;
             autoApprovalToEdit.TargetUser = null;
             autoApprovalToEdit.Account = null;
@@ -328,7 +328,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsFalse(Controller.ViewBag.IsCreate);
 
             Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -340,7 +340,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
-            autoApprovalToEdit.SetIdTo(99);
+            autoApprovalToEdit.Id = 99;
             autoApprovalToEdit.MaxAmount = (decimal)12.44;
             autoApprovalToEdit.TargetUser = CreateValidEntities.User(88);
             autoApprovalToEdit.Account = CreateValidEntities.Account(87);
@@ -376,7 +376,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsFalse(Controller.ViewBag.IsCreate);
 
             Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
             #endregion Assert
         }
         [TestMethod]
@@ -387,7 +387,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
-            autoApprovalToEdit.SetIdTo(99);
+            autoApprovalToEdit.Id = 99;
             autoApprovalToEdit.MaxAmount = (decimal)12.44;
             autoApprovalToEdit.TargetUser = null;
             autoApprovalToEdit.Account = CreateValidEntities.Account(9);
@@ -405,8 +405,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
 
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval) AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+//TODO: Arrange
+            AutoApproval args = default;
+            Moq.Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
+//ENDTODO
             Assert.AreEqual(3, args.Id);
             Assert.AreEqual((decimal)12.44, args.MaxAmount);
             Assert.IsNotNull(args.User);

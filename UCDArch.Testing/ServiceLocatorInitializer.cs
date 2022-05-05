@@ -1,14 +1,14 @@
-﻿using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using CommonServiceLocator;
 using UCDArch.Core.CommonValidator;
+//using UCDArch.Core.NHibernateValidator.CommonValidatorAdapter;
 using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
-//using UCDArch.Core.NHibernateValidator.CommonValidatorAdapter;
 using UCDArch.Web.IoC;
 
-namespace Purchasing.Tests.Core
+namespace UCDArch.Testing
 {
     public class ServiceLocatorInitializer
     {
@@ -30,10 +30,10 @@ namespace Purchasing.Tests.Core
 
             container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
 
-            var dbContext = MockRepository.GenerateMock<IDbContext>();
+            var dbContext = new Moq.Mock<IDbContext>().Object;
 
             container.Register(Component.For<IDbContext>().Instance(dbContext));
-
+            
             ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 
             return container;

@@ -16,7 +16,6 @@ namespace Purchasing.Tests.ControllerTests
         #region Init
         public AccountControllerTests()
         {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
         #endregion Init

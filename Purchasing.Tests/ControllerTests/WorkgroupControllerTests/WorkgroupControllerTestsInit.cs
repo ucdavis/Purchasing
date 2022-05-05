@@ -17,6 +17,8 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using UCDArch.Core;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -55,34 +57,34 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected override void SetupController()
         {
             WorkgroupRepository = FakeRepository<Workgroup>();
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-            RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
-            SecurityService = MockRepository.GenerateStub<ISecurityService>();
-            SearchService = MockRepository.GenerateStub<IDirectorySearchService>();
-            WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
-            WorkgroupVendorRepository = MockRepository.GenerateStub<IRepository<WorkgroupVendor>>();
-            VendorRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Vendor, string>>();
-            VendorAddressRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<VendorAddress, Guid>>();
-            StateRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<State, string>>();
-            EmailPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailPreferences, string>>();
-            WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
-            WorkgroupAddressService = MockRepository.GenerateStub<IWorkgroupAddressService>();
-            WorkgroupService = MockRepository.GenerateStub<IWorkgroupService>();
-            OrganizationDescendantRepository = MockRepository.GenerateStub<IRepository<OrganizationDescendant>>();
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
+            RoleRepository = new Moq.Mock<IRepositoryWithTypedId<Role, string>>().Object;
+            SecurityService = new Moq.Mock<ISecurityService>().Object;
+            SearchService = new Moq.Mock<IDirectorySearchService>().Object;
+            WorkgroupPermissionRepository = new Moq.Mock<IRepository<WorkgroupPermission>>().Object;
+            WorkgroupVendorRepository = new Moq.Mock<IRepository<WorkgroupVendor>>().Object;
+            VendorRepository = new Moq.Mock<IRepositoryWithTypedId<Vendor, string>>().Object;
+            VendorAddressRepository = new Moq.Mock<IRepositoryWithTypedId<VendorAddress, Guid>>().Object;
+            StateRepository = new Moq.Mock<IRepositoryWithTypedId<State, string>>().Object;
+            EmailPreferencesRepository = new Moq.Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
+            WorkgroupAccountRepository = new Moq.Mock<IRepository<WorkgroupAccount>>().Object;
+            WorkgroupAddressService = new Moq.Mock<IWorkgroupAddressService>().Object;
+            WorkgroupService = new Moq.Mock<IWorkgroupService>().Object;
+            OrganizationDescendantRepository = new Moq.Mock<IRepository<OrganizationDescendant>>().Object;
+            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
             QueryRepositoryFactory.OrganizationDescendantRepository = OrganizationDescendantRepository;
 
-            AdminWorkgroupRepository = MockRepository.GenerateStub<IRepository<AdminWorkgroup>>();
+            AdminWorkgroupRepository = new Moq.Mock<IRepository<AdminWorkgroup>>().Object;
             QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
-            AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
+            AccountRepository = new Moq.Mock<IRepositoryWithTypedId<Account, string>>().Object;
 
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
             RepositoryFactory.AccountRepository = AccountRepository;
             RepositoryFactory.RoleRepository = RoleRepository;
             RepositoryFactory.ColumnPreferencesRepository =
-                MockRepository.GenerateStub<IRepositoryWithTypedId<ColumnPreferences, string>>();
+                new Moq.Mock<IRepositoryWithTypedId<ColumnPreferences, string>>().Object;
 
-            Controller = new TestControllerBuilder().CreateController<WorkgroupController>(WorkgroupRepository,
+            Controller = new WorkgroupController(WorkgroupRepository,
                 UserRepository,
                 RoleRepository,
                 WorkgroupPermissionRepository,
@@ -97,31 +99,26 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 QueryRepositoryFactory,
                 RepositoryFactory,
                 WorkgroupAddressService,
-                WorkgroupService);
-        }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);//Try this one if below doesn't work
-            //RouteRegistrar.RegisterRoutes(RouteTable.Routes);
+                WorkgroupService,
+                SmartServiceLocator<IMapper>.GetService());
         }
 
         protected override void InitServiceLocator()
         {
-            var container = Core.ServiceLocatorInitializer.Init();
+            var container = ServiceLocatorInitializer.Init();
 
             RegisterAdditionalServices(container);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
 
             //Fixes problem where .Fetch is used in a query
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
             //container.AddComponent("queryExtensionProvider", typeof(IQueryExtensionProvider),
             //                       typeof(QueryExtensionFakes));
-            SecurityService = MockRepository.GenerateStub<ISecurityService>();
+            SecurityService = new Moq.Mock<ISecurityService>().Object;
             container.Kernel.Register(Component.For<ISecurityService>().Instance(SecurityService));
 
             base.RegisterAdditionalServices(container);
@@ -131,19 +128,19 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
 
             //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            //    Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
             UserRepository2 = FakeRepository<User>();
-            Controller.Repository.Expect(a => a.OfType<User>()).Return(UserRepository2).Repeat.Any();
+            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<User>()).Returns(UserRepository2);
 
             OrganizationRepository = FakeRepository<Organization>();
-            Controller.Repository.Expect(a => a.OfType<Organization>()).Return(OrganizationRepository).Repeat.Any();
+            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<Organization>()).Returns(OrganizationRepository);
 
-            Controller.Repository.Expect(a => a.OfType<Workgroup>()).Return(WorkgroupRepository).Repeat.Any();
+            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<Workgroup>()).Returns(WorkgroupRepository);
 
-            Controller.Repository.Expect(a => a.OfType<WorkgroupPermission>()).Return(WorkgroupPermissionRepository).Repeat.Any();
+            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<WorkgroupPermission>()).Returns(WorkgroupPermissionRepository);
 
-            ConditionalApprovalRepository = MockRepository.GenerateStub<IRepository<ConditionalApproval>>();
-            Controller.Repository.Expect(a => a.OfType<ConditionalApproval>()).Return(ConditionalApprovalRepository).Repeat.Any();
+            ConditionalApprovalRepository = new Moq.Mock<IRepository<ConditionalApproval>>().Object;
+            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<ConditionalApproval>()).Returns(ConditionalApprovalRepository);
         }
         #endregion Init
 
@@ -161,7 +158,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 6; i++)
             {
                 users.Add(CreateValidEntities.User(i+1));
-                users[i].SetIdTo((i + 1).ToString());
+                users[i].Id = (i + 1).ToString();
             }
             new FakeUsers(0, UserRepository, users, true);
             #endregion Setup Users
@@ -198,39 +195,39 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void SetupRoles(List<Role> roles)
         {
             var role = new Role(Role.Codes.Admin);
-            role.SetIdTo(Role.Codes.Admin);
+            role.Id = Role.Codes.Admin;
             role.Name = "Admin";
             role.Level = 0;
             role.IsAdmin = true;
             roles.Add(role);
 
             role = new Role(Role.Codes.DepartmentalAdmin);
-            role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            role.Id = Role.Codes.DepartmentalAdmin;
             role.Name = "Departmental Admin";
             role.Level = 0;
             role.IsAdmin = true;
             roles.Add(role);
 
             role = new Role(Role.Codes.Requester);
-            role.SetIdTo(Role.Codes.Requester);
+            role.Id = Role.Codes.Requester;
             role.Name = "Requester";
             role.Level = 1;
             roles.Add(role);
 
             role = new Role(Role.Codes.Approver);
-            role.SetIdTo(Role.Codes.Approver);
+            role.Id = Role.Codes.Approver;
             role.Name = "Approver";
             role.Level = 2;
             roles.Add(role);
 
             role = new Role(Role.Codes.AccountManager);
-            role.SetIdTo(Role.Codes.AccountManager);
+            role.Id = Role.Codes.AccountManager;
             role.Name = "Account Manager";
             role.Level = 3;
             roles.Add(role);
 
             role = new Role(Role.Codes.Purchaser);
-            role.SetIdTo(Role.Codes.Purchaser);
+            role.Id = Role.Codes.Purchaser;
             role.Name = "Purchaser";
             role.Level = 4;
             roles.Add(role);
@@ -245,21 +242,21 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for(int i = 0; i < 9; i++)
             {
                 organizations.Add(CreateValidEntities.Organization(i + 1));
-                organizations[i].SetIdTo((i + 1).ToString());
+                organizations[i].Id = (i + 1).ToString();
             }
 
             var users = new List<User>();
             for(int i = 0; i < 3; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString());
+                users[i].Id = (i + 1).ToString();
                 users[i].Organizations = new List<Organization>();
                 users[i].Organizations.Add(organizations[(i * 3) + 0]);
                 users[i].Organizations.Add(organizations[(i * 3) + 1]);
                 users[i].Organizations.Add(organizations[(i * 3) + 2]);
             }
             new FakeUsers(0, UserRepository, users, true);
-            UserRepository2.Expect(a => a.Queryable).Return(users.AsQueryable()).Repeat.Any();
+            Moq.Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
             var workgroups = new List<Workgroup>();
             for(int i = 0; i < 9; i++)
             {
@@ -270,7 +267,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             }
             if(!skipOrg)
             {
-                OrganizationRepository.Expect(a => a.Queryable).Return(organizations.AsQueryable()).Repeat.Any();
+                Moq.Mock.Get(OrganizationRepository).SetupGet(a => a.Queryable).Returns(organizations.AsQueryable());
             }
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
         }
@@ -287,7 +284,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for(int i = 0; i < 6; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString());
+                users[i].Id = (i + 1).ToString();
             }
 
             new FakeUsers(0, UserRepository, users, true);
@@ -362,7 +359,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 for(int j = 0; j < 3; j++)
                 {
                     var address = CreateValidEntities.WorkgroupAddress((i * 3) + (j + 1));
-                    address.SetIdTo((i * 3) + (j + 1));
+                    address.Id = (i * 3) + (j + 1);
                     if(j == 1)
                     {
                         address.IsActive = false;
@@ -386,7 +383,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for(int i = 0; i < 6; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString());
+                users[i].Id = (i + 1).ToString();
             }
 
             new FakeUsers(0, UserRepository, users, true);
@@ -405,7 +402,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 for(int j = 0; j < 3; j++)
                 {
                     var account = CreateValidEntities.Account((i * 3) + (j + 1));
-                    account.SetIdTo((i * 3) + (j + 1).ToString());
+                    account.Id = (i * 3) + (j + 1).ToString();
                     organizations[i].Accounts.Add(account);
                 }
             }
@@ -413,13 +410,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             organizations[3].Accounts = new List<Account>();
             organizations[3].Accounts.Add(organizations[0].Accounts[0]);
             var account2 = CreateValidEntities.Account(10);
-            account2.SetIdTo("10");
+            account2.Id = "10";
             organizations[3].Accounts.Add(account2);
             workgroups[2].Organizations = organizations;
             workgroups[1].Organizations.Add(CreateValidEntities.Organization(5));
             workgroups[1].Organizations[0].Accounts = new List<Account>();
             var account3 = CreateValidEntities.Account(11);
-            account3.SetIdTo("11");
+            account3.Id = "11";
             workgroups[1].Organizations[0].Accounts.Add(account3);
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
 
@@ -481,7 +478,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeWorkgroups(3, WorkgroupRepository);
             var vendors = new List<Vendor>();
             vendors.Add(CreateValidEntities.Vendor(9));
-            vendors[0].SetIdTo("VendorId9");
+            vendors[0].Id = "VendorId9";
             new FakeVendors(0, VendorRepository, vendors, true);
             var vendorAddresses = new List<VendorAddress>();
             for(int i = 0; i < 3; i++)
@@ -501,7 +498,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeWorkgroups(3, WorkgroupRepository);
             var vendors = new List<Vendor>();
             vendors.Add(CreateValidEntities.Vendor(9));
-            vendors[0].SetIdTo("VendorId9");
+            vendors[0].Id = "VendorId9";
             new FakeVendors(0, VendorRepository, vendors, true);
             var vendorAddresses = new List<VendorAddress>();
             for(int i = 0; i < 3; i++)

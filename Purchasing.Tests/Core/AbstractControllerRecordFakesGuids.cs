@@ -47,32 +47,21 @@ namespace Purchasing.Tests.Core
                     {
                         stringId = SpecificGuid.GetGuid(i + 1);
                     }
-                    records[i].SetIdTo(stringId);
-                    repository.Expect(a => a.GetNullableById(stringId))
-                        .Return(records[i])
-                        .Repeat
-                        .Any();
-                    repository.Expect(a => a.GetById(stringId))
-                        .Return(records[i])
-                        .Repeat
-                        .Any();
+                    records[i].Id = stringId;
+                    Moq.Mock.Get(repository).Setup(a => a.GetNullableById(stringId)).Returns(records[i]);
+                    Moq.Mock.Get(repository).Setup(a => a.GetById(stringId)).Returns(records[i]);
                 }
                 else
                 {
                     var i1 = i;
-                    repository.Expect(a => a.GetNullableById(records[i1].Id))
-                        .Return(records[i])
-                        .Repeat
-                        .Any();
-                    repository.Expect(a => a.GetById(records[i1].Id))
-                        .Return(records[i])
-                        .Repeat
-                        .Any();
+
+                    Moq.Mock.Get(repository).Setup(a => a.GetNullableById(records[i1].Id)).Returns(records[i]);
+                    Moq.Mock.Get(repository).Setup(a => a.GetById(records[i1].Id)).Returns(records[i]);
                 }
             }
-            //repository.Expect(a => a.GetNullableById((totalCount + 1).ToString())).Return(null).Repeat.Any();
-            repository.Expect(a => a.Queryable).Return(records.AsQueryable()).Repeat.Any();
-            repository.Expect(a => a.GetAll()).Return(records).Repeat.Any();
+            //repository.Expect(a => a.GetNullableById((totalCount + 1).ToString())).Return(null);
+            Moq.Mock.Get(repository).SetupGet(a => a.Queryable).Returns(records.AsQueryable());
+            Moq.Mock.Get(repository).Setup(a => a.GetAll()).Returns(records);
         }
 
         protected abstract T CreateValid(int i);

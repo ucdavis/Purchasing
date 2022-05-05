@@ -201,7 +201,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Name6 (6)", result.Organizations[5].ToString());
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual("Name3", result.Workgroup.Name);
-            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
             #endregion Assert	
         }
 
@@ -236,7 +236,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Name2", result.Workgroup.Organizations[0].Name);
             Assert.AreEqual("Name4", result.Workgroup.Organizations[1].Name);
             Assert.AreEqual("Name3", result.Workgroup.Organizations[2].Name);
-            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -248,7 +248,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             var workgroup = CreateValidEntities.Workgroup(9);
-            workgroup.SetIdTo(WorkgroupRepository.Queryable.Max(a => a.Id) + 1);
+            workgroup.Id = WorkgroupRepository.Queryable.Max(a => a.Id) + 1;
             #endregion Arrange
 
             #region Act
@@ -279,8 +279,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Name3 was modified successfully", Controller.Message);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+//TODO: Arrange
+            Workgroup args = default;
+            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
+//ENDTODO 
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);
             Assert.AreEqual(3, args.Organizations.Count());
@@ -306,8 +310,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Name3 was modified successfully", Controller.Message);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+//TODO: Arrange
+            Workgroup args = default;
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);
             Assert.AreEqual(3, args.Organizations.Count());

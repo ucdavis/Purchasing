@@ -34,19 +34,14 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-            DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();  
-            Controller = new TestControllerBuilder().CreateController<DirectorySearchController>(DirectorySearchService, UserRepository);            
-        }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
+            DirectorySearchService = new Moq.Mock<IDirectorySearchService>().Object;  
+            Controller = new DirectorySearchController(DirectorySearchService, UserRepository);            
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
             base.RegisterAdditionalServices(container);
         }
 
@@ -79,7 +74,7 @@ namespace Purchasing.Tests.ControllerTests
             directoryUser.EmailAddress = "test@testy.com";
             directoryUser.LastName = "SomeLast";
             directoryUser.FirstName = "SomeFirst";
-            DirectorySearchService.Expect(a => a.FindUser("Test")).Return(directoryUser);
+            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Test")).Returns(directoryUser);
             #endregion Arrange
 
             #region Act
@@ -90,7 +85,7 @@ namespace Purchasing.Tests.ControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("{\"EmployeeId\":null,\"LoginId\":\"someLogin\",\"FirstName\":\"SomeFirst\",\"LastName\":\"SomeLast\",\"FullName\":null,\"EmailAddress\":\"test@testy.com\",\"PhoneNumber\":null}", result.JsonResultString);
-            DirectorySearchService.AssertWasCalled(a => a.FindUser("Test"));
+            Moq.Mock.Get(DirectorySearchService).Verify(a => a.FindUser("Test"));
             #endregion Assert		
         }
 
@@ -110,7 +105,7 @@ namespace Purchasing.Tests.ControllerTests
                 directoryUser.EmailAddress = "test@testy.com";
                 directoryUser.LastName = "SomeLast";
                 directoryUser.FirstName = "SomeFirst";
-                DirectorySearchService.Expect(a => a.FindUser("test")).Return(directoryUser);
+                Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("test")).Returns(directoryUser);
                 new FakeUsers(3, UserRepository);
                 thisFar = true;
                 #endregion Arrange
@@ -141,7 +136,7 @@ namespace Purchasing.Tests.ControllerTests
                 directoryUser.EmailAddress = null;
                 directoryUser.LastName = "SomeLast";
                 directoryUser.FirstName = "SomeFirst";
-                DirectorySearchService.Expect(a => a.FindUser("test")).Return(directoryUser);
+                Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("test")).Returns(directoryUser);
                 new FakeUsers(3, UserRepository);
                 thisFar = true;
                 #endregion Arrange
@@ -225,7 +220,7 @@ namespace Purchasing.Tests.ControllerTests
             directoryUser.EmailAddress = "test@testy.com";
             directoryUser.LastName = "SomeLast";
             directoryUser.FirstName = "SomeFirst";
-            DirectorySearchService.Expect(a => a.FindUser("test")).Return(directoryUser);
+            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("test")).Returns(directoryUser);
 
             #endregion Arrange
 
@@ -237,7 +232,7 @@ namespace Purchasing.Tests.ControllerTests
             #region Assert
             Assert.IsNotNull(results);
             Assert.AreEqual("[{\"Id\":\"test\",\"Label\":\"SomeFirst SomeLast\"}]", results.JsonResultString);
-            DirectorySearchService.AssertWasCalled(a => a.FindUser("test"));
+            Moq.Mock.Get(DirectorySearchService).Verify(a => a.FindUser("test"));
             #endregion Assert
         }
 
@@ -314,11 +309,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<ValidateAntiForgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Any(), "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Any(), "ValidateAntiForgeryTokenAttribute not found.");
             #endregion Assert
         }
 

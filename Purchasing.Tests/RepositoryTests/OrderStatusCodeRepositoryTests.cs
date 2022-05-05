@@ -42,7 +42,7 @@ namespace Purchasing.Tests.RepositoryTests
         protected override OrderStatusCode GetValid(int? counter)
         {
             var rtValue = CreateValidEntities.OrderStatusCode(counter);
-            rtValue.SetIdTo(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.Id = counter.HasValue ? counter.Value.ToString() : "99";
 
             return rtValue;
         }

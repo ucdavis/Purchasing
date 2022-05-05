@@ -13,6 +13,8 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using UCDArch.Core;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -31,34 +33,28 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         protected override void SetupController()
         {
             AutoApprovalRepository = FakeRepository<AutoApproval>();
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
+            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
 
-            //ExampleService = MockRepository.GenerateStub<IExampleService>();  
-            Controller = new TestControllerBuilder().CreateController<AutoApprovalController>(AutoApprovalRepository, UserRepository);
-            //Controller = new TestControllerBuilder().CreateController<AutoApprovalController>(AutoApprovalRepository, ExampleService);
+            //ExampleService = new Moq.Mock<IExampleService>().Object;  
+            Controller = new AutoApprovalController(AutoApprovalRepository, UserRepository, SmartServiceLocator<IMapper>.GetService());
+            //Controller = new AutoApprovalController(AutoApprovalRepository, ExampleService);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
             base.RegisterAdditionalServices(container);
-        }
-
-        protected override void RegisterRoutes()
-        {
-           RouteConfig.RegisterRoutes(RouteTable.Routes);
-            
         }
 
         public AutoApprovalControllerTests()
         {
             WorkgoupAccountRepository = FakeRepository<WorkgroupAccount>();
-            Controller.Repository.Expect(a => a.OfType<WorkgroupAccount>()).Return(WorkgoupAccountRepository).Repeat.Any();
+            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<WorkgroupAccount>()).Returns(WorkgoupAccountRepository);
 
             WorkgroupPermissionRepository = FakeRepository<WorkgroupPermission>();
-            Controller.Repository.Expect(a => a.OfType<WorkgroupPermission>()).Return(WorkgroupPermissionRepository).Repeat.Any();
+            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<WorkgroupPermission>()).Returns(WorkgroupPermissionRepository);
 
-            //Controller.Repository.Expect(a => a.OfType<AutoApproval>()).Return(AutoApprovalRepository).Repeat.Any();
+            //Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<AutoApproval>()).Returns(AutoApprovalRepository);
 
         }
         #endregion Init
@@ -75,10 +71,10 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
                     autoApprovals[i].TargetUser = null;
                     autoApprovals[i].Account = CreateValidEntities.Account(i);
                 }
-                autoApprovals[i].User.SetIdTo("Me");
+                autoApprovals[i].User.Id = "Me";
             }
 
-            autoApprovals[0].User.SetIdTo("NotMe");
+            autoApprovals[0].User.Id = "NotMe";
             autoApprovals[1].IsActive = false;
             autoApprovals[2].Expiration = DateTime.UtcNow.ToPacificTime().Date;
             autoApprovals[3].Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(1);
@@ -92,47 +88,47 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             for(int i = 0; i < 5; i++)
             {
                 innerPermissions.Add(CreateValidEntities.WorkgroupPermission(i + 100));
-                innerPermissions[i].User.SetIdTo("Someone" + i);
+                innerPermissions[i].User.Id = "Someone" + i;
                 innerPermissions[i].User.IsActive = true;
-                innerPermissions[i].Role.SetIdTo(Role.Codes.Requester);
+                innerPermissions[i].Role.Id = Role.Codes.Requester;
             }
             innerPermissions[0].User.IsActive = false;
-            innerPermissions[1].Role.SetIdTo(Role.Codes.Purchaser);
+            innerPermissions[1].Role.Id = Role.Codes.Purchaser;
 
             var workgroupPermissions = new List<WorkgroupPermission>();
             for(int i = 0; i < 5; i++)
             {
                 workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(i + 1));
-                workgroupPermissions[i].Role.SetIdTo(Role.Codes.Approver);
-                workgroupPermissions[i].User.SetIdTo("Me");
+                workgroupPermissions[i].Role.Id = Role.Codes.Approver;
+                workgroupPermissions[i].User.Id = "Me";
                 workgroupPermissions[i].Workgroup.Permissions = innerPermissions;
             }
-            workgroupPermissions[0].User.SetIdTo("NotMe");
-            workgroupPermissions[1].Role.SetIdTo(Role.Codes.Purchaser);
+            workgroupPermissions[0].User.Id = "NotMe";
+            workgroupPermissions[1].Role.Id = Role.Codes.Purchaser;
             workgroupPermissions[2].Workgroup.Permissions = new List<WorkgroupPermission>();
             workgroupPermissions[2].Workgroup.Permissions.Add(CreateValidEntities.WorkgroupPermission(55));
-            workgroupPermissions[2].Workgroup.Permissions[0].User.SetIdTo("Someone" + 55);
+            workgroupPermissions[2].Workgroup.Permissions[0].User.Id = "Someone" + 55;
             workgroupPermissions[2].Workgroup.Permissions[0].User.IsActive = true;
-            workgroupPermissions[2].Workgroup.Permissions[0].Role.SetIdTo(Role.Codes.Requester);
+            workgroupPermissions[2].Workgroup.Permissions[0].Role.Id = Role.Codes.Requester;
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
 
             var workgroupAccounts = new List<WorkgroupAccount>();
             for(int i = 0; i < 10; i++)
             {
                 workgroupAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupAccounts[i].Approver.SetIdTo("Me");
-                workgroupAccounts[i].Account.SetIdTo("AcctId" + i);
+                workgroupAccounts[i].Approver.Id = "Me";
+                workgroupAccounts[i].Account.Id = "AcctId" + i;
                 workgroupAccounts[i].Account.Name = "AccountName" + i;
                 workgroupAccounts[i].Account.IsActive = true;
             }
-            workgroupAccounts[0].Approver.SetIdTo("NotMe");
+            workgroupAccounts[0].Approver.Id = "NotMe";
             workgroupAccounts[1].Account = workgroupAccounts[2].Account;
             workgroupAccounts[4].Account.IsActive = false;
             new FakeWorkgroupAccounts(0, WorkgoupAccountRepository, workgroupAccounts);
 
             var users = new List<User>();
             users.Add(CreateValidEntities.User(5));
-            users[0].SetIdTo("Me");
+            users[0].Id = "Me";
             new FakeUsers(0, UserRepository, users, true);
 
         }
@@ -144,9 +140,9 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             {
                 autoApprovals.Add(CreateValidEntities.AutoApproval(i + 1));
                 autoApprovals[i].User = CreateValidEntities.User(1);
-                autoApprovals[i].User.SetIdTo("Me");
+                autoApprovals[i].User.Id = "Me";
             }
-            autoApprovals[0].User.SetIdTo("NotMe");
+            autoApprovals[0].User.Id = "NotMe";
             autoApprovals[0].IsActive = false;
             new FakeAutoApprovals(0, AutoApprovalRepository, autoApprovals);
         }

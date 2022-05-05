@@ -177,10 +177,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForAccounts1();
             var workgroupAccountToCreate = CreateValidEntities.WorkgroupAccount(9);
             workgroupAccountToCreate.Workgroup = WorkgroupRepository.GetNullableById(2); //This one will be replaced
-            workgroupAccountToCreate.Account.SetIdTo("Blah");
-            workgroupAccountToCreate.AccountManager.SetIdTo("AccMan");
-            workgroupAccountToCreate.Approver.SetIdTo("App");
-            workgroupAccountToCreate.Purchaser.SetIdTo("Purchase");
+            workgroupAccountToCreate.Account.Id = "Blah";
+            workgroupAccountToCreate.AccountManager.Id = "AccMan";
+            workgroupAccountToCreate.Approver.Id = "App";
+            workgroupAccountToCreate.Purchaser.Id = "Purchase";
             #endregion Arrange
 
             #region Act
@@ -193,8 +193,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual("Workgroup account saved.", Controller.Message);
 
-            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
-            var args = (WorkgroupAccount) WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
+//TODO: Arrange
+            WorkgroupAccount args = default;
+            Moq.Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
+//ENDTODO 
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Workgroup.Id);
             Assert.AreEqual("Blah", args.Account.Id);
@@ -211,11 +215,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForAccounts1();
             var workgroupAccountToCreate = CreateValidEntities.WorkgroupAccount(9);
             workgroupAccountToCreate.Workgroup = WorkgroupRepository.GetNullableById(2); //This one will be replaced
-            //workgroupAccountToCreate.Account.SetIdTo("Blah");
+            //workgroupAccountToCreate.Account.Id = "Blah";
             workgroupAccountToCreate.Account = null;
-            workgroupAccountToCreate.AccountManager.SetIdTo("AccMan");
-            workgroupAccountToCreate.Approver.SetIdTo("App");
-            workgroupAccountToCreate.Purchaser.SetIdTo("Purchase");
+            workgroupAccountToCreate.AccountManager.Id = "AccMan";
+            workgroupAccountToCreate.Approver.Id = "App";
+            workgroupAccountToCreate.Purchaser.Id = "Purchase";
 
             new FakeAccounts(0, AccountRepository);
             #endregion Arrange
@@ -228,7 +232,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Controller.ModelState.AssertErrorsAre("Account not found");
-            WorkgroupAccountRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()), Moq.Times.Never());
 
             Assert.IsNotNull(result);
             Assert.AreEqual(10, result.Accounts.Count());

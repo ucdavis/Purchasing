@@ -141,8 +141,8 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -161,8 +161,8 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(false, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -181,8 +181,8 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(false, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -201,8 +201,8 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Assert
             Assert.AreEqual("No Access", Controller.ErrorMessage);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -222,8 +222,8 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -244,11 +244,15 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
             Assert.AreEqual("AutoApproval Deactivated Successfully", Controller.Message);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval) AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+//TODO: Arrange
+            AutoApproval args = default;
+            Moq.Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
+//ENDTODO 
             Assert.IsNotNull(args);
             Assert.IsFalse(args.IsActive);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
             #endregion Assert
         }
         #endregion Delete Post Tests

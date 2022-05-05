@@ -1970,7 +1970,7 @@ namespace Purchasing.Tests.RepositoryTests
             Order record = GetValid(99);
             var orderTracking = new OrderTracking();
             orderTracking.StatusCode = new OrderStatusCode();
-            orderTracking.StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orderTracking.StatusCode.Id = OrderStatusCode.Codes.Purchaser;
             orderTracking.DateCreated = compareDate;
             record.AddTracking(orderTracking);
             #endregion Arrange
@@ -1999,7 +1999,7 @@ namespace Purchasing.Tests.RepositoryTests
             Order record = GetValid(99);
             var orderTracking = new OrderTracking();
             orderTracking.StatusCode = new OrderStatusCode();
-            orderTracking.StatusCode.SetIdTo(OrderStatusCode.Codes.AccountManager); //Not Purchaser
+            orderTracking.StatusCode.Id = OrderStatusCode.Codes.AccountManager; //Not Purchaser
             orderTracking.DateCreated = compareDate;
             record.AddTracking(orderTracking);
             #endregion Arrange
@@ -2028,7 +2028,7 @@ namespace Purchasing.Tests.RepositoryTests
             var record = GetValid(99);
             var orderTracking = new OrderTracking();
             orderTracking.StatusCode = new OrderStatusCode();
-            orderTracking.StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orderTracking.StatusCode.Id = OrderStatusCode.Codes.Purchaser;
             orderTracking.DateCreated = compareDate;
             record.AddTracking(orderTracking);
             #endregion Arrange
@@ -2057,7 +2057,7 @@ namespace Purchasing.Tests.RepositoryTests
             var record = GetValid(99);
             var orderTracking = new OrderTracking();
             orderTracking.StatusCode = new OrderStatusCode();
-            orderTracking.StatusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            orderTracking.StatusCode.Id = OrderStatusCode.Codes.Purchaser;
             orderTracking.DateCreated = compareDate;
             record.AddTracking(orderTracking);
             #endregion Arrange
@@ -5100,14 +5100,14 @@ namespace Purchasing.Tests.RepositoryTests
             approval.User = CreateValidEntities.User(101);
             approval.Completed = false;
             approval.StatusCode.Level = 2;
-            approval.StatusCode.SetIdTo("X1");
+            approval.StatusCode.Id = "X1";
             record.AddApproval(approval);
 
             approval = CreateValidEntities.Approval(4);
             approval.User = CreateValidEntities.User(102);
             approval.Completed = false;
             approval.StatusCode.Level = 1;
-            approval.StatusCode.SetIdTo("X2");
+            approval.StatusCode.Id = "X2";
             record.AddApproval(approval);
             #endregion Arrange
 
@@ -6438,7 +6438,7 @@ namespace Purchasing.Tests.RepositoryTests
             var record = CreateValidEntities.Order(9);
             record.DateCreated = new DateTime(2012, 01, 10);
             record.CreatedBy = new User("Blah");
-            record.Organization.SetIdTo("TestOrg");
+            record.Organization.Id = "TestOrg";
             #endregion Arrange
 
             #region Act
@@ -6458,7 +6458,7 @@ namespace Purchasing.Tests.RepositoryTests
             record.DateCreated = new DateTime(2012, 01, 10);
             record.CreatedBy = new User("Blah");
             record.Organization = new Organization();
-            record.Organization.SetIdTo("MyOrg");
+            record.Organization.Id = "MyOrg";
             #endregion Arrange
 
             #region Act
@@ -6478,7 +6478,7 @@ namespace Purchasing.Tests.RepositoryTests
             record.DateCreated = new DateTime(2012, 01, 10);
             record.CreatedBy = new User("jcs");
             record.Organization = new Organization();
-            record.Organization.SetIdTo("MyOrg");
+            record.Organization.Id = "MyOrg";
             #endregion Arrange
 
             #region Act
@@ -6498,7 +6498,7 @@ namespace Purchasing.Tests.RepositoryTests
             record.DateCreated = new DateTime(2012, 01, 10).AddTicks(1);
             record.CreatedBy = new User("jcs");
             record.Organization = new Organization();
-            record.Organization.SetIdTo("MyOrg");
+            record.Organization.Id = "MyOrg";
             #endregion Arrange
 
             #region Act

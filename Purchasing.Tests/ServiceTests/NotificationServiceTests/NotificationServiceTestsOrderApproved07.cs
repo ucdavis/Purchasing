@@ -20,7 +20,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromAccManager01()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("flanders");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -74,7 +74,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromAccManager02()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("flanders");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -134,7 +134,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromAccManager03()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("flanders");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -197,7 +197,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromAccManager04()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("flanders");
+            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);

@@ -57,7 +57,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             new FakeWorkgroups(3, WorkgroupRepository);
             var worgroupToDelete = CreateValidEntities.Workgroup(4);
-            worgroupToDelete.SetIdTo(4);
+            worgroupToDelete.Id = 4;
             #endregion Arrange
 
             #region Act
@@ -67,8 +67,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
-            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            WorkgroupRepository.AssertWasNotCalled(a => a.Remove(Arg<Workgroup>.Is.Anything));
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.Remove(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -85,7 +85,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             }
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
             var worgroupToDelete = CreateValidEntities.Workgroup(3);
-            worgroupToDelete.SetIdTo(3);
+            worgroupToDelete.Id = 3;
             #endregion Arrange
 
             #region Act
@@ -95,9 +95,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Name3 was disabled successfully", Controller.Message);
-            WorkgroupRepository.AssertWasNotCalled(a => a.Remove(Arg<Workgroup>.Is.Anything));
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.Remove(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+//TODO: Arrange
+            Workgroup args = default;
+            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
+//ENDTODO 
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);
             Assert.IsFalse(args.IsActive);

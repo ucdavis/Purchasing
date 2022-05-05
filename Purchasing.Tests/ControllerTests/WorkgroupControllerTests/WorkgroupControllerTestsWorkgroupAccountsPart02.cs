@@ -44,10 +44,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             {
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i+1));
             }
-            accounts[2].Account.SetIdTo("blah");
-            accounts[2].AccountManager.SetIdTo("myAccMan");
-            accounts[2].Approver.SetIdTo("myApp");
-            accounts[2].Purchaser.SetIdTo("myPur");
+            accounts[2].Account.Id = "blah";
+            accounts[2].AccountManager.Id = "myAccMan";
+            accounts[2].Approver.Id = "myApp";
+            accounts[2].Purchaser.Id = "myPur";
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
             #endregion Arrange
 
@@ -98,10 +98,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
                 accounts[i].Workgroup = WorkgroupRepository.GetNullableById(i+1);
             }
-            accounts[2].Account.SetIdTo("blah");
-            accounts[2].AccountManager.SetIdTo("myAccMan");
-            accounts[2].Approver.SetIdTo("myApp");
-            accounts[2].Purchaser.SetIdTo("myPur");
+            accounts[2].Account.Id = "blah";
+            accounts[2].AccountManager.Id = "myAccMan";
+            accounts[2].Approver.Id = "myApp";
+            accounts[2].Purchaser.Id = "myPur";
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository, accounts);
             #endregion Arrange
 
@@ -143,7 +143,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Account could not be found", Controller.ErrorMessage);
-            WorkgroupAccountRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -159,21 +159,21 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
             }
             accounts[2].Workgroup = CreateValidEntities.Workgroup(9);
-            accounts[2].Workgroup.SetIdTo(9);
-            accounts[2].Account.SetIdTo("blah");
-            accounts[2].AccountManager.SetIdTo("myAccMan");
-            accounts[2].Approver.SetIdTo("myApp");
-            accounts[2].Purchaser.SetIdTo("myPur");
+            accounts[2].Workgroup.Id = 9;
+            accounts[2].Account.Id = "blah";
+            accounts[2].AccountManager.Id = "myAccMan";
+            accounts[2].Approver.Id = "myApp";
+            accounts[2].Purchaser.Id = "myPur";
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
 
             var accountToEdit = CreateValidEntities.WorkgroupAccount(8);
-            accountToEdit.SetIdTo(8);
+            accountToEdit.Id = 8;
             accountToEdit.Workgroup = CreateValidEntities.Workgroup(7);
-            accountToEdit.Workgroup.SetIdTo(7);
-            accountToEdit.Account.SetIdTo("Eblah");
-            accountToEdit.AccountManager.SetIdTo("EmyAccMan");
-            accountToEdit.Approver.SetIdTo("EmyApp");
-            accountToEdit.Purchaser.SetIdTo("EmyPur");
+            accountToEdit.Workgroup.Id = 7;
+            accountToEdit.Account.Id = "Eblah";
+            accountToEdit.AccountManager.Id = "EmyAccMan";
+            accountToEdit.Approver.Id = "EmyApp";
+            accountToEdit.Purchaser.Id = "EmyPur";
             #endregion Arrange
 
             #region Act
@@ -186,8 +186,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(9, result.RouteValues["id"]);
             Assert.AreEqual("Workgroup account has been updated.", Controller.Message);
 
-            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
-            var args = (WorkgroupAccount) WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
+//TODO: Arrange
+            WorkgroupAccount args = default;
+            Moq.Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
+//ENDTODO 
             Assert.IsNotNull(args);
             Assert.AreEqual(9, args.Workgroup.Id); //Did not change
             Assert.AreEqual(3, args.Id); //Did not change
@@ -211,21 +215,21 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             }
             accounts[2].Workgroup = WorkgroupRepository.GetNullableById(3);
             accounts[2].Account = null;
-            accounts[2].AccountManager.SetIdTo("myAccMan");
-            accounts[2].Approver.SetIdTo("myApp");
-            accounts[2].Purchaser.SetIdTo("myPur");
+            accounts[2].AccountManager.Id = "myAccMan";
+            accounts[2].Approver.Id = "myApp";
+            accounts[2].Purchaser.Id = "myPur";
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
 
             var accountToEdit = CreateValidEntities.WorkgroupAccount(8);
-            accountToEdit.SetIdTo(8);
+            accountToEdit.Id = 8;
             accountToEdit.Workgroup = CreateValidEntities.Workgroup(7);
-            accountToEdit.Workgroup.SetIdTo(7);
-            //accountToEdit.Account.SetIdTo("Eblah");
+            accountToEdit.Workgroup.Id = 7;
+            //accountToEdit.Account.Id = "Eblah";
             accountToEdit.Account = null;
-            //accountToEdit.AccountManager.SetIdTo("EmyAccMan");
+            //accountToEdit.AccountManager.Id = "EmyAccMan";
             accountToEdit.AccountManager = null;
-            accountToEdit.Approver.SetIdTo("EmyApp");
-            accountToEdit.Purchaser.SetIdTo("EmyPur");
+            accountToEdit.Approver.Id = "EmyApp";
+            accountToEdit.Purchaser.Id = "EmyPur";
             #endregion Arrange
 
             #region Act
@@ -278,10 +282,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
                 accounts[i].Workgroup = WorkgroupRepository.GetNullableById(i + 1);
             }
-            accounts[2].Account.SetIdTo("blah");
-            accounts[2].AccountManager.SetIdTo("myAccMan");
-            accounts[2].Approver.SetIdTo("myApp");
-            accounts[2].Purchaser.SetIdTo("myPur");
+            accounts[2].Account.Id = "blah";
+            accounts[2].AccountManager.Id = "myAccMan";
+            accounts[2].Approver.Id = "myApp";
+            accounts[2].Purchaser.Id = "myPur";
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
             #endregion Arrange
 
@@ -307,10 +311,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
                 accounts[i].Workgroup = WorkgroupRepository.GetNullableById(i + 1);
             }
-            accounts[2].Account.SetIdTo("blah");
-            accounts[2].AccountManager.SetIdTo("myAccMan");
-            accounts[2].Approver.SetIdTo("myApp");
-            accounts[2].Purchaser.SetIdTo("myPur");
+            accounts[2].Account.Id = "blah";
+            accounts[2].AccountManager.Id = "myAccMan";
+            accounts[2].Approver.Id = "myApp";
+            accounts[2].Purchaser.Id = "myPur";
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
             #endregion Arrange
 
@@ -344,8 +348,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Account could not be found", Controller.ErrorMessage);
-            WorkgroupAccountRepository.AssertWasNotCalled(a => a.Remove(Arg<WorkgroupAccount>.Is.Anything));
-            WorkgroupAccountRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupAccount>()), Moq.Times.Never());
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -360,10 +364,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
                 accounts[i].Workgroup = WorkgroupRepository.GetNullableById(1);
             }
-            accounts[2].Account.SetIdTo("blah");
-            accounts[2].AccountManager.SetIdTo("myAccMan");
-            accounts[2].Approver.SetIdTo("myApp");
-            accounts[2].Purchaser.SetIdTo("myPur");
+            accounts[2].Account.Id = "blah";
+            accounts[2].AccountManager.Id = "myAccMan";
+            accounts[2].Approver.Id = "myApp";
+            accounts[2].Purchaser.Id = "myPur";
             accounts[1].Workgroup = WorkgroupRepository.GetNullableById(3);
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
             #endregion Arrange
@@ -390,10 +394,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
                 accounts[i].Workgroup = WorkgroupRepository.GetNullableById(1);
             }
-            accounts[2].Account.SetIdTo("blah");
-            accounts[2].AccountManager.SetIdTo("myAccMan");
-            accounts[2].Approver.SetIdTo("myApp");
-            accounts[2].Purchaser.SetIdTo("myPur");
+            accounts[2].Account.Id = "blah";
+            accounts[2].AccountManager.Id = "myAccMan";
+            accounts[2].Approver.Id = "myApp";
+            accounts[2].Purchaser.Id = "myPur";
             accounts[1].Workgroup = WorkgroupRepository.GetNullableById(3); 
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
             #endregion Arrange
@@ -408,8 +412,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            WorkgroupAccountRepository.AssertWasCalled(a => a.Remove(Arg<WorkgroupAccount>.Is.Anything));
-            var workgroupAccountsargs = (WorkgroupAccount) WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.Remove(Arg<WorkgroupAccount>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupAccount>()));
+//TODO: Arrange
+            WorkgroupAccount workgroupAccountsargs = default;
+            Moq.Mock.Get( WorkgroupAccountRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => workgroupAccountsargs = x);
+//ENDTODO 
             Assert.AreEqual(2, workgroupAccountsargs.Id);
             #endregion Assert
         }
@@ -748,7 +756,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.IsFalse(Controller.ModelState.IsValid);
             Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
-            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -851,7 +859,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.IsFalse(Controller.ModelState.IsValid);
             Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
-            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -954,7 +962,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.IsFalse(Controller.ModelState.IsValid);
             Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
-            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -1057,7 +1065,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.IsFalse(Controller.ModelState.IsValid);
             Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All", "If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
-            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -1161,7 +1169,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsFalse(Controller.ModelState.IsValid);
             Controller.ModelState.AssertErrorsAre("If you select a Default for new Account, it must be a Person, not Do Not Update or Clear All");
 
-            WorkgroupService.AssertWasNotCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything));
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -1227,10 +1235,22 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Values Updated", Controller.Message);
             
 
-            WorkgroupService.AssertWasCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything), x => x.Repeat.Times(3));
-            var args1 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
-            var args2 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[1];
-            var args3 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[2]; 
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()), Moq.Times.Exactly(3));
+//TODO: Arrange
+            object[] args1 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args1 = x);
+//ENDTODO
+//TODO: Arrange
+            object[] args2 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args2 = x);
+//ENDTODO
+//TODO: Arrange
+            object[] args3 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args3 = x);
+//ENDTODO 
 
             Assert.AreEqual(3, ((Workgroup)args1[0]).Id);
             Assert.AreEqual(3, ((Workgroup)args2[0]).Id);
@@ -1313,10 +1333,22 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Values Updated", Controller.Message);
 
 
-            WorkgroupService.AssertWasCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything), x => x.Repeat.Times(3));
-            var args1 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
-            var args2 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[1];
-            var args3 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[2];
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()), Moq.Times.Exactly(3));
+//TODO: Arrange
+            object[] args1 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args1 = x);
+//ENDTODO)
+//TODO: Arrange
+            object[] args2 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args2 = x);
+//ENDTODO
+//TODO: Arrange
+            object[] args3 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args3 = x);
+//ENDTODO
 
             Assert.AreEqual(3, ((Workgroup)args1[0]).Id);
             Assert.AreEqual(3, ((Workgroup)args2[0]).Id);
@@ -1399,10 +1431,22 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Values Updated", Controller.Message);
 
 
-            WorkgroupService.AssertWasCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything), x => x.Repeat.Times(3));
-            var args1 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
-            var args2 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[1];
-            var args3 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[2];
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()), Moq.Times.Exactly(3));
+//TODO: Arrange
+            object[] args1 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args1 = x);
+//ENDTODO)
+//TODO: Arrange
+            object[] args2 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args2 = x);
+//ENDTODO
+//TODO: Arrange
+            object[] args3 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args3 = x);
+//ENDTODO
 
             Assert.AreEqual(3, ((Workgroup)args1[0]).Id);
             Assert.AreEqual(3, ((Workgroup)args2[0]).Id);
@@ -1485,10 +1529,22 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Values Updated", Controller.Message);
 
 
-            WorkgroupService.AssertWasCalled(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything), x => x.Repeat.Times(3));
-            var args1 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[0];
-            var args2 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[1];
-            var args3 = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.UpdateDefaultAccountApprover(Arg<Workgroup>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything))[2];
+            Moq.Mock.Get(WorkgroupService).Verify(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()), Moq.Times.Exactly(3));
+//TODO: Arrange
+            object[] args1 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args1 = x);
+//ENDTODO)
+//TODO: Arrange
+            object[] args2 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args2 = x);
+//ENDTODO
+//TODO: Arrange
+            object[] args3 = default;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => args3 = x);
+//ENDTODO
 
             Assert.AreEqual(3, ((Workgroup)args1[0]).Id);
             Assert.AreEqual(3, ((Workgroup)args2[0]).Id);
@@ -1542,7 +1598,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i+1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
             }
             new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, workgroupsAccounts);
             #endregion Arrange
@@ -1570,7 +1626,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
                 workgroupsAccounts[i].Approver = null;
                 workgroupsAccounts[i].AccountManager = null;
                 workgroupsAccounts[i].Purchaser = null;
@@ -1602,7 +1658,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
                 workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
                 workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
                 workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
@@ -1622,7 +1678,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover.Value);
             Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager.Value);
             Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser.Value);
-            WorkgroupAccountRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()), Moq.Times.Never());
             #endregion Assert
         }
 
@@ -1635,7 +1691,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
                 workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
                 workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
                 workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
@@ -1655,8 +1711,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("", data.rtApprover.Value);
             Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager.Value);
             Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser.Value);
-            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
-            var args = (WorkgroupAccount) WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
+//TODO: Arrange
+            WorkgroupAccount args = default;
+            Moq.Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
+//ENDTODO 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, args.Id);
             Assert.AreEqual(7, args.Workgroup.Id);
@@ -1675,7 +1735,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
                 workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
                 workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
                 workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
@@ -1695,8 +1755,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover.Value);
             Assert.AreEqual("", data.rtAccountManager.Value);
             Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser.Value);
-            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
-            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
+//TODO: Arrange
+            WorkgroupAccount args = default;
+            Moq.Mock.Get(WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(result);
             Assert.AreEqual(1, args.Id);
             Assert.AreEqual(7, args.Workgroup.Id);
@@ -1715,7 +1779,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
                 workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
                 workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
                 workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
@@ -1735,8 +1799,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("FirstName2 LastName2 (2)", data.rtApprover.Value);
             Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager.Value);
             Assert.AreEqual("", data.rtPurchaser.Value);
-            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
-            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
+//TODO: Arrange
+            WorkgroupAccount args = default;
+            Moq.Mock.Get(WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(result);
             Assert.AreEqual(1, args.Id);
             Assert.AreEqual(7, args.Workgroup.Id);
@@ -1755,7 +1823,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
                 workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
                 workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
                 workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
@@ -1775,8 +1843,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("", data.rtApprover.Value);
             Assert.AreEqual("", data.rtAccountManager.Value);
             Assert.AreEqual("", data.rtPurchaser.Value);
-            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
-            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
+//TODO: Arrange
+            WorkgroupAccount args = default;
+            Moq.Mock.Get(WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(result);
             Assert.AreEqual(1, args.Id);
             Assert.AreEqual(7, args.Workgroup.Id);
@@ -1795,7 +1867,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
                 workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
                 workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
                 workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
@@ -1815,8 +1887,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("FirstName3 LastName3 (3)", data.rtApprover.Value);
             Assert.AreEqual("FirstName4 LastName4 (4)", data.rtAccountManager.Value);
             Assert.AreEqual("FirstName6 LastName6 (6)", data.rtPurchaser.Value);
-            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
-            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
+//TODO: Arrange
+            WorkgroupAccount args = default;
+            Moq.Mock.Get(WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(result);
             Assert.AreEqual(1, args.Id);
             Assert.AreEqual(7, args.Workgroup.Id);
@@ -1835,7 +1911,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
                 workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
                 workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
                 workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");
@@ -1855,8 +1931,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("FirstName3 LastName3 (3)", data.rtApprover.Value);
             Assert.AreEqual("FirstName5 LastName5 (5)", data.rtAccountManager.Value);
             Assert.AreEqual("FirstName7 LastName7 (7)", data.rtPurchaser.Value);
-            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
-            var args = (WorkgroupAccount)WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
+//TODO: Arrange
+            WorkgroupAccount args = default;
+            Moq.Mock.Get(WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
+//ENDTODO
             Assert.IsNotNull(result);
             Assert.AreEqual(1, args.Id);
             Assert.AreEqual(7, args.Workgroup.Id);
@@ -1875,7 +1955,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             for (int i = 0; i < 3; i++)
             {
                 workgroupsAccounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                workgroupsAccounts[i].Workgroup.SetIdTo(7);
+                workgroupsAccounts[i].Workgroup.Id = 7;
                 workgroupsAccounts[i].Approver = UserRepository.Queryable.Single(a => a.Id == "2");
                 workgroupsAccounts[i].AccountManager = UserRepository.Queryable.Single(a => a.Id == "4");
                 workgroupsAccounts[i].Purchaser = UserRepository.Queryable.Single(a => a.Id == "6");

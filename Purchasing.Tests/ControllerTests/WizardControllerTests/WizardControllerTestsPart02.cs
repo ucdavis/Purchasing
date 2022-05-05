@@ -82,8 +82,12 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var workgroupArgs = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+//TODO: Arrange
+            Workgroup workgroupArgs = default;
+            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => workgroupArgs = x);
+//ENDTODO 
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(2, workgroupArgs.Organizations.Count());
             Assert.AreEqual("Name1", workgroupArgs.Organizations[0].Name);
@@ -112,8 +116,12 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var workgroupArgs = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+//TODO: Arrange
+            Workgroup workgroupArgs = default;
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => workgroupArgs = x);
+//ENDTODO
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(2, workgroupArgs.Organizations.Count());
             Assert.AreEqual("Name1", workgroupArgs.Organizations[0].Name);
@@ -141,8 +149,12 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var workgroupArgs = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+//TODO: Arrange
+            Workgroup workgroupArgs = default;
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => workgroupArgs = x);
+//ENDTODO
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(2, workgroupArgs.Organizations.Count());
             Assert.AreEqual("Name1", workgroupArgs.Organizations[0].Name);
@@ -174,8 +186,12 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var workgroupArgs = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+//TODO: Arrange
+            Workgroup workgroupArgs = default;
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => workgroupArgs = x);
+//ENDTODO
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(3, workgroupArgs.Organizations.Count());
             Assert.AreEqual("Name1", workgroupArgs.Organizations[0].Name);

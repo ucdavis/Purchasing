@@ -40,37 +40,32 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         protected override void SetupController()
         {
             ColumnPreferencesRepository =
-                MockRepository.GenerateStub<IRepositoryWithTypedId<ColumnPreferences, string>>();
-            OrderStatusCodesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
-            ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
-            OrderTrackingRepository = MockRepository.GenerateStub<IRepository<OrderTracking>>();
+                new Moq.Mock<IRepositoryWithTypedId<ColumnPreferences, string>>().Object;
+            OrderStatusCodesRepository = new Moq.Mock<IRepositoryWithTypedId<OrderStatusCode, string>>().Object;
+            ApprovalRepository = new Moq.Mock<IRepository<Approval>>().Object;
+            OrderTrackingRepository = new Moq.Mock<IRepository<OrderTracking>>().Object;
 
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
+            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
             RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
             RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodesRepository;
             RepositoryFactory.ApprovalRepository = ApprovalRepository;
             RepositoryFactory.OrderTrackingRepository = OrderTrackingRepository;
 
-            OrderTrackingHistoryRepository = MockRepository.GenerateStub<IRepository<OrderTrackingHistory>>();
-            CommentHistoryRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<CommentHistory, Guid>>();
+            OrderTrackingHistoryRepository = new Moq.Mock<IRepository<OrderTrackingHistory>>().Object;
+            CommentHistoryRepository = new Moq.Mock<IRepositoryWithTypedId<CommentHistory, Guid>>().Object;
 
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
+            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
             QueryRepositoryFactory.OrderTrackingHistoryRepository = OrderTrackingHistoryRepository;
             QueryRepositoryFactory.CommentHistoryRepository = CommentHistoryRepository;
 
-            OrderService = MockRepository.GenerateStub<IOrderService>();
+            OrderService = new Moq.Mock<IOrderService>().Object;
             
-            Controller = new TestControllerBuilder().CreateController<HistoryController>(RepositoryFactory, OrderService);
-        }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            Controller = new HistoryController(RepositoryFactory, OrderService);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
             
             //Fixes problem where .Fetch is used in a query
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
@@ -80,13 +75,13 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
         public HistoryControllerTests()
         {
-            OrderHistoryRepository = MockRepository.GenerateStub<IRepository<OrderHistory>>();
+            OrderHistoryRepository = new Moq.Mock<IRepository<OrderHistory>>().Object;
             SetupData1();
 
             //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            //    Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
 
-            //Controller.Repository.Expect(a => a.OfType<History>()).Return(HistoryRepository).Repeat.Any();	
+            //Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<History>()).Returns(HistoryRepository);	
         }
 
         private void SetupData1()
@@ -98,7 +93,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("AM");
+            orderStatusCode.Id = "AM";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -107,7 +102,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("AP");
+            orderStatusCode.Id = "AP";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -116,7 +111,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = false;
-            orderStatusCode.SetIdTo("CA");
+            orderStatusCode.Id = "CA";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -125,7 +120,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = false;
-            orderStatusCode.SetIdTo("CN");
+            orderStatusCode.Id = "CN";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -134,7 +129,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("CP");
+            orderStatusCode.Id = "CP";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -143,7 +138,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("PR");
+            orderStatusCode.Id = "PR";
             orderStatusCodes.Add(orderStatusCode);
 
 
@@ -153,7 +148,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = false;
-            orderStatusCode.SetIdTo("RQ");
+            orderStatusCode.Id = "RQ";
             orderStatusCodes.Add(orderStatusCode);
 
             new FakeOrderStatusCodes(0, OrderStatusCodesRepository, orderStatusCodes, true);

@@ -51,7 +51,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Policy = Role.Codes.EmulationUser)]
-        public async Task<IActionResult> Emulate(string id /* Login ID*/)
+        public async Task<ActionResult> Emulate(string id /* Login ID*/)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -91,7 +91,7 @@ namespace Purchasing.Mvc.Controllers
         /// Just a signout, without the hassle of signing out of CAS.  Ends emulated credentials.
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> EndEmulate()
+        public async Task<ActionResult> EndEmulate()
         {
             await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
