@@ -400,16 +400,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var message = "Fake Message";
             int failCount = 2;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(true);
-            Moq.Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(
-                Moq.It.IsAny<int>(),
-                Moq.It.IsAny<Role>(),
-                Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<int>(),
-                Moq.It.IsAny<string>(),
-                ref failCount,
-                ref failCount,
-                Moq.It.IsAny<List<KeyValuePair<string, string>>>())
-                ).Returns(7);
 
             var ldapUser = new DirectoryUser();
             ldapUser.FirstName = "Me";
@@ -424,6 +414,20 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             postModel.Users.Add("Me");
             postModel.Users.Add("2");
             postModel.Users.Add("3");
+
+            var args = new Dictionary<int, object[]>();
+            var argsIndex = 0;
+            Moq.Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(
+                Moq.It.IsAny<int>(),
+                Moq.It.IsAny<Role>(),
+                Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<int>(),
+                Moq.It.IsAny<string>(),
+                ref failCount,
+                ref failCount,
+                Moq.It.IsAny<List<KeyValuePair<string, string>>>())
+                ).Returns(7)
+                .Callback((object[] x) => args[argsIndex++] = x);
             #endregion Arrange
 
             #region Act
@@ -445,22 +449,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 ref failCount,
                  ref failCount,
                 Moq.It.IsAny<List<KeyValuePair<string, string>>>()), Moq.Times.Exactly(4));
-//TODO: Arrange
 
-            var args = new Dictionary<int, object[]>();
-
-            var argsIndex = 0;
-
-            Moq.Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(Moq.It.IsAny<int>(),
-                Moq.It.IsAny<Role>(),
-                Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<int>(),
-                Moq.It.IsAny<string>(),
-                ref failCount,
-                ref failCount,
-                Moq.It.IsAny<List<KeyValuePair<string, string>>>()))
-                .Callback((object[] x) => args[argsIndex++] = x);
-//ENDTODO
  
             Assert.AreEqual(4, args.Count());
             Assert.AreEqual(3, args[0][0]);

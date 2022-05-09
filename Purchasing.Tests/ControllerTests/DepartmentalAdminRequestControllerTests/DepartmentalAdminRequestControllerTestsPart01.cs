@@ -365,6 +365,9 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.PhoneNumber = "333 321-1234";
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.DepartmentSize = 1;
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.SharedOrCluster = true;
+            DepartmentalAdminRequest args = default;
+            Moq.Mock.Get(DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
+                .Callback<DepartmentalAdminRequest>((x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -376,11 +379,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual("Request created.", Controller.Message);
             Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(
                 a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()));
-//TODO: Arrange
-            DepartmentalAdminRequest args = default;
-            Moq.Mock.Get(DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
-                .Callback<DepartmentalAdminRequest>((x) => args = x);
-//ENDTODO
+
             Assert.IsNotNull(args);
             Assert.AreEqual("me", args.Id);
             Assert.AreEqual("FirstName", args.FirstName);

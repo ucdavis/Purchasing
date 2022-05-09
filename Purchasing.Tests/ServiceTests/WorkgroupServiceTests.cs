@@ -321,6 +321,9 @@ namespace Purchasing.Tests.ServiceTests
             var notAdded = new List<KeyValuePair<string, string>>();
             new FakeRoles(3, RepositoryFactory.RoleRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
+            WorkgroupPermission args = default;
+            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -334,11 +337,6 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(0, notAdded.Count());
             Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()), Moq.Times.Never());
             Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()));
-            //TODO: Arrange
-            WorkgroupPermission args = default;
-            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()))
-                .Callback<WorkgroupPermission>(x => args = x);
-            //ENDTODO 
             Assert.IsNotNull(args);
             Assert.AreEqual("2", args.Role.Id);
             Assert.AreEqual("2", args.User.Id);
@@ -400,6 +398,9 @@ namespace Purchasing.Tests.ServiceTests
             directoryUser.FirstName = "F3";
             directoryUser.LastName = "Last3";
             Moq.Mock.Get(SearchService).Setup(a => a.FindUser("LDAP")).Returns(directoryUser);
+            WorkgroupPermission args = default;
+            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -414,11 +415,6 @@ namespace Purchasing.Tests.ServiceTests
             Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()), Moq.Times.Never());
             Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()), Moq.Times.Never());
             Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()));
-            //TODO: Arrange
-            WorkgroupPermission args = default;
-            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()))
-                .Callback<WorkgroupPermission>(x => args = x);
-            //ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("2", args.Role.Id);
             Assert.AreEqual("3", args.User.Id);
@@ -451,6 +447,9 @@ namespace Purchasing.Tests.ServiceTests
             directoryUser.FirstName = "F3";
             directoryUser.LastName = "Last3";
             Moq.Mock.Get(SearchService).Setup(a => a.FindUser("LDAP")).Returns(directoryUser);
+            WorkgroupPermission args = default;
+            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -465,11 +464,6 @@ namespace Purchasing.Tests.ServiceTests
             Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
             Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()));
             Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()));
-            //TODO: Arrange
-            WorkgroupPermission args = default;
-            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupPermission>()))
-                .Callback<WorkgroupPermission>(x => args = x);
-            //ENDTODO
             Assert.IsNotNull(args);
             Assert.AreEqual("2", args.Role.Id);
             Assert.AreEqual("3", args.User.Id);

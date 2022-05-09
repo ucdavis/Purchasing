@@ -86,6 +86,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
             var worgroupToDelete = CreateValidEntities.Workgroup(3);
             worgroupToDelete.Id = 3;
+            Workgroup args = default;
+            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -97,11 +100,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Name3 was disabled successfully", Controller.Message);
             Moq.Mock.Get(WorkgroupRepository).Verify(a => a.Remove(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
             Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
-//TODO: Arrange
-            Workgroup args = default;
-            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
-                .Callback<Workgroup>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);
             Assert.IsFalse(args.IsActive);

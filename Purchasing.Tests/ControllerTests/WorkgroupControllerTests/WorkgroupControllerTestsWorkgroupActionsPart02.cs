@@ -269,6 +269,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             var orgs = new[] { "1", "7" };
+            Workgroup args = default;
+            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
 
             #endregion Arrange
 
@@ -280,11 +283,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.AreEqual("Name3 was modified successfully", Controller.Message);
             Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
-//TODO: Arrange
-            Workgroup args = default;
-            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
-                .Callback<Workgroup>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);
             Assert.AreEqual(3, args.Organizations.Count());
@@ -301,6 +300,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             var orgs = new[] { "1", "3" };
+            Workgroup args = default;
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -311,11 +313,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.AreEqual("Name3 was modified successfully", Controller.Message);
             Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
-//TODO: Arrange
-            Workgroup args = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
-                .Callback<Workgroup>(x => args = x);
-//ENDTODO
+
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);
             Assert.AreEqual(3, args.Organizations.Count());

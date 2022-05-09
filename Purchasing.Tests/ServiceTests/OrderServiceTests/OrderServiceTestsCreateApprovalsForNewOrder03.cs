@@ -164,6 +164,9 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals[0].TargetUser = order.CreatedBy;
             autoApprovals[0].Account = null;
             new FakeAutoApprovals(0, AutoAprovalRepository, autoApprovals);
+            Approval args = default;
+            Moq.Mock.Get(EventService).Setup(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()))
+                .Callback<Order, Approval>((_, x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -173,11 +176,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #region Assert
             Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(2));
             Moq.Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()));
-//TODO: Arrange
-            Approval args = default;
-            Moq.Mock.Get(EventService).Setup(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()))
-                .Callback<Order, Approval>((_, x) => args = x);
-//ENDTODO
+
             Assert.AreEqual(OrderStatusCode.Codes.Approver, args.StatusCode.Id);
 
             Assert.AreEqual(3, order.Approvals.Count);

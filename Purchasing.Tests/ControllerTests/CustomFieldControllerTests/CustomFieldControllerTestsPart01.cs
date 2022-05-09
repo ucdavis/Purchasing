@@ -42,9 +42,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         {
             #region Arrange
             new FakeOrganizations(3, OrganazationRepository);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a =>a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), 
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(false);
+                out Moq.It.Ref<string>.IsAny)).Returns(false)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -57,13 +59,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), 
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), 
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO 
+ 
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name2", ((Organization)args[1]).Name);
             #endregion Assert		
@@ -74,9 +70,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         {
             #region Arrange
             new FakeOrganizations(3, OrganazationRepository);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(true);
+                out Moq.It.Ref<string>.IsAny)).Returns(true)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -91,13 +89,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name2", ((Organization)args[1]).Name);
             #endregion Assert
@@ -128,9 +120,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         {
             #region Arrange
             new FakeOrganizations(3, OrganazationRepository);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(false);
+                out Moq.It.Ref<string>.IsAny)).Returns(false)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -143,13 +137,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name2", ((Organization)args[1]).Name);
             #endregion Assert
@@ -160,9 +148,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         {
             #region Arrange
             new FakeOrganizations(3, OrganazationRepository);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(true);
+                out Moq.It.Ref<string>.IsAny)).Returns(true)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -182,13 +172,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name2", ((Organization)args[1]).Name);
             #endregion Assert
@@ -219,9 +203,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         {
             #region Arrange
             new FakeOrganizations(3, OrganazationRepository);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(false);
+                out Moq.It.Ref<string>.IsAny)).Returns(false)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -234,13 +220,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name2", ((Organization)args[1]).Name);
             #endregion Assert
@@ -287,6 +267,9 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny)).Returns(true);
             var customField = CreateValidEntities.CustomField(1);
+            CustomField args = default;
+            Moq.Mock.Get( CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
+                .Callback<CustomField>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -303,11 +286,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()));
 
             Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()));
-//TODO: Arrange
-            CustomField args = default;
-            Moq.Mock.Get( CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
-                .Callback<CustomField>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual("Name1", args.Name);
             #endregion Assert

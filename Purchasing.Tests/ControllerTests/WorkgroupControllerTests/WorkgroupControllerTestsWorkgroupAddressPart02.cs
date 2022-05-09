@@ -158,6 +158,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForAddress();
+            Workgroup args = default;
+            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -170,11 +173,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
             Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
-//TODO: Arrange
-            Workgroup args = default;
-            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
-                .Callback<Workgroup>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());
             Assert.IsFalse(args.Addresses[0].IsActive);
@@ -188,6 +187,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForAddress();
+            Workgroup args = default;
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -200,11 +202,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
             Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
-//TODO: Arrange
-            Workgroup args = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
-                .Callback<Workgroup>(x => args = x);
-//ENDTODO
+
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());
             Assert.IsTrue(args.Addresses[0].IsActive);
@@ -218,6 +216,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForAddress();
+            Workgroup args = default;
+            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -230,11 +231,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
             Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
-//TODO: Arrange
-            Workgroup args = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
-                .Callback<Workgroup>(x => args = x);
-//ENDTODO
+
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());
             Assert.IsTrue(args.Addresses[0].IsActive);

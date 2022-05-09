@@ -394,6 +394,9 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToEdit.User = null;
             var saveLessThan = AutoApprovalRepository.GetNullableById(3).LessThan;
             autoApprovalToEdit.LessThan = !saveLessThan;
+            AutoApproval args = default;
+            Moq.Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -406,11 +409,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.AreEqual(true, result.RouteValues["showAll"]);
 
             Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
-//TODO: Arrange
-            AutoApproval args = default;
-            Moq.Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
-                .Callback<AutoApproval>(x => args = x);
-//ENDTODO
+
             Assert.AreEqual(3, args.Id);
             Assert.AreEqual((decimal)12.44, args.MaxAmount);
             Assert.IsNotNull(args.User);

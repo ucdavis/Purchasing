@@ -267,6 +267,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
+            WorkgroupPermission args = default;
+            Moq.Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -282,11 +285,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Person successfully removed from role.", Controller.Message);
 
             Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()));
-//TODO: Arrange
-            WorkgroupPermission args = default;
-            Moq.Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
-                .Callback<WorkgroupPermission>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual(18, args.Id);
 
@@ -299,6 +298,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForPeopleList();
+            WorkgroupPermission args = default;
+            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -314,11 +316,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Person successfully removed from role.", Controller.Message);
 
             Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()));
-//TODO: Arrange
-            WorkgroupPermission args = default;
-            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
-                .Callback<WorkgroupPermission>(x => args = x);
-//ENDTODO
+
             Assert.IsNotNull(args);
             Assert.AreEqual(18, args.Id);
 
@@ -415,6 +413,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForPeopleList();
             var rolesToRemove  = new string[1];
             rolesToRemove[0] = Role.Codes.Purchaser;
+            WorkgroupPermission args = default;
+            Moq.Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -428,11 +429,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(Role.Codes.Purchaser, result.RouteValues["roleFilter"]);
 
             Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()));
-//TODO: Arrange
-            WorkgroupPermission args = default;
-            Moq.Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
-                .Callback<WorkgroupPermission>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual(21, args.Id);
             Assert.AreEqual("1 role removed from FirstName3 LastName3", Controller.Message);
@@ -451,6 +448,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             rolesToRemove[1] = Role.Codes.Requester;
             rolesToRemove[2] = Role.Codes.AccountManager;
             rolesToRemove[3] = Role.Codes.Approver;
+            var args = new Dictionary<int, object[]>();
+            var argsIndex = 0;
+            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback((object[] x) => args[argsIndex++] = x);
             #endregion Arrange
 
             #region Act
@@ -464,12 +465,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(Role.Codes.Purchaser, result.RouteValues["roleFilter"]);
 
             Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()), Moq.Times.Exactly(4));
-//TODO: Arrange
-            var args = new Dictionary<int, object[]>();
-            var argsIndex = 0;
-            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
-                .Callback((object[] x) => args[argsIndex++] = x);
-//ENDTODO));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(4, args.Count());
             Assert.AreEqual(21, ((WorkgroupPermission)args[0][0]).Id);

@@ -96,6 +96,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             }
             workgroupVendors[2].IsActive = false;
             new FakeWorkgroupVendors(3, WorkgroupVendorRepository, workgroupVendors);
+            WorkgroupVendor args = default;
+            Moq.Mock.Get( WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -110,11 +113,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
             Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()));
-//TODO: Arrange
-            WorkgroupVendor args = default;
-            Moq.Mock.Get( WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
-                .Callback<WorkgroupVendor>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual(2, args.Id);
             Assert.IsFalse(args.IsActive);
@@ -137,6 +136,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             }
             workgroupVendors[2].IsActive = false;
             new FakeWorkgroupVendors(3, WorkgroupVendorRepository, workgroupVendors);
+            WorkgroupVendor args = default;
+            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -151,11 +153,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
             Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()));
-//TODO: Arrange
-            WorkgroupVendor args = default;
-            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
-                .Callback<WorkgroupVendor>(x => args = x);
-//ENDTODO
+
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Id);
             Assert.IsFalse(args.IsActive);

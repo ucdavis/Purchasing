@@ -929,6 +929,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroupPermissions[6].IsFullFeatured = true; //different from parent
 
             new FakeWorkgroupPermissions(0, RepositoryFactory.WorkgroupPermissionRepository, workgroupPermissions);
+            WorkgroupPermission args = default;
+            Moq.Mock.Get(RepositoryFactory.WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -938,11 +941,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Moq.Mock.Get(RepositoryFactory.WorkgroupPermissionRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()));
-//TODO: Arrange
-            WorkgroupPermission args = default;
-            Moq.Mock.Get(RepositoryFactory.WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
-                .Callback<WorkgroupPermission>(x => args = x);
-//ENDTODO 
+ 
             Assert.AreEqual(7, args.Id);
             Assert.AreEqual("1 permissions removed", Controller.Message);
             #endregion Assert

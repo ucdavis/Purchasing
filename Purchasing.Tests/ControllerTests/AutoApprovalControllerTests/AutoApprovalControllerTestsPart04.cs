@@ -233,6 +233,9 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
             SetupData3();
+            AutoApproval args = default;
+            Moq.Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -245,11 +248,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.AreEqual(true, result.RouteValues["showAll"]);
             Assert.AreEqual("AutoApproval Deactivated Successfully", Controller.Message);
             Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
-//TODO: Arrange
-            AutoApproval args = default;
-            Moq.Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
-                .Callback<AutoApproval>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.IsFalse(args.IsActive);
             Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());

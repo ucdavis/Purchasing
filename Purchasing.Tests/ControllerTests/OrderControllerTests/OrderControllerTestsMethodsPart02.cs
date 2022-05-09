@@ -687,10 +687,20 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Justification = "Some Just";
             orderViewModel.FormSaveId = SpecificGuid.GetGuid(7);
 
+            Order OrderArgs = default;
             Moq.Mock.Get(RepositoryFactory.OrderRepository)
                 .Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(SetOrderInstance); //Set the ID to 99 when it is saved
-
+                .Callback<Order>((x) => 
+                {
+                    SetOrderInstance(x);//Set the ID to 99 when it is saved
+                    OrderArgs = x;
+                }); 
+            object[] orderServiceArgs2 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.HandleSavedForm(Moq.It.IsAny<Order>(), Moq.It.IsAny<Guid>()))
+                .Callback((object[] x) => orderServiceArgs2 = x);
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
 
@@ -701,11 +711,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("Some Just", ((Order)orderServiceArgs1[0]).Justification);
             Assert.AreEqual("acct123", orderServiceArgs1[2]);
             Assert.AreEqual("some app", orderServiceArgs1[3]);
@@ -713,20 +719,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.AreEqual(" 3 4 7", ((int[])orderServiceArgs1[1]).IntArrayToString());
 
             Moq.Mock.Get(OrderService).Verify(a => a.HandleSavedForm(Moq.It.IsAny<Order>(), Moq.It.IsAny<Guid>()));
-//TODO: Arrange
-            object[] orderServiceArgs2 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.HandleSavedForm(Moq.It.IsAny<Order>(), Moq.It.IsAny<Guid>()))
-                .Callback((object[] x) => orderServiceArgs2 = x);
-//ENDTODO
+
             Assert.AreEqual("Some Just", ((Order)orderServiceArgs2[0]).Justification);
             Assert.AreEqual(SpecificGuid.GetGuid(7), ((Guid)orderServiceArgs2[1]));
 
             Moq.Mock.Get(OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order OrderArgs = default;
-            Moq.Mock.Get( OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>((x) => OrderArgs = x);
-//ENDTODO 
+ 
 
             Assert.AreEqual(99, result.RouteValues["id"]);
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
@@ -755,6 +753,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Description = "Test";
             orderViewModel.Items[0].Quantity = "0";
             orderViewModel.Items[0].Price = "0";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -765,11 +766,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).Workgroup.Name);
             #endregion Assert		
         }
@@ -795,6 +792,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Vendor = 0;
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -805,11 +805,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(null, ((Order)orderServiceArgs1[0]).Vendor);
             #endregion Assert
         }
@@ -839,6 +835,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Vendor = 2;
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -849,11 +848,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).Vendor.Name);
             #endregion Assert
         }
@@ -882,6 +877,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShipAddress = 2;
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -892,11 +890,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).Address.Name);
             #endregion Assert
         }
@@ -925,6 +919,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShippingType = "2";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -935,11 +932,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("Name2", ((Order)orderServiceArgs1[0]).ShippingType.Name);
             #endregion Assert
         }
@@ -965,6 +958,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.DateNeeded = DateTime.UtcNow.ToPacificTime().AddDays(3).Date;
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -975,11 +971,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(DateTime.UtcNow.ToPacificTime().AddDays(3).Date, ((Order)orderServiceArgs1[0]).DateNeeded);
             #endregion Assert
         }
@@ -1005,6 +997,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Backorder = "true";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -1015,11 +1010,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(true, ((Order)orderServiceArgs1[0]).AllowBackorder);
             #endregion Assert
         }
@@ -1045,6 +1036,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Backorder = string.Empty;
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -1055,11 +1049,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).AllowBackorder);
             #endregion Assert
         }
@@ -1089,6 +1079,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.DateNeeded = DateTime.UtcNow.ToPacificTime().AddDays(3).Date;
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -1099,11 +1092,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("Name77", ((Order)orderServiceArgs1[0]).Organization.Name);
             #endregion Assert
         }
@@ -1130,6 +1119,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShipTo = "Some Ship";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -1140,11 +1132,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("Some Ship", ((Order)orderServiceArgs1[0]).DeliverTo);
             #endregion Assert
         }
@@ -1170,6 +1158,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShipEmail = "ship@testy.com";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -1180,11 +1171,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("ship@testy.com", ((Order)orderServiceArgs1[0]).DeliverToEmail);
             #endregion Assert
         }
@@ -1210,6 +1197,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.ShipPhone = "222 333 4444";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             #endregion Arrange
 
             #region Act
@@ -1220,11 +1210,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("222 333 4444", ((Order)orderServiceArgs1[0]).DeliverToPhone);
             #endregion Assert
         }
@@ -1257,6 +1243,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             }
             orderTypes[1].Id = OrderType.Types.OrderRequest;
             new FakeOrderTypes(0, RepositoryFactory.OrderTypeRepository, orderTypes, true);
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
             
             #endregion Arrange
 
@@ -1268,11 +1257,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(OrderType.Types.OrderRequest, ((Order)orderServiceArgs1[0]).OrderType.Id);
             #endregion Assert
         }
@@ -1299,6 +1284,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Description = "Test";
             orderViewModel.Items[0].Quantity = "0";
             orderViewModel.Items[0].Price = "0";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1310,11 +1298,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("FirstName2", ((Order)orderServiceArgs1[0]).CreatedBy.FirstName);
             #endregion Assert
         }
@@ -1341,6 +1325,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Justification = "Some Just";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1352,11 +1339,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual("Some Just", ((Order)orderServiceArgs1[0]).Justification);
             #endregion Assert
         }
@@ -1385,6 +1368,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Comments = "This is my Comment";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1396,11 +1382,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(1, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
             Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
@@ -1432,6 +1414,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Comments = "  ";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1443,11 +1428,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
             //Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
@@ -1478,6 +1459,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Comments = string.Empty;
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1489,11 +1473,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
             //Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
@@ -1525,6 +1505,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.Comments = null;
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1536,11 +1519,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).OrderComments.Count);
             //Assert.AreEqual("This is my Comment", ((Order)orderServiceArgs1[0]).OrderComments[0].Text);
             //Assert.AreEqual(DateTime.UtcNow.ToPacificTime().Date, ((Order)orderServiceArgs1[0]).OrderComments[0].DateCreated.Date);
@@ -1571,6 +1550,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.FileIds = null;
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1582,11 +1564,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).Attachments.Count);
             #endregion Assert
         }
@@ -1616,6 +1594,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.FileIds = new[]{SpecificGuid.GetGuid(2)};
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1627,11 +1608,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).Attachments.Count); //This is now zero because the attachments get added after the order is saved
             
             #endregion Assert
@@ -1660,6 +1637,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
 
             orderViewModel.FileIds = new[] { SpecificGuid.GetGuid(2), SpecificGuid.GetGuid(3), SpecificGuid.GetGuid(4) };
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1671,11 +1651,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(0, ((Order)orderServiceArgs1[0]).Attachments.Count); //This is zero now because the attachments are added to the order after the order is saved
             //Assert.AreEqual(SpecificGuid.GetGuid(2), ((Order)orderServiceArgs1[0]).Attachments[0].Id);
             //Assert.AreEqual(SpecificGuid.GetGuid(3), ((Order)orderServiceArgs1[0]).Attachments[1].Id);
@@ -1714,6 +1690,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.CustomFields[0] = new OrderViewModel.CustomField{Answer = "Answer1", Id = 1};
             orderViewModel.CustomFields[1] = new OrderViewModel.CustomField { Answer = " ", Id = 2 };
             orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1725,11 +1704,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(2, ((Order)orderServiceArgs1[0]).CustomFieldAnswers.Count);
             Assert.AreEqual("Name1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].CustomField.Name);
             Assert.AreEqual("Name3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].CustomField.Name);
@@ -1769,6 +1744,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.CustomFields[0] = new OrderViewModel.CustomField { Answer = "Answer1", Id = 1 };
             orderViewModel.CustomFields[1] = new OrderViewModel.CustomField { Answer = null, Id = 2 };
             orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1780,11 +1758,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(2, ((Order)orderServiceArgs1[0]).CustomFieldAnswers.Count);
             Assert.AreEqual("Name1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].CustomField.Name);
             Assert.AreEqual("Name3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].CustomField.Name);
@@ -1824,6 +1798,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.CustomFields[0] = new OrderViewModel.CustomField { Answer = "Answer1", Id = 1 };
             orderViewModel.CustomFields[1] = new OrderViewModel.CustomField { Answer = string.Empty, Id = 2 };
             orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1835,11 +1812,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(2, ((Order)orderServiceArgs1[0]).CustomFieldAnswers.Count);
             Assert.AreEqual("Name1", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[0].CustomField.Name);
             Assert.AreEqual("Name3", ((Order)orderServiceArgs1[0]).CustomFieldAnswers[1].CustomField.Name);
@@ -1877,6 +1850,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Restricted.StorageSite = "SomeStorage";
             orderViewModel.Restricted.Custodian = "Somebody";
             orderViewModel.Restricted.Users = "Someone who is authorized";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1888,11 +1864,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(true, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
             Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
             Assert.AreEqual("SomeUse", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().Use);
@@ -1930,6 +1902,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Restricted.StorageSite = "SomeStorage";
             orderViewModel.Restricted.Custodian = "Somebody";
             orderViewModel.Restricted.Users = "Someone who is authorized";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1941,11 +1916,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
             Assert.IsNull(((Order)orderServiceArgs1[0]).GetAuthorizationInfo());
             //Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
@@ -1984,6 +1955,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Restricted.StorageSite = "SomeStorage";
             orderViewModel.Restricted.Custodian = "Somebody";
             orderViewModel.Restricted.Users = "Someone who is authorized";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -1995,11 +1969,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
             Assert.IsNull(((Order)orderServiceArgs1[0]).GetAuthorizationInfo());
             //Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
@@ -2038,6 +2008,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             //orderViewModel.Restricted.StorageSite = "SomeStorage";
             //orderViewModel.Restricted.Custodian = "Somebody";
             //orderViewModel.Restricted.Users = "Someone who is authorized";
+            object[] orderServiceArgs1 = default;
+            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
+                .Callback((object[] x) => orderServiceArgs1 = x);
 
             #endregion Arrange
 
@@ -2049,11 +2022,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
-//TODO: Arrange
-            object[] orderServiceArgs1 = default;
-            Moq.Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(false, ((Order)orderServiceArgs1[0]).HasControlledSubstance);
             Assert.IsNull(((Order)orderServiceArgs1[0]).GetAuthorizationInfo());
             //Assert.AreEqual("SomeClass", ((Order)orderServiceArgs1[0]).GetAuthorizationInfo().ClassSchedule);
@@ -2086,6 +2055,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Description = "Test";
             orderViewModel.Items[0].Quantity = "0";
             orderViewModel.Items[0].Price = "0";
+            object[] bugTrackingServiceArgs1 = default;
+            Moq.Mock.Get(BugTrackingService).Setup(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()))
+                .Callback((object[] x) => bugTrackingServiceArgs1 = x);
 
 
             #endregion Arrange
@@ -2100,11 +2072,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
 
             Moq.Mock.Get(BugTrackingService).Verify(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()));
-//TODO: Arrange
-            object[] bugTrackingServiceArgs1 = default;
-            Moq.Mock.Get(BugTrackingService).Setup(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()))
-                .Callback((object[] x) => bugTrackingServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(1.23m, ((Order)bugTrackingServiceArgs1[0]).FreightAmount);
             Assert.AreEqual(null, bugTrackingServiceArgs1[1]);
             Assert.AreEqual("$1.23", ((OrderViewModel)bugTrackingServiceArgs1[2]).Freight);
@@ -2136,6 +2104,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Splits[0].Account = "Acct1";
             orderViewModel.Splits[0].Amount = "35";
             orderViewModel.Splits[0].SubAccount = "SubAcct1";
+            object[] bugTrackingServiceArgs1 = default;
+            Moq.Mock.Get(BugTrackingService).Setup(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()))
+                .Callback((object[] x) => bugTrackingServiceArgs1 = x);
 
 
             #endregion Arrange
@@ -2150,11 +2121,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Moq.Mock.Get(OrderService).Verify(a => a.CreateApprovalsForNewOrder(Moq.It.IsAny<Order>(), Moq.It.IsAny<int[]>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<string>()));
 
             Moq.Mock.Get(BugTrackingService).Verify(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()));
-//TODO: Arrange
-            object[] bugTrackingServiceArgs1 = default;
-            Moq.Mock.Get(BugTrackingService).Setup(a => a.CheckForClearedOutSubAccounts(Moq.It.IsAny<Order>(), Moq.It.IsAny<OrderViewModel.Split[]>(), Moq.It.IsAny<OrderViewModel>()))
-                .Callback((object[] x) => bugTrackingServiceArgs1 = x);
-//ENDTODO
+
             Assert.AreEqual(1.23m, ((Order)bugTrackingServiceArgs1[0]).FreightAmount);
             Assert.AreEqual("Acct1", ((OrderViewModel.Split[])bugTrackingServiceArgs1[1])[0].Account);
             Assert.AreEqual("35", ((OrderViewModel.Split[])bugTrackingServiceArgs1[1])[0].Amount);
@@ -2183,6 +2150,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Description = "Test";
             orderViewModel.Items[0].Quantity = "0";
             orderViewModel.Items[0].Price = "0";
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
 
 
             #endregion Arrange
@@ -2195,11 +2165,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order args = default;
-            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(x => args = x);
-//ENDTODO 
+ 
             Assert.AreEqual(7.99m, args.EstimatedTax);
             Assert.AreEqual(2.35m, args.ShippingAmount);
             Assert.AreEqual(1.23m, args.FreightAmount);
@@ -2226,6 +2192,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Description = "Test";
             orderViewModel.Items[0].Quantity = "0";
             orderViewModel.Items[0].Price = "0";
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
 
 
             #endregion Arrange
@@ -2238,11 +2207,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order args = default;
-            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(x => args = x);
-//ENDTODO
+
             Assert.AreEqual(7.99m, args.EstimatedTax);
             Assert.AreEqual(2.35m, args.ShippingAmount);
             Assert.AreEqual(1.23m, args.FreightAmount);
@@ -2269,6 +2234,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Description = "Test";
             orderViewModel.Items[0].Quantity = "0";
             orderViewModel.Items[0].Price = "0";
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
 
 
             #endregion Arrange
@@ -2281,11 +2249,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order args = default;
-            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(x => args = x);
-//ENDTODO
+
             Assert.AreEqual(7.25m, args.EstimatedTax); //Default
             Assert.AreEqual(0, args.ShippingAmount); //Couldn't parse. Default used
             Assert.AreEqual(0, args.FreightAmount); //Couldn't parse. Default used
@@ -2316,6 +2280,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             }
 
             orderViewModel.Items[1].Quantity = string.Empty;
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
 
             #endregion Arrange
 
@@ -2327,11 +2294,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order args = default;
-            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(x => args = x);
-//ENDTODO
+
             Assert.AreEqual(2, args.LineItems.Count);
             Assert.AreEqual(1.02m, args.LineItems[0].UnitPrice);
             Assert.AreEqual(1, args.LineItems[0].Quantity);
@@ -2367,6 +2330,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Url = "Url99";
 
             new FakeCommodity(3, RepositoryFactory.CommodityRepository);
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
 
             #endregion Arrange
 
@@ -2378,11 +2344,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order args = default;
-            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(x => args = x);
-//ENDTODO
+
             Assert.AreEqual(1, args.LineItems.Count);
             Assert.AreEqual(1.99m, args.LineItems[0].UnitPrice);
             Assert.AreEqual(14, args.LineItems[0].Quantity);
@@ -2423,6 +2385,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Url = "Url99";
 
             new FakeCommodity(3, RepositoryFactory.CommodityRepository);
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
 
             #endregion Arrange
 
@@ -2434,11 +2399,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order args = default;
-            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(x => args = x);
-//ENDTODO
+
             Assert.AreEqual(1, args.LineItems.Count);
             Assert.AreEqual(1.99m, args.LineItems[0].UnitPrice);
             Assert.AreEqual(14, args.LineItems[0].Quantity);
@@ -2495,6 +2456,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Splits[2].Project = "proj";
             orderViewModel.Splits[3].LineItemId = 2;
             orderViewModel.Splits[3].Account = string.Empty;
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
 
             #endregion Arrange
 
@@ -2506,11 +2470,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order args = default;
-            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(x => args = x);
-//ENDTODO
+
             Assert.AreEqual(2, args.LineItems.Count);
             Assert.AreEqual(3, args.Splits.Count);
             Assert.AreEqual("account1", args.Splits[0].Account);
@@ -2572,6 +2532,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Splits[2].Project = "proj";
             orderViewModel.Splits[3].LineItemId = 2;
             orderViewModel.Splits[3].Account = string.Empty;
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
 
             #endregion Arrange
 
@@ -2583,11 +2546,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order args = default;
-            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(x => args = x);
-//ENDTODO
+
             Assert.AreEqual(2, args.LineItems.Count);
             Assert.AreEqual(3, args.Splits.Count);
             Assert.AreEqual("account1", args.Splits[0].Account);
@@ -2651,6 +2610,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Splits[2].Project = "proj";
             orderViewModel.Splits[3].LineItemId = 2;
             orderViewModel.Splits[3].Account = string.Empty;
+            Order args = default;
+            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
+                .Callback<Order>(x => args = x);
 
             #endregion Arrange
 
@@ -2662,11 +2624,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual(Resources.NewOrder_Success, Controller.Message);
             Moq.Mock.Get(RepositoryFactory.OrderRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Order>()));
-//TODO: Arrange
-            Order args = default;
-            Moq.Mock.Get(RepositoryFactory.OrderRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Order>()))
-                .Callback<Order>(x => args = x);
-//ENDTODO
+
             Assert.AreEqual(2, args.LineItems.Count);
             Assert.AreEqual(1, args.Splits.Count);
             Assert.AreEqual("DifferentAcct", args.Splits[0].Account);

@@ -181,6 +181,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupAccountToCreate.AccountManager.Id = "AccMan";
             workgroupAccountToCreate.Approver.Id = "App";
             workgroupAccountToCreate.Purchaser.Id = "Purchase";
+            WorkgroupAccount args = default;
+            Moq.Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -194,11 +197,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Workgroup account saved.", Controller.Message);
 
             Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
-//TODO: Arrange
-            WorkgroupAccount args = default;
-            Moq.Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
-                .Callback<WorkgroupAccount>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Workgroup.Id);
             Assert.AreEqual("Blah", args.Account.Id);

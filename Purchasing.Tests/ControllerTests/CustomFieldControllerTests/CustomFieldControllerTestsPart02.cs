@@ -47,9 +47,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(false);
+                out Moq.It.Ref<string>.IsAny)).Returns(false)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -62,13 +64,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             #endregion Assert
@@ -83,9 +79,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(true);
+                out Moq.It.Ref<string>.IsAny)).Returns(true)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -105,13 +103,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             #endregion Assert
@@ -146,9 +138,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(false);
+                out Moq.It.Ref<string>.IsAny)).Returns(false)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -161,13 +155,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
@@ -183,11 +171,13 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(true);
             var customField = CreateValidEntities.CustomField(9);
             customField.Name = null;
+            object[] args = default;
+            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
+                Moq.It.IsAny<Organization>(),
+                out Moq.It.Ref<string>.IsAny)).Returns(true)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -207,13 +197,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             Controller.ModelState.AssertErrorsAre("The Name field is required.");
@@ -235,9 +219,15 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             var customField = CreateValidEntities.CustomField(8);
             customField.Organization = null;
 
+            var args = new Dictionary<int, object[]>();
+            var argsIndex = 0;
+            Moq.Mock.Get(CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
+                .Callback((object[] x) => args[argsIndex++] = x);
+            object[] ssargs = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(true);
+                out Moq.It.Ref<string>.IsAny)).Returns(true)
+                .Callback((object[] x) => ssargs = x);
             #endregion Arrange
 
             #region Act
@@ -252,23 +242,12 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] ssargs = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => ssargs = x);
-//ENDTODO
+
             Assert.IsNull(ssargs[0]);
             Assert.AreEqual("Name9", ((Organization)ssargs[1]).Name);
 
             Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Exactly(2));
-//TODO: Arrange
-            var args = new Dictionary<int, object[]>();
-            var argsIndex = 0;
-            Moq.Mock.Get(CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
-                .Callback((object[] x) => args[argsIndex++] = x);
-//ENDTODO
+
             Assert.AreEqual(2, args.Count());
             Assert.AreEqual("Name1", ((CustomField)args[0][0]).Name);
             Assert.AreEqual(false, ((CustomField)args[0][0]).IsActive);
@@ -308,9 +287,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(false);
+                out Moq.It.Ref<string>.IsAny)).Returns(false)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -323,13 +304,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             #endregion Assert
@@ -344,9 +319,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(true);
+                out Moq.It.Ref<string>.IsAny)).Returns(true)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -365,13 +342,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             #endregion Assert
@@ -408,9 +379,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization = CreateValidEntities.Organization(9);
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
+            object[] args = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(false);
+                out Moq.It.Ref<string>.IsAny)).Returns(false)
+                .Callback((object[] x) => args = x);
             #endregion Arrange
 
             #region Act
@@ -423,13 +396,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => args = x);
-//ENDTODO
+
             Assert.IsNull(args[0]);
             Assert.AreEqual("Name9", ((Organization)args[1]).Name);
             Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Never());
@@ -448,9 +415,14 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].IsActive = true;
 
             new FakeCustomFields(0, CustomFieldRepository, customFields);
+            CustomField args = default;
+            Moq.Mock.Get( CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
+                .Callback<CustomField>(x => args = x);
+            object[] ssargs = default;
             Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny)).Returns(true);
+                out Moq.It.Ref<string>.IsAny)).Returns(true)
+                .Callback((object[] x) => ssargs = x);
             #endregion Arrange
 
             #region Act
@@ -466,22 +438,12 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
                 Moq.It.IsAny<Organization>(),
                 out Moq.It.Ref<string>.IsAny));
-//TODO: Arrange
-            object[] ssargs = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(),
-                Moq.It.IsAny<Organization>(),
-                out Moq.It.Ref<string>.IsAny))
-                .Callback((object[] x) => ssargs = x);
-//ENDTODO
+
             Assert.IsNull(ssargs[0]);
             Assert.AreEqual("Name9", ((Organization)ssargs[1]).Name);
 
             Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()));
-//TODO: Arrange
-            CustomField args = default;
-            Moq.Mock.Get( CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
-                .Callback<CustomField>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual("Name1", args.Name);
             Assert.IsFalse(args.IsActive);
@@ -552,6 +514,10 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             customFields[0].Organization.Id = "8";
             new FakeCustomFields(0, CustomFieldRepository, customFields);
             var idsToReorder = new List<int>() { 1, 4,3,2,5,99 };
+            var args = new Dictionary<int, object[]>();
+            var argsIndex = 0;
+            Moq.Mock.Get(CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
+                .Callback((object[] x) => args[argsIndex++] = x);
             #endregion Arrange
 
             #region Act
@@ -563,12 +529,6 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual("true", result.JsonResultString);
             Moq.Mock.Get(CustomFieldRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()), Moq.Times.Exactly(4));            
-//TODO: Arrange
-            var args = new Dictionary<int, object[]>();
-            var argsIndex = 0;
-            Moq.Mock.Get(CustomFieldRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<CustomField>()))
-                .Callback((object[] x) => args[argsIndex++] = x);
-//ENDTODO)); 
             Assert.IsNotNull(args);
             Assert.AreEqual(4, ((CustomField)args[0][0]).Id);
             Assert.AreEqual(1, ((CustomField)args[0][0]).Rank);

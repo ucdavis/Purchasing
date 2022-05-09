@@ -251,6 +251,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Moq.Mock.Get(WorkgroupService).Setup(a => a.TransferValues(Moq.It.IsAny<WorkgroupVendor>(), ref Moq.It.Ref<WorkgroupVendor>.IsAny));
             new FakeWorkgroupVendors(0, WorkgroupVendorRepository);
+            WorkgroupVendor args = default;
+            Moq.Mock.Get( WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => args = x);
             
             #endregion Arrange
 
@@ -265,11 +268,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("WorkgroupVendor Created Successfully", Controller.Message);
 
             Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()));
-//TODO: Arrange
-            WorkgroupVendor args = default;
-            Moq.Mock.Get( WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
-                .Callback<WorkgroupVendor>(x => args = x);
-//ENDTODO 
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual("VendorId9", args.VendorId);
             Assert.AreEqual("tc9", args.VendorAddressTypeCode);
@@ -286,6 +285,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Moq.Mock.Get(WorkgroupService).Setup(a => a.TransferValues(Moq.It.IsAny<WorkgroupVendor>(), ref Moq.It.Ref<WorkgroupVendor>.IsAny));
 
             new FakeWorkgroupVendors(0, WorkgroupVendorRepository);
+            WorkgroupVendor args = default;
+            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -299,11 +301,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("WorkgroupVendor Created Successfully", Controller.Message);
 
             Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()));
-//TODO: Arrange
-            WorkgroupVendor args = default;
-            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
-                .Callback<WorkgroupVendor>(x => args = x);
-//ENDTODO
+
             Assert.IsNotNull(args);
             Assert.AreEqual("VendorId9", args.VendorId);
             Assert.AreEqual("tc9", args.VendorAddressTypeCode);
@@ -320,6 +318,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
             vendorToCreate.VendorId = null;
             Moq.Mock.Get(WorkgroupService).Setup(a => a.TransferValues(Moq.It.IsAny<WorkgroupVendor>(), ref Moq.It.Ref<WorkgroupVendor>.IsAny));
+            WorkgroupVendor args = default;
+            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -333,11 +334,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("WorkgroupVendor Created Successfully", Controller.Message);
 
             Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()));
-//TODO: Arrange
-            WorkgroupVendor args = default;
-            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
-                .Callback<WorkgroupVendor>(x => args = x);
-//ENDTODO
+
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args.VendorId);
             Assert.AreEqual("tc9", args.VendorAddressTypeCode);
@@ -360,6 +357,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
             vendorToCreate.VendorId = null;
             Moq.Mock.Get(WorkgroupService).Setup(a => a.TransferValues(Moq.It.IsAny<WorkgroupVendor>(), ref Moq.It.Ref<WorkgroupVendor>.IsAny));
+            WorkgroupVendor args = default;
+            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => args = x);
             #endregion Arrange
 
             #region Act
@@ -373,11 +373,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("WorkgroupVendor Created Successfully", Controller.Message);
 
             Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()));
-//TODO: Arrange
-            WorkgroupVendor args = default;
-            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
-                .Callback<WorkgroupVendor>(x => args = x);
-//ENDTODO
+
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args.VendorId);
             Assert.AreEqual("tc9", args.VendorAddressTypeCode);
