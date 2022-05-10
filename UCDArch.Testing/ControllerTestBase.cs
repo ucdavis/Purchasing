@@ -2,6 +2,7 @@ using Castle.Windsor;
 using UCDArch.Core.DomainModel;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Controller;
+using Moq;
 
 namespace UCDArch.Testing
 {
@@ -15,7 +16,7 @@ namespace UCDArch.Testing
 
             SetupController();
 
-            Controller.Repository = new Moq.Mock<IRepository>().Object;
+            Controller.Repository = new Mock<IRepository>().Object;
         }
 
         protected virtual void InitServiceLocator()
@@ -40,7 +41,7 @@ namespace UCDArch.Testing
 
         protected IRepository<T> FakeRepository<T>() where T : ValidatableObject
         {
-            return new Moq.Mock<IRepository<T>>().Object;
+            return new Mock<IRepository<T>>().Object;
         }
     }
 }

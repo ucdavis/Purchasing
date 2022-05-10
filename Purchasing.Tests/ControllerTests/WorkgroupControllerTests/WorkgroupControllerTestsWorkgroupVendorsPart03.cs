@@ -11,6 +11,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -32,8 +33,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()), Times.Never());
             #endregion Assert		
         }
 
@@ -54,8 +55,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Id);
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()), Times.Never());
             #endregion Assert		
         }
         #endregion DeleteWorkgroupVendor Get Tests
@@ -75,8 +76,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("WorkgroupVendor not found.", Controller.ErrorMessage);
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()), Times.Never());
             #endregion Assert
         }
 
@@ -97,7 +98,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupVendors[2].IsActive = false;
             new FakeWorkgroupVendors(3, WorkgroupVendorRepository, workgroupVendors);
             WorkgroupVendor args = default;
-            Moq.Mock.Get( WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+            Mock.Get( WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()))
                 .Callback<WorkgroupVendor>(x => args = x);
             #endregion Arrange
 
@@ -111,8 +112,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual("WorkgroupVendor Removed Successfully", Controller.Message);
 
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()));
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual(2, args.Id);
@@ -137,7 +138,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupVendors[2].IsActive = false;
             new FakeWorkgroupVendors(3, WorkgroupVendorRepository, workgroupVendors);
             WorkgroupVendor args = default;
-            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+            Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()))
                 .Callback<WorkgroupVendor>(x => args = x);
             #endregion Arrange
 
@@ -151,8 +152,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(4, result.RouteValues["id"]);
             Assert.AreEqual("WorkgroupVendor Removed Successfully", Controller.Message);
 
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()));
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Id);

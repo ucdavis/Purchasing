@@ -6,6 +6,7 @@ using Purchasing.Mvc.Controllers;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -67,8 +68,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Workgroup not found", Controller.ErrorMessage);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.Remove(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
+            Mock.Get(WorkgroupRepository).Verify(a => a.Remove(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert
         }
 
@@ -87,7 +88,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var worgroupToDelete = CreateValidEntities.Workgroup(3);
             worgroupToDelete.Id = 3;
             Workgroup args = default;
-            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
@@ -98,8 +99,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Name3 was disabled successfully", Controller.Message);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.Remove(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.Remove(It.IsAny<Workgroup>()), Times.Never());
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);

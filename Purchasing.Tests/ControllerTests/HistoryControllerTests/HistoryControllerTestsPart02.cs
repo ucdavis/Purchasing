@@ -13,6 +13,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 {
@@ -33,11 +34,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(
+            Mock.Get(OrderService).Setup(
                 a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -51,11 +52,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(
+            Mock.Get(OrderService).Verify(
                 a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -94,11 +95,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(
+            Mock.Get(OrderService).Setup(
                 a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -112,10 +113,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -158,10 +159,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -175,10 +176,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -220,10 +221,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -237,10 +238,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("yes", args[0]);
@@ -282,10 +283,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -299,10 +300,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
@@ -350,10 +351,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -367,10 +368,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("yes", args[0]);
@@ -418,10 +419,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -435,10 +436,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
@@ -486,10 +487,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -503,10 +504,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("no", args[0]);
@@ -556,10 +557,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -573,10 +574,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
@@ -643,10 +644,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -660,10 +661,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("no", args[0]);
@@ -730,10 +731,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -747,10 +748,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
@@ -815,10 +816,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -832,10 +833,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("no", args[0]);
@@ -901,10 +902,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -918,10 +919,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(), Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
@@ -963,10 +964,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -980,10 +981,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -1027,10 +1028,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -1044,10 +1045,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
@@ -1089,10 +1090,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -1106,10 +1107,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -1151,10 +1152,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -1168,10 +1169,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -1213,10 +1214,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -1230,10 +1231,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -1275,10 +1276,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
             object[] args = default;
-            Moq.Mock.Get(OrderService).Setup(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>())).Returns(
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
@@ -1292,10 +1293,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            Moq.Mock.Get(OrderService).Verify(a =>
-                a.GetAdministrativeIndexedListofOrders(Moq.It.IsAny<string>(),Moq.It.IsAny<string>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>(),
-                                  Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime?>()));
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAdministrativeIndexedListofOrders(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>(),
+                                  It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);

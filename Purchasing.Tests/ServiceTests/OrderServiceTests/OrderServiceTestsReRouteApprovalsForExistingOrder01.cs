@@ -13,6 +13,7 @@ using Purchasing.Tests;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {
@@ -48,8 +49,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(3));
-            Moq.Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(3));
+            Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
             Assert.AreEqual(3, order.Approvals.Count);
             Assert.IsNull(order.Approvals[0].User);
             Assert.IsFalse(order.Approvals[0].Completed);
@@ -82,8 +83,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             order.Approvals[2].StatusCode = OrderStatusCodeRepository.Queryable.Single(a => a.Id == OrderStatusCode.Codes.Purchaser);
 
             new FakeUsers(4, UserRepository);
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("123")).Returns(CreateValidEntities.User(66));
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("124")).Returns(CreateValidEntities.User(77));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("123")).Returns(CreateValidEntities.User(66));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("124")).Returns(CreateValidEntities.User(77));
             #endregion Arrange
 
             #region Act
@@ -91,9 +92,9 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(3));
-            Moq.Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
-            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser(Moq.It.IsAny<string>()), Moq.Times.Exactly(2));
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(3));
+            Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser(It.IsAny<string>()), Times.Exactly(2));
             Assert.AreEqual(4, order.Approvals.Count);
             Assert.AreEqual("LastName99", order.Approvals[0].User.LastName);
             Assert.IsFalse(order.Approvals[0].Completed);
@@ -166,8 +167,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             accounts[0].Id = "12345";
             //accounts[1].Id = "23456";
             new FakeAccounts(0, AccountRepository, accounts, true);
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("123")).Returns(CreateValidEntities.User(66));
-            //Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("124")).Returns(CreateValidEntities.User(77));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("123")).Returns(CreateValidEntities.User(66));
+            //Mock.Get(SecurityService).Setup(a => a.GetUser("124")).Returns(CreateValidEntities.User(77));
 
             new FakeAutoApprovals(3, AutoAprovalRepository);
             #endregion Arrange
@@ -177,9 +178,9 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(4));
-            Moq.Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
-            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser(Moq.It.IsAny<string>()), Moq.Times.Exactly(1));
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(4));
+            Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser(It.IsAny<string>()), Times.Exactly(1));
             Assert.AreEqual(5, order.Approvals.Count);
             Assert.AreEqual("LastName99", order.Approvals[0].User.LastName);
             Assert.AreEqual(OrderStatusCode.Codes.ConditionalApprover, order.Approvals[0].StatusCode.Id);
@@ -255,8 +256,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             accounts[0].Id = "12345";
             //accounts[1].Id = "23456";
             new FakeAccounts(0, AccountRepository, accounts, true);
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("123")).Returns(CreateValidEntities.User(66));
-            //Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("124")).Returns(CreateValidEntities.User(77));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("123")).Returns(CreateValidEntities.User(66));
+            //Mock.Get(SecurityService).Setup(a => a.GetUser("124")).Returns(CreateValidEntities.User(77));
 
             new FakeAutoApprovals(3, AutoAprovalRepository);
             #endregion Arrange
@@ -266,9 +267,9 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(4));
-            Moq.Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
-            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser(Moq.It.IsAny<string>()), Moq.Times.Exactly(1));
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(4));
+            Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser(It.IsAny<string>()), Times.Exactly(1));
             Assert.AreEqual(5, order.Approvals.Count);
             Assert.AreEqual("LastName99", order.Approvals[0].User.LastName);
             Assert.AreEqual(OrderStatusCode.Codes.ConditionalApprover, order.Approvals[0].StatusCode.Id);
@@ -353,9 +354,9 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(5));
-            Moq.Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
-            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser(Moq.It.IsAny<string>()), Moq.Times.Never());
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(5));
+            Mock.Get(EventService).Verify(a => a.OrderReRouted(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser(It.IsAny<string>()), Times.Never());
             Assert.AreEqual(6, order.Approvals.Count);
             Assert.AreEqual("LastName99", order.Approvals[0].User.LastName);
             Assert.AreEqual(OrderStatusCode.Codes.ConditionalApprover, order.Approvals[0].StatusCode.Id);

@@ -12,6 +12,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTests
 {
@@ -62,7 +63,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             {
                 #region Arrange
                 Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
-                Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns<DirectoryUser>(null);
+                Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns<DirectoryUser>(null);
                 thisFar = true;
                 #endregion Arrange
 
@@ -93,7 +94,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                EmailAddress = "me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
             #endregion Arrange
 
             #region Act
@@ -128,7 +129,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                EmailAddress = "me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
 
             var daRequests = new List<DepartmentalAdminRequest>();
             daRequests.Add(CreateValidEntities.DepartmentalAdminRequest(1));
@@ -229,7 +230,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             {
                 #region Arrange
                 Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
-                Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns<DirectoryUser>(null);
+                Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns<DirectoryUser>(null);
                 thisFar = true;
                 #endregion Arrange
 
@@ -261,7 +262,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                //"me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
             var departmentalAdminRequestViewModel = new DepartmentalAdminRequestViewModel();
             departmentalAdminRequestViewModel.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(1);
@@ -307,7 +308,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                //"me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("1")).Returns(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("1")).Returns(ldap);
             var dars = new List<DepartmentalAdminRequest>();
             dars.Add(CreateValidEntities.DepartmentalAdminRequest(1));
             dars[0].Organizations = "This Will Be Replaced";
@@ -339,7 +340,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual("333 321-1234", results.DepartmentalAdminRequest.PhoneNumber);
             Assert.AreEqual(true, results.DepartmentalAdminRequest.SharedOrCluster);
             Assert.AreEqual(1, results.DepartmentalAdminRequest.DepartmentSize);
-            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.GetNullableById("1"));
+            Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.GetNullableById("1"));
             #endregion Assert
         }
 
@@ -357,7 +358,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                EmailAddress = "me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
             var departmentalAdminRequestViewModel = new DepartmentalAdminRequestViewModel();
             departmentalAdminRequestViewModel.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(1);
@@ -366,7 +367,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.DepartmentSize = 1;
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.SharedOrCluster = true;
             DepartmentalAdminRequest args = default;
-            Moq.Mock.Get(DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()))
+            Mock.Get(DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(It.IsAny<DepartmentalAdminRequest>()))
                 .Callback<DepartmentalAdminRequest>((x) => args = x);
             #endregion Arrange
 
@@ -377,8 +378,8 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual("Request created.", Controller.Message);
-            Moq.Mock.Get(DepartmentalAdminRequestRepository).Verify(
-                a => a.EnsurePersistent(Moq.It.IsAny<DepartmentalAdminRequest>()));
+            Mock.Get(DepartmentalAdminRequestRepository).Verify(
+                a => a.EnsurePersistent(It.IsAny<DepartmentalAdminRequest>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("me", args.Id);

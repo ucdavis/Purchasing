@@ -9,6 +9,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -201,7 +202,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Name6 (6)", result.Organizations[5].ToString());
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual("Name3", result.Workgroup.Name);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert	
         }
 
@@ -236,7 +237,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Name2", result.Workgroup.Organizations[0].Name);
             Assert.AreEqual("Name4", result.Workgroup.Organizations[1].Name);
             Assert.AreEqual("Name3", result.Workgroup.Organizations[2].Name);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert
         }
 
@@ -270,7 +271,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForWorkgroupActions1();
             var orgs = new[] { "1", "7" };
             Workgroup args = default;
-            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => args = x);
 
             #endregion Arrange
@@ -282,7 +283,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Name3 was modified successfully", Controller.Message);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);
@@ -301,7 +302,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForWorkgroupActions1();
             var orgs = new[] { "1", "3" };
             Workgroup args = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
@@ -312,7 +313,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Name3 was modified successfully", Controller.Message);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);

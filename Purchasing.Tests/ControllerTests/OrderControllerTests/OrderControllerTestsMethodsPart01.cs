@@ -13,6 +13,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 {
@@ -45,7 +46,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                     users.Add(CreateValidEntities.User(i+1));
                     users[i].Id = (i + 1).ToString();
                 }
-                Moq.Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
+                Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
                 thisFar = true;
                 #endregion Arrange
 
@@ -76,7 +77,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 users[i].Id = (i + 1).ToString();
                 users[i].WorkgroupPermissions = new List<WorkgroupPermission>();
             }
-            Moq.Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
+            Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
             
             #endregion Arrange
 
@@ -114,7 +115,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             permissions[2].Workgroup.IsActive = false; //Don't use
             permissions[3].Workgroup.Administrative = true; //Can't request
             users[0].WorkgroupPermissions = permissions;
-            Moq.Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
+            Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
             #endregion Arrange
 
             #region Act
@@ -155,7 +156,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             permissions[3].Workgroup.Administrative = true; //Can't request
             permissions[4].Workgroup.IsActive = false;
             users[0].WorkgroupPermissions = permissions;
-            Moq.Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
+            Mock.Get(UserRepository2).SetupGet(a => a.Queryable).Returns(users.AsQueryable());
             #endregion Arrange
 
             #region Act
@@ -594,8 +595,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<Approval>()), Times.Never());
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(It.IsAny<Approval>(), It.IsAny<User>(), It.IsAny<bool>()), Times.Never());
             #endregion Assert
         }
 
@@ -618,8 +619,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<Approval>()), Times.Never());
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(It.IsAny<Approval>(), It.IsAny<User>(), It.IsAny<bool>()), Times.Never());
             #endregion Assert
         }
 
@@ -642,8 +643,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<Approval>()), Times.Never());
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(It.IsAny<Approval>(), It.IsAny<User>(), It.IsAny<bool>()), Times.Never());
             #endregion Assert
         }
 
@@ -666,8 +667,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<Approval>()), Times.Never());
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(It.IsAny<Approval>(), It.IsAny<User>(), It.IsAny<bool>()), Times.Never());
             #endregion Assert
         }
 
@@ -690,8 +691,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<Approval>()), Times.Never());
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(It.IsAny<Approval>(), It.IsAny<User>(), It.IsAny<bool>()), Times.Never());
             #endregion Assert
         }
 
@@ -714,8 +715,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<Approval>()), Times.Never());
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(It.IsAny<Approval>(), It.IsAny<User>(), It.IsAny<bool>()), Times.Never());
             #endregion Assert
         }
 
@@ -738,8 +739,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
             Assert.AreEqual("Order Status must be at account manager or purchaser to change purchaser.", Controller.ErrorMessage);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>()), Moq.Times.Never());
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<Approval>()), Times.Never());
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(It.IsAny<Approval>(), It.IsAny<User>(), It.IsAny<bool>()), Times.Never());
             #endregion Assert
         }
 
@@ -766,8 +767,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         //    Assert.IsNotNull(result);
         //    Assert.AreEqual(1, result.RouteValues["id"]);
         //    Assert.AreEqual("Order purchaser can not already be assigned to change purchaser.", Controller.ErrorMessage);
-        //    Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Approval>(), Moq.Times.Never()));
-        //    Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(Moq.It.IsAny<Approval>(), Moq.It.IsAny<User>(), Moq.It.IsAny<bool>(), Moq.Times.Never()));
+        //    Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<Approval>(), Times.Never()));
+        //    Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(It.IsAny<Approval>(), It.IsAny<User>(), It.IsAny<bool>(), Times.Never()));
         //    #endregion Assert
         //}
 
@@ -935,8 +936,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[1]));
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), false));
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[1]));
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), false));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
@@ -1006,8 +1007,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[0]));
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[0], UserRepository.Queryable.Single(b => b.Id == "1"), false));
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[0]));
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[0], UserRepository.Queryable.Single(b => b.Id == "1"), false));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
@@ -1078,8 +1079,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
-            Moq.Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[1]));
-            Moq.Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), true));
+            Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[1]));
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), true));
 
             #endregion Assert
         }

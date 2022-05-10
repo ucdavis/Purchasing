@@ -14,6 +14,7 @@ using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using UCDArch.Core;
+using Moq;
 //using Purchasing.Controllers.Filters;
 //using Purchasing.Services;
 
@@ -36,8 +37,8 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         protected override void SetupController()
         {
             CustomFieldRepository = FakeRepository<CustomField>();
-            OrganazationRepository = new Moq.Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            SecurityService = new Moq.Mock<ISecurityService>().Object;
+            OrganazationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+            SecurityService = new Mock<ISecurityService>().Object;
 
             Controller = new CustomFieldController(CustomFieldRepository,
                 OrganazationRepository,
@@ -55,9 +56,9 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         public CustomFieldControllerTests()
         {
             //    ExampleRepository = FakeRepository<Example>();
-            //    Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
+            //    Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
 
-            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<CustomField>()).Returns(CustomFieldRepository);
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<CustomField>()).Returns(CustomFieldRepository);
         }
         #endregion Init
 

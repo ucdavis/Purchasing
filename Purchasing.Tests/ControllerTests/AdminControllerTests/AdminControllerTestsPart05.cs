@@ -9,6 +9,8 @@ using Purchasing.Mvc.Controllers;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -121,10 +123,10 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             new FakeUsers(3, UserRepository);
             var user = CreateValidEntities.User(4);
             EmailPreferences epArgs = default;
-            Moq.Mock.Get(EmailPreferencesRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()))
+            Mock.Get(EmailPreferencesRepository).Setup(a => a.EnsurePersistent(It.IsAny<EmailPreferences>()))
                 .Callback<EmailPreferences>(x => epArgs = x);
             User userArgs = default;
-            Moq.Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+            Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
                 .Callback<User>(x => userArgs = x);
             #endregion Arrange
 
@@ -135,7 +137,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.AreEqual("FirstName4 LastName4 (4) was edited under the SSC administrator role", Controller.Message);
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
 
             Assert.IsNotNull(userArgs);
             Assert.AreEqual("FirstName4 LastName4 (4)", userArgs.FullNameAndId);
@@ -144,7 +146,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Assert.AreEqual("Email4@testy.com", userArgs.Email);
             Assert.IsTrue(userArgs.IsActive);
 
-            Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()));
+            Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(It.IsAny<EmailPreferences>()));
 
             Assert.IsNotNull(epArgs);
             Assert.AreEqual("4", epArgs.Id);
@@ -176,10 +178,10 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             new FakeUsers(0, UserRepository, users, true);
             var user = CreateValidEntities.User(3);
             EmailPreferences epArgs = default;
-            Moq.Mock.Get(EmailPreferencesRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()))
+            Mock.Get(EmailPreferencesRepository).Setup(a => a.EnsurePersistent(It.IsAny<EmailPreferences>()))
                 .Callback<EmailPreferences>(x => epArgs = x);
             User userArgs = default;
-            Moq.Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+            Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
                 .Callback<User>(x => userArgs = x);
             #endregion Arrange
 
@@ -190,7 +192,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.AreEqual("FirstName3 LastName3 (3) was edited under the SSC administrator role", Controller.Message);
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
 
             Assert.IsNotNull(userArgs);
             Assert.AreEqual("FirstName3 LastName3 (3)", userArgs.FullNameAndId);
@@ -201,11 +203,11 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Assert.AreEqual("Email3@testy.com", userArgs.Email);
             Assert.IsTrue(userArgs.IsActive);
 
-            Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()));
+            Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(It.IsAny<EmailPreferences>()));
 
             Assert.IsNotNull(epArgs);
             Assert.AreEqual("3", epArgs.Id);
-            Moq.Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
+            Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
             #endregion Assert
         }
 
@@ -243,10 +245,10 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.AreEqual("FirstName3 LastName3 (3) was edited under the SSC administrator role", Controller.Message);
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
 
 
-            Moq.Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<EmailPreferences>()), Moq.Times.Never());
+            Mock.Get(EmailPreferencesRepository).Verify(a => a.EnsurePersistent(It.IsAny<EmailPreferences>()), Times.Never());
 
             #endregion Assert
         }
@@ -276,7 +278,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             #region Arrange
             new FakeUsers(3, UserRepository);
-            Moq.Mock.Get(UserIdentity).Setup(a => a.IsUserInRole("3", Role.Codes.SscAdmin)).Returns(false);
+            Mock.Get(UserIdentity).Setup(a => a.IsUserInRole("3", Role.Codes.SscAdmin)).Returns(false);
             #endregion Arrange
 
             #region Act
@@ -286,7 +288,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.AreEqual("3 is not an SSC admin", Controller.Message);
-            Moq.Mock.Get(UserIdentity).Verify(a => a.IsUserInRole("3", Role.Codes.SscAdmin));
+            Mock.Get(UserIdentity).Verify(a => a.IsUserInRole("3", Role.Codes.SscAdmin));
             #endregion Assert
         }
 
@@ -295,7 +297,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             #region Arrange
             new FakeUsers(3, UserRepository);
-            Moq.Mock.Get(UserIdentity).Setup(a => a.IsUserInRole("3", Role.Codes.SscAdmin)).Returns(true);
+            Mock.Get(UserIdentity).Setup(a => a.IsUserInRole("3", Role.Codes.SscAdmin)).Returns(true);
             #endregion Arrange
 
             #region Act
@@ -305,7 +307,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(UserIdentity).Verify(a => a.IsUserInRole("3", Role.Codes.SscAdmin));
+            Mock.Get(UserIdentity).Verify(a => a.IsUserInRole("3", Role.Codes.SscAdmin));
             Assert.IsNotNull(result);
             Assert.AreEqual("FirstName3 LastName3 (3)", result.FullNameAndId);
             #endregion Assert
@@ -327,7 +329,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.AreEqual("User 4 not found.", Controller.ErrorMessage);
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()), Moq.Times.Never());
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()), Times.Never());
             #endregion Assert
         }
 
@@ -368,7 +370,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             users[0].Id = "3";
             new FakeUsers(0, UserRepository, users, true);
             User args = default;
-            Moq.Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+            Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
                 .Callback<User>(x => args = x);
             #endregion Arrange
 
@@ -379,13 +381,13 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.AreEqual("FirstName3 LastName3 (3) was successfully removed from the SSC admin role", Controller.Message);
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("FirstName3", args.FirstName);
             Assert.AreEqual(1, args.Roles.Count());
             Assert.AreEqual(Role.Codes.EmulationUser, args.Roles[0].Id);
-            Moq.Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
+            Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "3"));
             #endregion Assert
         }
 

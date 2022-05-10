@@ -4,6 +4,7 @@ using UCDArch.Core.DomainModel;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.Core
 {
@@ -41,24 +42,24 @@ namespace Purchasing.Tests.Core
                 {
                     var stringId = (i + 1).ToString();
                     records[i].Id = stringId;
-                    Moq.Mock.Get(repository).Setup(a => a.GetNullableById(stringId))
+                    Mock.Get(repository).Setup(a => a.GetNullableById(stringId))
                         .Returns(records[i]);
-                    Moq.Mock.Get(repository).Setup(a => a.GetById(stringId))
+                    Mock.Get(repository).Setup(a => a.GetById(stringId))
                         .Returns(records[i]);
                 }
                 else
                 {
                     var i1 = i;
-                    Moq.Mock.Get(repository).Setup(a => a.GetNullableById(records[i1].Id))
+                    Mock.Get(repository).Setup(a => a.GetNullableById(records[i1].Id))
                         .Returns(records[i]);
-                    Moq.Mock.Get(repository).Setup(a => a.GetById(records[i1].Id))
+                    Mock.Get(repository).Setup(a => a.GetById(records[i1].Id))
                         .Returns(records[i]);
                 }
             }
-            Moq.Mock.Get(repository).Setup(a => a.GetNullableById((totalCount + 1).ToString())).Returns<IRepositoryWithTypedId<T, string>>(null);
-            Moq.Mock.Get(repository).Setup(a => a.GetById((totalCount + 1).ToString())).Returns<IRepositoryWithTypedId<T, string>>(null);
-            Moq.Mock.Get(repository).SetupGet(a => a.Queryable).Returns(records.AsQueryable());
-            Moq.Mock.Get(repository).Setup(a => a.GetAll()).Returns(records);
+            Mock.Get(repository).Setup(a => a.GetNullableById((totalCount + 1).ToString())).Returns<IRepositoryWithTypedId<T, string>>(null);
+            Mock.Get(repository).Setup(a => a.GetById((totalCount + 1).ToString())).Returns<IRepositoryWithTypedId<T, string>>(null);
+            Mock.Get(repository).SetupGet(a => a.Queryable).Returns(records.AsQueryable());
+            Mock.Get(repository).Setup(a => a.GetAll()).Returns(records);
         }
 
         protected abstract T CreateValid(int i);

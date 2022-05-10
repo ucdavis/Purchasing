@@ -23,6 +23,8 @@ using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests
 {
@@ -43,14 +45,14 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            //QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
-            OrderService = new Moq.Mock<IOrderService>().Object;
-            SearchService = new Moq.Mock<ISearchService>().Object;
-            AccessQueryService = new Moq.Mock<IAccessQueryService>().Object;
-            //QueryRepositoryFactory.OrderTrackingHistoryRepository = new Moq.Mock<IRepository<OrderTrackingHistory>>().Object;
-            //QueryRepositoryFactory.CommentHistoryRepository = new Moq.Mock<IRepositoryWithTypedId<CommentHistory, Guid>>().Object;
-            //QueryRepositoryFactory.OrderHistoryRepository = new Moq.Mock<IRepository<OrderHistory>>().Object;
-            DbService = new Moq.Mock<IDbService>().Object;
+            //QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
+            OrderService = new Mock<IOrderService>().Object;
+            SearchService = new Mock<ISearchService>().Object;
+            AccessQueryService = new Mock<IAccessQueryService>().Object;
+            //QueryRepositoryFactory.OrderTrackingHistoryRepository = new Mock<IRepository<OrderTrackingHistory>>().Object;
+            //QueryRepositoryFactory.CommentHistoryRepository = new Mock<IRepositoryWithTypedId<CommentHistory, Guid>>().Object;
+            //QueryRepositoryFactory.OrderHistoryRepository = new Mock<IRepository<OrderHistory>>().Object;
+            DbService = new Mock<IDbService>().Object;
 
             Controller = new HistoryAjaxController(SearchService, AccessQueryService, OrderService, DbService);
 
@@ -244,9 +246,9 @@ namespace Purchasing.Tests.ControllerTests
             rtValue2.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             //rtValue2.Results = QueryRepositoryFactory.OrderHistoryRepository.Queryable.Take(3).ToList();
 
-            Moq.Mock.Get(OrderService).Setup(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
+            Mock.Get(OrderService).Setup(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                                        new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null)).Returns(rtValue1);
-            Moq.Mock.Get(OrderService).Setup(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
+            Mock.Get(OrderService).Setup(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                                        new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null)).Returns(rtValue2);
             #endregion Arrange
 
@@ -260,9 +262,9 @@ namespace Purchasing.Tests.ControllerTests
             dynamic data = JObject.FromObject(results.Data);
             Assert.AreEqual(5, (int)data.deniedThisMonth);
             Assert.AreEqual(3, (int)data.completedThisMonth);
-            Moq.Mock.Get(OrderService).Verify(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
+            Mock.Get(OrderService).Verify(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                                        new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null));
-            Moq.Mock.Get(OrderService).Verify(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
+            Mock.Get(OrderService).Verify(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                                        new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null));
             #endregion Assert
         }

@@ -15,6 +15,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTests
 {
@@ -38,21 +39,21 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         protected override void SetupController()
         {
             DepartmentalAdminRequestRepository =
-                new Moq.Mock<IRepositoryWithTypedId<DepartmentalAdminRequest, string>>().Object;
-            OrganizationRepository = new Moq.Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
-            RoleRepository = new Moq.Mock<IRepositoryWithTypedId<Role, string>>().Object;
+                new Mock<IRepositoryWithTypedId<DepartmentalAdminRequest, string>>().Object;
+            OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
+            RoleRepository = new Mock<IRepositoryWithTypedId<Role, string>>().Object;
 
-            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
+            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
             RepositoryFactory.OrganizationRepository = OrganizationRepository;
             RepositoryFactory.UserRepository = UserRepository;
             RepositoryFactory.RoleRepository = RoleRepository;
 
-            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
-            QueryRepositoryFactory.OrganizationDescendantRepository = new Moq.Mock<IRepository<OrganizationDescendant>>().Object;
+            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
+            QueryRepositoryFactory.OrganizationDescendantRepository = new Mock<IRepository<OrganizationDescendant>>().Object;
 
-            DirectorySearchService = new Moq.Mock<IDirectorySearchService>().Object;
-            UserIdentity = new Moq.Mock<IUserIdentity>().Object;
+            DirectorySearchService = new Mock<IDirectorySearchService>().Object;
+            UserIdentity = new Mock<IUserIdentity>().Object;
             Controller =
                 new DepartmentalAdminRequestController(
                     DepartmentalAdminRequestRepository,
@@ -76,9 +77,9 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             roles[0].IsAdmin = true;
             new FakeRoles(0, RoleRepository, roles, true);
             //    ExampleRepository = FakeRepository<Example>();
-            //    Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
+            //    Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
 
-            //Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<DepartmentalAdminRequest>()).Returns(DepartmentalAdminRequestRepository);	
+            //Mock.Get(Controller.Repository).Setup(a => a.OfType<DepartmentalAdminRequest>()).Returns(DepartmentalAdminRequestRepository);	
         }
         #endregion Init
     }

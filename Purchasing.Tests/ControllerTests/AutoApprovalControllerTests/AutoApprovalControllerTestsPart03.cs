@@ -7,6 +7,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -280,7 +281,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsFalse(Controller.ViewBag.IsCreate);
 
             Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert		
         }
 
@@ -328,7 +329,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsFalse(Controller.ViewBag.IsCreate);
 
             Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
 
@@ -376,7 +377,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsFalse(Controller.ViewBag.IsCreate);
 
             Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()), Moq.Times.Never());
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
         [TestMethod]
@@ -395,7 +396,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             var saveLessThan = AutoApprovalRepository.GetNullableById(3).LessThan;
             autoApprovalToEdit.LessThan = !saveLessThan;
             AutoApproval args = default;
-            Moq.Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+            Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
                 .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
@@ -408,7 +409,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
 
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
 
             Assert.AreEqual(3, args.Id);
             Assert.AreEqual((decimal)12.44, args.MaxAmount);

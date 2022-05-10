@@ -8,6 +8,7 @@ using Purchasing.Mvc.Models;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -99,7 +100,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Workgroup Vendor not found.", Controller.ErrorMessage);
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()), Times.Never());
             #endregion Assert
         }
 
@@ -124,7 +125,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(15, result.RouteValues["id"]);
             Assert.AreEqual("Cannot edit KFS Vendors.  Please delete the vendor and add a new vendor.", Controller.ErrorMessage);
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()), Times.Never());
             #endregion Assert
         }
 
@@ -215,7 +216,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupVendor.VendorId = null;
             workgroupVendor.VendorAddressTypeCode = null;
             workgroupVendor.Name = null;
-            Moq.Mock.Get(WorkgroupService).Setup(a => a.TransferValues(Moq.It.IsAny<WorkgroupVendor>(), ref Moq.It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
             #endregion Arrange
 
             #region Act
@@ -251,11 +252,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupVendor.VendorId = null;
             workgroupVendor.VendorAddressTypeCode = null;
             workgroupVendor.Name = "Changed";
-            Moq.Mock.Get(WorkgroupService).Setup(a => a.TransferValues(Moq.It.IsAny<WorkgroupVendor>(), ref Moq.It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
             WorkgroupVendor oldArgs = default;
             WorkgroupVendor newArgs = default;
             var ensurePersistentCount = 0;
-            Moq.Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()))
+            Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()))
                 .Callback<WorkgroupVendor>(x =>
                 {
                     if (ensurePersistentCount++ == 0)
@@ -277,7 +278,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.AreEqual("WorkgroupVendor Edited Successfully", Controller.Message);
 
-            Moq.Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupVendor>()), Moq.Times.Exactly(2));
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()), Times.Exactly(2));
 
 
 

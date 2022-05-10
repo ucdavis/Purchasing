@@ -8,6 +8,7 @@ using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -131,7 +132,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Workgroup could not be found.", Controller.ErrorMessage);
-            Moq.Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(Moq.It.IsAny<WorkgroupAddress>(), Moq.It.IsAny<WorkgroupAddress>()), Moq.Times.Never());
+            Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(It.IsAny<WorkgroupAddress>(), It.IsAny<WorkgroupAddress>()), Times.Never());
             #endregion Assert
         }
 
@@ -158,9 +159,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(2, result.Workgroup.Id);
             Assert.AreEqual(2, result.WorkgroupAddress.Workgroup.Id);
             Assert.AreEqual(3, result.States.Count());
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
             Assert.AreEqual("Address not valid", Controller.ErrorMessage);
-            Moq.Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(Moq.It.IsAny<WorkgroupAddress>(), Moq.It.IsAny<WorkgroupAddress>()), Moq.Times.Never());
+            Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(It.IsAny<WorkgroupAddress>(), It.IsAny<WorkgroupAddress>()), Times.Never());
             #endregion Assert		
         }
 
@@ -173,10 +174,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var address = CreateValidEntities.WorkgroupAddress(10);
             var compareArgs = new Dictionary<int, object[]>();
             var compareArgsIndex = 0;
-            Moq.Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(Moq.It.IsAny<WorkgroupAddress>(), Moq.It.IsAny<WorkgroupAddress>())).Returns(0)
+            Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(It.IsAny<WorkgroupAddress>(), It.IsAny<WorkgroupAddress>())).Returns(0)
                 .Callback((object[] x) => compareArgs[compareArgsIndex++] = x);
             Workgroup args = default;
-            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
@@ -189,14 +190,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
             Assert.AreEqual("Address created", Controller.Message);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual(2, args.Id);
             Assert.AreEqual(4, args.Addresses.Count());
             Assert.AreEqual("Name10", args.Addresses[3].Name);
 
-            Moq.Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(Moq.It.IsAny<WorkgroupAddress>(), Moq.It.IsAny<WorkgroupAddress>()), Moq.Times.Exactly(3));
+            Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(It.IsAny<WorkgroupAddress>(), It.IsAny<WorkgroupAddress>()), Times.Exactly(3));
             Assert.IsNotNull(compareArgs);
             Assert.AreEqual(3, compareArgs.Count());
             Assert.AreEqual("Name4", ((WorkgroupAddress)compareArgs[0][1]).Name);
@@ -216,20 +217,20 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForAddress();
             var address = CreateValidEntities.WorkgroupAddress(10);
-            Moq.Mock.Get(WorkgroupAddressService)
+            Mock.Get(WorkgroupAddressService)
                 .SetupSequence(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0]))
                 .Returns(0)
                 .Throws(new Exception("Called  for address 0 too many times"));
-            Moq.Mock.Get(WorkgroupAddressService)
+            Mock.Get(WorkgroupAddressService)
                 .SetupSequence(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[1]))
                 .Returns(5)
                 .Throws(new Exception("Called  for address 1 too many times"));
-            Moq.Mock.Get(WorkgroupAddressService)
+            Mock.Get(WorkgroupAddressService)
                 .SetupSequence(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2]))
                 .Returns(0)
                 .Throws(new Exception("Called  for address 2 too many times"));
             Workgroup args = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
@@ -242,7 +243,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
             Assert.AreEqual("Address created.", Controller.Message);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(2, args.Id);
@@ -250,7 +251,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(true, args.Addresses[1].IsActive);
             Assert.AreEqual("Name5", args.Addresses[1].Name);
 
-            Moq.Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(Moq.It.IsAny<WorkgroupAddress>(), Moq.It.IsAny<WorkgroupAddress>()), Moq.Times.Exactly(2));
+            Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(It.IsAny<WorkgroupAddress>(), It.IsAny<WorkgroupAddress>()), Times.Exactly(2));
             #endregion Assert		
         }
 
@@ -260,15 +261,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForAddress();
             var address = CreateValidEntities.WorkgroupAddress(10);
-            Moq.Mock.Get(WorkgroupAddressService)
+            Mock.Get(WorkgroupAddressService)
                 .SetupSequence(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[0]))
                 .Returns(0)
                 .Throws(new Exception("Called  for address 0 too many times"));
-            Moq.Mock.Get(WorkgroupAddressService)
+            Mock.Get(WorkgroupAddressService)
                 .SetupSequence(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[1]))
                 .Returns(0)
                 .Throws(new Exception("Called  for address 1 too many times"));
-            Moq.Mock.Get(WorkgroupAddressService)
+            Mock.Get(WorkgroupAddressService)
                 .SetupSequence(a => a.CompareAddress(address, WorkgroupRepository.GetNullableById(2).Addresses[2]))
                 .Returns(6)
                 .Throws(new Exception("Called  for address 2 too many times"));
@@ -283,9 +284,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
             Assert.AreEqual("This Address already exists.", Controller.Message);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
 
-            Moq.Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(Moq.It.IsAny<WorkgroupAddress>(), Moq.It.IsAny<WorkgroupAddress>()), Moq.Times.Exactly(3));
+            Mock.Get(WorkgroupAddressService).Verify(a => a.CompareAddress(It.IsAny<WorkgroupAddress>(), It.IsAny<WorkgroupAddress>()), Times.Exactly(3));
             #endregion Assert
         }
 

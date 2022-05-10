@@ -16,6 +16,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
@@ -41,13 +42,13 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         {
             ConditionalApprovalRepository = FakeRepository<ConditionalApproval>();
             WorkgroupRepository = FakeRepository<Workgroup>();
-            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
-            DirectorySearchService = new Moq.Mock<IDirectorySearchService>().Object;
-            SecurityService = new Moq.Mock<ISecurityService>().Object;
+            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
+            DirectorySearchService = new Mock<IDirectorySearchService>().Object;
+            SecurityService = new Mock<ISecurityService>().Object;
 
-            OrganizationRepository = new Moq.Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
-            AdminWorkgroupRepository = new Moq.Mock<IRepository<AdminWorkgroup>>().Object;
+            OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
+            AdminWorkgroupRepository = new Mock<IRepository<AdminWorkgroup>>().Object;
             QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
 
             Controller = new ConditionalApprovalController(
@@ -72,7 +73,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
         public ConditionalApprovalControllerTests()
         {
-            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<ConditionalApproval>()).Returns(ConditionalApprovalRepository);
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<ConditionalApproval>()).Returns(ConditionalApprovalRepository);
         }
         #endregion Init
 

@@ -7,6 +7,7 @@ using Purchasing.Tests.Core;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {
@@ -64,10 +65,10 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser(Moq.It.IsAny<string>()), Moq.Times.Never()); // the account was not found in the workgroup or the account table
-            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(2));
-            Moq.Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            Moq.Mock.Get(EventService).Verify(a => a.OrderCreated(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser(It.IsAny<string>()), Times.Never()); // the account was not found in the workgroup or the account table
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(2));
+            Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
+            Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(2, order.Approvals.Count); //Only 2 approvals for an external account
             Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[0].StatusCode.Id);
@@ -99,7 +100,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             accounts[0].Id = "12345";
             accounts[0].AccountManagerId = "TestUser";
             new FakeAccounts(0, AccountRepository, accounts, true);
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
             #endregion Arrange
 
             #region Act
@@ -107,10 +108,10 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser")); // the account was not found in the workgroup or the account table
-            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(2));
-            Moq.Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            Moq.Mock.Get(EventService).Verify(a => a.OrderCreated(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser")); // the account was not found in the workgroup or the account table
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(2));
+            Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
+            Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(2, order.Approvals.Count); //Only 2 approvals for an external account
             Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[0].StatusCode.Id);
@@ -153,29 +154,29 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             //accounts[0].Id = "12345";
             //accounts[0].AccountManagerId = "TestUser";
             new FakeAccounts(3, AccountRepository);
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
 
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("22"); //NOT same as approver
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("22"); //NOT same as approver
 
             var autoApprovals = new List<AutoApproval>();
             autoApprovals.Add(CreateValidEntities.AutoApproval(1));
@@ -196,13 +197,13 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(SecurityService).Verify(a => a.GetUser(Moq.It.IsAny<string>()), Moq.Times.Never()); // the account was not found in the workgroup or the account table
-            Moq.Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>(), Moq.It.IsAny<bool>()), Moq.Times.Exactly(3));
-            Moq.Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()), Moq.Times.Never());
-            //var args = (Approval)EventService.GetArgumentsForCallsMadeOn(a => a.OrderAutoApprovalAdded(Moq.It.IsAny<Order>(), Moq.It.IsAny<Approval>()))[0][1];
+            Mock.Get(SecurityService).Verify(a => a.GetUser(It.IsAny<string>()), Times.Never()); // the account was not found in the workgroup or the account table
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(3));
+            Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
+            //var args = (Approval)EventService.GetArgumentsForCallsMadeOn(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()))[0][1];
             //Assert.AreEqual(OrderStatusCode.Codes.Approver, args.StatusCode.Id);
 
-            Moq.Mock.Get(EventService).Verify(a => a.OrderCreated(order));
+            Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(3, order.Approvals.Count);
             Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[1].StatusCode.Id);

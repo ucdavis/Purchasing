@@ -10,6 +10,7 @@ using Purchasing.Mvc.Services;
 using UCDArch.Web.ActionResults;
 using Microsoft.AspNetCore.Mvc;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -268,7 +269,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForPeopleList();
             WorkgroupPermission args = default;
-            Moq.Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
+            Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
                 .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
@@ -284,12 +285,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.AreEqual("Person successfully removed from role.", Controller.Message);
 
-            Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()));
+            Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(It.IsAny<WorkgroupPermission>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual(18, args.Id);
 
-            Moq.Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18)));
+            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18)));
             #endregion Assert	
         }
 
@@ -299,7 +300,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForPeopleList();
             WorkgroupPermission args = default;
-            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
+            Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
                 .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
@@ -315,12 +316,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.AreEqual("Person successfully removed from role.", Controller.Message);
 
-            Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()));
+            Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(It.IsAny<WorkgroupPermission>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(18, args.Id);
 
-            Moq.Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18)));
+            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18)));
             #endregion Assert
         }
 
@@ -414,7 +415,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var rolesToRemove  = new string[1];
             rolesToRemove[0] = Role.Codes.Purchaser;
             WorkgroupPermission args = default;
-            Moq.Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
+            Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
                 .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
@@ -428,13 +429,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual(Role.Codes.Purchaser, result.RouteValues["roleFilter"]);
 
-            Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()));
+            Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(It.IsAny<WorkgroupPermission>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual(21, args.Id);
             Assert.AreEqual("1 role removed from FirstName3 LastName3", Controller.Message);
 
-            Moq.Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21)));
+            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21)));
             #endregion Assert
         }
 
@@ -450,7 +451,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             rolesToRemove[3] = Role.Codes.Approver;
             var args = new Dictionary<int, object[]>();
             var argsIndex = 0;
-            Moq.Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()))
+            Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
                 .Callback((object[] x) => args[argsIndex++] = x);
             #endregion Arrange
 
@@ -464,7 +465,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual(Role.Codes.Purchaser, result.RouteValues["roleFilter"]);
 
-            Moq.Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(Moq.It.IsAny<WorkgroupPermission>()), Moq.Times.Exactly(4));
+            Mock.Get(WorkgroupPermissionRepository).Verify(a => a.Remove(It.IsAny<WorkgroupPermission>()), Times.Exactly(4));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(4, args.Count());
@@ -475,7 +476,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.AreEqual("4 roles removed from FirstName3 LastName3", Controller.Message);
 
-            Moq.Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21)));
+            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21)));
             #endregion Assert
         }
         #endregion DeletePeople Post Tests
@@ -503,8 +504,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("[{\"Id\":\"2\",\"Label\":\"FirstName2 LastName2 (2)\"}]" , result.JsonResultString);
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()), Moq.Times.Never());
-            Moq.Mock.Get(SearchService).Verify(a => a.FindUser(Moq.It.IsAny<string>()), Moq.Times.Never());
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()), Times.Never());
+            Mock.Get(SearchService).Verify(a => a.FindUser(It.IsAny<string>()), Times.Never());
             #endregion Assert		
         }
 
@@ -529,8 +530,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("[{\"Id\":\"3\",\"Label\":\"FirstName3 LastName3 (3)\"}]", result.JsonResultString);
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()), Moq.Times.Never());
-            Moq.Mock.Get(SearchService).Verify(a => a.FindUser(Moq.It.IsAny<string>()), Moq.Times.Never());
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()), Times.Never());
+            Mock.Get(SearchService).Verify(a => a.FindUser(It.IsAny<string>()), Times.Never());
             #endregion Assert
         }
 
@@ -554,7 +555,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var ldapUsers = new List<DirectoryUser>();
             ldapUsers.Add(ldapLookup);
 
-            Moq.Mock.Get(SearchService).Setup(a => a.SearchUsers("bob")).Returns(ldapUsers);
+            Mock.Get(SearchService).Setup(a => a.SearchUsers("bob")).Returns(ldapUsers);
             #endregion Arrange
 
             #region Act
@@ -565,8 +566,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("[{\"Id\":\"belogin\",\"Label\":\"Bob Loblaw (belogin)\"}]", result.JsonResultString);
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()), Moq.Times.Never());
-            Moq.Mock.Get(SearchService).Verify(a => a.SearchUsers("bob"));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()), Times.Never());
+            Mock.Get(SearchService).Verify(a => a.SearchUsers("bob"));
             #endregion Assert
         }
 
@@ -581,7 +582,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 users[i].Email = "email" + (i + 1);
             }
             new FakeUsers(0, UserRepository, users, false);
-            Moq.Mock.Get(SearchService).Setup(a => a.SearchUsers("bob")).Returns(new List<DirectoryUser>());
+            Mock.Get(SearchService).Setup(a => a.SearchUsers("bob")).Returns(new List<DirectoryUser>());
             #endregion Arrange
 
             #region Act
@@ -592,8 +593,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("[]", result.JsonResultString);
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()), Moq.Times.Never());
-            Moq.Mock.Get(SearchService).Verify(a => a.SearchUsers("bob"));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()), Times.Never());
+            Mock.Get(SearchService).Verify(a => a.SearchUsers("bob"));
             #endregion Assert
         } 
         #endregion SearchUsers Tests

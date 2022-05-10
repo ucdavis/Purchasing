@@ -5,6 +5,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {
@@ -25,8 +26,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(EventService).Verify(a => a.OrderEdited(order));
-            Moq.Mock.Get(EventService).Verify(a => a.OrderEdited(order2), Moq.Times.Never());
+            Mock.Get(EventService).Verify(a => a.OrderEdited(order));
+            Mock.Get(EventService).Verify(a => a.OrderEdited(order2), Times.Never());
             #endregion Assert		
         }
 

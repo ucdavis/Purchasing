@@ -2,6 +2,7 @@
 using System.Linq;
 using UCDArch.Core.DomainModel;
 using UCDArch.Core.PersistanceSupport;
+using Moq;
 
 namespace UCDArch.Testing.Fakes
 {
@@ -37,12 +38,12 @@ namespace UCDArch.Testing.Fakes
             {
                 records[i].Id = i + 1;
                 int i1 = i;
-                Moq.Mock.Get(repository)
+                Mock.Get(repository)
                     .Setup(a => a.GetNullableById(i1 + 1))
                     .Returns(records[i]);
             }
-            Moq.Mock.Get(repository).Setup(a => a.GetNullableById(totalCount + 1)).Returns<IRepositoryWithTypedId<T, int>>(null);
-            Moq.Mock.Get(repository).Setup(a => a.GetAll()).Returns(records);
+            Mock.Get(repository).Setup(a => a.GetNullableById(totalCount + 1)).Returns<IRepositoryWithTypedId<T, int>>(null);
+            Mock.Get(repository).Setup(a => a.GetAll()).Returns(records);
         }
 
         protected abstract T CreateValid(int i);

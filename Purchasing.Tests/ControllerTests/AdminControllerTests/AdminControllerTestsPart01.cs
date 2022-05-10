@@ -9,6 +9,8 @@ using Purchasing.Mvc.Controllers;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -195,7 +197,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             depUser.User = CreateValidEntities.User(4);
             var orgs = new List<string> {"2", "4"};
             User args = default;
-            Moq.Mock.Get( UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+            Mock.Get( UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
                 .Callback<User>(x => args = x);
             #endregion Arrange
 
@@ -205,7 +207,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual("4", args.Id);
@@ -219,7 +221,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Assert.AreEqual("4", args.Organizations[1].Id);
 
             Assert.AreEqual("FirstName4 LastName4 (4) was added as a departmental admin to the specified organization(s)", Controller.Message);
-            Moq.Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "4"));
+            Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "4"));
             #endregion Assert		
         }
 
@@ -243,7 +245,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             var orgs = new List<string> { "2", "4" };
             User args = default;
-            Moq.Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+            Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
                 .Callback<User>(x => args = x);
             #endregion Arrange
 
@@ -253,7 +255,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("3", args.Id);
@@ -300,7 +302,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             var orgs = new List<string> { "2", "4" };
             User args = default;
-            Moq.Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+            Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
                 .Callback<User>(x => args = x);
             #endregion Arrange
 
@@ -310,7 +312,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(Role.Codes.DepartmentalAdmin, args.Roles[0].Id);
@@ -349,7 +351,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             var orgs = new List<string> { "2", "4" };
             User args = default;
-            Moq.Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<User>()))
+            Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
                 .Callback<User>(x => args = x);
             #endregion Arrange
 
@@ -359,7 +361,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Moq.Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<User>()));
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(Role.Codes.EmulationUser, args.Roles[0].Id);

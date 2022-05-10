@@ -5,6 +5,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
@@ -129,7 +130,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual("Workgroup could not be found.", Controller.ErrorMessage);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert
         }
 
@@ -149,7 +150,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual("Address not found.", Controller.ErrorMessage);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()), Moq.Times.Never());
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert
         }
         
@@ -159,7 +160,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForAddress();
             Workgroup args = default;
-            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
@@ -172,7 +173,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Address deleted.", Controller.Message);
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());
@@ -188,7 +189,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForAddress();
             Workgroup args = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
@@ -201,7 +202,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Address deleted.", Controller.Message);
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());
@@ -217,7 +218,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForAddress();
             Workgroup args = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
@@ -230,7 +231,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Address deleted.", Controller.Message);
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());

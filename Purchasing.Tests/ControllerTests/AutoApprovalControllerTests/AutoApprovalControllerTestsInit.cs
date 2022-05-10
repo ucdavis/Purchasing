@@ -15,6 +15,8 @@ using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using UCDArch.Core;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -33,9 +35,9 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         protected override void SetupController()
         {
             AutoApprovalRepository = FakeRepository<AutoApproval>();
-            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
+            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
 
-            //ExampleService = new Moq.Mock<IExampleService>().Object;  
+            //ExampleService = new Mock<IExampleService>().Object;  
             Controller = new AutoApprovalController(AutoApprovalRepository, UserRepository, SmartServiceLocator<IMapper>.GetService());
             //Controller = new AutoApprovalController(AutoApprovalRepository, ExampleService);
         }
@@ -49,12 +51,12 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public AutoApprovalControllerTests()
         {
             WorkgoupAccountRepository = FakeRepository<WorkgroupAccount>();
-            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<WorkgroupAccount>()).Returns(WorkgoupAccountRepository);
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<WorkgroupAccount>()).Returns(WorkgoupAccountRepository);
 
             WorkgroupPermissionRepository = FakeRepository<WorkgroupPermission>();
-            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<WorkgroupPermission>()).Returns(WorkgroupPermissionRepository);
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<WorkgroupPermission>()).Returns(WorkgroupPermissionRepository);
 
-            //Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<AutoApproval>()).Returns(AutoApprovalRepository);
+            //Mock.Get(Controller.Repository).Setup(a => a.OfType<AutoApproval>()).Returns(AutoApprovalRepository);
 
         }
         #endregion Init

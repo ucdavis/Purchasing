@@ -11,6 +11,7 @@ using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 {
@@ -35,26 +36,26 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
         public NotificationServiceTests()
         {
-            EmailRepository = new Moq.Mock<IRepositoryWithTypedId<EmailQueue, Guid>>().Object;
-            EmailPreferenceRepository = new Moq.Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
-            UserIdentity = new Moq.Mock<IUserIdentity>().Object;
-            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
-            OrderStatusCodeRepository = new Moq.Mock<IRepositoryWithTypedId<OrderStatusCode, string>>().Object;
-            ServerLink = new Moq.Mock<IServerLink>().Object;
-            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
-            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
+            EmailRepository = new Mock<IRepositoryWithTypedId<EmailQueue, Guid>>().Object;
+            EmailPreferenceRepository = new Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
+            UserIdentity = new Mock<IUserIdentity>().Object;
+            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
+            OrderStatusCodeRepository = new Mock<IRepositoryWithTypedId<OrderStatusCode, string>>().Object;
+            ServerLink = new Mock<IServerLink>().Object;
+            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
+            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
             RepositoryFactory.OrganizationRepository =
-                new Moq.Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+                new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
 
-            AdminWorkgroupRepository = new Moq.Mock<IRepository<AdminWorkgroup>>().Object;
+            AdminWorkgroupRepository = new Mock<IRepository<AdminWorkgroup>>().Object;
             QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
-            WorkgroupRepository = new Moq.Mock<IRepository<Workgroup>>().Object;
+            WorkgroupRepository = new Mock<IRepository<Workgroup>>().Object;
             RepositoryFactory.WorkgroupRepository = WorkgroupRepository;
 
             NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity, ServerLink, QueryRepositoryFactory, RepositoryFactory);
 
-            Moq.Mock.Get(ServerLink).SetupGet(a => a.Address).Returns("FakeHost");
-            ApprovalRepository = new Moq.Mock<IRepository<Approval>>().Object;
+            Mock.Get(ServerLink).SetupGet(a => a.Address).Returns("FakeHost");
+            ApprovalRepository = new Mock<IRepository<Approval>>().Object;
 
             SetupOrderStatusCodes();
         }

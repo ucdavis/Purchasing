@@ -11,6 +11,7 @@ using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Fakes;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -72,7 +73,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             Workgroup workgroupArgs = default;
-            Moq.Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => workgroupArgs = x);
             #endregion Arrange
 
@@ -85,7 +86,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
  
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(2, workgroupArgs.Organizations.Count());
@@ -104,7 +105,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             SetupDataForWorkgroupActions1();
             Assert.AreEqual(2, WorkgroupRepository.Queryable.Single(a => a.Id == 1).Organizations.Count()); //Organizations does not contain primary org
             Workgroup workgroupArgs = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => workgroupArgs = x);
             #endregion Arrange
 
@@ -118,7 +119,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
 
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(2, workgroupArgs.Organizations.Count());
@@ -136,7 +137,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
             Workgroup workgroupArgs = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => workgroupArgs = x);
             #endregion Arrange
 
@@ -150,7 +151,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
 
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(2, workgroupArgs.Organizations.Count());
@@ -171,7 +172,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
          
             Assert.AreEqual(2, WorkgroupRepository.Queryable.Single(a => a.Id == 1).Organizations.Count()); //Organizations does not contain primary org
             Workgroup workgroupArgs = default;
-            Moq.Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()))
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => workgroupArgs = x);
             #endregion Arrange
 
@@ -186,7 +187,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            Moq.Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<Workgroup>()));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
 
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(3, workgroupArgs.Organizations.Count());

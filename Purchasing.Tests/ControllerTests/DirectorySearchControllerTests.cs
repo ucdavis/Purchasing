@@ -17,6 +17,8 @@ using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests
 {
@@ -34,8 +36,8 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
-            DirectorySearchService = new Moq.Mock<IDirectorySearchService>().Object;  
+            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
+            DirectorySearchService = new Mock<IDirectorySearchService>().Object;  
             Controller = new DirectorySearchController(DirectorySearchService, UserRepository);            
         }
 
@@ -74,7 +76,7 @@ namespace Purchasing.Tests.ControllerTests
             directoryUser.EmailAddress = "test@testy.com";
             directoryUser.LastName = "SomeLast";
             directoryUser.FirstName = "SomeFirst";
-            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Test")).Returns(directoryUser);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Test")).Returns(directoryUser);
             #endregion Arrange
 
             #region Act
@@ -85,7 +87,7 @@ namespace Purchasing.Tests.ControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("{\"EmployeeId\":null,\"LoginId\":\"someLogin\",\"FirstName\":\"SomeFirst\",\"LastName\":\"SomeLast\",\"FullName\":null,\"EmailAddress\":\"test@testy.com\",\"PhoneNumber\":null}", result.JsonResultString);
-            Moq.Mock.Get(DirectorySearchService).Verify(a => a.FindUser("Test"));
+            Mock.Get(DirectorySearchService).Verify(a => a.FindUser("Test"));
             #endregion Assert		
         }
 
@@ -105,7 +107,7 @@ namespace Purchasing.Tests.ControllerTests
                 directoryUser.EmailAddress = "test@testy.com";
                 directoryUser.LastName = "SomeLast";
                 directoryUser.FirstName = "SomeFirst";
-                Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("test")).Returns(directoryUser);
+                Mock.Get(DirectorySearchService).Setup(a => a.FindUser("test")).Returns(directoryUser);
                 new FakeUsers(3, UserRepository);
                 thisFar = true;
                 #endregion Arrange
@@ -136,7 +138,7 @@ namespace Purchasing.Tests.ControllerTests
                 directoryUser.EmailAddress = null;
                 directoryUser.LastName = "SomeLast";
                 directoryUser.FirstName = "SomeFirst";
-                Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("test")).Returns(directoryUser);
+                Mock.Get(DirectorySearchService).Setup(a => a.FindUser("test")).Returns(directoryUser);
                 new FakeUsers(3, UserRepository);
                 thisFar = true;
                 #endregion Arrange
@@ -220,7 +222,7 @@ namespace Purchasing.Tests.ControllerTests
             directoryUser.EmailAddress = "test@testy.com";
             directoryUser.LastName = "SomeLast";
             directoryUser.FirstName = "SomeFirst";
-            Moq.Mock.Get(DirectorySearchService).Setup(a => a.FindUser("test")).Returns(directoryUser);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("test")).Returns(directoryUser);
 
             #endregion Arrange
 
@@ -232,7 +234,7 @@ namespace Purchasing.Tests.ControllerTests
             #region Assert
             Assert.IsNotNull(results);
             Assert.AreEqual("[{\"Id\":\"test\",\"Label\":\"SomeFirst SomeLast\"}]", results.JsonResultString);
-            Moq.Mock.Get(DirectorySearchService).Verify(a => a.FindUser("test"));
+            Mock.Get(DirectorySearchService).Verify(a => a.FindUser("test"));
             #endregion Assert
         }
 

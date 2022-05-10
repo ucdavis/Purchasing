@@ -5,6 +5,7 @@ using Purchasing.Mvc.Controllers;
 using UCDArch.Testing.Fakes;
 using Microsoft.AspNetCore.Mvc;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
@@ -18,7 +19,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDateForIndex1();
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny)).Returns(false);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny)).Returns(false);
             #endregion Arrange
 
             #region Act
@@ -28,7 +29,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Assert
             Assert.AreEqual("Conditional Approval not found", Controller.ErrorMessage);
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny), Moq.Times.Never());
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny), Times.Never());
             #endregion Assert
         }
 
@@ -40,7 +41,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             SetupDateForIndex1();
             var message = "Fake Message";
             object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(false)
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
 
@@ -51,7 +52,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Assert
             Assert.AreEqual("Fake Message", Controller.Message);
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny));
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -67,7 +68,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             SetupDateForIndex1();
             var message = "Fake Message";
             object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(false)
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
 
@@ -78,7 +79,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Assert
             Assert.AreEqual("Fake Message", Controller.Message);
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny));
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -94,7 +95,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             SetupDateForIndex1();
             var message = "Fake Message";
             object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(true)
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
 
@@ -112,7 +113,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             Assert.AreEqual("FirstName99 LastName99 (99)", result.PrimaryUserName);
             Assert.AreEqual(string.Empty, result.SecondaryUserName);
 
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny));
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -128,7 +129,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             SetupDateForIndex1();
             var message = "Fake Message";
             object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(true)
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
 
@@ -146,7 +147,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             Assert.AreEqual("FirstName99 LastName99 (99)", result.PrimaryUserName);
             Assert.AreEqual("FirstName88 LastName88 (88)", result.SecondaryUserName);
 
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny));
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -162,7 +163,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDateForIndex1();
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny)).Returns(false);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny)).Returns(false);
 
             var conditionalApprovalViewModel = new ConditionalApprovalViewModel();
             conditionalApprovalViewModel.Id = 1;
@@ -188,7 +189,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             Assert.AreEqual("Test", result.OrgOrWorkgroupName);
             Assert.AreEqual("Primy", result.PrimaryUserName);
             Assert.AreEqual("Seconds", result.SecondaryUserName);
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny), Moq.Times.Never());
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny), Times.Never());
             #endregion Assert
         } 
         
@@ -199,7 +200,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
             SetupDateForIndex1();
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny)).Returns(false);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny)).Returns(false);
 
             var conditionalApprovalViewModel = new ConditionalApprovalViewModel();
             conditionalApprovalViewModel.Id = 19;
@@ -216,7 +217,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Assert
             Assert.AreEqual("Conditional Approval not found", Controller.ErrorMessage);
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny), Moq.Times.Never());
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny), Times.Never());
             #endregion Assert
         }
 
@@ -235,7 +236,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             conditionalApprovalViewModel.Question = "Que?";
             conditionalApprovalViewModel.SecondaryUserName = "Seconds";
             object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(false)
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
 
@@ -246,7 +247,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Assert
             Assert.AreEqual("Fake Message", Controller.Message);
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny));
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -269,7 +270,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             conditionalApprovalViewModel.Question = "Que?";
             conditionalApprovalViewModel.SecondaryUserName = "Seconds";
             object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(false)
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
                 .Callback((object[] x) => args = x);
             #endregion Arrange
 
@@ -280,7 +281,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Assert
             Assert.AreEqual("Fake Message", Controller.Message);
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny));
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -303,10 +304,10 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             conditionalApprovalViewModel.Question = "Que?";
             conditionalApprovalViewModel.SecondaryUserName = "Seconds";
             object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(true)
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
                 .Callback((object[] x) => args = x);
             ConditionalApproval conditionalApprovalArgs = default;
-            Moq.Mock.Get(ConditionalApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<ConditionalApproval>()))
+            Mock.Get(ConditionalApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<ConditionalApproval>()))
                 .Callback<ConditionalApproval>(x => conditionalApprovalArgs = x);
             #endregion Arrange
 
@@ -320,7 +321,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             Assert.AreEqual(1, result.RouteValues["id"]);
 
             Assert.AreEqual("Conditional Approval edited successfully", Controller.Message);
-            Moq.Mock.Get(ConditionalApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<ConditionalApproval>()));
+            Mock.Get(ConditionalApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<ConditionalApproval>()));
 
             Assert.IsNotNull(conditionalApprovalArgs);
             Assert.AreEqual(1, conditionalApprovalArgs.Id);
@@ -330,7 +331,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             Assert.IsNull(conditionalApprovalArgs.SecondaryApprover);
             Assert.IsNull(conditionalApprovalArgs.Organization);
 
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny));
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny));
 
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
@@ -353,10 +354,10 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             conditionalApprovalViewModel.Question = "Que?";
             conditionalApprovalViewModel.SecondaryUserName = "Seconds";
             object[] args = default;
-            Moq.Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out message)).Returns(true)
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
                 .Callback((object[] x) => args = x);
             ConditionalApproval conditionalApprovalArgs = default;
-            Moq.Mock.Get(ConditionalApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<ConditionalApproval>()))
+            Mock.Get(ConditionalApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<ConditionalApproval>()))
                 .Callback<ConditionalApproval>(x => conditionalApprovalArgs = x);
             #endregion Arrange
 
@@ -369,7 +370,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual("1", result.RouteValues["id"]);
             Assert.AreEqual("Conditional Approval edited successfully", Controller.Message);
-            Moq.Mock.Get(ConditionalApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<ConditionalApproval>()));
+            Mock.Get(ConditionalApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<ConditionalApproval>()));
 
             Assert.IsNotNull(conditionalApprovalArgs);
             Assert.AreEqual(7, conditionalApprovalArgs.Id);
@@ -379,7 +380,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             Assert.AreEqual("FirstName88 LastName88 (88)", conditionalApprovalArgs.SecondaryApprover.FullNameAndId);
             Assert.AreEqual("OName1", conditionalApprovalArgs.Organization.Name);
 
-            Moq.Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(Moq.It.IsAny<Workgroup>(), Moq.It.IsAny<Organization>(), out Moq.It.Ref<string>.IsAny));
+            Mock.Get(SecurityService).Verify(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("OName1", ((Organization)args[1]).Name);

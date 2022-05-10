@@ -7,6 +7,7 @@ using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.IoC;
+using Moq;
 
 namespace UCDArch.Testing
 {
@@ -30,7 +31,7 @@ namespace UCDArch.Testing
 
             container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
 
-            var dbContext = new Moq.Mock<IDbContext>().Object;
+            var dbContext = new Mock<IDbContext>().Object;
 
             container.Register(Component.For<IDbContext>().Instance(dbContext));
             

@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 {
@@ -15,7 +16,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedNoPrefs1()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -49,7 +50,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedPrefs1()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -86,7 +87,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedPrefs2()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -124,7 +125,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedPrefs3()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -162,7 +163,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedPrefs4()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -201,7 +202,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderCreatedPrefs5()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("bender");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Approver));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);

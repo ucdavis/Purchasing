@@ -14,6 +14,8 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -39,19 +41,19 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
-            RoleRepository = new Moq.Mock<IRepositoryWithTypedId<Role, string>>().Object;
-            OrganizationRepository = new Moq.Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            SearchService = new Moq.Mock<IDirectorySearchService>().Object;
-            EmailPreferencesRepository = new Moq.Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
-            UserIdentity = new Moq.Mock<IUserIdentity>().Object;
+            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
+            RoleRepository = new Mock<IRepositoryWithTypedId<Role, string>>().Object;
+            OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+            SearchService = new Mock<IDirectorySearchService>().Object;
+            EmailPreferencesRepository = new Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
+            UserIdentity = new Mock<IUserIdentity>().Object;
 
-            WorkgroupService = new Moq.Mock<IWorkgroupService>().Object;
-            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
-            RepositoryFactory.WorkgroupRepository = new Moq.Mock<IRepository<Workgroup>>().Object;
-            RepositoryFactory.WorkgroupPermissionRepository = new Moq.Mock<IRepository<WorkgroupPermission>>().Object;
-            Configuration = new Moq.Mock<IConfiguration>().Object;
-            SendGridSettings = new Moq.Mock<IOptions<SendGridSettings>>().Object;
+            WorkgroupService = new Mock<IWorkgroupService>().Object;
+            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
+            RepositoryFactory.WorkgroupRepository = new Mock<IRepository<Workgroup>>().Object;
+            RepositoryFactory.WorkgroupPermissionRepository = new Mock<IRepository<WorkgroupPermission>>().Object;
+            Configuration = new Mock<IConfiguration>().Object;
+            SendGridSettings = new Mock<IOptions<SendGridSettings>>().Object;
 
             Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration);
         }

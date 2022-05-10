@@ -21,6 +21,7 @@ using Purchasing.Mvc.Utility;
 using IdAndName = Purchasing.Core.Services.IdAndName;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests
 {
@@ -38,8 +39,8 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            SubAccountRepository = new Moq.Mock<IRepositoryWithTypedId<SubAccount, Guid>>().Object;
-            SearchService = new Moq.Mock<ISearchService>().Object;
+            SubAccountRepository = new Mock<IRepositoryWithTypedId<SubAccount, Guid>>().Object;
+            SearchService = new Mock<ISearchService>().Object;
 
             Controller = new AccountsController(SubAccountRepository, SearchService);
         }
@@ -74,7 +75,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestSearchKfsAccountsReturnsExpectedResults1()
         {
             #region Arrange
-            Moq.Mock.Get(SearchService).Setup(a => a.SearchAccounts("Test")).Returns(new List<IdAndName>());
+            Mock.Get(SearchService).Setup(a => a.SearchAccounts("Test")).Returns(new List<IdAndName>());
             #endregion Arrange
 
             #region Act
@@ -97,7 +98,7 @@ namespace Purchasing.Tests.ControllerTests
             {
                 accounts.Add(new IdAndName((i+1).ToString(CultureInfo.InvariantCulture), "name"));
             }
-            Moq.Mock.Get(SearchService).Setup(a => a.SearchAccounts("Test")).Returns(accounts);
+            Mock.Get(SearchService).Setup(a => a.SearchAccounts("Test")).Returns(accounts);
             #endregion Arrange           
             
             #region Act

@@ -18,6 +18,7 @@ using UCDArch.Web.Attributes;
 using Purchasing.WS;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 {
@@ -55,22 +56,22 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         protected override void SetupController()
         {
             OrderRepository = FakeRepository<Order>();
-            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
-            OrderService = new Moq.Mock<IOrderService>().Object;
-            SecurityService = new Moq.Mock<ISecurityService>().Object;
-            DirectorySearchService = new Moq.Mock<IDirectorySearchService>().Object;
-            FinancialSystemService = new Moq.Mock<IFinancialSystemService>().Object;
-            ColumnPreferencesRepository = new Moq.Mock<IRepositoryWithTypedId<ColumnPreferences, string>>().Object;
-            OrderStatusCodeRepository = new Moq.Mock<IRepositoryWithTypedId<OrderStatusCode, string>>().Object;
-            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
-            EventService = new Moq.Mock<IEventService>().Object;
-            BugTrackingService = new Moq.Mock<IBugTrackingService>().Object;
-            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
-            RoleRepository = new Moq.Mock<IRepositoryWithTypedId<Role, string>>().Object;
-            //OrderPeepRepository = new Moq.Mock<IRepository<OrderPeep>>().Object;
-            ApprovalRepository = new Moq.Mock<IRepository<Approval>>().Object;
-            WorkgroupRepository = new Moq.Mock<IRepository<Workgroup>>().Object;
-            WorkgroupPermissionRepository = new Moq.Mock<IRepository<WorkgroupPermission>>().Object;
+            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
+            OrderService = new Mock<IOrderService>().Object;
+            SecurityService = new Mock<ISecurityService>().Object;
+            DirectorySearchService = new Mock<IDirectorySearchService>().Object;
+            FinancialSystemService = new Mock<IFinancialSystemService>().Object;
+            ColumnPreferencesRepository = new Mock<IRepositoryWithTypedId<ColumnPreferences, string>>().Object;
+            OrderStatusCodeRepository = new Mock<IRepositoryWithTypedId<OrderStatusCode, string>>().Object;
+            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
+            EventService = new Mock<IEventService>().Object;
+            BugTrackingService = new Mock<IBugTrackingService>().Object;
+            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
+            RoleRepository = new Mock<IRepositoryWithTypedId<Role, string>>().Object;
+            //OrderPeepRepository = new Mock<IRepository<OrderPeep>>().Object;
+            ApprovalRepository = new Mock<IRepository<Approval>>().Object;
+            WorkgroupRepository = new Mock<IRepository<Workgroup>>().Object;
+            WorkgroupPermissionRepository = new Mock<IRepository<WorkgroupPermission>>().Object;
 
             RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
             RepositoryFactory.OrderRepository = OrderRepository;
@@ -81,21 +82,21 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             RepositoryFactory.WorkgroupRepository = WorkgroupRepository;
             RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
 
-            RepositoryFactory.UnitOfMeasureRepository = new Moq.Mock<IRepositoryWithTypedId<UnitOfMeasure, string>>().Object;
-            RepositoryFactory.WorkgroupAccountRepository = new Moq.Mock<IRepository<WorkgroupAccount>>().Object;
-            RepositoryFactory.WorkgroupVendorRepository = new Moq.Mock<IRepository<WorkgroupVendor>>().Object;
-            RepositoryFactory.WorkgroupAddressRepository = new Moq.Mock<IRepository<WorkgroupAddress>>().Object;
-            RepositoryFactory.ShippingTypeRepository = new Moq.Mock<IRepositoryWithTypedId<ShippingType, string>>().Object;
-            RepositoryFactory.CustomFieldRepository = new Moq.Mock<IRepository<CustomField>>().Object;
-            RepositoryFactory.OrganizationRepository = new Moq.Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            RepositoryFactory.OrderTypeRepository = new Moq.Mock<IRepositoryWithTypedId<OrderType, string>>().Object;
-            RepositoryFactory.AttachmentRepository = new Moq.Mock<IRepositoryWithTypedId<Attachment, Guid>>().Object;
-            RepositoryFactory.CommodityRepository = new Moq.Mock<IRepositoryWithTypedId<Commodity, string>>().Object;
-            RepositoryFactory.SplitRepository = new Moq.Mock<IRepository<Split>>().Object;
-            RepositoryFactory.AccountRepository = new Moq.Mock<IRepositoryWithTypedId<Account, string>>().Object;
+            RepositoryFactory.UnitOfMeasureRepository = new Mock<IRepositoryWithTypedId<UnitOfMeasure, string>>().Object;
+            RepositoryFactory.WorkgroupAccountRepository = new Mock<IRepository<WorkgroupAccount>>().Object;
+            RepositoryFactory.WorkgroupVendorRepository = new Mock<IRepository<WorkgroupVendor>>().Object;
+            RepositoryFactory.WorkgroupAddressRepository = new Mock<IRepository<WorkgroupAddress>>().Object;
+            RepositoryFactory.ShippingTypeRepository = new Mock<IRepositoryWithTypedId<ShippingType, string>>().Object;
+            RepositoryFactory.CustomFieldRepository = new Mock<IRepository<CustomField>>().Object;
+            RepositoryFactory.OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+            RepositoryFactory.OrderTypeRepository = new Mock<IRepositoryWithTypedId<OrderType, string>>().Object;
+            RepositoryFactory.AttachmentRepository = new Mock<IRepositoryWithTypedId<Attachment, Guid>>().Object;
+            RepositoryFactory.CommodityRepository = new Mock<IRepositoryWithTypedId<Commodity, string>>().Object;
+            RepositoryFactory.SplitRepository = new Mock<IRepository<Split>>().Object;
+            RepositoryFactory.AccountRepository = new Mock<IRepositoryWithTypedId<Account, string>>().Object;
 
-            FileService = new Moq.Mock<IFileService>().Object;
-            MemoryCache = new Moq.Mock<IMemoryCache>().Object;
+            FileService = new Mock<IFileService>().Object;
+            MemoryCache = new Mock<IMemoryCache>().Object;
 
             //QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 
@@ -121,12 +122,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public OrderControllerTests()
         {
             //    ExampleRepository = FakeRepository<Example>();
-            //    Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
+            //    Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
 
-            UserRepository2 = new Moq.Mock<IRepository<User>>().Object;
-            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<User>()).Returns(UserRepository2);
+            UserRepository2 = new Mock<IRepository<User>>().Object;
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<User>()).Returns(UserRepository2);
 
-            Moq.Mock.Get(Controller.Repository).Setup(a => a.OfType<Order>()).Returns(OrderRepository);
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<Order>()).Returns(OrderRepository);
         }
 
         protected override void InitServiceLocator()
@@ -165,7 +166,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             new FakeOrders(0, OrderRepository, orders);
             
-            //Moq.Mock.Get(OrderService).Setup(a => a.GetListofOrders(Moq.It.IsAny<bool>(), Moq.It.IsAny<bool>(), Moq.It.IsAny<string>(), Moq.It.IsAny<DateTime?>(), Moq.It.IsAny<DateTime>(), Moq.It.IsAny<bool>())).Returns(OrderRepository.Queryable);
+            //Mock.Get(OrderService).Setup(a => a.GetListofOrders(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime>(), It.IsAny<bool>())).Returns(OrderRepository.Queryable);
         }
 
         protected void SetupRoles()

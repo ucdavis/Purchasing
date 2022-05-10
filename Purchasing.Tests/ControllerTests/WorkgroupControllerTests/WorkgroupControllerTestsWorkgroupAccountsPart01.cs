@@ -7,6 +7,7 @@ using Purchasing.Mvc.Models;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -182,7 +183,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupAccountToCreate.Approver.Id = "App";
             workgroupAccountToCreate.Purchaser.Id = "Purchase";
             WorkgroupAccount args = default;
-            Moq.Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()))
+            Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()))
                 .Callback<WorkgroupAccount>(x => args = x);
             #endregion Arrange
 
@@ -196,7 +197,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual("Workgroup account saved.", Controller.Message);
 
-            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()));
+            Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Workgroup.Id);
@@ -231,7 +232,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Controller.ModelState.AssertErrorsAre("Account not found");
-            Moq.Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<WorkgroupAccount>()), Moq.Times.Never());
+            Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()), Times.Never());
 
             Assert.IsNotNull(result);
             Assert.AreEqual(10, result.Accounts.Count());

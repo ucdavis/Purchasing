@@ -8,6 +8,8 @@ using Purchasing.Mvc.Models;
 using UCDArch.Testing.Fakes;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -316,7 +318,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = null;
             AutoApproval args = default;
-            Moq.Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+            Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
                 .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
@@ -328,7 +330,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
  
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
@@ -357,7 +359,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = null;
             AutoApproval args = default;
-            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
                 .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
@@ -369,7 +371,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(false, result.RouteValues["showAll"]);
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
@@ -399,7 +401,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.Equal = false;
             autoApprovalToCreate.Expiration = null;
             AutoApproval args = default;
-            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
                 .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
@@ -411,7 +413,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
@@ -440,7 +442,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = null;
             AutoApproval args = default;
-            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
                 .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
@@ -452,7 +454,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
@@ -481,7 +483,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(6);
             AutoApproval args = default;
-            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
                 .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
@@ -493,7 +495,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
@@ -522,7 +524,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(5);
             AutoApproval args = default;
-            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
                 .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
@@ -534,7 +536,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
@@ -563,7 +565,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(1);
             AutoApproval args = default;
-            Moq.Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()))
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
                 .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
@@ -575,7 +577,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            Moq.Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(Moq.It.IsAny<AutoApproval>()));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
 
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);

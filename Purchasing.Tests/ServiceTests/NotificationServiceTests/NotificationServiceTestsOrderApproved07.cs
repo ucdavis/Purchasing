@@ -8,6 +8,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using System.Linq;
 using System.Linq.Expressions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 {
@@ -20,7 +21,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromAccManager01()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -74,7 +75,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromAccManager02()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -134,7 +135,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromAccManager03()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -197,7 +198,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromAccManager04()
         {
             #region Arrange
-            Moq.Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("flanders");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);

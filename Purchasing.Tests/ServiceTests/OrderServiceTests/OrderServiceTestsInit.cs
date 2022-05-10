@@ -12,6 +12,7 @@ using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {
@@ -46,26 +47,26 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 
         public OrderServiceTests()
         {
-            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
-            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
-            FinancialSystemService = new Moq.Mock<IFinancialSystemService>().Object;
-            IndexService = new Moq.Mock<IIndexService>().Object;
-            EventService = new Moq.Mock<IEventService>().Object;
-            UserIdentity = new Moq.Mock<IUserIdentity>().Object;
-            SecurityService = new Moq.Mock<ISecurityService>().Object;
-            AccessQueryService = new Moq.Mock<IAccessQueryService>().Object;
-            WorkgroupPermissionRepository = new Moq.Mock<IRepository<WorkgroupPermission>>().Object;
-            ApprovalRepository = new Moq.Mock<IRepository<Approval>>().Object;
-            OrderTrackingRepository = new Moq.Mock<IRepository<OrderTracking>>().Object;
-            OrganizationRepository = new Moq.Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            UserRepository = new Moq.Mock<IRepositoryWithTypedId<User, string>>().Object;
-            OrderRepository = new Moq.Mock<IRepository<Order>>().Object;
+            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
+            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
+            FinancialSystemService = new Mock<IFinancialSystemService>().Object;
+            IndexService = new Mock<IIndexService>().Object;
+            EventService = new Mock<IEventService>().Object;
+            UserIdentity = new Mock<IUserIdentity>().Object;
+            SecurityService = new Mock<ISecurityService>().Object;
+            AccessQueryService = new Mock<IAccessQueryService>().Object;
+            WorkgroupPermissionRepository = new Mock<IRepository<WorkgroupPermission>>().Object;
+            ApprovalRepository = new Mock<IRepository<Approval>>().Object;
+            OrderTrackingRepository = new Mock<IRepository<OrderTracking>>().Object;
+            OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
+            OrderRepository = new Mock<IRepository<Order>>().Object;
 
-            WorkgroupAccountRepository = new Moq.Mock<IRepository<WorkgroupAccount>>().Object;
-            AccountRepository = new Moq.Mock<IRepositoryWithTypedId<Account, string>>().Object;
-            OrderStatusCodeRepository = new Moq.Mock<IRepositoryWithTypedId<OrderStatusCode, string>>().Object;
-            AutoAprovalRepository = new Moq.Mock<IRepository<AutoApproval>>().Object;
-            ConditionalApprovalRepository = new Moq.Mock<IRepository<ConditionalApproval>>().Object;
+            WorkgroupAccountRepository = new Mock<IRepository<WorkgroupAccount>>().Object;
+            AccountRepository = new Mock<IRepositoryWithTypedId<Account, string>>().Object;
+            OrderStatusCodeRepository = new Mock<IRepositoryWithTypedId<OrderStatusCode, string>>().Object;
+            AutoAprovalRepository = new Mock<IRepository<AutoApproval>>().Object;
+            ConditionalApprovalRepository = new Mock<IRepository<ConditionalApproval>>().Object;
 
 
             RepositoryFactory.WorkgroupAccountRepository = WorkgroupAccountRepository;

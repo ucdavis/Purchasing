@@ -15,6 +15,7 @@ using UCDArch.Core.Utils;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests
 {
@@ -31,11 +32,11 @@ namespace Purchasing.Tests.ServiceTests
         #region Init
         public SecurityServiceTests()
         {
-            RepositoryFactory = new Moq.Mock<IRepositoryFactory>().Object;
-            AccessQueryService = new Moq.Mock<IAccessQueryService>().Object;
-            QueryRepositoryFactory = new Moq.Mock<IQueryRepositoryFactory>().Object;
-            UserIdentity = new Moq.Mock<IUserIdentity>().Object;
-            DirectorySearchService = new Moq.Mock<IDirectorySearchService>().Object;
+            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
+            AccessQueryService = new Mock<IAccessQueryService>().Object;
+            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
+            UserIdentity = new Mock<IUserIdentity>().Object;
+            DirectorySearchService = new Mock<IDirectorySearchService>().Object;
 
             SecurityService = new SecurityService(RepositoryFactory, UserIdentity, DirectorySearchService, AccessQueryService, QueryRepositoryFactory);
 
