@@ -92,12 +92,8 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <DotNetCliToolReference Include="BundlerMinifier.Core.Tool" Version="4.5.15" />
-  </ItemGroup>
-
   <Target Name="BundleMinify" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' ">
-    <Exec Command="dotnet tool run bundle" />
+    <Exec Command="dotnet bundle" />
   </Target>
 
 </Project>

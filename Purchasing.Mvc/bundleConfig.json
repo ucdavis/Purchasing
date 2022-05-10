@@ -62,10 +62,6 @@
     "inputFiles": ["wwwroot/Scripts/modernizr-*"]
   },
   {
-    "outputFileName": "wwwroot/bundles/bootstrap.min.js",
-    "inputFiles": ["wwwroot/Scripts/bootstrap.js", "wwwroot/Scripts/respond.js"]
-  },
-  {
     "outputFileName": "wwwroot/bundles/main.min.css",
     "inputFiles": [
       "wwwroot/Css/Site.css",
