@@ -88,17 +88,16 @@
     <PackageReference Include="Serilog.Enrichers.ClientInfo" Version="1.1.4" />
     <PackageReference Include="Serilog.Exceptions" Version="8.1.0" />
     <PackageReference Include="Castle.Windsor.Extensions.DependencyInjection" Version="5.1.1" />
-    <PackageReference Include="BundlerMinifier.Core" Version="3.2.449" />
     <PackageReference Include="AspNetCore.Security.CAS" Version="2.0.5" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="3.2.449" />
+    <DotNetCliToolReference Include="BundlerMinifier.Core.Tool" Version="4.5.15" />
   </ItemGroup>
 
   <Target Name="BundleMinify" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' ">
-    <Exec Command="dotnet bundle" />
+    <Exec Command="dotnet tool run bundle" />
   </Target>
 
 </Project>

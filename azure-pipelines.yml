@@ -16,12 +16,6 @@ variables:
 
 steps:
   - task: UseDotNet@2
-    displayName: "Use netcoreapp2.0 (for BundlerMinifier.Core cli tool)"
-    inputs:
-      packageType: "sdk"
-      version: "2.2.106"
-
-  - task: UseDotNet@2
     displayName: "Use net6.0"
     inputs:
       packageType: "sdk"
