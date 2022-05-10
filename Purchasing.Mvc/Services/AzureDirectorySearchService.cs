@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AzureActiveDirectorySearcher;
-using Microsoft.Azure;
 using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Mvc.Services

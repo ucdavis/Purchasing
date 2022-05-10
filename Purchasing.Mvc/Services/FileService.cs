@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Microsoft.Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;

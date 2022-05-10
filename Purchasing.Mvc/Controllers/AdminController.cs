@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using AzureActiveDirectorySearcher;
 using Ietws;
-using Microsoft.Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Purchasing.Core;
