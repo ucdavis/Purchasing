@@ -29,6 +29,14 @@ steps:
       workingDirectory: $(Build.SourcesDirectory)
 
   - task: DotNetCoreCLI@2
+    displayName: Restore cli tools
+    inputs:
+      command: custom
+      custom: tool
+      arguments: restore
+      workingDirectory: $(Build.SourcesDirectory)
+
+  - task: DotNetCoreCLI@2
     displayName: "Assemble Purchasing.Mvc"
     inputs:
       command: "publish"
