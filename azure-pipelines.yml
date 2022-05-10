@@ -16,6 +16,12 @@ variables:
 
 steps:
   - task: UseDotNet@2
+    displayName: "Use netcoreapp2.0"
+    inputs:
+      packageType: "sdk"
+      version: "2.0.x"
+
+  - task: UseDotNet@2
     displayName: "Use net6.0"
     inputs:
       packageType: "sdk"
