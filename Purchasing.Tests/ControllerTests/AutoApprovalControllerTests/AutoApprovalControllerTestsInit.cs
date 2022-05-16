@@ -35,9 +35,9 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         protected override void SetupController()
         {
             AutoApprovalRepository = FakeRepository<AutoApproval>();
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
 
-            //ExampleService = new Mock<IExampleService>().Object;  
+            //ExampleService = Mock.Of<IExampleService>();  
             Controller = new AutoApprovalController(AutoApprovalRepository, UserRepository, SmartServiceLocator<IMapper>.GetService());
             //Controller = new AutoApprovalController(AutoApprovalRepository, ExampleService);
         }

@@ -46,23 +46,23 @@ namespace Purchasing.Tests.ServiceTests
             {
                 cfg.AddProfile<ViewModelProfile>();
             }).CreateMapper();
-            VendorRepository = new Mock<IRepositoryWithTypedId<Vendor, string>>().Object;
-            VendorAddressRepository = new Mock<IRepositoryWithTypedId<VendorAddress, Guid>>().Object;
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
-            EmailPreferencesRepository = new Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
-            WorkgroupPermissionRepository = new Mock<IRepository<WorkgroupPermission>>().Object;
-            WorkgroupRepository = new Mock<IRepository<Workgroup>>().Object;
-            OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            SearchService = new Mock<IDirectorySearchService>().Object;
-            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
-            Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(new Mock<IRepositoryWithTypedId<Role, string>>().Object);
+            VendorRepository = Mock.Of<IRepositoryWithTypedId<Vendor, string>>();
+            VendorAddressRepository = Mock.Of<IRepositoryWithTypedId<VendorAddress, Guid>>();
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            EmailPreferencesRepository = Mock.Of<IRepositoryWithTypedId<EmailPreferences, string>>();
+            WorkgroupPermissionRepository = Mock.Of<IRepository<WorkgroupPermission>>();
+            WorkgroupRepository = Mock.Of<IRepository<Workgroup>>();
+            OrganizationRepository = Mock.Of<IRepositoryWithTypedId<Organization, string>>();
+            SearchService = Mock.Of<IDirectorySearchService>();
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
+            Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(Mock.Of<IRepositoryWithTypedId<Role, string>>());
             Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(WorkgroupPermissionRepository);
-            Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(new Mock<IRepositoryWithTypedId<Account, string>>().Object);
-            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
-            UserIdentity = new Mock<IUserIdentity>().Object;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(Mock.Of<IRepositoryWithTypedId<Account, string>>());
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            UserIdentity = Mock.Of<IUserIdentity>();
 
             QueryRepositoryFactory.RelatatedWorkgroupsRepository =
-                new Mock<IRepository<RelatedWorkgroups>>().Object;
+                Mock.Of<IRepository<RelatedWorkgroups>>();
 
             WorkgroupService = new WorkgroupService(VendorRepository,
                 VendorAddressRepository,

@@ -58,31 +58,31 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected override void SetupController()
         {
             WorkgroupRepository = FakeRepository<Workgroup>();
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
-            RoleRepository = new Mock<IRepositoryWithTypedId<Role, string>>().Object;
-            SecurityService = new Mock<ISecurityService>().Object;
-            SearchService = new Mock<IDirectorySearchService>().Object;
-            WorkgroupPermissionRepository = new Mock<IRepository<WorkgroupPermission>>().Object;
-            WorkgroupVendorRepository = new Mock<IRepository<WorkgroupVendor>>().Object;
-            VendorRepository = new Mock<IRepositoryWithTypedId<Vendor, string>>().Object;
-            VendorAddressRepository = new Mock<IRepositoryWithTypedId<VendorAddress, Guid>>().Object;
-            StateRepository = new Mock<IRepositoryWithTypedId<State, string>>().Object;
-            EmailPreferencesRepository = new Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
-            WorkgroupAccountRepository = new Mock<IRepository<WorkgroupAccount>>().Object;
-            WorkgroupAddressService = new Mock<IWorkgroupAddressService>().Object;
-            WorkgroupService = new Mock<IWorkgroupService>().Object;
-            OrganizationDescendantRepository = new Mock<IRepository<OrganizationDescendant>>().Object;
-            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            RoleRepository = Mock.Of<IRepositoryWithTypedId<Role, string>>();
+            SecurityService = Mock.Of<ISecurityService>();
+            SearchService = Mock.Of<IDirectorySearchService>();
+            WorkgroupPermissionRepository = Mock.Of<IRepository<WorkgroupPermission>>();
+            WorkgroupVendorRepository = Mock.Of<IRepository<WorkgroupVendor>>();
+            VendorRepository = Mock.Of<IRepositoryWithTypedId<Vendor, string>>();
+            VendorAddressRepository = Mock.Of<IRepositoryWithTypedId<VendorAddress, Guid>>();
+            StateRepository = Mock.Of<IRepositoryWithTypedId<State, string>>();
+            EmailPreferencesRepository = Mock.Of<IRepositoryWithTypedId<EmailPreferences, string>>();
+            WorkgroupAccountRepository = Mock.Of<IRepository<WorkgroupAccount>>();
+            WorkgroupAddressService = Mock.Of<IWorkgroupAddressService>();
+            WorkgroupService = Mock.Of<IWorkgroupService>();
+            OrganizationDescendantRepository = Mock.Of<IRepository<OrganizationDescendant>>();
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
             Mock.Get(QueryRepositoryFactory).SetupGet(r => r.OrganizationDescendantRepository).Returns(OrganizationDescendantRepository);
 
-            AdminWorkgroupRepository = new Mock<IRepository<AdminWorkgroup>>().Object;
+            AdminWorkgroupRepository = Mock.Of<IRepository<AdminWorkgroup>>();
             Mock.Get(QueryRepositoryFactory).SetupGet(r => r.AdminWorkgroupRepository).Returns(AdminWorkgroupRepository);
-            AccountRepository = new Mock<IRepositoryWithTypedId<Account, string>>().Object;
+            AccountRepository = Mock.Of<IRepositoryWithTypedId<Account, string>>();
 
-            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
             Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(AccountRepository);
             Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(RoleRepository);
-            Mock.Get(RepositoryFactory).SetupGet(r => r.ColumnPreferencesRepository).Returns(new Mock<IRepositoryWithTypedId<ColumnPreferences, string>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ColumnPreferencesRepository).Returns(Mock.Of<IRepositoryWithTypedId<ColumnPreferences, string>>());
 
             Controller = new WorkgroupController(WorkgroupRepository,
                 UserRepository,
@@ -118,7 +118,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
             //container.AddComponent("queryExtensionProvider", typeof(IQueryExtensionProvider),
             //                       typeof(QueryExtensionFakes));
-            SecurityService = new Mock<ISecurityService>().Object;
+            SecurityService = Mock.Of<ISecurityService>();
             container.Kernel.Register(Component.For<ISecurityService>().Instance(SecurityService));
 
             base.RegisterAdditionalServices(container);
@@ -139,7 +139,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Mock.Get(Controller.Repository).Setup(a => a.OfType<WorkgroupPermission>()).Returns(WorkgroupPermissionRepository);
 
-            ConditionalApprovalRepository = new Mock<IRepository<ConditionalApproval>>().Object;
+            ConditionalApprovalRepository = Mock.Of<IRepository<ConditionalApproval>>();
             Mock.Get(Controller.Repository).Setup(a => a.OfType<ConditionalApproval>()).Returns(ConditionalApprovalRepository);
         }
         #endregion Init

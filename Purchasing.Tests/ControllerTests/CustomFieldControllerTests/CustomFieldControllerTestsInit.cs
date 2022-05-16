@@ -37,8 +37,8 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         protected override void SetupController()
         {
             CustomFieldRepository = FakeRepository<CustomField>();
-            OrganazationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            SecurityService = new Mock<ISecurityService>().Object;
+            OrganazationRepository = Mock.Of<IRepositoryWithTypedId<Organization, string>>();
+            SecurityService = Mock.Of<ISecurityService>();
 
             Controller = new CustomFieldController(CustomFieldRepository,
                 OrganazationRepository,

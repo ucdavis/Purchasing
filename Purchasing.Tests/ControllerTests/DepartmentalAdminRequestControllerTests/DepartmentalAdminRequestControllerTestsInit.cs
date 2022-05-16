@@ -39,21 +39,21 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         protected override void SetupController()
         {
             DepartmentalAdminRequestRepository =
-                new Mock<IRepositoryWithTypedId<DepartmentalAdminRequest, string>>().Object;
-            OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
-            RoleRepository = new Mock<IRepositoryWithTypedId<Role, string>>().Object;
+                Mock.Of<IRepositoryWithTypedId<DepartmentalAdminRequest, string>>();
+            OrganizationRepository = Mock.Of<IRepositoryWithTypedId<Organization, string>>();
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            RoleRepository = Mock.Of<IRepositoryWithTypedId<Role, string>>();
 
-            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
             Mock.Get(RepositoryFactory).SetupGet(r => r.OrganizationRepository).Returns(OrganizationRepository);
             Mock.Get(RepositoryFactory).SetupGet(r => r.UserRepository).Returns(UserRepository);
             Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(RoleRepository);
 
-            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
-            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.OrganizationDescendantRepository).Returns(new Mock<IRepository<OrganizationDescendant>>().Object);
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.OrganizationDescendantRepository).Returns(Mock.Of<IRepository<OrganizationDescendant>>());
 
-            DirectorySearchService = new Mock<IDirectorySearchService>().Object;
-            UserIdentity = new Mock<IUserIdentity>().Object;
+            DirectorySearchService = Mock.Of<IDirectorySearchService>();
+            UserIdentity = Mock.Of<IUserIdentity>();
             Controller =
                 new DepartmentalAdminRequestController(
                     DepartmentalAdminRequestRepository,

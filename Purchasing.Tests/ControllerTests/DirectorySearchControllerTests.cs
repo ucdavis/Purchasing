@@ -36,8 +36,8 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
-            DirectorySearchService = new Mock<IDirectorySearchService>().Object;  
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            DirectorySearchService = Mock.Of<IDirectorySearchService>();  
             Controller = new DirectorySearchController(DirectorySearchService, UserRepository);            
         }
 

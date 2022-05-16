@@ -36,25 +36,25 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
         public NotificationServiceTests()
         {
-            EmailRepository = new Mock<IRepositoryWithTypedId<EmailQueue, Guid>>().Object;
-            EmailPreferenceRepository = new Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
-            UserIdentity = new Mock<IUserIdentity>().Object;
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
-            OrderStatusCodeRepository = new Mock<IRepositoryWithTypedId<OrderStatusCode, string>>().Object;
-            ServerLink = new Mock<IServerLink>().Object;
-            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
-            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
-            Mock.Get(RepositoryFactory).SetupGet(r => r.OrganizationRepository).Returns(new Mock<IRepositoryWithTypedId<Organization, string>>().Object);
+            EmailRepository = Mock.Of<IRepositoryWithTypedId<EmailQueue, Guid>>();
+            EmailPreferenceRepository = Mock.Of<IRepositoryWithTypedId<EmailPreferences, string>>();
+            UserIdentity = Mock.Of<IUserIdentity>();
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            OrderStatusCodeRepository = Mock.Of<IRepositoryWithTypedId<OrderStatusCode, string>>();
+            ServerLink = Mock.Of<IServerLink>();
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrganizationRepository).Returns(Mock.Of<IRepositoryWithTypedId<Organization, string>>());
 
-            AdminWorkgroupRepository = new Mock<IRepository<AdminWorkgroup>>().Object;
+            AdminWorkgroupRepository = Mock.Of<IRepository<AdminWorkgroup>>();
             Mock.Get(QueryRepositoryFactory).SetupGet(r => r.AdminWorkgroupRepository).Returns(AdminWorkgroupRepository);
-            WorkgroupRepository = new Mock<IRepository<Workgroup>>().Object;
+            WorkgroupRepository = Mock.Of<IRepository<Workgroup>>();
             Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupRepository).Returns(WorkgroupRepository);
 
             NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity, ServerLink, QueryRepositoryFactory, RepositoryFactory);
 
             Mock.Get(ServerLink).SetupGet(a => a.Address).Returns("FakeHost");
-            ApprovalRepository = new Mock<IRepository<Approval>>().Object;
+            ApprovalRepository = Mock.Of<IRepository<Approval>>();
 
             SetupOrderStatusCodes();
         }

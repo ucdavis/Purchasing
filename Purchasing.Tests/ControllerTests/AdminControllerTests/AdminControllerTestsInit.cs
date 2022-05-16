@@ -44,19 +44,19 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
-            RoleRepository = new Mock<IRepositoryWithTypedId<Role, string>>().Object;
-            OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            SearchService = new Mock<IDirectorySearchService>().Object;
-            EmailPreferencesRepository = new Mock<IRepositoryWithTypedId<EmailPreferences, string>>().Object;
-            UserIdentity = new Mock<IUserIdentity>().Object;
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            RoleRepository = Mock.Of<IRepositoryWithTypedId<Role, string>>();
+            OrganizationRepository = Mock.Of<IRepositoryWithTypedId<Organization, string>>();
+            SearchService = Mock.Of<IDirectorySearchService>();
+            EmailPreferencesRepository = Mock.Of<IRepositoryWithTypedId<EmailPreferences, string>>();
+            UserIdentity = Mock.Of<IUserIdentity>();
 
-            WorkgroupService = new Mock<IWorkgroupService>().Object;
-            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
-            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupRepository).Returns(new Mock<IRepository<Workgroup>>().Object);
-            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(new Mock<IRepository<WorkgroupPermission>>().Object);
-            Configuration = new Mock<IConfiguration>().Object;
-            SendGridSettings = new Mock<IOptions<SendGridSettings>>().Object;
+            WorkgroupService = Mock.Of<IWorkgroupService>();
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupRepository).Returns(Mock.Of<IRepository<Workgroup>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(Mock.Of<IRepository<WorkgroupPermission>>());
+            Configuration = Mock.Of<IConfiguration>();
+            SendGridSettings = Mock.Of<IOptions<SendGridSettings>>();
             HttpContext = new DefaultHttpContext();
 
             Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration)

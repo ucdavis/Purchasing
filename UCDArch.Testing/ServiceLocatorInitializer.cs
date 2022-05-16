@@ -31,7 +31,7 @@ namespace UCDArch.Testing
 
             container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
 
-            var dbContext = new Mock<IDbContext>().Object;
+            var dbContext = Mock.Of<IDbContext>();
 
             container.Register(Component.For<IDbContext>().Instance(dbContext));
             

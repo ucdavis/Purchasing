@@ -16,7 +16,7 @@ namespace UCDArch.Testing
 
             SetupController();
 
-            Controller.Repository = new Mock<IRepository>().Object;
+            Controller.Repository = Mock.Of<IRepository>();
         }
 
         protected virtual void InitServiceLocator()
@@ -41,7 +41,7 @@ namespace UCDArch.Testing
 
         protected IRepository<T> FakeRepository<T>() where T : ValidatableObject
         {
-            return new Mock<IRepository<T>>().Object;
+            return Mock.Of<IRepository<T>>();
         }
     }
 }

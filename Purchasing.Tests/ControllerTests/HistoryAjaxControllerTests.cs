@@ -45,14 +45,14 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            //QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
-            OrderService = new Mock<IOrderService>().Object;
-            SearchService = new Mock<ISearchService>().Object;
-            AccessQueryService = new Mock<IAccessQueryService>().Object;
-            //QueryRepositoryFactory.OrderTrackingHistoryRepository = new Mock<IRepository<OrderTrackingHistory>>().Object;
-            //QueryRepositoryFactory.CommentHistoryRepository = new Mock<IRepositoryWithTypedId<CommentHistory, Guid>>().Object;
-            //QueryRepositoryFactory.OrderHistoryRepository = new Mock<IRepository<OrderHistory>>().Object;
-            DbService = new Mock<IDbService>().Object;
+            //QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            OrderService = Mock.Of<IOrderService>();
+            SearchService = Mock.Of<ISearchService>();
+            AccessQueryService = Mock.Of<IAccessQueryService>();
+            //QueryRepositoryFactory.OrderTrackingHistoryRepository = Mock.Of<IRepository<OrderTrackingHistory>>();
+            //QueryRepositoryFactory.CommentHistoryRepository = Mock.Of<IRepositoryWithTypedId<CommentHistory, Guid>>();
+            //QueryRepositoryFactory.OrderHistoryRepository = Mock.Of<IRepository<OrderHistory>>();
+            DbService = Mock.Of<IDbService>();
 
             Controller = new HistoryAjaxController(SearchService, AccessQueryService, OrderService, DbService);
 

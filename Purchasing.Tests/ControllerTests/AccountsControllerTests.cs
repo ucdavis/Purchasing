@@ -39,8 +39,9 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            SubAccountRepository = new Mock<IRepositoryWithTypedId<SubAccount, Guid>>().Object;
-            SearchService = new Mock<ISearchService>().Object;
+            SubAccountRepository = Mock.Of<IRepositoryWithTypedId<SubAccount, Guid>>();
+            //SubAccountRepository = Mock.Of<IRepositoryWithTypedId<SubAccount, Guid>>();
+            SearchService = Mock.Of<ISearchService>();
 
             Controller = new AccountsController(SubAccountRepository, SearchService);
         }

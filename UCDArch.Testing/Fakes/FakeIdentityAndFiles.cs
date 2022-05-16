@@ -31,7 +31,7 @@ namespace UCDArch.Testing.Fakes
             UserRoles = userRoles;
             _userName = userName;
             _fileContentType = fileContentType;
-            _httpRequest = new Mock<HttpRequest>().Object;
+            _httpRequest = Mock.Of<HttpRequest>();
         }
 
         public override ClaimsPrincipal User

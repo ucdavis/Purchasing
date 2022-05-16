@@ -53,22 +53,22 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         protected override void SetupController()
         {
             WorkgroupRepository = FakeRepository<Workgroup>();
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
-            RoleRepository = new Mock<IRepositoryWithTypedId<Role, string>>().Object;
-            SecurityService = new Mock<ISecurityService>().Object;
-            SearchService = new Mock<IDirectorySearchService>().Object;
-            WorkgroupPermissionRepository = new Mock<IRepository<WorkgroupPermission>>().Object;
-            WorkgroupVendorRepository = new Mock<IRepository<WorkgroupVendor>>().Object;
-            VendorRepository = new Mock<IRepositoryWithTypedId<Vendor, string>>().Object;
-            VendorAddressRepository = new Mock<IRepositoryWithTypedId<VendorAddress, Guid>>().Object;
-            StateRepository = new Mock<IRepositoryWithTypedId<State, string>>().Object;
-            WorkgroupAccountRepository = new Mock<IRepository<WorkgroupAccount>>().Object;
-            WorkgroupAddressService = new Mock<IWorkgroupAddressService>().Object;
-            WorkgroupService = new Mock<IWorkgroupService>().Object;
-            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
-            OrganizationDescendantRepository = new Mock<IRepository<OrganizationDescendant>>().Object;
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            RoleRepository = Mock.Of<IRepositoryWithTypedId<Role, string>>();
+            SecurityService = Mock.Of<ISecurityService>();
+            SearchService = Mock.Of<IDirectorySearchService>();
+            WorkgroupPermissionRepository = Mock.Of<IRepository<WorkgroupPermission>>();
+            WorkgroupVendorRepository = Mock.Of<IRepository<WorkgroupVendor>>();
+            VendorRepository = Mock.Of<IRepositoryWithTypedId<Vendor, string>>();
+            VendorAddressRepository = Mock.Of<IRepositoryWithTypedId<VendorAddress, Guid>>();
+            StateRepository = Mock.Of<IRepositoryWithTypedId<State, string>>();
+            WorkgroupAccountRepository = Mock.Of<IRepository<WorkgroupAccount>>();
+            WorkgroupAddressService = Mock.Of<IWorkgroupAddressService>();
+            WorkgroupService = Mock.Of<IWorkgroupService>();
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            OrganizationDescendantRepository = Mock.Of<IRepository<OrganizationDescendant>>();
             Mock.Get(QueryRepositoryFactory).SetupGet(r => r.OrganizationDescendantRepository).Returns(OrganizationDescendantRepository);
-            RepositoryFactory = new Mock<IRepositoryFactory>().Object;
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
 
             Controller = new WizardController(WorkgroupRepository,
                 UserRepository,
@@ -90,7 +90,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
             container.Install(new AutoMapperInstaller());
-            SecurityService = new Mock<ISecurityService>().Object;
+            SecurityService = Mock.Of<ISecurityService>();
             //Fixes problem where .Fetch is used in a query
             //container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
             //container.Kernel.AddComponentInstance<ISecurityService>(SecurityService);

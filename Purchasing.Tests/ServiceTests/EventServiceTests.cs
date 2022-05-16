@@ -25,10 +25,10 @@ namespace Purchasing.Tests.ServiceTests
 
         public EventServiceTests()
         {
-            UserIdentity = new Mock<IUserIdentity>().Object;
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
-            OrderStatusCodeRepository = new Mock<IRepositoryWithTypedId<OrderStatusCode, string>>().Object;
-            NotificationService = new Mock<INotificationService>().Object;
+            UserIdentity = Mock.Of<IUserIdentity>();
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            OrderStatusCodeRepository = Mock.Of<IRepositoryWithTypedId<OrderStatusCode, string>>();
+            NotificationService = Mock.Of<INotificationService>();
 
             EventService = new EventService(UserIdentity, UserRepository, OrderStatusCodeRepository, NotificationService);
         }

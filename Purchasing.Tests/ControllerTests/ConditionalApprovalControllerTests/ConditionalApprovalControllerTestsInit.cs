@@ -42,13 +42,13 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         {
             ConditionalApprovalRepository = FakeRepository<ConditionalApproval>();
             WorkgroupRepository = FakeRepository<Workgroup>();
-            UserRepository = new Mock<IRepositoryWithTypedId<User, string>>().Object;
-            DirectorySearchService = new Mock<IDirectorySearchService>().Object;
-            SecurityService = new Mock<ISecurityService>().Object;
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            DirectorySearchService = Mock.Of<IDirectorySearchService>();
+            SecurityService = Mock.Of<ISecurityService>();
 
-            OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
-            AdminWorkgroupRepository = new Mock<IRepository<AdminWorkgroup>>().Object;
+            OrganizationRepository = Mock.Of<IRepositoryWithTypedId<Organization, string>>();
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            AdminWorkgroupRepository = Mock.Of<IRepository<AdminWorkgroup>>();
             Mock.Get(QueryRepositoryFactory).SetupGet(r => r.AdminWorkgroupRepository).Returns(AdminWorkgroupRepository);
 
             Controller = new ConditionalApprovalController(
