@@ -67,7 +67,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             WorkgroupService = new Mock<IWorkgroupService>().Object;
             QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
             OrganizationDescendantRepository = new Mock<IRepository<OrganizationDescendant>>().Object;
-            QueryRepositoryFactory.OrganizationDescendantRepository = OrganizationDescendantRepository;
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.OrganizationDescendantRepository).Returns(OrganizationDescendantRepository);
             RepositoryFactory = new Mock<IRepositoryFactory>().Object;
 
             Controller = new WizardController(WorkgroupRepository,

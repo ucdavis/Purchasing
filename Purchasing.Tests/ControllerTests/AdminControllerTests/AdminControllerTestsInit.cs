@@ -15,7 +15,9 @@ using UCDArch.Testing.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
-
+using Microsoft.AspNetCore.Mvc.ViewFeatures;using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -33,6 +35,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public IWorkgroupService WorkgroupService;
         public IConfiguration Configuration;
         public IOptions<SendGridSettings> SendGridSettings;
+        public HttpContext HttpContext;
 
 
         #region Init
@@ -50,12 +53,20 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             WorkgroupService = new Mock<IWorkgroupService>().Object;
             RepositoryFactory = new Mock<IRepositoryFactory>().Object;
-            RepositoryFactory.WorkgroupRepository = new Mock<IRepository<Workgroup>>().Object;
-            RepositoryFactory.WorkgroupPermissionRepository = new Mock<IRepository<WorkgroupPermission>>().Object;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupRepository).Returns(new Mock<IRepository<Workgroup>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(new Mock<IRepository<WorkgroupPermission>>().Object);
             Configuration = new Mock<IConfiguration>().Object;
             SendGridSettings = new Mock<IOptions<SendGridSettings>>().Object;
+            HttpContext = new DefaultHttpContext();
 
-            Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration);
+            Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration)
+            {
+                ControllerContext = new ControllerContext()
+                {
+                    HttpContext = HttpContext
+                },
+                TempData = new TempDataDictionary(HttpContext, Mock.Of<ITempDataProvider>())
+            };
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)

@@ -49,7 +49,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
             QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
             AdminWorkgroupRepository = new Mock<IRepository<AdminWorkgroup>>().Object;
-            QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.AdminWorkgroupRepository).Returns(AdminWorkgroupRepository);
 
             Controller = new ConditionalApprovalController(
                 ConditionalApprovalRepository, 

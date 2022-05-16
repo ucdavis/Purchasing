@@ -256,7 +256,7 @@ namespace Purchasing.Tests.ControllerTests
         //    #endregion Act
 
         //    #region Assert
-        //    Assert.AreEqual(5, result.Count());
+        //    Assert.AreEqual(6, result.Count());
         //    #endregion Assert
         //}
 

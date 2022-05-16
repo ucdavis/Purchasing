@@ -55,9 +55,9 @@ namespace Purchasing.Tests.ServiceTests
             OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
             SearchService = new Mock<IDirectorySearchService>().Object;
             RepositoryFactory = new Mock<IRepositoryFactory>().Object;
-            RepositoryFactory.RoleRepository = new Mock<IRepositoryWithTypedId<Role, string>>().Object;
-            RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
-            RepositoryFactory.AccountRepository = new Mock<IRepositoryWithTypedId<Account, string>>().Object;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(new Mock<IRepositoryWithTypedId<Role, string>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(WorkgroupPermissionRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(new Mock<IRepositoryWithTypedId<Account, string>>().Object);
             QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
             UserIdentity = new Mock<IUserIdentity>().Object;
 
@@ -314,7 +314,6 @@ namespace Purchasing.Tests.ServiceTests
         public void TestTryToAddPeopleWhenUserAlreadyExists1()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository);
             var failCount = 0;
@@ -350,7 +349,6 @@ namespace Purchasing.Tests.ServiceTests
         public void TestTryToAddPeopleWhenUserAlreadyExists2()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);
             var failCount = 0;
             var dupCount = 0;
@@ -385,7 +383,6 @@ namespace Purchasing.Tests.ServiceTests
         public void TestTryToAddPeopleWhenUserIsFoundWithLdap1()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository);
             var failCount = 0;

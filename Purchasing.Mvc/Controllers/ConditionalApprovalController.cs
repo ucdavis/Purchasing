@@ -15,7 +15,7 @@ namespace Purchasing.Mvc.Controllers
     /// <summary>
     /// Controller for the ConditionalApproval class
     /// </summary>
-    [Authorize(Roles=Role.Codes.DepartmentalAdmin)] //Must be a departmental admin to modify conditional approvals
+    [Authorize(Policy=Role.Codes.DepartmentalAdmin)] //Must be a departmental admin to modify conditional approvals
     public class ConditionalApprovalController : ApplicationController
     {
 	    private readonly IRepository<ConditionalApproval> _conditionalApprovalRepository;

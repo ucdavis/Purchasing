@@ -73,27 +73,27 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             WorkgroupRepository = new Mock<IRepository<Workgroup>>().Object;
             WorkgroupPermissionRepository = new Mock<IRepository<WorkgroupPermission>>().Object;
 
-            RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
-            RepositoryFactory.OrderRepository = OrderRepository;
-            RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
-            RepositoryFactory.RoleRepository = RoleRepository;
-            RepositoryFactory.UserRepository = UserRepository;
-            RepositoryFactory.ApprovalRepository = ApprovalRepository;
-            RepositoryFactory.WorkgroupRepository = WorkgroupRepository;
-            RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ColumnPreferencesRepository).Returns(ColumnPreferencesRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderRepository).Returns(OrderRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderStatusCodeRepository).Returns(OrderStatusCodeRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(RoleRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.UserRepository).Returns(UserRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ApprovalRepository).Returns(ApprovalRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupRepository).Returns(WorkgroupRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(WorkgroupPermissionRepository);
 
-            RepositoryFactory.UnitOfMeasureRepository = new Mock<IRepositoryWithTypedId<UnitOfMeasure, string>>().Object;
-            RepositoryFactory.WorkgroupAccountRepository = new Mock<IRepository<WorkgroupAccount>>().Object;
-            RepositoryFactory.WorkgroupVendorRepository = new Mock<IRepository<WorkgroupVendor>>().Object;
-            RepositoryFactory.WorkgroupAddressRepository = new Mock<IRepository<WorkgroupAddress>>().Object;
-            RepositoryFactory.ShippingTypeRepository = new Mock<IRepositoryWithTypedId<ShippingType, string>>().Object;
-            RepositoryFactory.CustomFieldRepository = new Mock<IRepository<CustomField>>().Object;
-            RepositoryFactory.OrganizationRepository = new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
-            RepositoryFactory.OrderTypeRepository = new Mock<IRepositoryWithTypedId<OrderType, string>>().Object;
-            RepositoryFactory.AttachmentRepository = new Mock<IRepositoryWithTypedId<Attachment, Guid>>().Object;
-            RepositoryFactory.CommodityRepository = new Mock<IRepositoryWithTypedId<Commodity, string>>().Object;
-            RepositoryFactory.SplitRepository = new Mock<IRepository<Split>>().Object;
-            RepositoryFactory.AccountRepository = new Mock<IRepositoryWithTypedId<Account, string>>().Object;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.UnitOfMeasureRepository).Returns(new Mock<IRepositoryWithTypedId<UnitOfMeasure, string>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupAccountRepository).Returns(new Mock<IRepository<WorkgroupAccount>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupVendorRepository).Returns(new Mock<IRepository<WorkgroupVendor>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupAddressRepository).Returns(new Mock<IRepository<WorkgroupAddress>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ShippingTypeRepository).Returns(new Mock<IRepositoryWithTypedId<ShippingType, string>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.CustomFieldRepository).Returns(new Mock<IRepository<CustomField>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrganizationRepository).Returns(new Mock<IRepositoryWithTypedId<Organization, string>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderTypeRepository).Returns(new Mock<IRepositoryWithTypedId<OrderType, string>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AttachmentRepository).Returns(new Mock<IRepositoryWithTypedId<Attachment, Guid>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.CommodityRepository).Returns(new Mock<IRepositoryWithTypedId<Commodity, string>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.SplitRepository).Returns(new Mock<IRepository<Split>>().Object);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(new Mock<IRepositoryWithTypedId<Account, string>>().Object);
 
             FileService = new Mock<IFileService>().Object;
             MemoryCache = new Mock<IMemoryCache>().Object;

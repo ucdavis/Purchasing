@@ -47,17 +47,17 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             OrderTrackingRepository = new Mock<IRepository<OrderTracking>>().Object;
 
             RepositoryFactory = new Mock<IRepositoryFactory>().Object;
-            RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
-            RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodesRepository;
-            RepositoryFactory.ApprovalRepository = ApprovalRepository;
-            RepositoryFactory.OrderTrackingRepository = OrderTrackingRepository;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ColumnPreferencesRepository).Returns(ColumnPreferencesRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderStatusCodeRepository).Returns(OrderStatusCodesRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ApprovalRepository).Returns(ApprovalRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderTrackingRepository).Returns(OrderTrackingRepository);
 
             OrderTrackingHistoryRepository = new Mock<IRepository<OrderTrackingHistory>>().Object;
             CommentHistoryRepository = new Mock<IRepositoryWithTypedId<CommentHistory, Guid>>().Object;
 
             QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
-            QueryRepositoryFactory.OrderTrackingHistoryRepository = OrderTrackingHistoryRepository;
-            QueryRepositoryFactory.CommentHistoryRepository = CommentHistoryRepository;
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.OrderTrackingHistoryRepository).Returns(OrderTrackingHistoryRepository);
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.CommentHistoryRepository).Returns(CommentHistoryRepository);
 
             OrderService = new Mock<IOrderService>().Object;
             

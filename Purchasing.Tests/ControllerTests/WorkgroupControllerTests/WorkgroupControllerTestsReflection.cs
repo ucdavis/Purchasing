@@ -38,7 +38,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         /// Tests the controller has only 7 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHas7Attributes()
+        public void TestControllerHasEightAttributes()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -49,7 +49,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(7, result.Count());
+            Assert.AreEqual(8, result.Count());
             #endregion Assert
         }
 
@@ -83,11 +83,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<ValidateAntiForgeryTokenAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "ValidateAntiForgeryTokenAttribute not found.");
+            Assert.IsTrue(result.Count() > 0, "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 

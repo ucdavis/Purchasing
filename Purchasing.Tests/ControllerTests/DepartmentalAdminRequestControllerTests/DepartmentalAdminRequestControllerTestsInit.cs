@@ -45,12 +45,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             RoleRepository = new Mock<IRepositoryWithTypedId<Role, string>>().Object;
 
             RepositoryFactory = new Mock<IRepositoryFactory>().Object;
-            RepositoryFactory.OrganizationRepository = OrganizationRepository;
-            RepositoryFactory.UserRepository = UserRepository;
-            RepositoryFactory.RoleRepository = RoleRepository;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrganizationRepository).Returns(OrganizationRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.UserRepository).Returns(UserRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(RoleRepository);
 
             QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
-            QueryRepositoryFactory.OrganizationDescendantRepository = new Mock<IRepository<OrganizationDescendant>>().Object;
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.OrganizationDescendantRepository).Returns(new Mock<IRepository<OrganizationDescendant>>().Object);
 
             DirectorySearchService = new Mock<IDirectorySearchService>().Object;
             UserIdentity = new Mock<IUserIdentity>().Object;

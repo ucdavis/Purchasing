@@ -13,7 +13,7 @@ namespace Purchasing.Mvc.Controllers
     /// <summary>
     /// Controller for the Organization class
     /// </summary>
-    [Authorize(Roles=Role.Codes.DepartmentalAdmin)]
+    [Authorize(Policy=Role.Codes.DepartmentalAdmin)]
     public class OrganizationController : ApplicationController
     {
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;

@@ -299,7 +299,7 @@ namespace Purchasing.Tests.ControllerTests
         /// Tests the controller has 6 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasFiveAttributes()
+        public void TestControllerHasSevenAttributes()
         {
             #region Arrange
             var controllerClass = _controllerClass;
@@ -310,7 +310,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(6, result.Count());
+            Assert.AreEqual(7, result.Count());
             #endregion Assert
         }
 
@@ -344,11 +344,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<ValidateAntiForgeryTokenAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "ValidateAntiForgeryTokenAttribute not found.");
+            Assert.IsTrue(result.Count() > 0, "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 

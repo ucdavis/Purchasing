@@ -77,7 +77,7 @@ namespace Purchasing.Tests.ControllerTests
         /// Tests the controller has only three attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasNoAttributes()
+        public void TestControllerHasOneAttribute()
         {
             #region Arrange
             var controllerClass = _controllerClass;
@@ -88,7 +88,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, result.Count());
+            Assert.AreEqual(1, result.Count());
             #endregion Assert
         }
 
@@ -128,7 +128,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(4, allAttributes.Count());
             #endregion Assert
         }
 
@@ -145,7 +145,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(3, allAttributes.Count());
             #endregion Assert
         }
 
@@ -164,8 +164,8 @@ namespace Purchasing.Tests.ControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), message: "AuthorizeAttribute");
-            Assert.AreEqual("EU", expectedAttribute.ElementAt(0).Roles);
-            Assert.AreEqual(1, allAttributes.Count());
+            Assert.AreEqual("EU", expectedAttribute.ElementAt(0).Policy);
+            Assert.AreEqual(3, allAttributes.Count());
             #endregion Assert
         }
 
@@ -182,7 +182,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(2, allAttributes.Count());
             #endregion Assert
         }
 

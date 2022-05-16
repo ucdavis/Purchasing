@@ -69,12 +69,12 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             ConditionalApprovalRepository = new Mock<IRepository<ConditionalApproval>>().Object;
 
 
-            RepositoryFactory.WorkgroupAccountRepository = WorkgroupAccountRepository;
-            RepositoryFactory.AccountRepository = AccountRepository;
-            RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
-            RepositoryFactory.AutoApprovalRepository = AutoAprovalRepository;
-            RepositoryFactory.UserRepository = UserRepository;
-            RepositoryFactory.ConditionalApprovalRepository = ConditionalApprovalRepository;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupAccountRepository).Returns(WorkgroupAccountRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(AccountRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderStatusCodeRepository).Returns(OrderStatusCodeRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AutoApprovalRepository).Returns(AutoAprovalRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.UserRepository).Returns(UserRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ConditionalApprovalRepository).Returns(ConditionalApprovalRepository);
 
             SetupValidOrderStatusCodes();
 

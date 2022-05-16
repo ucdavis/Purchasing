@@ -16,7 +16,7 @@ namespace Purchasing.Mvc.Controllers
     /// <summary>
     /// Controller for the CustomField class
     /// </summary>
-    [Authorize(Roles=Role.Codes.DepartmentalAdmin)]
+    [Authorize(Policy=Role.Codes.DepartmentalAdmin)]
     public class CustomFieldController : ApplicationController
     {
 	    private readonly IRepository<CustomField> _customFieldRepository;

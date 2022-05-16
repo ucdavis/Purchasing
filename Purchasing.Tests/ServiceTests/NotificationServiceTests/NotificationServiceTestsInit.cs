@@ -44,13 +44,12 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             ServerLink = new Mock<IServerLink>().Object;
             QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
             RepositoryFactory = new Mock<IRepositoryFactory>().Object;
-            RepositoryFactory.OrganizationRepository =
-                new Mock<IRepositoryWithTypedId<Organization, string>>().Object;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrganizationRepository).Returns(new Mock<IRepositoryWithTypedId<Organization, string>>().Object);
 
             AdminWorkgroupRepository = new Mock<IRepository<AdminWorkgroup>>().Object;
-            QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.AdminWorkgroupRepository).Returns(AdminWorkgroupRepository);
             WorkgroupRepository = new Mock<IRepository<Workgroup>>().Object;
-            RepositoryFactory.WorkgroupRepository = WorkgroupRepository;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupRepository).Returns(WorkgroupRepository);
 
             NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity, ServerLink, QueryRepositoryFactory, RepositoryFactory);
 

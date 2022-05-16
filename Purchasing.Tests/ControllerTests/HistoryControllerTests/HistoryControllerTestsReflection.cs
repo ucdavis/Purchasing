@@ -43,7 +43,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         /// Tests the controller has 5 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasFiveAttributes()
+        public void TestControllerHasSixAttributes()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -54,7 +54,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, result.Count());
+            Assert.AreEqual(6, result.Count());
             #endregion Assert
         }
 
@@ -88,11 +88,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<ValidateAntiForgeryTokenAttribute>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "ValidateAntiForgeryTokenAttribute not found.");
+            Assert.IsTrue(result.Count() > 0, "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 

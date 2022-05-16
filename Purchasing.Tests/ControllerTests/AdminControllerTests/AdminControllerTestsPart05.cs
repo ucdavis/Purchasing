@@ -109,8 +109,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifySscAdminWhenUserNotFound()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
-
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
             roles[0].Id = Role.Codes.DepartmentalAdmin;
@@ -157,8 +155,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifySscAdminWhenUserFound1()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
-
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
             roles[0].Id = Role.Codes.DepartmentalAdmin;
@@ -215,8 +211,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifySscAdminWhenUserFound2()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
-
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
             roles[0].Id = Role.Codes.DepartmentalAdmin;
@@ -362,7 +356,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestRemoveSscAdminRoleRemovesRole()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             var users = new List<User>();
             users.Add(CreateValidEntities.User(3));
             users[0].Roles.Add(new Role(Role.Codes.EmulationUser));

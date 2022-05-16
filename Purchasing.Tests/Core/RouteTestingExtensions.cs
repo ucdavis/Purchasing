@@ -72,7 +72,7 @@ namespace Purchasing.Tests.Core
             Assert.IsNotNull(routeData, "The URL did not match any route");
 
             //check controller
-            Assert.IsTrue(controllerType.IsAssignableFrom(typeof(Controller)), "The controller type must be a subclass of Controller");
+            Assert.IsTrue(controllerType.IsAssignableTo(typeof(Controller)), "The controller type must be a subclass of Controller");
 
             //strip out the word 'Controller' from the type
             string expected = controllerType.Name.Replace("Controller", "");
@@ -153,7 +153,7 @@ namespace Purchasing.Tests.Core
 
         public static RouteValueDictionary Match(string routeTemplate, string requestPath)
         {
-            var regex = new Regex(@"(.*)(\?[^{}]*$)");
+            var regex = new Regex(@"(.*?)(\?[^{}]*)?$");
             var match = regex.Match(routeTemplate);
             if (match.Success)
             {
@@ -170,7 +170,7 @@ namespace Purchasing.Tests.Core
 
             var values = new RouteValueDictionary();
 
-            return matcher.TryMatch(requestPath, values) ? values : null;
+            return matcher.TryMatch(requestPath.Replace("~/", "/"), values) ? values : null;
         }
 
         // This method extracts the default argument values from the template.

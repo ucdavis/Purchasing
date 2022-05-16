@@ -73,17 +73,16 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             WorkgroupService = new Mock<IWorkgroupService>().Object;
             OrganizationDescendantRepository = new Mock<IRepository<OrganizationDescendant>>().Object;
             QueryRepositoryFactory = new Mock<IQueryRepositoryFactory>().Object;
-            QueryRepositoryFactory.OrganizationDescendantRepository = OrganizationDescendantRepository;
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.OrganizationDescendantRepository).Returns(OrganizationDescendantRepository);
 
             AdminWorkgroupRepository = new Mock<IRepository<AdminWorkgroup>>().Object;
-            QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.AdminWorkgroupRepository).Returns(AdminWorkgroupRepository);
             AccountRepository = new Mock<IRepositoryWithTypedId<Account, string>>().Object;
 
             RepositoryFactory = new Mock<IRepositoryFactory>().Object;
-            RepositoryFactory.AccountRepository = AccountRepository;
-            RepositoryFactory.RoleRepository = RoleRepository;
-            RepositoryFactory.ColumnPreferencesRepository =
-                new Mock<IRepositoryWithTypedId<ColumnPreferences, string>>().Object;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(AccountRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(RoleRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ColumnPreferencesRepository).Returns(new Mock<IRepositoryWithTypedId<ColumnPreferences, string>>().Object);
 
             Controller = new WorkgroupController(WorkgroupRepository,
                 UserRepository,

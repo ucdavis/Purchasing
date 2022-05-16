@@ -184,7 +184,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyDepartmentalSetsExpectedValues1()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);
             new FakeOrganizations(6, OrganizationRepository);
 
@@ -229,7 +228,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyDepartmentalSetsExpectedValues2()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);
             new FakeOrganizations(6, OrganizationRepository);
 
@@ -276,7 +274,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyDepartmentalSetsExpectedValues3()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
             roles[0].Id = Role.Codes.DepartmentalAdmin;
@@ -325,7 +322,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyDepartmentalSetsExpectedValues4()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
             roles[0].Id = Role.Codes.DepartmentalAdmin;
