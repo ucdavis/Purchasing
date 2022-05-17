@@ -47,63 +47,13 @@ steps:
       arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/Purchasing.Mvc"
 
   - task: DotNetCoreCLI@2
-    displayName: "Assemble Purchasing.Jobs.CreateOrderIndexes"
+    displayName: "Assemble Purchasing Jobs"
     inputs:
       command: "publish"
       publishWebProjects: false
       zipAfterPublish: false
-      modifyOutputPath: false
-      projects: "./Purchasing.Jobs.CreateOrderIndexes/Purchasing.Jobs.CreateOrderIndexes.csproj"
-      arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/Purchasing.Jobs/app_data/jobs/triggered"
-
-  - task: DotNetCoreCLI@2
-    displayName: "Assemble Purchasing.Jobs.DailyEmailNotifications"
-    inputs:
-      command: "publish"
-      publishWebProjects: false
-      zipAfterPublish: false
-      modifyOutputPath: false
-      projects: "./Purchasing.Jobs.DailyEmailNotifications/Purchasing.Jobs.DailyEmailNotifications.csproj"
-      arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/Purchasing.Jobs/app_data/jobs/triggered"
-
-  - task: DotNetCoreCLI@2
-    displayName: "Assemble Purchasing.Jobs.EmailNotifications"
-    inputs:
-      command: "publish"
-      publishWebProjects: false
-      zipAfterPublish: false
-      modifyOutputPath: false
-      projects: "./Purchasing.Jobs.EmailNotifications/Purchasing.Jobs.EmailNotifications.csproj"
-      arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/Purchasing.Jobs/app_data/jobs/triggered"
-
-  - task: DotNetCoreCLI@2
-    displayName: "Assemble Purchasing.Jobs.NightlySync"
-    inputs:
-      command: "publish"
-      publishWebProjects: false
-      zipAfterPublish: false
-      modifyOutputPath: false
-      projects: "./Purchasing.Jobs.NightlySync/Purchasing.Jobs.NightlySync.csproj"
-      arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/Purchasing.Jobs/app_data/jobs/triggered"
-
-  - task: DotNetCoreCLI@2
-    displayName: "Assemble Purchasing.Jobs.UpdateLookupIndexes"
-    inputs:
-      command: "publish"
-      publishWebProjects: false
-      zipAfterPublish: false
-      modifyOutputPath: false
-      projects: "./Purchasing.Jobs.UpdateLookupIndexes/Purchasing.Jobs.UpdateLookupIndexes.csproj"
-      arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/Purchasing.Jobs/app_data/jobs/triggered"
-
-  - task: DotNetCoreCLI@2
-    displayName: "Assemble Purchasing.Jobs.UpdateOrderIndexes"
-    inputs:
-      command: "publish"
-      publishWebProjects: false
-      zipAfterPublish: false
-      modifyOutputPath: false
-      projects: "./Purchasing.Jobs.UpdateOrderIndexes/Purchasing.Jobs.UpdateOrderIndexes.csproj"
+      modifyOutputPath: true
+      projects: "**/Purchasing.Jobs.!(*Common)/*.csproj"
       arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/Purchasing.Jobs/app_data/jobs/triggered"
 
   - task: PublishBuildArtifacts@1
