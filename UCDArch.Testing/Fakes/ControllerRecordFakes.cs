@@ -44,6 +44,7 @@ namespace UCDArch.Testing.Fakes
             }
             Mock.Get(repository).Setup(a => a.GetNullableById(totalCount + 1)).Returns<IRepositoryWithTypedId<T, int>>(null);
             Mock.Get(repository).Setup(a => a.GetAll()).Returns(records);
+            Mock.Get(repository).Setup(a => a.Queryable).Returns(records.AsQueryable());
         }
 
         protected abstract T CreateValid(int i);

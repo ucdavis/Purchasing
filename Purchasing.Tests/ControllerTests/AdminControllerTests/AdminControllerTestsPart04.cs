@@ -80,7 +80,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Assert
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.success.Value);
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: source", data.message.Value);
+            Assert.AreEqual("Sequence contains no matching element", data.message.Value);
             Mock.Get(WorkgroupService).Verify(a => a.AddRelatedAdminUsers(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert		
         }
@@ -202,6 +202,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[3].IsActive = false;
 
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+            Mock.Get(WorkgroupService).Setup(a => a.AddRelatedAdminUsers(It.IsAny<Workgroup>()));
             #endregion Arrange
 
             #region Act
@@ -213,7 +214,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsTrue(data.success.Value);
             Assert.AreEqual("Updated", data.message.Value);
-            Mock.Get(WorkgroupService).Verify(a => a.AddRelatedAdminUsers(RepositoryFactory.WorkgroupRepository.Queryable.Single(b => b.Id == 5)));
+            Mock.Get(WorkgroupService).Verify(a => a.AddRelatedAdminUsers(workgroups[4]));
             #endregion Assert
         }
         #endregion ProcessWorkGroup Tests
@@ -234,7 +235,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Assert
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.success.Value);
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: source", data.message.Value);
+            Assert.AreEqual("Sequence contains no matching element", data.message.Value);
             Mock.Get(WorkgroupService).Verify(a => a.GetChildWorkgroups(It.IsAny<int>()), Times.Never());
             #endregion Assert
         }
