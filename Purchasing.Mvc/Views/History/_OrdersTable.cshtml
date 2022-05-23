@@ -6,17 +6,19 @@
 @using Purchasing.Core.Queries
 @model FilteredOrderListModelDto
 
-@{ HelperResult GetHtmlForApproval(string approvalName, int orderId, string orderStatusCodeId){
-	    if (!string.IsNullOrWhiteSpace(approvalName) && approvalName.Contains("Workgroup"))
-	    {
-	        <td>[Workgroup] <span class='workgroupDetails showTip ui-icon ui-icon-person' data-id='@orderId' data-role='@orderStatusCodeId' title='Lookup all the people who have workgroup access to this order at this Status.'></span></td>
-	    }
+@{
+	string GetHtmlForApproval(string approvalName, int orderId, string orderStatusCodeId){
+		if (!string.IsNullOrWhiteSpace(approvalName) && approvalName.Contains("Workgroup"))
+		{
+			return $"<td>[Workgroup] <span class='workgroupDetails showTip ui-icon ui-icon-person' data-id='{orderId}' data-role='{orderStatusCodeId}' title='Lookup all the people who have workgroup access to this order at this Status.'></span></td>";
+		}
 	    else
 	    {
-	        <td>@approvalName</td>
-	    }
-		return new HelperResult(w => Task.CompletedTask);
-} }
+			return $"<td>{approvalName}</td>";
+		}
+
+	} 
+}
 
 <table class='dt-table'>
 	<thead>
@@ -54,7 +56,8 @@
 	        }
 	        else
 	        {
-	            result.Append("<td>" + @Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { target = "_blank" }) + "</td>");
+	            //result.Append("<td>" + @Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { target = "_blank" }) + "</td>");
+				result.Append("<td>" + @item.RequestNumber + "</td>");
 	            
 	        }
 	    }
@@ -333,7 +336,7 @@
 	        }
 	        else
 	        {
-	            result.Append(GetHtmlForApproval(item.Approver, item.OrderId, OrderStatusCode.Codes.Approver).ToHtmlString());
+	            result.Append(GetHtmlForApproval(item.Approver, item.OrderId, OrderStatusCode.Codes.Approver));
 	        }
 	    }
 	
@@ -346,7 +349,7 @@
 	        else
 	        {
 	
-	            result.Append(GetHtmlForApproval(item.AccountManager, item.OrderId, OrderStatusCode.Codes.AccountManager).ToHtmlString());
+	            result.Append( GetHtmlForApproval(item.AccountManager, item.OrderId, OrderStatusCode.Codes.AccountManager));
 	        }
 	    }
 	
@@ -359,7 +362,7 @@
 	        else
 	        {
 	
-	            result.Append(GetHtmlForApproval(item.Purchaser, item.OrderId, OrderStatusCode.Codes.Purchaser).ToHtmlString());
+	            result.Append( GetHtmlForApproval(item.Purchaser, item.OrderId, OrderStatusCode.Codes.Purchaser));
 	        }
 	    }
 	
