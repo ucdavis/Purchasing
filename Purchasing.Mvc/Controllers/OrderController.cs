@@ -1233,17 +1233,18 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        [BypassAntiForgeryToken] //required because upload is being done by plugin
-        public async Task<ActionResult> UploadFile(int? orderId, IFormFile qqfile)
+        [IgnoreAntiforgeryToken]
+        public async Task<ActionResult> UploadFile(int? orderId, string qqfile)
         {
             var request = ControllerContext.HttpContext.Request;
-            Stream fileStream = qqfile.OpenReadStream();
+
+            using Stream fileStream = request.BodyReader.AsStream();
 
             var attachment = new Attachment
             {
                 DateCreated = DateTime.UtcNow.ToPacificTime(),
                 User = GetCurrentUser(),
-                FileName = qqfile.FileName,
+                FileName = qqfile,
                 ContentType = request.Headers["X-File-Type"],
                 IsBlob = true, //Default to using blob storage
                 Contents = null //We'll upload to blob storage instead of filling contents
