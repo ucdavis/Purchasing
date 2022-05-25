@@ -1286,7 +1286,7 @@ namespace Purchasing.Mvc.Controllers
             _repositoryFactory.AttachmentRepository.EnsurePersistent(attachment);
             await _fileService.UploadAttachment(attachment.Id, fileStream);
 
-            return Json(new { success = true, id = attachment.Id }, "text/html");
+            return new JsonNetResult(new { success = true, id = attachment.Id });
         }
 
         /// <summary>
