@@ -382,7 +382,7 @@ namespace Purchasing.Mvc.Controllers
             Message = Resources.NewOrder_Success;
 
             //return RedirectToAction("Review", new { id = order.Id });
-            return this.RedirectToAction(nameof(Review));
+            return this.RedirectToAction(nameof(Review), new { id = order.Id });
         }
 
         /// <summary>
