@@ -56,9 +56,7 @@
 	        }
 	        else
 	        {
-	            //result.Append("<td>" + @Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { target = "_blank" }) + "</td>");
-				result.Append("<td>" + @item.RequestNumber + "</td>");
-	            
+	            result.Append("<td>" + @Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { target = "_blank" }).ToHtmlString() + "</td>");	            
 	        }
 	    }
 	    
