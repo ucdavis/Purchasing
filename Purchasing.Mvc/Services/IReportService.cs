@@ -180,11 +180,11 @@ namespace Purchasing.Mvc.Services
                 var acell1 = InitializeCell("Vendor:", _boldFont, bottomBorder: false, width: 50);
                 var acell2 = InitializeCell(topBottomBorders: false, bottomBorder: false, width: 150);
                 acell2.Add(new Paragraph(order.Vendor == null ? "-- Unspecified --" : order.Vendor.Name).SetFont(_font));
-                acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : order.Vendor.Line1).SetFont(_font));
-                acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : order.Vendor.Line2).SetFont(_font));
-                acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : order.Vendor.Line3).SetFont(_font));
-                acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : string.Format("{0}, {1} {2}", order.Vendor.City, order.Vendor.State, order.Vendor.Zip)).SetFont(_font));
-                acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : string.Format("Phone #: {0}", order.Vendor.Phone)).SetFont(_font));
+                acell2.Add(new Paragraph(order.Vendor == null || order.Vendor.Line1 == null ? string.Empty : order.Vendor.Line1).SetFont(_font));
+                acell2.Add(new Paragraph(order.Vendor == null || order.Vendor.Line2 == null ? string.Empty : order.Vendor.Line2).SetFont(_font));
+                acell2.Add(new Paragraph(order.Vendor == null || order.Vendor.Line3 == null ? string.Empty : order.Vendor.Line3).SetFont(_font));
+                acell2.Add(new Paragraph(order.Vendor == null || order.Vendor.City == null ? string.Empty : string.Format("{0}, {1} {2}", order.Vendor.City, order.Vendor.State, order.Vendor.Zip)).SetFont(_font));
+                acell2.Add(new Paragraph(order.Vendor == null || order.Vendor.Phone == null ? string.Empty : string.Format("Phone #: {0}", order.Vendor.Phone)).SetFont(_font));
                 atable.AddCell(acell1);
                 atable.AddCell(acell2);
                 var acell3 = InitializeCell("Recipient:", _boldFont, bottomBorder: false, width: 50);
