@@ -12,6 +12,7 @@ using iText.Layout.Borders;
 using iText.Layout.Properties;
 using Purchasing.Core.Domain;
 
+
 namespace Purchasing.Mvc.Services
 {
     public interface IReportService
@@ -27,7 +28,7 @@ namespace Purchasing.Mvc.Services
         private readonly Color _subTableHeaderColor = ColorConstants.LIGHT_GRAY;
 
         // standard body font
-        private readonly PdfFont _pageHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //12, Font.BOLD, ColorConstants.WHITE);
+        private readonly PdfFont _pageHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD); //12, Font.BOLD, ColorConstants.WHITE);
         private readonly PdfFont _headerFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 14, Font.BOLD);
 
         private readonly PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
@@ -124,6 +125,10 @@ namespace Purchasing.Mvc.Services
                 valignment: VerticalAlignment.MIDDLE,
                 halignment: HorizontalAlignment.RIGHT,
                 width: 30);
+
+            //Style the table _pageHeaderFond
+            table.SetFontSize(12);
+            table.SetFontColor(ColorConstants.WHITE);
 
             // style the cell
             cell.SetBackgroundColor(_headerColor);
