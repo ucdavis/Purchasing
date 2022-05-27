@@ -516,6 +516,7 @@ namespace Purchasing.Mvc.Services
                 if (!bottomBorder)
                 {
                     cell.SetBorderBottom(Border.NO_BORDER);
+                    cell.SetPaddingBottom(-5);
                 }
             }
 
