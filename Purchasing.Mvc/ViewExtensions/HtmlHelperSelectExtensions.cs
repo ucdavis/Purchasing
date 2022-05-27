@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -9,9 +10,9 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
 {
     public static class HtmlHelperSelectExtensions
     {
-        public static IHtmlContent Select(this IHtmlHelper helper, string expression, Action<SelectOptions> setOptions)
+        public static IHtmlContent Select(this IHtmlHelper helper, string name, Action<SelectOptions> setOptions)
         {
-            var selectOptions = new SelectOptions(expression);
+            var selectOptions = new SelectOptions(name);
             setOptions(selectOptions);
 
             return selectOptions.GetDropDownItem(helper);
@@ -26,7 +27,6 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
         }
 
         private string _expression;
-
         private List<SelectListItem> _items = new List<SelectListItem>();
 
         private string _defaultOption = null;
@@ -35,8 +35,29 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
 
         internal IHtmlContent GetDropDownItem(IHtmlHelper helper)
         {
-            var html = helper.DropDownList(_expression, _items, _defaultOption, _htmlAttributes);
-            return html;
+            var select = new TagBuilder("select");
+            select.Attributes.Add("name", _expression);
+            select.Attributes.Add("id", Regex.Replace(_expression, @"[^0-9a-zA-Z:\-.]+", "_"));
+            select.MergeAttributes(_htmlAttributes);
+
+            if (!string.IsNullOrWhiteSpace(_defaultOption))
+            {
+                _items.Add(new SelectListItem { Text = _defaultOption, Value = "", Selected = !_items.Any(i => i.Selected) });
+            }
+
+            foreach (var item in _items)
+            {
+                var option = new TagBuilder("option");
+                option.Attributes.Add("value", item.Value);
+                option.InnerHtml.Append(item.Text);
+                if (item.Selected)
+                {
+                    option.Attributes.Add("selected", "selected");
+                }
+                select.InnerHtml.AppendHtml(option);
+            }
+            
+            return select;
         }
 
         public SelectOptions Options<T>(IEnumerable<T> items, Func<T, string> valueSelector, Func<T, string> textSelector)
