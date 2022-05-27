@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Authorization;
 using CommonServiceLocator;
 using UCDArch.Web.IoC;
 using UCDArch.Web.ModelBinder;
+using Purchasing.Mvc.Services;
 
 namespace Purchasing.Mvc
 {
@@ -109,6 +110,7 @@ namespace Purchasing.Mvc
             services.AddScoped<IAuthorizationHandler, VerifyRoleAccessHandler>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IReportService, ReportService>();
 
             services.Configure<LDAPSettings>(Configuration);
             services.Configure<SendGridSettings>(Configuration);
