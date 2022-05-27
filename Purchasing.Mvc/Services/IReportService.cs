@@ -119,12 +119,12 @@ namespace Purchasing.Mvc.Services
                 forVendor ? "UCD PrePurchasing" : string.Format("UCD PrePurchasing - Order Request: {0}", order.OrderRequestNumber()), 
                 _pageHeaderFont, 
                 valignment: VerticalAlignment.MIDDLE,
-                width: 70);
+                halignment: HorizontalAlignment.LEFT
+                );
             var cell2 = InitializeCell(
                 forVendor ? string.Empty : "-- Internal Use Only --", _pageHeaderFont,
                 valignment: VerticalAlignment.MIDDLE,
-                halignment: HorizontalAlignment.RIGHT,
-                width: 30);
+                halignment: HorizontalAlignment.RIGHT);
 
             //Style the table _pageHeaderFond
             table.SetFontSize(12);
@@ -135,6 +135,8 @@ namespace Purchasing.Mvc.Services
             cell.SetBorder(new SolidBorder(_headerColor, 1));
             cell2.SetBackgroundColor(_headerColor);
             cell2.SetBorder(new SolidBorder(_headerColor, 1));
+            cell2.SetPaddingRight(-20);
+
 
             table.AddCell(cell);
             table.AddCell(cell2);
