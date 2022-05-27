@@ -241,16 +241,16 @@ namespace Purchasing.Mvc.Services
 
         private void AddLineItems(Document doc, Order order, bool forVendor)
         {
-            var table = InitializeTable(7);
+            var table = InitializeTable(7).SetFontSize(10);
 
             // add table headers
-            table.AddCell(InitializeCell(string.Empty, _tableHeaderFont, true, width: 0.5f).SetFontSize(10).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Qty.", _tableHeaderFont, true, width: 1f).SetFontSize(10).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Unit", _tableHeaderFont, true, width: 1f).SetFontSize(10).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Catalog #", _tableHeaderFont, true, width: 1f).SetFontSize(10).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Description", _tableHeaderFont, true, width: 4f).SetFontSize(10).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Unit $", _tableHeaderFont, true, width: 1.5f).SetFontSize(10).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Line $", _tableHeaderFont, true, width: 1.5f).SetFontSize(10).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell(string.Empty, _tableHeaderFont, true, width:5).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Qty.", _tableHeaderFont, true, width: 5).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Unit", _tableHeaderFont, true, width: 4).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Catalog #", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Description", _tableHeaderFont, true, width: 30).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Unit $", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Line $", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE));
 
             // line item
             ProcessLineItems(table, order, forVendor);
@@ -279,13 +279,13 @@ namespace Purchasing.Mvc.Services
             var count = 1;
             foreach (var li in order.LineItems)
             {
-                table.AddCell(InitializeCell(count++.ToString(), _font));
-                table.AddCell(InitializeCell(string.Format("{0:0.###}", li.Quantity), _font));
-                table.AddCell(InitializeCell(li.Unit, _font));
-                table.AddCell(InitializeCell(li.CatalogNumber, _font));
-                table.AddCell(InitializeCell(li.Description, _font));
-                table.AddCell(InitializeCell(forVendor ? string.Empty : li.UnitPrice.ToString("c"), _font));
-                table.AddCell(InitializeCell(forVendor ? string.Empty : (li.Quantity * li.UnitPrice).ToString("c"), _font, halignment: HorizontalAlignment.RIGHT));
+                table.AddCell(InitializeCell(count++.ToString(), _font, width: 5));
+                table.AddCell(InitializeCell(string.Format("{0:0.###}", li.Quantity), _font, width: 5));
+                table.AddCell(InitializeCell(li.Unit, _font, width: 4));
+                table.AddCell(InitializeCell(li.CatalogNumber, _font, width: 10));
+                table.AddCell(InitializeCell(li.Description, _font, width: 30));
+                table.AddCell(InitializeCell(forVendor ? string.Empty : li.UnitPrice.ToString("c"), _font, width: 10));
+                table.AddCell(InitializeCell(forVendor ? string.Empty : (li.Quantity * li.UnitPrice).ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, width: 10));
 
                 if (!string.IsNullOrEmpty(li.Url))
                 {
