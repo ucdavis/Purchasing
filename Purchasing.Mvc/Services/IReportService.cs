@@ -250,28 +250,32 @@ namespace Purchasing.Mvc.Services
             table.AddCell(InitializeCell("Catalog #", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE));
             table.AddCell(InitializeCell("Description", _tableHeaderFont, true, width: 30).SetFontColor(ColorConstants.WHITE));
             table.AddCell(InitializeCell("Unit $", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Line $", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Line $", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE).SetTextAlignment(TextAlignment.RIGHT));
 
             // line item
             ProcessLineItems(table, order, forVendor);
 
             // foot of table
-            table.AddCell(InitializeCell("Subtotal:", _boldFont, halignment: HorizontalAlignment.RIGHT, colspan: 6, bottomBorder: false));
-            table.AddCell(InitializeCell(forVendor ? string.Empty : order.Total().ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, bottomBorder: false));
+            var tableFoot = InitializeTable(2).SetFontSize(10);
+            tableFoot.SetTextAlignment(TextAlignment.RIGHT);
 
-            table.AddCell(InitializeCell("Estimated Freight:", _boldFont, halignment: HorizontalAlignment.RIGHT, colspan: 6, bottomBorder: false));
-            table.AddCell(InitializeCell(forVendor ? string.Empty : order.FreightAmount.ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, bottomBorder: false));
+            tableFoot.AddCell(InitializeCell("Subtotal:", _boldFont, bottomBorder: false, width: 92));
+            tableFoot.AddCell(InitializeCell(forVendor ? string.Empty : order.Total().ToString("c"), _font, bottomBorder: false, width: 8));
 
-            table.AddCell(InitializeCell("Estimated Shipping and Handling:", _boldFont, halignment: HorizontalAlignment.RIGHT, colspan: 6, bottomBorder: false));
-            table.AddCell(InitializeCell(forVendor ? string.Empty : order.ShippingAmount.ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, bottomBorder: false));
+            tableFoot.AddCell(InitializeCell("Estimated Freight:", _boldFont, bottomBorder: false, width: 92));
+            tableFoot.AddCell(InitializeCell(forVendor ? string.Empty : order.FreightAmount.ToString("c"), _font, bottomBorder: false, width: 8));
 
-            table.AddCell(InitializeCell(string.Format("Estimated Tax: ({0}%)", order.EstimatedTax), _boldFont, halignment: HorizontalAlignment.RIGHT, colspan: 6, bottomBorder: false));
-            table.AddCell(InitializeCell(forVendor ? string.Empty : order.Tax().ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, bottomBorder: false));
+            tableFoot.AddCell(InitializeCell("Estimated Shipping and Handling:", _boldFont, halignment: HorizontalAlignment.RIGHT, bottomBorder: false, width: 92));
+            tableFoot.AddCell(InitializeCell(forVendor ? string.Empty : order.ShippingAmount.ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, bottomBorder: false, width: 8));
 
-            table.AddCell(InitializeCell("Total:", _boldFont, halignment: HorizontalAlignment.RIGHT, colspan: 6));
-            table.AddCell(InitializeCell(forVendor ? string.Empty : order.GrandTotal().ToString("c"), _font, halignment: HorizontalAlignment.RIGHT));
+            tableFoot.AddCell(InitializeCell(string.Format("Estimated Tax: ({0}%)", order.EstimatedTax), _boldFont, halignment: HorizontalAlignment.RIGHT, bottomBorder: false, width: 92));
+            tableFoot.AddCell(InitializeCell(forVendor ? string.Empty : order.Tax().ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, bottomBorder: false, width: 8));
+
+            tableFoot.AddCell(InitializeCell("Total:", _boldFont, halignment: HorizontalAlignment.RIGHT, width: 92));
+            tableFoot.AddCell(InitializeCell(forVendor ? string.Empty : order.GrandTotal().ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, width: 8));
 
             doc.Add(table);
+            doc.Add(tableFoot);
         }
 
         private void ProcessLineItems(Table table, Order order, bool forVendor)
@@ -285,7 +289,7 @@ namespace Purchasing.Mvc.Services
                 table.AddCell(InitializeCell(li.CatalogNumber, _font, width: 10));
                 table.AddCell(InitializeCell(li.Description, _font, width: 30));
                 table.AddCell(InitializeCell(forVendor ? string.Empty : li.UnitPrice.ToString("c"), _font, width: 10));
-                table.AddCell(InitializeCell(forVendor ? string.Empty : (li.Quantity * li.UnitPrice).ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, width: 10));
+                table.AddCell(InitializeCell(forVendor ? string.Empty : (li.Quantity * li.UnitPrice).ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, width: 10).SetTextAlignment(TextAlignment.RIGHT));
 
                 if (!string.IsNullOrEmpty(li.Url))
                 {
