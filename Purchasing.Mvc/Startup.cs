@@ -56,6 +56,7 @@ namespace Purchasing.Mvc
             services.AddMvc(options =>
             {
                 options.Filters.Add<SerilogControllerActionFilter>();
+                options.ModelBinderProviders.Insert(0, new EntityModelBinderProvider());
             })
             .AddNewtonsoftJson(options =>
             {
