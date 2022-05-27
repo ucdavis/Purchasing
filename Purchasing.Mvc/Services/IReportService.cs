@@ -28,18 +28,8 @@ namespace Purchasing.Mvc.Services
         private readonly Color _subTableHeaderColor = ColorConstants.LIGHT_GRAY;
 
         // standard body font
-        private readonly PdfFont _pageHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD); //12, Font.BOLD, ColorConstants.WHITE);
-        private readonly PdfFont _headerFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD); //, 14, Font.BOLD);
 
-        private readonly PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
-        private readonly PdfFont _boldFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD);
-        private readonly PdfFont _italicFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10, Font.ITALIC);
-        private readonly PdfFont _smallPrint = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 8);
 
-        private readonly PdfFont _tableHeaderFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD, ColorConstants.WHITE);
-        private readonly PdfFont _subHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 14, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
-        private readonly PdfFont _sectionHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 10, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
-        private readonly PdfFont _captionFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10, Font.NORMAL, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
 
         // width of the content
         private float _pageWidth;
@@ -100,6 +90,8 @@ namespace Purchasing.Mvc.Services
 
         private void AddSpecialFooter(Document doc, Order order)
         {
+            PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
+            PdfFont _boldFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD);
             var table = InitializeTable(1);
             table.AddCell(InitializeCell(string.Format("Order Request: {0} **", order.OrderRequestNumber()), _font, valignment: VerticalAlignment.TOP, bottomBorder: false));
             table.AddCell(InitializeCell("** The order request number is an internal only number, not a PO number.", _boldFont, valignment: VerticalAlignment.TOP, bottomBorder: false));
@@ -114,6 +106,8 @@ namespace Purchasing.Mvc.Services
         /// <param name="doc"></param>
         private void AddHeader(Document doc, Order order, bool forVendor)
         {
+            PdfFont _pageHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD); //12, Font.BOLD, ColorConstants.WHITE);
+            
             var table = InitializeTable(2);
             var cell = InitializeCell(
                 forVendor ? "UCD PrePurchasing" : string.Format("UCD PrePurchasing - Order Request: {0}", order.OrderRequestNumber()), 
@@ -149,7 +143,8 @@ namespace Purchasing.Mvc.Services
         /// <param name="forVendor">If true, does not print some stuff </param>
         private void AddTopSection(Document doc, Order order, bool forVendor)
         {
-
+            PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
+            PdfFont _boldFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD);
             var topTable = InitializeTable(4).SetFontSize(10);
 
             topTable.AddCell(InitializeCell("Reference #:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
@@ -235,6 +230,9 @@ namespace Purchasing.Mvc.Services
 
         private void AddLineItems(Document doc, Order order, bool forVendor)
         {
+            PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);            
+            PdfFont _boldFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD);
+            PdfFont _tableHeaderFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD, ColorConstants.WHITE);            
             var table = InitializeTable(7);
 
             // add table headers
@@ -270,6 +268,8 @@ namespace Purchasing.Mvc.Services
 
         private void ProcessLineItems(Table table, Order order, bool forVendor)
         {
+            PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);            
+            PdfFont _boldFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD);
             var count = 1;
             foreach (var li in order.LineItems)
             {
@@ -324,6 +324,8 @@ namespace Purchasing.Mvc.Services
 
         private Table SplitAccountingInformation(IEnumerable<Split> splits)
         {
+            PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
+            PdfFont _tableHeaderFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD, ColorConstants.WHITE);
             var table = InitializeTable(4);
             table.SetWidth(_pageWidth * .75f);
 
@@ -353,6 +355,8 @@ namespace Purchasing.Mvc.Services
 
         private void AddBottomSection(Document doc, Order order)
         {
+            PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
+            PdfFont _boldFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD);                                                                                  
             // order level splits
             if (order.Splits.Count > 1 && !order.HasLineSplits)
             {
@@ -377,6 +381,8 @@ namespace Purchasing.Mvc.Services
 
         private void AddControlledSubstanceSection(Document doc, Order order)
         {
+            PdfFont _boldFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD);
+            PdfFont _tableHeaderFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD, ColorConstants.WHITE);
             if (order.HasControlledSubstance)
             {
                 var table = InitializeTable(2);
@@ -412,6 +418,8 @@ namespace Purchasing.Mvc.Services
 
         private void AddComments(Document doc, Order order)
         {
+            PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
+            PdfFont _tableHeaderFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD, ColorConstants.WHITE);
             if (order.OrderComments.Any())
             {
                 var cTable = InitializeTable(3);
@@ -433,8 +441,8 @@ namespace Purchasing.Mvc.Services
 
         private void AddOrderHistory(Document doc, Order order)
         {
-
-
+            PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
+            PdfFont _tableHeaderFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD, ColorConstants.WHITE);
             var hTable = InitializeTable(4);
             hTable.SetMarginTop(1f);
 
@@ -476,6 +484,7 @@ namespace Purchasing.Mvc.Services
             Color backgroundColor = null,
             float? width = null)
         {
+            PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
             var cell = colspan.HasValue ? new Cell(1, colspan.Value) : new Cell();
             if (!string.IsNullOrEmpty(text)) cell = new Cell().Add(new Paragraph(text).SetFont(font ?? _font));
 
