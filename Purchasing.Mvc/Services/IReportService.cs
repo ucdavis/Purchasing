@@ -149,46 +149,23 @@ namespace Purchasing.Mvc.Services
         /// <param name="forVendor">If true, does not print some stuff </param>
         private void AddTopSection(Document doc, Order order, bool forVendor)
         {
-            //var topTable = InitializeTable(4);
-            //topTable.SetWidths(new int[] { 15, 57, 15, 23 });
-
-            //topTable.AddCell(InitializeCell("Reference #:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
-            //topTable.AddCell(InitializeCell(!string.IsNullOrWhiteSpace(order.ReferenceNumber) ? order.ReferenceNumber : "--", _font, halignment: Element.ALIGN_LEFT, padding: false, bottomBorder: false));
-            //topTable.AddCell(InitializeCell("Request Placed:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
-            //topTable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false));
-
-            //topTable.AddCell(InitializeCell("Workgroup:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
-            //topTable.AddCell(InitializeCell(order.Workgroup.Name, _font, halignment: Element.ALIGN_LEFT, padding: false, bottomBorder: false));
-            //topTable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
-            //topTable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false));
-
-            //topTable.AddCell(InitializeCell("Department:", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
-            //topTable.AddCell(InitializeCell(order.Organization.Name, _font, halignment: Element.ALIGN_LEFT, padding: false, bottomBorder: false));
-            //topTable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: Element.ALIGN_LEFT, bottomBorder: false));
-            //topTable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false));
-
-            //topTable.AddCell(InitializeCell("", colspan: 4));
-            //doc.Add(topTable);
-
-
-
 
             var topTable = InitializeTable(4).SetFontSize(10);
 
-            topTable.AddCell(InitializeCell("Reference #:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false).SetMinWidth(15).SetMaxWidth(15));
-            topTable.AddCell(InitializeCell(!string.IsNullOrWhiteSpace(order.ReferenceNumber) ? order.ReferenceNumber : "--", _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false).SetMinWidth(57).SetMaxWidth(57));
-            topTable.AddCell(InitializeCell("Request Placed:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false).SetMinWidth(15).SetMaxWidth(15));
-            topTable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false).SetMinWidth(23).SetMaxWidth(23));
+            topTable.AddCell(InitializeCell("Reference #:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
+            topTable.AddCell(InitializeCell(!string.IsNullOrWhiteSpace(order.ReferenceNumber) ? order.ReferenceNumber : "--", _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false, width: 57));
+            topTable.AddCell(InitializeCell("Request Placed:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
+            topTable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false, width: 23));
 
-            topTable.AddCell(InitializeCell("Workgroup:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false).SetMinWidth(15).SetMaxWidth(15));
-            topTable.AddCell(InitializeCell(order.Workgroup.Name, _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false).SetMinWidth(57).SetMaxWidth(57));
-            topTable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false).SetMinWidth(15).SetMaxWidth(15));
-            topTable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false).SetMinWidth(23).SetMaxWidth(23));
+            topTable.AddCell(InitializeCell("Workgroup:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
+            topTable.AddCell(InitializeCell(order.Workgroup.Name, _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false, width: 57));
+            topTable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
+            topTable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false, width: 23));
 
-            topTable.AddCell(InitializeCell("Department:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false).SetMinWidth(15).SetMaxWidth(15));
-            topTable.AddCell(InitializeCell(order.Organization.Name, _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false, width: 57).SetMinWidth(57).SetMaxWidth(57));
-            topTable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false).SetMinWidth(15).SetMaxWidth(15));
-            topTable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false).SetMinWidth(23).SetMaxWidth(23));
+            topTable.AddCell(InitializeCell("Department:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
+            topTable.AddCell(InitializeCell(order.Organization.Name, _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false, width: 57));
+            topTable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
+            topTable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false, width: 23));
 
             topTable.AddCell(InitializeCell("", colspan: 4));
 
@@ -544,7 +521,8 @@ namespace Purchasing.Mvc.Services
 
             if (width.HasValue)
             {
-                cell.SetWidth(width.Value);
+                cell.SetMaxWidth(width.Value);
+                cell.SetMinWidth(width.Value);
             }
 
             return cell;
