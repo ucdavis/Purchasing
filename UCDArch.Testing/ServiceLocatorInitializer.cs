@@ -8,6 +8,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Web.IoC;
 using Moq;
+using Microsoft.AspNetCore.Http;
 
 namespace UCDArch.Testing
 {
@@ -17,8 +18,12 @@ namespace UCDArch.Testing
         {
             IWindsorContainer container = new WindsorContainer();
 
+            var httpContextAccessor = Mock.Of<IHttpContextAccessor>();
+            Mock.Get(httpContextAccessor).Setup(a => a.HttpContext).Returns(new DefaultHttpContext());
+
             container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
             container.Register(Component.For<IDbContext>().ImplementedBy<DbContext>().Named("DbContext"));
+            container.Register(Component.For<IHttpContextAccessor>().Instance(httpContextAccessor).Named("httpContextAccessor"));
 
             ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 
@@ -33,7 +38,7 @@ namespace UCDArch.Testing
 
             var dbContext = Mock.Of<IDbContext>();
 
-            container.Register(Component.For<IDbContext>().Instance(dbContext));
+            container.Register(Component.For<IDbContext>().Instance(dbContext).Named("DbContext"));
             
             ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 

@@ -5,9 +5,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
+using CommonServiceLocator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Moq;
+using UCDArch.Core;
 
 namespace UCDArch.Testing.Fakes
 {
@@ -24,6 +26,7 @@ namespace UCDArch.Testing.Fakes
         private string _userName;
         private string _fileContentType;
         private HttpRequest _httpRequest;
+        private IServiceProvider _serviceProvider;
 
         public MockHttpContext(int fileCount, string[] userRoles, string userName = "UserName", string fileContentType = "application/pdf")
         {
@@ -32,6 +35,8 @@ namespace UCDArch.Testing.Fakes
             _userName = userName;
             _fileContentType = fileContentType;
             _httpRequest = Mock.Of<HttpRequest>();
+            _serviceProvider = Mock.Of<IServiceProvider>();
+            Mock.Get(_serviceProvider).Setup(x => x.GetService(It.IsAny<Type>())).Returns<Type>(a => ServiceLocator.Current.GetService(a));
         }
 
         public override ClaimsPrincipal User
@@ -60,7 +65,7 @@ namespace UCDArch.Testing.Fakes
         public override WebSocketManager WebSockets => throw new NotImplementedException();
 
         public override IDictionary<object, object> Items { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override IServiceProvider RequestServices { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override IServiceProvider RequestServices { get => _serviceProvider; set => throw new NotImplementedException(); }
         public override CancellationToken RequestAborted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override ISession Session { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

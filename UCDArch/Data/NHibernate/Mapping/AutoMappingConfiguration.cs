@@ -26,15 +26,7 @@ namespace UCDArch.Data.NHibernate.Mapping
 
         public static IMappingConfiguration CreateWithOverrides(AutoPersistenceModel autoPersistenceModel)
         {
-            var configuration = SmartServiceLocator<IConfiguration>.GetService();
-            var fluentConfiguration = Fluently.Configure()
-                .Database(MsSqlConfiguration.MsSql2008
-                    .DefaultSchema(configuration["MainDB:Schema"])
-                    .ConnectionString(configuration["ConnectionStrings:MainDB"])
-                    .AdoNetBatchSize(configuration.GetValue<int>("MainDB:BatchSize", 25)))
-                .Mappings(m => m.AutoMappings.Add(autoPersistenceModel));
-
-            return new AutoMappingConfiguration { _fluentConfiguration = fluentConfiguration };
+            return new AutoMappingConfiguration { _fluentConfiguration = GetFluentCofiguration(autoPersistenceModel) };
         }
 
         public static IMappingConfiguration CreateWithOverrides<TClassInDomainObjectAssembly, TClassInMappingAssembly>()
@@ -43,15 +35,17 @@ namespace UCDArch.Data.NHibernate.Mapping
                 new AutoPersistenceModelGenerator().GenerateFromAssembly
                     <TClassInDomainObjectAssembly, TClassInMappingAssembly>();
 
+            return new AutoMappingConfiguration { _fluentConfiguration = GetFluentCofiguration(autoPersistenceModel) };
+        }
+
+        private static FluentConfiguration GetFluentCofiguration(AutoPersistenceModel autoPersistenceModel)
+        {
             var configuration = SmartServiceLocator<IConfiguration>.GetService();
             var fluentConfiguration = Fluently.Configure()
-                .Database(MsSqlConfiguration.MsSql2008
-                    .DefaultSchema(configuration["MainDB:Schema"])
-                    .ConnectionString(configuration["ConnectionStrings:MainDB"])
-                    .AdoNetBatchSize(configuration.GetValue<int>("MainDB:BatchSize", 25)))
+                .Database(PersistenceConfiguration.GetConfigurer())
                 .Mappings(m => m.AutoMappings.Add(autoPersistenceModel));
 
-            return new AutoMappingConfiguration { _fluentConfiguration = fluentConfiguration };
+            return fluentConfiguration;
         }
 
         public ISessionFactory BuildSessionFactory()

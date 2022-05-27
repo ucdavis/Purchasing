@@ -118,6 +118,8 @@ namespace Purchasing.Tests.Core
             //base.InitServiceLocator();
             var container = ServiceLocatorInitializer.Init();
 
+            IConfigurationInitializer.Init(container, null);
+
             base.RegisterAdditionalServices(container);
         }
 

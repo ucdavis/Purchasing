@@ -21,10 +21,7 @@ namespace UCDArch.Data.NHibernate.Mapping
         {
             var configuration = SmartServiceLocator<IConfiguration>.GetService();
             var fluentConfiguration = Fluently.Configure()
-                .Database(MsSqlConfiguration.MsSql2008
-                    .DefaultSchema(configuration["MainDB:Schema"])
-                    .ConnectionString(configuration["ConnectionStrings:MainDB"])
-                    .AdoNetBatchSize(configuration.GetValue<int>("MainDB:BatchSize", 25)))
+                .Database(PersistenceConfiguration.GetConfigurer())
                 .Mappings(x => x.FluentMappings.AddFromAssembly(mappingAssembly)
                        .Conventions.AddAssembly(conventionAssembly));
 

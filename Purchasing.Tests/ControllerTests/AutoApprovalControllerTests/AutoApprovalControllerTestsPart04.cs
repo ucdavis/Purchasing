@@ -43,7 +43,6 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(false, result.RouteValues["showAll"]);
             #endregion Assert
         }
 
@@ -61,7 +60,6 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(false, result.RouteValues["showAll"]);
             #endregion Assert
         }
 

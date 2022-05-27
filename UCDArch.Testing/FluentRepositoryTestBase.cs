@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -65,11 +66,11 @@ namespace UCDArch.Testing
         [TestInitialize]
         public void CreateDB()
         {
+            Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
+            InitServiceLocator();
             new NHibernate.Tool.hbm2ddl.SchemaExport(FluentConfiguration).Execute(false, true, false,
                                                                      NHibernateSessionManager.
                                                                          Instance.GetSession().Connection, null);
-            InitServiceLocator();
-
             LoadData();
         }
 
@@ -79,7 +80,11 @@ namespace UCDArch.Testing
         [TestCleanup]
         public void TearDown()
         {
-            NHibernateSessionManager.Instance.CloseSession();
+            try {NHibernateSessionManager.Instance.CloseSession();}
+            catch (Exception ex) {
+                Trace.WriteLine(ex);
+                //throw;
+            }
         }
 
         protected virtual void LoadData()
