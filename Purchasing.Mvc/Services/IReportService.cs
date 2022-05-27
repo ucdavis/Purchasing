@@ -331,16 +331,16 @@ namespace Purchasing.Mvc.Services
                 }
             }
         }
-
+        
         private Table SplitAccountingInformation(IEnumerable<Split> splits)
         {
-            var table = InitializeTable(4);
+            var table = InitializeTable(4).SetHorizontalAlignment(HorizontalAlignment.CENTER).SetFontSize(10);
             table.SetWidth(_pageWidth * .75f);
 
-            table.AddCell(InitializeCell("Account", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
-            table.AddCell(InitializeCell("Project", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
-            table.AddCell(InitializeCell("Amount", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
-            table.AddCell(InitializeCell("Distribution", _tableHeaderFont, backgroundColor: _subTableHeaderColor, bottomBorder: false));
+            table.AddCell(InitializeCell("Account", _tableHeaderFont,header: true, backgroundColor: _subTableHeaderColor, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Project", _tableHeaderFont, header: true, backgroundColor: _subTableHeaderColor, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Amount", _tableHeaderFont, header: true, backgroundColor: _subTableHeaderColor, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Distribution", _tableHeaderFont, header: true, backgroundColor: _subTableHeaderColor, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
 
             foreach (var split in splits)
             {
