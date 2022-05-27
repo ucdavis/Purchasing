@@ -172,11 +172,11 @@ namespace Purchasing.Mvc.Services
             doc.Add(topTable);
 
             // put up the header
-            var table = InitializeTable(2);
+            var table = InitializeTable(2).SetFontSize(10);
 
             var aCell = InitializeCell(colspan: 2);
 
-            var atable = InitializeTable(4);
+            var atable = InitializeTable(4).SetFontSize(10);
 
             if (forVendor)
             {
