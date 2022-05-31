@@ -63,7 +63,7 @@ namespace Purchasing.Mvc
             container.Register(Component.For<IAccessQueryService>().ImplementedBy<AccessQueryService>().Named("accessQueryService"));
             container.Register(Component.For<ISecurityService>().ImplementedBy<SecurityService>().Named("securityService"));
             container.Register(Component.For<IWorkgroupService>().ImplementedBy<WorkgroupService>().Named("workgroupService")); //Common methods for Workgroup and wizard controllers
-            container.Register(Component.For<IReportService>().ImplementedBy<ReportService>().Named("reportService"));
+            //container.Register(Component.For<IReportService>().ImplementedBy<ReportService>().Named("reportService"));
 
             container.Register(Component.For<IFinancialSystemService>().ImplementedBy<FinancialSystemService>().Named("financialSystemService"));
             container.Register(Component.For<IBugTrackingService>().ImplementedBy<BugTrackingService>().Named("bugTrackingService"));
