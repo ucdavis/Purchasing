@@ -6,10 +6,5 @@
         {
             return str.Length < maxLength ? str : string.Format("{0}...", str.Substring(0, maxLength - 3));
         }
-
-        public static string NullCheck(this string str)
-        {
-            return str ?? string.Empty;
-        }
     }
 }

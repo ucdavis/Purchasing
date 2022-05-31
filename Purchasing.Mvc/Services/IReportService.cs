@@ -187,10 +187,10 @@ namespace Purchasing.Mvc.Services
             {
                 var acell1 = InitializeCell("Vendor:", _boldFont, bottomBorder: false, width: 50);
                 var acell2 = InitializeCell(topBottomBorders: false, bottomBorder: false, width: 150);
-                acell2.Add(new Paragraph(order.Vendor == null ? "-- Unspecified --" : order.Vendor.Name).SetFont(_font));
-                acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : order.Vendor.Line1.NullCheck()).SetFont(_font));
-                acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : order.Vendor.Line2.NullCheck()).SetFont(_font));
-                acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : order.Vendor.Line3.NullCheck()).SetFont(_font));
+                acell2.Add(new Paragraph(order.Vendor?.Name ?? "-- Unspecified --" ).SetFont(_font));
+                acell2.Add(new Paragraph(order.Vendor?.Line1 ?? string.Empty).SetFont(_font));
+                acell2.Add(new Paragraph(order.Vendor?.Line2 ?? string.Empty).SetFont(_font));
+                acell2.Add(new Paragraph(order.Vendor?.Line3 ?? string.Empty).SetFont(_font));
                 acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : string.Format("{0}, {1} {2}", order.Vendor.City, order.Vendor.State, order.Vendor.Zip)).SetFont(_font));
                 acell2.Add(new Paragraph(order.Vendor == null ? string.Empty : string.Format("Phone #: {0}", order.Vendor.Phone)).SetFont(_font));
                 atable.AddCell(acell1);
