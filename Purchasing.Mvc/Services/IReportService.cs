@@ -403,10 +403,12 @@ namespace Purchasing.Mvc.Services
         {
             if (order.HasControlledSubstance)
             {
-                var table = InitializeTable(2);
-                table.SetMarginBottom(1f);
+                var tableHeader = InitializeTable(1).SetFontSize(10);
+                tableHeader.AddCell(InitializeCell("Controlled Substances Information", _tableHeaderFont, true, HorizontalAlignment.LEFT, bottomBorder: true, width: 100).SetFontColor(ColorConstants.WHITE));
+                doc.Add(tableHeader);
 
-                table.AddCell(InitializeCell("Controlled Substances Information", _tableHeaderFont, true, HorizontalAlignment.LEFT, colspan: 2, bottomBorder: true));
+                var table = InitializeTable(2).SetFontSize(10);
+                table.SetMarginBottom(1f);
 
 
                 var authorizationInfo = order.GetAuthorizationInfo();
