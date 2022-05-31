@@ -291,33 +291,47 @@ namespace Purchasing.Mvc.Services
                 table.AddCell(InitializeCell(forVendor ? string.Empty : li.UnitPrice.ToString("c"), _font, width: 10));
                 table.AddCell(InitializeCell(forVendor ? string.Empty : (li.Quantity * li.UnitPrice).ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, width: 10).SetTextAlignment(TextAlignment.RIGHT));
 
+                var addDetailsTable = false;
+                var detailsTable = InitializeTable(2).SetFontSize(10);
+
                 if (!string.IsNullOrEmpty(li.Url))
                 {
-                    var urlCell1 = InitializeCell("Url:", _boldFont, colspan: 2, backgroundColor: _tableDataColor, bottomBorder: false);
-                    table.AddCell(urlCell1);
+                    var urlCell1 = InitializeCell("Url:", _boldFont, backgroundColor: _tableDataColor, bottomBorder: false);
+                    detailsTable.AddCell(urlCell1);
 
-                    var urlCell2 = InitializeCell(li.Url, _font, colspan: 5, backgroundColor: _tableDataColor, bottomBorder: false);
-                    table.AddCell(urlCell2);
+                    var urlCell2 = InitializeCell(li.Url, _font, backgroundColor: _tableDataColor, bottomBorder: false);
+                    detailsTable.AddCell(urlCell2);
+
+                    addDetailsTable = true;
                 }
                 if (!forVendor)
                 {
                     if (li.Commodity != null)
                     {
                         var commodityCell1 = InitializeCell("Commodity Code:", _boldFont, colspan: 2, backgroundColor: _tableDataColor, bottomBorder: false);
-                        table.AddCell(commodityCell1);
+                        detailsTable.AddCell(commodityCell1);
 
                         var commodityCell2 = InitializeCell(string.Format("{0} ({1})", li.Commodity.Name, li.Commodity.Id), _font, colspan: 5, backgroundColor: _tableDataColor, bottomBorder: false);
-                        table.AddCell(commodityCell2);
+                        detailsTable.AddCell(commodityCell2);
+                        addDetailsTable = true;
                     }
                 }
 
                 if (!string.IsNullOrEmpty(li.Notes))
                 {
                     var noteCell1 = InitializeCell("Notes:", _boldFont, colspan: 2, backgroundColor: _tableDataColor, bottomBorder: false);
-                    table.AddCell(noteCell1);
+                    detailsTable.AddCell(noteCell1);
 
                     var noteCell2 = InitializeCell(li.Notes, _font, colspan: 5, backgroundColor: _tableDataColor, bottomBorder: false);
-                    table.AddCell(noteCell2);
+                    detailsTable.AddCell(noteCell2);
+                    addDetailsTable = true;
+                }
+
+                if (addDetailsTable)
+                {
+                    var acell = InitializeCell(colspan: 7);
+                    acell.Add(detailsTable);
+                    table.AddCell(acell);
                 }
                 if (!forVendor)
                 {
