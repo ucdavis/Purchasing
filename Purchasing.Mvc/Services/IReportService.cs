@@ -388,12 +388,12 @@ namespace Purchasing.Mvc.Services
             {
                 var split = order.Splits.First();
 
-                var accountingTable = InitializeTable(2);
+                var accountingTable = InitializeTable(2).SetFontSize(10);
 
-                accountingTable.AddCell(InitializeCell("Account:", _boldFont, bottomBorder: false, width: 1f));
-                accountingTable.AddCell(InitializeCell(split.FullAccountDisplay, _font, bottomBorder: false, width: 4f));
-                accountingTable.AddCell(InitializeCell("Project:", _boldFont, width: 1f));
-                accountingTable.AddCell(InitializeCell(split.Project, _font, width: 4f));
+                accountingTable.AddCell(InitializeCell("Account:", _boldFont, bottomBorder: false, width: 10));
+                accountingTable.AddCell(InitializeCell(split.FullAccountDisplay, _font, bottomBorder: false, width: 50));
+                accountingTable.AddCell(InitializeCell("Project:", _boldFont, width: 10));
+                accountingTable.AddCell(InitializeCell(split.Project, _font, width: 50));
 
                 doc.Add(accountingTable);
             }
@@ -438,16 +438,17 @@ namespace Purchasing.Mvc.Services
         {
             if (order.OrderComments.Any())
             {
-                var cTable = InitializeTable(3);
+                var cTable = InitializeTable(3).SetFontSize(10);
                 cTable.SetMarginTop(1f);
 
-                cTable.AddCell(InitializeCell("Comments", _tableHeaderFont, true, HorizontalAlignment.LEFT, colspan: 3, bottomBorder: true));
+                cTable.AddCell(InitializeCell("Comments", _tableHeaderFont, true, HorizontalAlignment.LEFT, bottomBorder: true, width:20).SetFontColor(ColorConstants.WHITE));
+                cTable.AddCell(InitializeCell("", _tableHeaderFont, true, colspan: 2, bottomBorder: true));
 
                 foreach (var c in order.OrderComments)
                 {
-                    cTable.AddCell(InitializeCell(c.DateCreated.ToString(), _font, bottomBorder: false, width: 1.5f));
-                    cTable.AddCell(InitializeCell(c.User.FullName, _font, bottomBorder: false, width: 1.75f));
-                    cTable.AddCell(InitializeCell(c.Text, _font, bottomBorder: false, width: 4f));
+                    cTable.AddCell(InitializeCell(c.DateCreated.ToString(), _font, bottomBorder: false, width: 20));
+                    cTable.AddCell(InitializeCell(c.User.FullName, _font, bottomBorder: false, width: 30));
+                    cTable.AddCell(InitializeCell(c.Text, _font, bottomBorder: false, width: 50));
                 }
 
                 cTable.AddCell(InitializeCell("", colspan: 3));
