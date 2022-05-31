@@ -100,7 +100,7 @@ namespace Purchasing.Mvc.Services
 
         private void AddSpecialFooter(Document doc, Order order)
         {
-            var table = InitializeTable(1);
+            var table = InitializeTable(1).SetFontSize(10);
             table.AddCell(InitializeCell(string.Format("Order Request: {0} **", order.OrderRequestNumber()), _font, valignment: VerticalAlignment.TOP, bottomBorder: false));
             table.AddCell(InitializeCell("** The order request number is an internal only number, not a PO number.", _boldFont, valignment: VerticalAlignment.TOP, bottomBorder: false));
             table.AddCell(InitializeCell("** Not a confirmation of order and this is not a University PO.", _boldFont, valignment: VerticalAlignment.TOP));
@@ -124,7 +124,7 @@ namespace Purchasing.Mvc.Services
             var cell2 = InitializeCell(
                 forVendor ? string.Empty : "-- Internal Use Only --", _pageHeaderFont,
                 valignment: VerticalAlignment.MIDDLE,
-                halignment: HorizontalAlignment.RIGHT);
+                halignment: HorizontalAlignment.RIGHT).SetTextAlignment(TextAlignment.RIGHT);
 
             //Style the table _pageHeaderFond
             table.SetFontSize(12);
@@ -135,7 +135,6 @@ namespace Purchasing.Mvc.Services
             cell.SetBorder(new SolidBorder(_headerColor, 1));
             cell2.SetBackgroundColor(_headerColor);
             cell2.SetBorder(new SolidBorder(_headerColor, 1));
-            cell2.SetPaddingRight(-20);
 
 
             table.AddCell(cell);
