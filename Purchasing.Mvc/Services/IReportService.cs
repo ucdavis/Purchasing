@@ -64,7 +64,7 @@ namespace Purchasing.Mvc.Services
 
         public byte[] GetInvoice(Order order, bool showOrderHistory = false, bool forVendor = false)
         {
-            var ms = new MemoryStream();
+            using var ms = new MemoryStream();
             var writer = new PdfWriter(ms);
 
             var doc = InitializeDocument(writer);
@@ -151,22 +151,22 @@ namespace Purchasing.Mvc.Services
         private void AddTopSection(Document doc, Order order, bool forVendor)
         {
 
-            var topTable = InitializeTable(4).SetFontSize(10);
+            var topTable = InitializeTable(new float[] { 15, 57, 15, 23 }).SetFontSize(10);
 
-            topTable.AddCell(InitializeCell("Reference #:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
-            topTable.AddCell(InitializeCell(!string.IsNullOrWhiteSpace(order.ReferenceNumber) ? order.ReferenceNumber : "--", _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false, width: 57));
-            topTable.AddCell(InitializeCell("Request Placed:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
-            topTable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false, width: 23));
+            topTable.AddCell(InitializeCell("Reference #:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(!string.IsNullOrWhiteSpace(order.ReferenceNumber) ? order.ReferenceNumber : "--", _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false));
+            topTable.AddCell(InitializeCell("Request Placed:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.DateCreated.ToString(), padding: false, bottomBorder: false));
 
-            topTable.AddCell(InitializeCell("Workgroup:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
-            topTable.AddCell(InitializeCell(order.Workgroup.Name, _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false, width: 57));
-            topTable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
-            topTable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false, width: 23));
+            topTable.AddCell(InitializeCell("Workgroup:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.Workgroup.Name, _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false));
+            topTable.AddCell(InitializeCell("Status: ", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.StatusCode.Name, padding: false, bottomBorder: false));
 
-            topTable.AddCell(InitializeCell("Department:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
-            topTable.AddCell(InitializeCell(order.Organization.Name, _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false, width: 57));
-            topTable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false, width: 15));
-            topTable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false, width: 23));
+            topTable.AddCell(InitializeCell("Department:", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.Organization.Name, _font, halignment: HorizontalAlignment.LEFT, padding: false, bottomBorder: false));
+            topTable.AddCell(InitializeCell("Date Needed: ", _boldFont, padding: false, halignment: HorizontalAlignment.LEFT, bottomBorder: false));
+            topTable.AddCell(InitializeCell(order.DateNeeded.ToString("d"), padding: false, bottomBorder: false));
 
             topTable.AddCell(InitializeCell("", colspan: 4));
 
@@ -240,16 +240,18 @@ namespace Purchasing.Mvc.Services
 
         private void AddLineItems(Document doc, Order order, bool forVendor)
         {
-            var table = InitializeTable(7).SetFontSize(10);
+            //float[] columnWidths = { 3f, 5f, 5f, 10f, 35f, 8f, 10f }; //This layout isn't bad either, but the one below was what was originally used.
+            var table = InitializeTable(new float[] { 0.5f, 1f, 1f, 1f, 4f, 1.5f, 1.5f }).SetFontSize(10);
+            
 
             // add table headers
-            table.AddCell(InitializeCell(string.Empty, _tableHeaderFont, true, width:5).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Qty.", _tableHeaderFont, true, width: 5).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Unit", _tableHeaderFont, true, width: 4).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Catalog #", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Description", _tableHeaderFont, true, width: 30).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Unit $", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Line $", _tableHeaderFont, true, width: 10).SetFontColor(ColorConstants.WHITE).SetTextAlignment(TextAlignment.RIGHT));
+            table.AddCell(InitializeCell(string.Empty, _tableHeaderFont, true).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Qty.", _tableHeaderFont, true).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Unit", _tableHeaderFont, true).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Catalog #", _tableHeaderFont, true).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Description", _tableHeaderFont, true).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Unit $", _tableHeaderFont, true).SetFontColor(ColorConstants.WHITE));
+            table.AddCell(InitializeCell("Line $", _tableHeaderFont, true).SetFontColor(ColorConstants.WHITE).SetTextAlignment(TextAlignment.RIGHT));
 
             // line item
             ProcessLineItems(table, order, forVendor);
@@ -282,13 +284,13 @@ namespace Purchasing.Mvc.Services
             var count = 1;
             foreach (var li in order.LineItems)
             {
-                table.AddCell(InitializeCell(count++.ToString(), _font, width: 5));
-                table.AddCell(InitializeCell(string.Format("{0:0.###}", li.Quantity), _font, width: 5));
-                table.AddCell(InitializeCell(li.Unit, _font, width: 4));
-                table.AddCell(InitializeCell(li.CatalogNumber, _font, width: 10));
-                table.AddCell(InitializeCell(li.Description, _font, width: 30));
-                table.AddCell(InitializeCell(forVendor ? string.Empty : li.UnitPrice.ToString("c"), _font, width: 10));
-                table.AddCell(InitializeCell(forVendor ? string.Empty : (li.Quantity * li.UnitPrice).ToString("c"), _font, halignment: HorizontalAlignment.RIGHT, width: 10).SetTextAlignment(TextAlignment.RIGHT));
+                table.AddCell(InitializeCell(count++.ToString(), _font));
+                table.AddCell(InitializeCell(string.Format("{0:0.###}", li.Quantity), _font));
+                table.AddCell(InitializeCell(li.Unit, _font));
+                table.AddCell(InitializeCell(li.CatalogNumber, _font));
+                table.AddCell(InitializeCell(li.Description, _font));
+                table.AddCell(InitializeCell(forVendor ? string.Empty : li.UnitPrice.ToString("c"), _font));
+                table.AddCell(InitializeCell(forVendor ? string.Empty : (li.Quantity * li.UnitPrice).ToString("c"), _font, halignment: HorizontalAlignment.RIGHT).SetTextAlignment(TextAlignment.RIGHT));
 
                 var addDetailsTable = false;
                 var detailsTable = InitializeTable(2).SetFontSize(10);
@@ -439,17 +441,17 @@ namespace Purchasing.Mvc.Services
         {
             if (order.OrderComments.Any())
             {
-                var cTable = InitializeTable(3).SetFontSize(10);
+                var cTable = InitializeTable(new float[] { 1.5f, 1.75f, 4f }).SetFontSize(10);
                 cTable.SetMarginTop(1f);
 
-                cTable.AddCell(InitializeCell("Comments", _tableHeaderFont, true, HorizontalAlignment.LEFT, bottomBorder: true, width:20).SetFontColor(ColorConstants.WHITE));
+                cTable.AddCell(InitializeCell("Comments", _tableHeaderFont, true, HorizontalAlignment.LEFT, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
                 cTable.AddCell(InitializeCell("", _tableHeaderFont, true, colspan: 2, bottomBorder: true));
 
                 foreach (var c in order.OrderComments)
                 {
-                    cTable.AddCell(InitializeCell(c.DateCreated.ToString(), _font, bottomBorder: false, width: 20));
-                    cTable.AddCell(InitializeCell(c.User.FullName, _font, bottomBorder: false, width: 30));
-                    cTable.AddCell(InitializeCell(c.Text, _font, bottomBorder: false, width: 50));
+                    cTable.AddCell(InitializeCell(c.DateCreated.ToString(), _font, bottomBorder: false));
+                    cTable.AddCell(InitializeCell(c.User.FullName, _font, bottomBorder: false));
+                    cTable.AddCell(InitializeCell(c.Text, _font, bottomBorder: false));
                 }
 
                 cTable.AddCell(InitializeCell("", colspan: 3));
@@ -459,20 +461,18 @@ namespace Purchasing.Mvc.Services
         
         private void AddOrderHistory(Document doc, Order order)
         {
-
-
-            var hTable = InitializeTable(4).SetFontSize(10);
+            var hTable = InitializeTable(new float[] { 1.5f, 1.75f, 2f, 2f }).SetFontSize(10);
             hTable.SetMarginTop(1f);
 
-            hTable.AddCell(InitializeCell("Order History", _tableHeaderFont, true, HorizontalAlignment.LEFT, bottomBorder: true, width: 15).SetFontColor(ColorConstants.WHITE));
+            hTable.AddCell(InitializeCell("Order History", _tableHeaderFont, true, HorizontalAlignment.LEFT, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
             hTable.AddCell(InitializeCell("", _tableHeaderFont, true, HorizontalAlignment.LEFT, colspan: 3, bottomBorder: true));
 
             foreach (var h in order.OrderTrackings)
             {
-                hTable.AddCell(InitializeCell(h.DateCreated.ToString(), _font, bottomBorder: false, width: 15));
-                hTable.AddCell(InitializeCell(h.Description, _font, bottomBorder: false, width: 30));
-                hTable.AddCell(InitializeCell(h.StatusCode.Name, _font, bottomBorder: false, width: 10));
-                hTable.AddCell(InitializeCell(h.User.FullName, _font, bottomBorder: false, width: 30));
+                hTable.AddCell(InitializeCell(h.DateCreated.ToString(), _font, bottomBorder: false));
+                hTable.AddCell(InitializeCell(h.Description, _font, bottomBorder: false));
+                hTable.AddCell(InitializeCell(h.StatusCode.Name, _font, bottomBorder: false));
+                hTable.AddCell(InitializeCell(h.User.FullName, _font, bottomBorder: false));
             }
 
             hTable.AddCell(InitializeCell("", colspan: 4));
@@ -484,6 +484,16 @@ namespace Purchasing.Mvc.Services
         {
             var table = new Table(columns)
                 .UseAllAvailableWidth()
+                .SetMarginBottom(2f);
+
+            return table;
+        }
+        
+        private Table InitializeTable(float[] columns)
+        {
+            var table = new Table(columns)
+                .UseAllAvailableWidth()
+                .SetFixedLayout()
                 .SetMarginBottom(2f);
 
             return table;
