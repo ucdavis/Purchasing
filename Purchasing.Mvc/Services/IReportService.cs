@@ -455,22 +455,23 @@ namespace Purchasing.Mvc.Services
                 doc.Add(cTable);
             }
         }
-
+        
         private void AddOrderHistory(Document doc, Order order)
         {
 
 
-            var hTable = InitializeTable(4);
+            var hTable = InitializeTable(4).SetFontSize(10);
             hTable.SetMarginTop(1f);
 
-            hTable.AddCell(InitializeCell("Order History", _tableHeaderFont, true, HorizontalAlignment.LEFT, colspan: 4, bottomBorder: false));
+            hTable.AddCell(InitializeCell("Order History", _tableHeaderFont, true, HorizontalAlignment.LEFT, bottomBorder: true, width: 15).SetFontColor(ColorConstants.WHITE));
+            hTable.AddCell(InitializeCell("", _tableHeaderFont, true, HorizontalAlignment.LEFT, colspan: 3, bottomBorder: true));
 
             foreach (var h in order.OrderTrackings)
             {
-                hTable.AddCell(InitializeCell(h.DateCreated.ToString(), _font, bottomBorder: false, width: 1.5f));
-                hTable.AddCell(InitializeCell(h.Description, _font, bottomBorder: false, width: 1.75f));
-                hTable.AddCell(InitializeCell(h.StatusCode.Name, _font, bottomBorder: false, width: 2f));
-                hTable.AddCell(InitializeCell(h.User.FullName, _font, bottomBorder: false, width: 2f));
+                hTable.AddCell(InitializeCell(h.DateCreated.ToString(), _font, bottomBorder: false, width: 15));
+                hTable.AddCell(InitializeCell(h.Description, _font, bottomBorder: false, width: 30));
+                hTable.AddCell(InitializeCell(h.StatusCode.Name, _font, bottomBorder: false, width: 10));
+                hTable.AddCell(InitializeCell(h.User.FullName, _font, bottomBorder: false, width: 30));
             }
 
             hTable.AddCell(InitializeCell("", colspan: 4));
