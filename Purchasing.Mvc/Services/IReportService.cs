@@ -296,10 +296,10 @@ namespace Purchasing.Mvc.Services
 
                 if (!string.IsNullOrEmpty(li.Url))
                 {
-                    var urlCell1 = InitializeCell("Url:", _boldFont, backgroundColor: _tableDataColor, bottomBorder: false);
+                    var urlCell1 = InitializeCell("Url:", _boldFont, backgroundColor: _tableDataColor, bottomBorder: false, width:5).SetPaddingBottom(0);
                     detailsTable.AddCell(urlCell1);
 
-                    var urlCell2 = InitializeCell(li.Url, _font, backgroundColor: _tableDataColor, bottomBorder: false);
+                    var urlCell2 = InitializeCell(li.Url, _font, backgroundColor: _tableDataColor, bottomBorder: false, width:85).SetPaddingBottom(0);
                     detailsTable.AddCell(urlCell2);
 
                     addDetailsTable = true;
@@ -308,10 +308,10 @@ namespace Purchasing.Mvc.Services
                 {
                     if (li.Commodity != null)
                     {
-                        var commodityCell1 = InitializeCell("Commodity Code:", _boldFont, colspan: 2, backgroundColor: _tableDataColor, bottomBorder: false);
+                        var commodityCell1 = InitializeCell("Commodity Code:", _boldFont,  backgroundColor: _tableDataColor, bottomBorder: false, width: 5).SetPaddingBottom(0);
                         detailsTable.AddCell(commodityCell1);
 
-                        var commodityCell2 = InitializeCell(string.Format("{0} ({1})", li.Commodity.Name, li.Commodity.Id), _font, colspan: 5, backgroundColor: _tableDataColor, bottomBorder: false);
+                        var commodityCell2 = InitializeCell(string.Format("{0} ({1})", li.Commodity.Name, li.Commodity.Id), _font, colspan: 5, backgroundColor: _tableDataColor, bottomBorder: false, width: 85).SetPaddingBottom(0);
                         detailsTable.AddCell(commodityCell2);
                         addDetailsTable = true;
                     }
@@ -319,17 +319,17 @@ namespace Purchasing.Mvc.Services
 
                 if (!string.IsNullOrEmpty(li.Notes))
                 {
-                    var noteCell1 = InitializeCell("Notes:", _boldFont, colspan: 2, backgroundColor: _tableDataColor, bottomBorder: false);
+                    var noteCell1 = InitializeCell("Notes:", _boldFont, backgroundColor: _tableDataColor, bottomBorder: false, width: 5).SetPaddingBottom(0);
                     detailsTable.AddCell(noteCell1);
 
-                    var noteCell2 = InitializeCell(li.Notes, _font, colspan: 5, backgroundColor: _tableDataColor, bottomBorder: false);
+                    var noteCell2 = InitializeCell(li.Notes, _font, backgroundColor: _tableDataColor, bottomBorder: false, width: 85).SetPaddingBottom(0);
                     detailsTable.AddCell(noteCell2);
                     addDetailsTable = true;
                 }
 
                 if (addDetailsTable)
                 {
-                    var acell = InitializeCell(colspan: 7);
+                    var acell = InitializeCell(colspan: 7, bottomBorder: false);
                     acell.Add(detailsTable);
                     table.AddCell(acell);
                 }
@@ -338,7 +338,7 @@ namespace Purchasing.Mvc.Services
                     if (order.HasLineSplits)
                     {
                         var accountTable = SplitAccountingInformation(li.Splits);
-                        var acell = InitializeCell(colspan: 7);
+                        var acell = InitializeCell(colspan: 7, bottomBorder: false).SetPaddingBottom(0);
                         acell.Add(accountTable);
                         table.AddCell(acell);
                     }
