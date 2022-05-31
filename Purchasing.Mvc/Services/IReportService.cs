@@ -29,17 +29,17 @@ namespace Purchasing.Mvc.Services
 
         // standard body font
         private readonly PdfFont _pageHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD); //12, Font.BOLD, ColorConstants.WHITE);
-        private readonly PdfFont _headerFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD); //, 14, Font.BOLD);
+        //private readonly PdfFont _headerFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD); //, 14, Font.BOLD);
 
         private readonly PdfFont _font = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10);
         private readonly PdfFont _boldFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD);
-        private readonly PdfFont _italicFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10, Font.ITALIC);
-        private readonly PdfFont _smallPrint = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 8);
+        //private readonly PdfFont _italicFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10, Font.ITALIC);
+        //private readonly PdfFont _smallPrint = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 8);
 
         private readonly PdfFont _tableHeaderFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD); //, 10, Font.BOLD, ColorConstants.WHITE);
-        private readonly PdfFont _subHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 14, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
-        private readonly PdfFont _sectionHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 10, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
-        private readonly PdfFont _captionFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10, Font.NORMAL, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
+        //private readonly PdfFont _subHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 14, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
+        //private readonly PdfFont _sectionHeaderFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA); //, 10, Font.BOLD, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
+        //private readonly PdfFont _captionFont = PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN); //, 10, Font.NORMAL, new CMYKColor(0.9922f, 0.4264f, 0.0000f, 0.4941f));
 
         // width of the content
         private float _pageWidth;
