@@ -90,7 +90,7 @@ namespace Purchasing.Mvc.Controllers
             if (workgroups.Count() == 1)
             {
                 var workgroup = workgroups.Single();
-                return this.RedirectToAction(nameof(Request));
+                return this.RedirectToAction(nameof(Request), new { id = workgroup.Id });
             }
             
             return View(workgroups.OrderBy(a => a.Name).ToList());
@@ -113,7 +113,7 @@ namespace Purchasing.Mvc.Controllers
             if (approval.Order.StatusCode.Id != OrderStatusCode.Codes.AccountManager)
             {
                 ErrorMessage = "Order Status must be at account manager to change account manager.";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
             var model = OrderReRoutePurchaserModel.Create(approval.Order);
             model.ApprovalId = approvalId;
@@ -133,19 +133,19 @@ namespace Purchasing.Mvc.Controllers
             if (approval.Order.StatusCode.Id != OrderStatusCode.Codes.AccountManager)
             {
                 ErrorMessage = "Order Status must be at account manager to change account manager.";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
 
             if (approval.User != null && approval.User.Id == accountManagerId)
             {
                 ErrorMessage = "No change detected.";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
 
             if (approval.User != null && approval.User.Id != CurrentUser.Identity.Name && !approval.User.IsAway)
             {
                 ErrorMessage = "Can't reroute an approval unless it is assigned to you or the assigned user is away";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
 
             var originalRouting = approval.User != null ? approval.User.FullName : "Any Workgroup Account Manager";
@@ -175,7 +175,7 @@ namespace Purchasing.Mvc.Controllers
             if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
             {
                 ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
             //if (order.Approvals.Any(a=> a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User!=null))
             //{
@@ -209,12 +209,12 @@ namespace Purchasing.Mvc.Controllers
             if (!(order.StatusCode.Id == OrderStatusCode.Codes.Purchaser || order.StatusCode.Id == OrderStatusCode.Codes.AccountManager))
             {
                 ErrorMessage = "Order Status must be at account manager or purchaser to change purchaser.";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
             //if (order.Approvals.Any(a => a.StatusCode.Id == OrderStatusCode.Codes.Purchaser && a.User != null))
             //{
             //    ErrorMessage = "Order purchaser can not already be assigned to change purchaser.";
-            //    return this.RedirectToAction(nameof(Review));
+            //    return this.RedirectToAction(nameof(Review), new { id = id });
             //}
             var purchaser = _repositoryFactory.UserRepository.Queryable.Single(a => a.Id == purchaserId);
             //var peepCheck = _queryRepository.OrderPeepRepository.Queryable.Any(a => a.OrderId == order.Id && a.WorkgroupId == order.Workgroup.Id && a.OrderStatusCodeId == OrderStatusCode.Codes.Purchaser && a.UserId == purchaserId);
@@ -233,7 +233,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (order.StatusCode.Id == OrderStatusCode.Codes.AccountManager)
             {
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = order.Id });
             }
 
             return this.RedirectToAction(nameof(HomeController.Landing), typeof(HomeController).ControllerName());
@@ -250,7 +250,7 @@ namespace Purchasing.Mvc.Controllers
             if (order.StatusCode.Id != OrderStatusCode.Codes.Complete)
             {
                 ErrorMessage = "Order Status must be at complete to assign an Accounts Payable user.";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
 
             var completedBy = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).OrderBy(o => o.DateCreated).First().User.Id;
@@ -260,7 +260,7 @@ namespace Purchasing.Mvc.Controllers
                 if (order.ApUser == null || order.ApUser.Id != CurrentUser.Identity.Name)
                 {
                     ErrorMessage = "You do not have permission to assign an Accounts Payable user.";
-                    return this.RedirectToAction(nameof(Review));
+                    return this.RedirectToAction(nameof(Review), new { id = id });
                 }
             }
 
@@ -279,7 +279,7 @@ namespace Purchasing.Mvc.Controllers
             if (order.StatusCode.Id != OrderStatusCode.Codes.Complete)
             {
                 ErrorMessage = "Order Status must be at complete to assign an Accounts Payable user.";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
 
             var completedBy = order.OrderTrackings.Where(a => a.StatusCode.Id == OrderStatusCode.Codes.Complete).OrderBy(o => o.DateCreated).First().User.Id;
@@ -289,7 +289,7 @@ namespace Purchasing.Mvc.Controllers
                 if (order.ApUser == null || order.ApUser.Id != CurrentUser.Identity.Name)
                 {
                     ErrorMessage = "You do not have permission to assign an Accounts Payable user.";
-                    return this.RedirectToAction(nameof(Review));
+                    return this.RedirectToAction(nameof(Review), new { id = id });
                 }
             }
 
@@ -307,7 +307,7 @@ namespace Purchasing.Mvc.Controllers
            
             _repositoryFactory.OrderRepository.EnsurePersistent(order);
 
-            return this.RedirectToAction(nameof(Review));
+            return this.RedirectToAction(nameof(Review), new { id = id });
         }
 
         /// <summary>
@@ -1316,7 +1316,7 @@ namespace Purchasing.Mvc.Controllers
             if(!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
                 Message = "Order must be complete before receiving line items.";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, false);
@@ -1353,7 +1353,7 @@ namespace Purchasing.Mvc.Controllers
             if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
                 Message = "Order must be complete before paying for line items.";
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
 
             var viewModel = OrderReceiveModel.Create(order, _repositoryFactory.HistoryReceivedLineItemRepository, true);
@@ -1390,7 +1390,7 @@ namespace Purchasing.Mvc.Controllers
             if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
                 Message = string.Format("Order must be complete before {0} line items.", "receiving");
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
             if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
             {                
@@ -1421,7 +1421,7 @@ namespace Purchasing.Mvc.Controllers
                 _repositoryFactory.OrderRepository.EnsurePersistent(order);
             }
             
-            return this.RedirectToAction(nameof(ReceiveItems));
+            return this.RedirectToAction(nameof(ReceiveItems), new { id = id });
         }
 
         [HttpPost]
@@ -1433,7 +1433,7 @@ namespace Purchasing.Mvc.Controllers
             if (!order.StatusCode.IsComplete || order.StatusCode.Id == OrderStatusCode.Codes.Cancelled || order.StatusCode.Id == OrderStatusCode.Codes.Denied)
             {
                 Message = string.Format("Order must be complete before {0} line items.", "paying for");
-                return this.RedirectToAction(nameof(Review));
+                return this.RedirectToAction(nameof(Review), new { id = id });
             }
             if (order.ApUser != null && order.ApUser.Id != CurrentUser.Identity.Name)
             {
@@ -1466,7 +1466,7 @@ namespace Purchasing.Mvc.Controllers
             }
 
 
-            return this.RedirectToAction(nameof(PayInvoice));
+            return this.RedirectToAction(nameof(PayInvoice), new { id = id });
         }
 
         [HttpPost]

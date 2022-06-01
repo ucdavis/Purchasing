@@ -144,12 +144,12 @@ namespace Purchasing.Mvc.Controllers
 
             if (workgroupId.HasValue)
             {
-                return this.RedirectToAction(nameof(ByWorkgroup));
+                return this.RedirectToAction(nameof(ByWorkgroup), new { id = workgroupId.Value });
             }
 
             if (!string.IsNullOrWhiteSpace(orgId))
             {
-                return this.RedirectToAction(nameof(ByOrg));
+                return this.RedirectToAction(nameof(ByOrg), new { id = orgId });
             }
 
             //return this.RedirectToAction(nameof(Index));
@@ -227,12 +227,12 @@ namespace Purchasing.Mvc.Controllers
 
             if (conditionalApprovalToEdit.Workgroup != null)
             {
-                return this.RedirectToAction(nameof(ByWorkgroup));
+                return this.RedirectToAction(nameof(ByWorkgroup), new { id = conditionalApprovalToEdit.Workgroup.Id });
             }
 
             if (conditionalApprovalToEdit.Organization != null)
             {
-                return this.RedirectToAction(nameof(ByOrg));
+                return this.RedirectToAction(nameof(ByOrg), new { id = conditionalApprovalToEdit.Organization.Id });
             }
 
             //return this.RedirectToAction(nameof(Index));
@@ -262,7 +262,7 @@ namespace Purchasing.Mvc.Controllers
                 if(workgroup.Administrative)
                 {
                     ErrorMessage = "Conditional Approval may not be added to an administrative workgroup.";
-                    return this.RedirectToAction(nameof(WorkgroupController.Details), typeof(WorkgroupController).ControllerName());
+                    return this.RedirectToAction(nameof(WorkgroupController.Details), typeof(WorkgroupController).ControllerName(), new { id = workgroupId.Value });
                 }
             }
             else if (!string.IsNullOrWhiteSpace(orgId))
@@ -309,7 +309,7 @@ namespace Purchasing.Mvc.Controllers
                 if(workgroup.Administrative)
                 {
                     ErrorMessage = "Conditional Approval may not be added to an administrative workgroup.";
-                    return this.RedirectToAction(nameof(WizardController.Details), typeof(WizardController).ControllerName());
+                    return this.RedirectToAction(nameof(WizardController.Details), typeof(WizardController).ControllerName(), new { id = workgroupId.Value });
                 }
 
             }
@@ -406,12 +406,12 @@ namespace Purchasing.Mvc.Controllers
 
             if (workgroupId.HasValue)
             {
-                return this.RedirectToAction(nameof(ByWorkgroup));
+                return this.RedirectToAction(nameof(ByWorkgroup), new { id = workgroupId.Value });
             }
             
             if (!string.IsNullOrWhiteSpace(orgId))
             {
-                return this.RedirectToAction(nameof(ByOrg));
+                return this.RedirectToAction(nameof(ByOrg), new { id = orgId });
             }
 
             //return this.RedirectToAction(nameof(Index));

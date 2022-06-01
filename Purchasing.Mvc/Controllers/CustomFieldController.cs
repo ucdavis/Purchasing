@@ -124,7 +124,7 @@ namespace Purchasing.Mvc.Controllers
                 Message = "CustomField Created Successfully";
 
                 //return RedirectToAction("Index", new {id=id});
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { id = id });
             }
             else
             {
@@ -201,7 +201,7 @@ namespace Purchasing.Mvc.Controllers
                 _customFieldRepository.EnsurePersistent(customFieldToEdit);
 
                 Message = "CustomField Edited Successfully";
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { id = customFieldToEdit.Organization.Id });
             }
             else
             {
@@ -261,7 +261,7 @@ namespace Purchasing.Mvc.Controllers
 
             Message = "CustomField Removed Successfully";
 
-            return this.RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(Index), new { id = customFieldToDelete.Organization.Id });
 
         }
 

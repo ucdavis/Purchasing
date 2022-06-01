@@ -67,7 +67,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApproval == null)
             {
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { showAll });
             }
 
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
@@ -125,7 +125,7 @@ namespace Purchasing.Mvc.Controllers
                 {
                     Message = Message + " Warning, will expire in 5 days or less";
                 }
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { showAll });
             }
             else
             {
@@ -151,7 +151,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApproval == null)
             {
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { showAll });
             }
 
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
@@ -183,7 +183,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApprovalToEdit == null)
             {
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { showAll });
             }
 
             if(autoApprovalToEdit.User.Id != CurrentUser.Identity.Name)
@@ -204,7 +204,7 @@ namespace Purchasing.Mvc.Controllers
 
                 Message = "AutoApproval Edited Successfully";
 
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { showAll });
             }
             else
             {
@@ -230,7 +230,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApproval == null)
             {
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { showAll });
             }
 
             if(autoApproval.User.Id != CurrentUser.Identity.Name)
@@ -241,7 +241,7 @@ namespace Purchasing.Mvc.Controllers
             if(!autoApproval.IsActive)
             {
                 Message = "Already deactivated";
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { showAll });
             }
 
             ViewBag.ShowAll = showAll;
@@ -265,7 +265,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (autoApprovalToDelete == null)
             {
-                return this.RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(Index), new { showAll });
             }
 
             if(autoApprovalToDelete.User.Id != CurrentUser.Identity.Name)
@@ -282,7 +282,7 @@ namespace Purchasing.Mvc.Controllers
 
                 Message = "AutoApproval Deactivated Successfully";
             }
-            return this.RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(Index), new { showAll });
         }
         
         /// <summary>

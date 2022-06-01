@@ -310,7 +310,7 @@ namespace Purchasing.Mvc.Controllers
             if (orgs == null || !orgs.Any())
             {
                 ErrorMessage = "Must select at least one organization";
-                return this.RedirectToAction(nameof(Approve));
+                return this.RedirectToAction(nameof(Approve), new { id = request.DepartmentalAdminRequest.Id });
             }
             if (existingOrgs == null)
             {
@@ -636,7 +636,7 @@ namespace Purchasing.Mvc.Controllers
                 _departmentalAdminRequestRepository.EnsurePersistent(requestToSave);
 
                 Message = "Request created/Updated.";
-                return this.RedirectToAction(nameof(Details));
+                return this.RedirectToAction(nameof(Details), new { id = id });
             }
 
             ErrorMessage = "There were Errors, please correct and try again.";
