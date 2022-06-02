@@ -1648,9 +1648,15 @@ namespace Purchasing.Mvc.Controllers
             {
                 successCount = _workgroupService.TryToAddPeople(id, workgroupPeoplePostModel.Role, workgroup, successCount, u, ref failCount, ref duplicateCount, notAddedKvp);
             }
-
-            Message = string.Format("Successfully added {0} people to workgroup as {1}. {2} not added because of duplicated role.", successCount,
-                                    workgroupPeoplePostModel.Role.Name, duplicateCount);
+            
+            if (duplicateCount > 0)
+            {
+                Message = $"Successfully added {successCount} people to workgroup as {workgroupPeoplePostModel.Role.Name}. {duplicateCount} not added because of duplicated role.";
+            }
+            else
+            {
+                Message = $"Successfully added {successCount} people to workgroup as {workgroupPeoplePostModel.Role.Name}.";
+            }
 
             return this.RedirectToAction(nameof(People), new { id = id, roleFilter = workgroupPeoplePostModel.Role.Id });
 
