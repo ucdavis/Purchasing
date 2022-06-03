@@ -31,6 +31,7 @@ using CommonServiceLocator;
 using UCDArch.Web.IoC;
 using UCDArch.Web.ModelBinder;
 using Purchasing.Mvc.Services;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace Purchasing.Mvc
 {
@@ -57,7 +58,10 @@ namespace Purchasing.Mvc
             services.AddMvc(options =>
             {
                 options.Filters.Add<SerilogControllerActionFilter>();
-                options.ModelBinderProviders.Insert(0, new EntityModelBinderProvider());
+                // place EntityModelBinderProvider just before the ComplexObjectModelBinderProvider
+                options.ModelBinderProviders.Insert(
+                    options.ModelBinderProviders.IndexOf(options.ModelBinderProviders.OfType<ComplexObjectModelBinderProvider>().First()),
+                    new EntityModelBinderProvider());
             })
             .AddNewtonsoftJson(options =>
             {
