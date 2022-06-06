@@ -27,7 +27,7 @@
         @*<li>@Html.ActionLink("Create New", "Create")</li>*@
         @if (string.IsNullOrWhiteSpace(Model.ShowLast))
         {
-            <li>@*@Html.ActionLink("Filters", "filters", "", new { @class = "button" })*@
+            <li>@*@Html.ActionLink("Filters", "filters", new {}, new { @class = "button" })*@
                 <a href="#" id="filterToggle" class="button selected">Filters</a>
             </li>
         }
