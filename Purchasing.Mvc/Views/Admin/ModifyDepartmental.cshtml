@@ -17,7 +17,7 @@
         {
             <li>@Html.ActionLink("Clone User", "Clone", "Admin", new {id = Model.User.Id}, new {@class="button"})</li>
         }
-		<li>@Html.ActionLink("Back to List", "Index", null, new {@class="button"})</li>
+		<li>@Html.ActionLink("Back to List", "Index", new {}, new {@class="button"})</li>
 	</ul>
 }
 
