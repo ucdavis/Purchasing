@@ -24,7 +24,7 @@
                     {
                         <input type="button" class="button" value="Save For Later" id="save-btn"/> <text>|</text>
                     }
-                    @Html.ActionLink("Cancel", "Landing", "Home", null, new {id="order-cancel"})
+                    @Html.ActionLink("Cancel", "Landing", "Home", new {}, new {id="order-cancel"}) @*This id is an element so the local storage gets cleared out. It is not a route value.*@
                 </div>
             </li>
         </ul>
