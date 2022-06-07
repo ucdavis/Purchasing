@@ -8,6 +8,7 @@ using System.Threading;
 using CommonServiceLocator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using UCDArch.Core;
 
@@ -27,6 +28,8 @@ namespace UCDArch.Testing.Fakes
         private string _fileContentType;
         private HttpRequest _httpRequest;
         private IServiceProvider _serviceProvider;
+        private IDictionary<object, object> _items;
+        private IFeatureCollection _features;
 
         public MockHttpContext(int fileCount, string[] userRoles, string userName = "UserName", string fileContentType = "application/pdf")
         {
@@ -35,8 +38,15 @@ namespace UCDArch.Testing.Fakes
             _userName = userName;
             _fileContentType = fileContentType;
             _httpRequest = Mock.Of<HttpRequest>();
+            Mock.Get(_httpRequest).Setup(a => a.HttpContext).Returns(this);
+            Mock.Get(_httpRequest).Setup(a => a.Path).Returns(new PathString("/"));
+            Mock.Get(_httpRequest).Setup(a => a.PathBase).Returns(new PathString("/"));
+            Mock.Get(_httpRequest).Setup(a => a.Scheme).Returns("http");
             _serviceProvider = Mock.Of<IServiceProvider>();
             Mock.Get(_serviceProvider).Setup(x => x.GetService(It.IsAny<Type>())).Returns<Type>(a => ServiceLocator.Current.GetService(a));
+            Mock.Get(_serviceProvider).Setup(x => x.GetService(It.IsAny<Type>())).Returns<Type>(a => ServiceLocator.Current.GetService(a));
+            _items = new Dictionary<object, object>();
+            _features = new FeatureCollection();
         }
 
         public override ClaimsPrincipal User
@@ -56,7 +66,7 @@ namespace UCDArch.Testing.Fakes
             }
         }
 
-        public override IFeatureCollection Features => throw new NotImplementedException();
+        public override IFeatureCollection Features => _features;
 
         public override HttpResponse Response => throw new NotImplementedException();
 
@@ -64,7 +74,7 @@ namespace UCDArch.Testing.Fakes
 
         public override WebSocketManager WebSockets => throw new NotImplementedException();
 
-        public override IDictionary<object, object> Items { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override IDictionary<object, object> Items { get => _items; set => throw new NotImplementedException(); }
         public override IServiceProvider RequestServices { get => _serviceProvider; set => throw new NotImplementedException(); }
         public override CancellationToken RequestAborted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

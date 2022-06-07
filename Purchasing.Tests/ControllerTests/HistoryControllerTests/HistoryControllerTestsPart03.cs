@@ -37,7 +37,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(
                 a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -92,7 +93,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                 a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -148,7 +150,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -204,7 +207,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -260,7 +264,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -323,7 +328,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -384,7 +390,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -446,7 +453,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -509,7 +517,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -589,7 +598,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -670,7 +680,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -749,7 +760,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -829,7 +841,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -885,7 +898,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -943,7 +957,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -999,7 +1014,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1055,7 +1071,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1111,7 +1128,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1167,7 +1185,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             Mock.Get(OrderService).Setup(a =>
                 a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((object[] x) => args = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act

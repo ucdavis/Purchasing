@@ -3,6 +3,10 @@ using UCDArch.Core.DomainModel;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Controller;
 using Moq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Http;
 
 namespace UCDArch.Testing
 {
@@ -17,6 +21,13 @@ namespace UCDArch.Testing
             SetupController();
 
             Controller.Repository = Mock.Of<IRepository>();
+            Controller.ControllerContext.RouteData = new RouteData();
+            Controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            Controller.TempData = new TempDataDictionary(Controller.HttpContext, Mock.Of<ITempDataProvider>());
+
         }
 
         protected virtual void InitServiceLocator()

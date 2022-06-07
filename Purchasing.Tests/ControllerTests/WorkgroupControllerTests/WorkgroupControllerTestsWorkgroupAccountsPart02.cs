@@ -1225,18 +1225,19 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             object[] args1 = default;
             var updateDefaultAccountApproversIndex = 0;
             Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(It.IsAny<Workgroup>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => 
+                .Callback((Workgroup a, bool b, string c, string d) => 
                 {
+                    var args = new object[] { a, b, c, d };
                     switch (updateDefaultAccountApproversIndex++) 
                     {
                         case 0:
-                            args1 = x;
+                            args1 = args;
                             break;
                         case 1:
-                            args2 = x;
+                            args2 = args;
                             break;
                         case 2:
-                            args3 = x;
+                            args3 = args;
                             break;
                     }
                 });
@@ -1331,18 +1332,19 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             object[] args1 = default;
             var updateDefaultAccountApproversIndex = 0;
             Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(It.IsAny<Workgroup>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => 
+                .Callback((Workgroup a, bool b, string c, string d) => 
                 {
+                    var args = new object[] { a, b, c, d };
                     switch (updateDefaultAccountApproversIndex++) 
                     {
                         case 0:
-                            args1 = x;
+                            args1 = args;
                             break;
                         case 1:
-                            args2 = x;
+                            args2 = args;
                             break;
                         case 2:
-                            args3 = x;
+                            args3 = args;
                             break;
                     }
                 });
@@ -1433,18 +1435,19 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             object[] args1 = default;
             var updateDefaultAccountApproversIndex = 0;
             Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(It.IsAny<Workgroup>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => 
+                .Callback((Workgroup a, bool b, string c, string d) => 
                 {
+                    var args = new object[] { a, b, c, d };
                     switch (updateDefaultAccountApproversIndex++) 
                     {
                         case 0:
-                            args1 = x;
+                            args1 = args;
                             break;
                         case 1:
-                            args2 = x;
+                            args2 = args;
                             break;
                         case 2:
-                            args3 = x;
+                            args3 = args;
                             break;
                     }
                 });
@@ -1535,18 +1538,19 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             object[] args1 = default;
             var updateDefaultAccountApproversIndex = 0;
             Mock.Get(WorkgroupService).Setup(a => a.UpdateDefaultAccountApprover(It.IsAny<Workgroup>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => 
+                .Callback((Workgroup a, bool b, string c, string d) => 
                 {
+                    var args = new object[] { a, b, c, d };
                     switch (updateDefaultAccountApproversIndex++) 
                     {
                         case 0:
-                            args1 = x;
+                            args1 = args;
                             break;
                         case 1:
-                            args2 = x;
+                            args2 = args;
                             break;
                         case 2:
-                            args3 = x;
+                            args3 = args;
                             break;
                     }
                 });

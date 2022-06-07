@@ -223,7 +223,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny)).Returns(true);
             object[] args = default;
             Mock.Get(WorkgroupService).Setup(a => a.CreateWorkgroup(workgroup, null)).Returns(workgroup)
-                .Callback((object[] x) => args = x);
+                .Callback((Workgroup a, string[] b) => args = new object[] { a, b });
             #endregion Arrange
 
             #region Act

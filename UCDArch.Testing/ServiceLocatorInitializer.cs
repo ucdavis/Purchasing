@@ -9,6 +9,9 @@ using UCDArch.Data.NHibernate;
 using UCDArch.Web.IoC;
 using Moq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace UCDArch.Testing
 {
@@ -20,10 +23,16 @@ namespace UCDArch.Testing
 
             var httpContextAccessor = Mock.Of<IHttpContextAccessor>();
             Mock.Get(httpContextAccessor).Setup(a => a.HttpContext).Returns(new DefaultHttpContext());
+            var tempDataProvider = Mock.Of<ITempDataProvider>();
+            Mock.Get(tempDataProvider).Setup(a => a.LoadTempData(It.IsAny<HttpContext>())).Returns(new Dictionary<string, object>());
+            var tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
+            var urlHelperFactory = new UrlHelperFactory();
 
             container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
             container.Register(Component.For<IDbContext>().ImplementedBy<DbContext>().Named("DbContext"));
             container.Register(Component.For<IHttpContextAccessor>().Instance(httpContextAccessor).Named("httpContextAccessor"));
+            container.Register(Component.For<ITempDataDictionaryFactory>().Instance(tempDataDictionaryFactory).Named("tempDataDictionaryFactory"));
+            container.Register(Component.For<IUrlHelperFactory>().Instance(urlHelperFactory).Named("urlHelperFactory"));
 
             ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 

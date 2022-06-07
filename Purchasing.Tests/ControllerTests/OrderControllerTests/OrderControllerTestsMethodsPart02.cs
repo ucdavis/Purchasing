@@ -698,10 +698,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 }); 
             object[] orderServiceArgs2 = default;
             Mock.Get(OrderService).Setup(a => a.HandleSavedForm(It.IsAny<Order>(), It.IsAny<Guid>()))
-                .Callback((object[] x) => orderServiceArgs2 = x);
+                .Callback((Order a, Guid b) => orderServiceArgs2 = new object[] { a, b });
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
 
@@ -756,7 +757,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -795,7 +797,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Vendor = 0;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -838,7 +841,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Vendor = 2;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -880,7 +884,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShipAddress = 2;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -922,7 +927,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShippingType = "2";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -961,7 +967,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.DateNeeded = DateTime.UtcNow.ToPacificTime().AddDays(3).Date;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1000,7 +1007,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Backorder = "true";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1039,7 +1047,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Backorder = string.Empty;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1082,7 +1091,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.DateNeeded = DateTime.UtcNow.ToPacificTime().AddDays(3).Date;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1122,7 +1132,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShipTo = "Some Ship";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1161,7 +1172,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShipEmail = "ship@testy.com";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1200,7 +1212,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShipPhone = "222 333 4444";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             #endregion Arrange
 
             #region Act
@@ -1246,7 +1259,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeOrderTypes(0, RepositoryFactory.OrderTypeRepository, orderTypes, true);
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
             
             #endregion Arrange
 
@@ -1287,7 +1301,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1328,7 +1343,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Justification = "Some Just";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1371,7 +1387,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Comments = "This is my Comment";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1417,7 +1434,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Comments = "  ";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1462,7 +1480,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Comments = string.Empty;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1508,7 +1527,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Comments = null;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1553,7 +1573,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.FileIds = null;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1597,7 +1618,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.FileIds = new[]{SpecificGuid.GetGuid(2)};
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1640,7 +1662,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.FileIds = new[] { SpecificGuid.GetGuid(2), SpecificGuid.GetGuid(3), SpecificGuid.GetGuid(4) };
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1693,7 +1716,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1747,7 +1771,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1801,7 +1826,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1853,7 +1879,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Restricted.Users = "Someone who is authorized";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1905,7 +1932,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Restricted.Users = "Someone who is authorized";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -1958,7 +1986,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Restricted.Users = "Someone who is authorized";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -2011,7 +2040,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             //orderViewModel.Restricted.Users = "Someone who is authorized";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((object[] x) => orderServiceArgs1 = x);
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
+                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
 
             #endregion Arrange
 
@@ -2058,7 +2088,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
             object[] bugTrackingServiceArgs1 = default;
             Mock.Get(BugTrackingService).Setup(a => a.CheckForClearedOutSubAccounts(It.IsAny<Order>(), It.IsAny<OrderViewModel.Split[]>(), It.IsAny<OrderViewModel>()))
-                .Callback((object[] x) => bugTrackingServiceArgs1 = x);
+                .Callback((Order a, OrderViewModel.Split[] b, OrderViewModel c) => bugTrackingServiceArgs1 = new object[] { a, b, c });
 
 
             #endregion Arrange
@@ -2107,7 +2137,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Splits[0].SubAccount = "SubAcct1";
             object[] bugTrackingServiceArgs1 = default;
             Mock.Get(BugTrackingService).Setup(a => a.CheckForClearedOutSubAccounts(It.IsAny<Order>(), It.IsAny<OrderViewModel.Split[]>(), It.IsAny<OrderViewModel>()))
-                .Callback((object[] x) => bugTrackingServiceArgs1 = x);
+                .Callback((Order a, OrderViewModel.Split[] b, OrderViewModel c) => bugTrackingServiceArgs1 = new object[] { a, b, c });
 
 
             #endregion Arrange

@@ -449,10 +449,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             rolesToRemove[1] = Role.Codes.Requester;
             rolesToRemove[2] = Role.Codes.AccountManager;
             rolesToRemove[3] = Role.Codes.Approver;
-            var args = new Dictionary<int, object[]>();
-            var argsIndex = 0;
+            var args = new List<WorkgroupPermission>();
             Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
-                .Callback((object[] x) => args[argsIndex++] = x);
+                .Callback((WorkgroupPermission x) => args.Add(x));
             #endregion Arrange
 
             #region Act
@@ -469,10 +468,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.IsNotNull(args);
             Assert.AreEqual(4, args.Count());
-            Assert.AreEqual(21, ((WorkgroupPermission)args[0][0]).Id);
-            Assert.AreEqual(15, ((WorkgroupPermission)args[1][0]).Id);
-            Assert.AreEqual(20, ((WorkgroupPermission)args[2][0]).Id);
-            Assert.AreEqual(19, ((WorkgroupPermission)args[3][0]).Id);
+            Assert.AreEqual(21, ((WorkgroupPermission)args[0]).Id);
+            Assert.AreEqual(15, ((WorkgroupPermission)args[1]).Id);
+            Assert.AreEqual(20, ((WorkgroupPermission)args[2]).Id);
+            Assert.AreEqual(19, ((WorkgroupPermission)args[3]).Id);
 
             Assert.AreEqual("4 roles removed from FirstName3 LastName3", Controller.Message);
 

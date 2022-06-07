@@ -59,14 +59,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             SendGridSettings = Mock.Of<IOptions<SendGridSettings>>();
             HttpContext = new DefaultHttpContext();
 
-            Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration)
-            {
-                ControllerContext = new ControllerContext()
-                {
-                    HttpContext = HttpContext
-                },
-                TempData = new TempDataDictionary(HttpContext, Mock.Of<ITempDataProvider>())
-            };
+            Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)

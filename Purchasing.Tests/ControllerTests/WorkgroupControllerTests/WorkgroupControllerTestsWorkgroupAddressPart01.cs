@@ -175,7 +175,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var compareArgs = new Dictionary<int, object[]>();
             var compareArgsIndex = 0;
             Mock.Get(WorkgroupAddressService).Setup(a => a.CompareAddress(It.IsAny<WorkgroupAddress>(), It.IsAny<WorkgroupAddress>())).Returns(0)
-                .Callback((object[] x) => compareArgs[compareArgsIndex++] = x);
+                .Callback((WorkgroupAddress a, WorkgroupAddress b) => compareArgs[compareArgsIndex++] = new object[] { a, b });
             Workgroup args = default;
             Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
                 .Callback<Workgroup>(x => args = x);

@@ -180,7 +180,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
-                .Callback((object[] x) => args = x);
+                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
             #endregion Arrange
 
             #region Act
@@ -208,7 +208,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
-                .Callback((object[] x) => args = x);
+                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
             #endregion Arrange
 
             #region Act
@@ -237,7 +237,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
-                .Callback((object[] x) => args = x);
+                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
             #endregion Arrange
 
             #region Act
@@ -273,7 +273,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
-                .Callback((object[] x) => args = x);
+                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
             #endregion Arrange
 
             #region Act
@@ -335,7 +335,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
-                .Callback((object[] x) => args = x);
+                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
             #endregion Arrange
 
             #region Act
@@ -365,7 +365,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
-                .Callback((object[] x) => args = x);
+                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
             #endregion Arrange
 
             #region Act
@@ -395,7 +395,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
-                .Callback((object[] x) => args = x);
+                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
             ConditionalApproval args1 = default;
             Mock.Get( ConditionalApprovalRepository).Setup(a => a.Remove(It.IsAny<ConditionalApproval>()))
                 .Callback<ConditionalApproval>(x => args1 = x);
@@ -435,7 +435,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
-                .Callback((object[] x) => args = x);
+                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
             ConditionalApproval args1 = default;
             Mock.Get(ConditionalApprovalRepository).Setup(a => a.Remove(It.IsAny<ConditionalApproval>()))
                 .Callback<ConditionalApproval>(x => args1 = x);

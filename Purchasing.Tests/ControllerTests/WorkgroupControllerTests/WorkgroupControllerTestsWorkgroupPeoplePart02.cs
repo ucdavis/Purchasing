@@ -418,17 +418,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             var args = new Dictionary<int, object[]>();
             var argsIndex = 0;
-            Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(
-                It.IsAny<int>(),
-                It.IsAny<Role>(),
-                It.IsAny<Workgroup>(),
-                It.IsAny<int>(),
-                It.IsAny<string>(),
-                ref failCount,
-                ref failCount,
-                It.IsAny<List<KeyValuePair<string, string>>>())
-                ).Returns(7)
-                .Callback((object[] x) => args[argsIndex++] = x);
+            Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(It.IsAny<int>(), It.IsAny<Role>(), It.IsAny<Workgroup>(), 
+                It.IsAny<int>(), It.IsAny<string>(), ref failCount, ref failCount, It.IsAny<List<KeyValuePair<string, string>>>()))
+                .Returns(7)
+                .Callback((int a, Role b, Workgroup c, int d, string e, ref int f, ref int g, List<KeyValuePair<string, string>> h) 
+                    => args[argsIndex++] = new object[] { a, b, c, d, e, f, g, h });
             #endregion Arrange
 
             #region Act
