@@ -11,7 +11,7 @@ namespace Purchasing.Mvc.Services
     {
         string Current { get; }
         IPrincipal CurrentPrincipal { get; }
-        bool IsUserInRole(string userId, string roleId);
+        bool IsUserInRole(string userId, string roleId, bool showInactive = false);
         void RemoveUserRoleFromCache(string roleCacheId, string userId);
     }
 
@@ -19,9 +19,9 @@ namespace Purchasing.Mvc.Services
     {
         public string Current { get { return SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.User.Identity.Name; } }
         public IPrincipal CurrentPrincipal { get { return SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.User; } }
-        public bool IsUserInRole(string userId, string roleId)
+        public bool IsUserInRole(string userId, string roleId, bool showInactive = false)
         {
-            return SmartServiceLocator<IRoleService>.GetService().IsUserInRole(userId, roleId);
+            return SmartServiceLocator<IRoleService>.GetService().IsUserInRole(userId, roleId, showInactive);
         }
 
         public void RemoveUserRoleFromCache(string roleCacheId, string userId)

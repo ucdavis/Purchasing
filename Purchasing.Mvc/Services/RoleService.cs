@@ -14,7 +14,7 @@ namespace Purchasing.Mvc.Services
     // Was originally PurchasingRoleProvider
     public interface IRoleService
     {
-        public bool IsUserInRole(string username, string roleName);
+        public bool IsUserInRole(string username, string roleName, bool showInactive = false);
         public string[] GetRolesForUser(string username);
         public void CreateRole(string roleName);
         public bool DeleteRole(string roleName, bool throwOnPopulatedRole);
@@ -35,14 +35,24 @@ namespace Purchasing.Mvc.Services
             _dbService = dbService;
         }
 
-        public bool IsUserInRole(string username, string roleName)
+        public bool IsUserInRole(string username, string roleName, bool showInactive = false)
         {
             using (var conn = _dbService.GetConnection())
             {
+                if (showInactive)
+                {
+                    var result2 = conn.Query<int>(
+                        @"select count(UserId) from Permissions inner join Users on Permissions.UserId = Users.Id 
+                        where UserId = @username and RoleId = @rolename",
+                    new { username, rolename = roleName });
+
+                    return result2.Single() > 0; //Is there more than zero users associated with that role?
+                }
+                
                 var result = conn.Query<int>(
                     @"select count(UserId) from Permissions inner join Users on Permissions.UserId = Users.Id 
                         where Users.IsActive = 1 and UserId = @username and RoleId = @rolename",
-                    new {username, rolename = roleName});
+                    new { username, rolename = roleName });
 
                 return result.Single() > 0; //Is there more than zero users associated with that role?
             }
