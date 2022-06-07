@@ -70,18 +70,10 @@ namespace Purchasing.Core.Services
         public ElasticSearchIndexService(IDbService dbService)
         {
             _dbService = dbService;
-
-            var match = Regex.Match(
-                    SmartServiceLocator<IConfiguration>.GetService()["ElasticSearchUrl"],
-                    "^(?<scheme>.+?//)(?<username>.+?):(?<password>.+?)@(?<host>.+)$");
             
-            var uriBuilder = new UriBuilder();
-            uriBuilder.Scheme = match.Groups["scheme"].Value;
-            uriBuilder.UserName = match.Groups["username"].Value;
-            uriBuilder.Password = match.Groups["password"].Value;
-            uriBuilder.Host = match.Groups["host"].Value;
+            Uri.TryCreate(SmartServiceLocator<IConfiguration>.GetService()["ElasticSearchUrl"], UriKind.Absolute, out var uri);
 
-            var pool = new SingleNodeConnectionPool(uriBuilder.Uri);
+            var pool = new SingleNodeConnectionPool(uri);
             var settings = new ConnectionSettings(pool, JsonNetSerializer.Default);
 
             settings.DefaultIndex("prepurchasing");
