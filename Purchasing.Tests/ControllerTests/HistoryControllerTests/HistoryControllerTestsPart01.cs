@@ -25,7 +25,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsAll1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
             var rtValue = new IndexedList<OrderHistory>();
@@ -86,7 +86,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsAll2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
             var rtValue = new IndexedList<OrderHistory>();
@@ -147,7 +147,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsAll3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
             var rtValue = new IndexedList<OrderHistory>();
@@ -208,7 +208,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsAll4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
@@ -274,7 +274,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsReceived1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
@@ -340,7 +340,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsPaid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
@@ -406,7 +406,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsReceived2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -478,7 +478,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsUnReceived()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -551,7 +551,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsUnPaid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -624,7 +624,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenNeedSpecialColumns1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -712,7 +712,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenNeedSpecialColumns1A()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -800,7 +800,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenNeedSpecialColumns2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -887,7 +887,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenNeedSpecialColumns2A()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -974,7 +974,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsApprover()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
@@ -1040,7 +1040,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsAccountManager()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
@@ -1106,7 +1106,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsPurchaser()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
@@ -1172,7 +1172,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsComplete()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
@@ -1238,7 +1238,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsCancelled()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
@@ -1304,7 +1304,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestIndexWhenOrderStatusFilterIsDenied()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));

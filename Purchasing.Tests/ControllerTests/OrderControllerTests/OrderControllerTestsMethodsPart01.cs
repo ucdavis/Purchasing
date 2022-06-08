@@ -39,7 +39,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             try
             {
                 #region Arrange
-                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+                Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
                 var users = new List<User>();
                 for (int i = 0; i < 3; i++)
                 {
@@ -68,7 +68,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestSelectWorkgroupReturnsViewWhenNoWorkgroupsFound()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "2");
             SetupRoles();
             var users = new List<User>();
             for (int i = 0; i < 3; i++)
@@ -98,7 +98,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestSelectWorkgroupReturnsViewWhenMultipleWorkgroupsForUserFound()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupRoles();
 
             var users = new List<User>();
@@ -137,7 +137,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestSelectWorkgroupRedirectsWhenExactlyOneWorkgroup()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupRoles();
 
             var users = new List<User>();

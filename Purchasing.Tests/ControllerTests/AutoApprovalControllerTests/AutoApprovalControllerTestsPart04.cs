@@ -5,6 +5,7 @@ using Purchasing.Mvc.Controllers;
 using UCDArch.Testing.Fakes;
 using UCDArch.Testing.Extensions;
 using Moq;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -67,7 +68,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeleteGetRedirectsToErrorWhenCurrentIdDifferent()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
@@ -86,7 +87,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeleteGetRedirectsWhenAlreadyDeactivated()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
@@ -106,7 +107,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeleteGetReturnsView()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData3();
             #endregion Arrange
 
@@ -189,7 +190,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeletePostRedirectsToErrorWhenCurrentIdDifferent()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
@@ -209,7 +210,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeletePostRedirectsWhenAlreadyDeactivated()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
@@ -230,7 +231,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeletePostRedirectsToErrorWhenValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData3();
             AutoApproval args = default;
             Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))

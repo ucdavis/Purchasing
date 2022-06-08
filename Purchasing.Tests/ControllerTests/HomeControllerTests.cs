@@ -100,7 +100,7 @@ namespace Purchasing.Tests.ControllerTests
         //public void TestLandingRedirectsWhenUserNotFound()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
         //    new FakeUsers(3, UserRepository);
         //    #endregion Arrange
 
@@ -120,7 +120,7 @@ namespace Purchasing.Tests.ControllerTests
         //public void TestLandingRedirectsWhenUserNotActive()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
         //    var users = new List<User>();
         //    users.Add(CreateValidEntities.User(2));
         //    users[0].IsActive = false;
@@ -144,7 +144,7 @@ namespace Purchasing.Tests.ControllerTests
         //public void TestLandReturnsView1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
         //    var users = new List<User>();
         //    users.Add(CreateValidEntities.User(2));
         //    users[0].IsActive = true;
@@ -170,7 +170,7 @@ namespace Purchasing.Tests.ControllerTests
         //public void TestLandReturnsView2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
         //    var users = new List<User>();
         //    users.Add(CreateValidEntities.User(2));
         //    users[0].IsActive = true;

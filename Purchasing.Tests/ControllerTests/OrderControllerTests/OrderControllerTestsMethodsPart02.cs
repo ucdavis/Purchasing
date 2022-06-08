@@ -86,7 +86,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -142,7 +142,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -210,7 +210,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestGetReturnsView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -280,7 +280,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestGetReturnsView4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -350,7 +350,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestGetReturnsView5()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -421,7 +421,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestGetReturnsView6()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -492,7 +492,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestGetReturnsView7()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             var wgs = new List<Workgroup>();
@@ -557,7 +557,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestGetReturnsView8()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeOrganizations(3, RepositoryFactory.OrganizationRepository);
@@ -666,7 +666,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostRedirectsToReview()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -740,7 +740,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostWorkgroupBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -778,7 +778,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostVendorBinding1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -819,7 +819,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostVendorBinding2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -862,7 +862,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostAddressBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -905,7 +905,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostShippingTypeBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -948,7 +948,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostDateNeededBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -988,7 +988,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostAllowBackorderBinding1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -1028,7 +1028,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostAllowBackorderBinding2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -1068,7 +1068,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostOrganizationBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var workgroups = new List<Workgroup>();
             workgroups.Add(CreateValidEntities.Workgroup(1));
             workgroups[0].PrimaryOrganization = CreateValidEntities.Organization(77);
@@ -1113,7 +1113,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostDeliverToBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -1153,7 +1153,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostDeliverToEmailBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -1193,7 +1193,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostDeliverToPhoneBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -1233,7 +1233,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostOrderTypeBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
             Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
@@ -1281,7 +1281,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostCreatedByBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
@@ -1323,7 +1323,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostJustificationBinding()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -1365,7 +1365,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostCommentsBinding1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
@@ -1412,7 +1412,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostCommentsBinding2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
@@ -1458,7 +1458,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostCommentsBinding3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
@@ -1505,7 +1505,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostCommentsBinding4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             new FakeUsers(3, RepositoryFactory.UserRepository);
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
@@ -1552,7 +1552,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostAttachmentsBinding1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeAttachments(5, RepositoryFactory.AttachmentRepository);
 
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -1595,7 +1595,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostAttachmentsBinding2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeAttachments(5, RepositoryFactory.AttachmentRepository, null, false, true);
 
             var xxx = RepositoryFactory.AttachmentRepository.Queryable.ToList();
@@ -1641,7 +1641,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostAttachmentsBinding3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeAttachments(5, RepositoryFactory.AttachmentRepository, null, false, true);
 
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -1687,7 +1687,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostCustomFieldAnswersBinding1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -1742,7 +1742,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostCustomFieldAnswersBinding2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -1797,7 +1797,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostCustomFieldAnswersBinding3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -1853,7 +1853,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostRestrictedBinding1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -1906,7 +1906,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostRestrictedBinding2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -1960,7 +1960,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostRestrictedBinding3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2014,7 +2014,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostRestrictedBinding4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2070,7 +2070,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostIncludeLineItemsAndSplits1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2114,7 +2114,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostIncludeLineItemsAndSplits2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2165,7 +2165,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostIncludeLineItemsAndSplits3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2207,7 +2207,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostIncludeLineItemsAndSplits4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2249,7 +2249,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostIncludeLineItemsAndSplits5()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2291,7 +2291,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostIncludeLineItemsAndSplits6()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2338,7 +2338,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostIncludeLineItemsAndSplits7()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2393,7 +2393,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostIncludeLineItemsAndSplits8()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2448,7 +2448,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostIncludeLineItemsAndSplits9()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2524,7 +2524,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostOrderSplits1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
@@ -2599,7 +2599,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestRequestPostOrderSplits2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);

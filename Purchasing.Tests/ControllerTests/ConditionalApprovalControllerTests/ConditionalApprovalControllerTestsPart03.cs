@@ -11,6 +11,7 @@ using UCDArch.Core.Utils;
 using UCDArch.Testing.Fakes;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
@@ -153,7 +154,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestCreateGetRedirectsWhenWorkgroupIfNoWorkgroups()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "4");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "4");
             SetupDateForIndex1();
             new FakeAdminWorkgroups(1, QueryRepositoryFactory.AdminWorkgroupRepository);
             const string approvalType = "Workgroup";
@@ -173,7 +174,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestCreateGetRedirectsWhenOrganizationIfNoOrganizations()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "4");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "4");
             SetupDateForIndex1();
             const string approvalType = "Organization";
             #endregion Arrange
@@ -194,7 +195,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreateGetReturnsView2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    const string approvalType = "Organization";
         //    #endregion Arrange
@@ -225,7 +226,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostReturnsViewWhenModelInvalid1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    Controller.ModelState.AddModelError("Fake", "Fake Error");
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
@@ -260,7 +261,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostReturnsViewWhenModelInvalid2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    Controller.ModelState.AddModelError("Fake", "Fake Error");
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
@@ -296,7 +297,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostReturnsViewWhenModelInvalid3()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    Controller.ModelState.AddModelError("Fake", "Fake Error");
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
@@ -335,7 +336,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //    try
         //    {
         //        #region Arrange
-        //        Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //        Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //        SetupDateForIndex1();
         //        var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //        conditionalApprovalModifyModel.ApprovalType = "Organization";
@@ -362,7 +363,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCallsFindUser1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";
@@ -401,7 +402,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCallsFindUser2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";
@@ -443,7 +444,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCallsFindUser3()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";
@@ -484,7 +485,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCreateNewUser1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";
@@ -531,7 +532,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCreateNewUser2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";

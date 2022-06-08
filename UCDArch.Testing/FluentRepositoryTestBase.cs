@@ -92,7 +92,7 @@ namespace UCDArch.Testing
 
         }
 
-        protected virtual void InitServiceLocator()
+        protected void InitServiceLocator()
         {
             var container = ServiceLocatorInitializer.Init();
 

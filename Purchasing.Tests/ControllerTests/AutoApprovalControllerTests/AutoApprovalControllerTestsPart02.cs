@@ -9,7 +9,7 @@ using UCDArch.Testing.Fakes;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -21,7 +21,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             SetupData2();
             #endregion Arrange
 
@@ -56,7 +56,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             #endregion Arrange
 
@@ -91,7 +91,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             #endregion Arrange
 
@@ -126,7 +126,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NoOneMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NoOneMe");
             SetupData2();
             #endregion Arrange
 
@@ -150,7 +150,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView5()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData2();
             #endregion Arrange
 
@@ -178,7 +178,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostReturnsViewWhenInvalid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -210,7 +210,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostReturnsViewWhenInvalid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -242,7 +242,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostReturnsViewWhenInvalid3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -275,7 +275,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostReturnsViewWhenInvalid4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -307,7 +307,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -348,7 +348,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -390,7 +390,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -431,7 +431,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -472,7 +472,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid5()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -513,7 +513,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid6()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -554,7 +554,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid7()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;

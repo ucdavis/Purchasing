@@ -72,7 +72,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             try
             {
                 #region Arrange
-                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NoMatch");
+                Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NoMatch");
                 SetupDataForWorkgroupActions1();
                 thisFar = true;
                 #endregion Arrange
@@ -94,7 +94,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -122,7 +122,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -148,7 +148,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditGetReturnsView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -179,7 +179,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditPostReturnsViewWhenInvalid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             Controller.ModelState.AddModelError("Fake", "Error");
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
@@ -210,7 +210,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditPostReturnsViewWhenInvalid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             Controller.ModelState.AddModelError("Fake", "Error");
             var orgs = new[] {"2", "4"};
@@ -246,7 +246,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditPostRedirectsWhenWorkgroupNotFound()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             var workgroup = CreateValidEntities.Workgroup(9);
             workgroup.Id = WorkgroupRepository.Queryable.Max(a => a.Id) + 1;
@@ -267,7 +267,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditPostReplacesOrganizationsWithSuppliedOnes1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             var orgs = new[] { "1", "7" };
             Workgroup args = default;
@@ -298,7 +298,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestEditPostReplacesOrganizationsWithSuppliedOnes2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             var orgs = new[] { "1", "3" };
             Workgroup args = default;

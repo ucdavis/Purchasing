@@ -113,14 +113,9 @@ namespace Purchasing.Tests.Core
             }
         }
 
-        protected override void InitServiceLocator()
+        protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            //base.InitServiceLocator();
-            var container = ServiceLocatorInitializer.Init();
-
             IConfigurationInitializer.Init(container, null);
-
-            base.RegisterAdditionalServices(container);
         }
 
         #endregion Init

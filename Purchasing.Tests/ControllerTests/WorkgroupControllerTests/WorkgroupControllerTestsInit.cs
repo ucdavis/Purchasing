@@ -103,13 +103,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 SmartServiceLocator<IMapper>.GetService());
         }
 
-        protected override void InitServiceLocator()
-        {
-            var container = ServiceLocatorInitializer.Init();
-
-            RegisterAdditionalServices(container);
-        }
-
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
             container.Install(new AutoMapperInstaller());

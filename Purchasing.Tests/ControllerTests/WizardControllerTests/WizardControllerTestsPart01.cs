@@ -42,7 +42,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             try
             {
                 #region Arrange
-                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NoMatch");
+                Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NoMatch");
                 SetupDataForWorkgroupActions1();
                 thisFar = true;
                 #endregion Arrange
@@ -64,7 +64,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -90,7 +90,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -116,7 +116,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupGetReturnsView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -146,7 +146,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupPostReturnsViewWhenNotValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "7");
@@ -180,7 +180,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupPostReturnsViewWhenNotValid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "1");
@@ -214,7 +214,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupPostRedirectsWhenValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             var workgroup = CreateValidEntities.Workgroup(1);

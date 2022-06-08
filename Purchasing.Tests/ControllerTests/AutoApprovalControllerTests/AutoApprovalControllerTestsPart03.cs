@@ -73,7 +73,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditGetRedirectsToErrorWhenCurrentIdDifferent()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "NotMe");
             SetupData3();
             #endregion Arrange
 
@@ -91,7 +91,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             #endregion Arrange
@@ -128,7 +128,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             #endregion Arrange
@@ -222,7 +222,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostRedirectsToErrorWhenCurrentIdDifferent()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
@@ -241,7 +241,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostReturnsViewWhenInvalid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
@@ -289,7 +289,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostReturnsViewWhenInvalid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
@@ -337,7 +337,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostReturnsViewWhenInvalid3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
@@ -384,7 +384,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostSavesWhenValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);

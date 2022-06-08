@@ -52,7 +52,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(),
                 It.IsAny<Organization>(),
                 out It.Ref<string>.IsAny)).Returns(false)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = "" });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = "" }; });
             #endregion Arrange
 
             #region Act
@@ -84,7 +84,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(),
                 It.IsAny<Organization>(),
                 out It.Ref<string>.IsAny)).Returns(true)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = "" });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = "" }; });
             #endregion Arrange
 
             #region Act
@@ -143,7 +143,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(),
                 It.IsAny<Organization>(),
                 out It.Ref<string>.IsAny)).Returns(false)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = "" });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = "" }; });
             #endregion Arrange
 
             #region Act
@@ -178,7 +178,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(),
                 It.IsAny<Organization>(),
                 out It.Ref<string>.IsAny)).Returns(true)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = "" });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = "" }; });
             #endregion Arrange
 
             #region Act
@@ -291,7 +291,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(),
                 It.IsAny<Organization>(),
                 out It.Ref<string>.IsAny)).Returns(false)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = "" });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = "" }; });
             #endregion Arrange
 
             #region Act
@@ -323,7 +323,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(),
                 It.IsAny<Organization>(),
                 out It.Ref<string>.IsAny)).Returns(true)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = "" });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = "" }; });
             #endregion Arrange
 
             #region Act
@@ -383,7 +383,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(),
                 It.IsAny<Organization>(),
                 out It.Ref<string>.IsAny)).Returns(false)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = "" });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = "" }; });
             #endregion Arrange
 
             #region Act

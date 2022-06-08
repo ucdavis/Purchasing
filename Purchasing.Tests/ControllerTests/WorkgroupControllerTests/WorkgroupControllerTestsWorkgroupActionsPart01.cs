@@ -22,7 +22,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestIndexReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
             Mock.Get(WorkgroupService).Setup(a => a.LoadAdminWorkgroups(false)).Returns(new Workgroup[0]);
@@ -57,7 +57,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestIndexReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
             new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
             Mock.Get(WorkgroupService).Setup(a => a.LoadAdminWorkgroups(false)).Returns(new Workgroup[0]);
@@ -87,7 +87,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //    try
         //    {
         //        #region Arrange
-        //        Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NoMatch");
+        //        Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NoMatch");
         //        SetupDataForWorkgroupActions1();
         //        thisFar = true;
         //        #endregion Arrange
@@ -110,7 +110,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreateGetReturnsView1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDataForWorkgroupActions1();
         //    new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
         //    #endregion Arrange
@@ -135,7 +135,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreateGetReturnsView2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
         //    SetupDataForWorkgroupActions1();
         //    new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
         //    #endregion Arrange
@@ -160,7 +160,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreateGetReturnsView3()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
         //    SetupDataForWorkgroupActions1();
         //    new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
         //    #endregion Arrange
@@ -189,7 +189,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreatePostReturnsViewInNotValid()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
         //    SetupDataForWorkgroupActions1();
         //    var workgroup = CreateValidEntities.Workgroup(1);
         //    workgroup.Name = null;
@@ -219,7 +219,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreatePostRedirectsToIndex1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
         //    SetupDataForWorkgroupActions1();
         //    var workgroup = CreateValidEntities.Workgroup(1);
         //    Mock.Get(WorkgroupService).Setup(a => a.CreateWorkgroup(It.IsAny<Workgroup>(), It.IsAny<string[]>())).Returns(workgroup);
@@ -243,7 +243,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreatePostRedirectsToIndex2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
         //    SetupDataForWorkgroupActions1(true);
         //    var workgroup = CreateValidEntities.Workgroup(1);
         //    var organizations = new List<Organization>();

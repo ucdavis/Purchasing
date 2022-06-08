@@ -59,7 +59,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestEditGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -103,7 +103,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestEditGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -157,7 +157,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestEditGetReturnsView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);

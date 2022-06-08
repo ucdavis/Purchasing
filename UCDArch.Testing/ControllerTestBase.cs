@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Http;
+using UCDArch.Core;
 
 namespace UCDArch.Testing
 {
@@ -21,16 +22,16 @@ namespace UCDArch.Testing
             SetupController();
 
             Controller.Repository = Mock.Of<IRepository>();
-            Controller.ControllerContext.RouteData = new RouteData();
             Controller.ControllerContext = new ControllerContext()
             {
-                HttpContext = new DefaultHttpContext()
+                HttpContext = SmartServiceLocator<HttpContext>.GetService(),
+                RouteData = new RouteData()
             };
             Controller.TempData = new TempDataDictionary(Controller.HttpContext, Mock.Of<ITempDataProvider>());
 
         }
 
-        protected virtual void InitServiceLocator()
+        private void InitServiceLocator()
         {
             var container = ServiceLocatorInitializer.Init();
 

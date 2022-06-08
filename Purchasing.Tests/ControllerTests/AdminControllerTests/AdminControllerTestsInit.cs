@@ -35,7 +35,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public IWorkgroupService WorkgroupService;
         public IConfiguration Configuration;
         public IOptions<SendGridSettings> SendGridSettings;
-        public HttpContext HttpContext;
 
 
         #region Init
@@ -57,7 +56,6 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(Mock.Of<IRepository<WorkgroupPermission>>());
             Configuration = Mock.Of<IConfiguration>();
             SendGridSettings = Mock.Of<IOptions<SendGridSettings>>();
-            HttpContext = new DefaultHttpContext();
 
             Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration);
         }

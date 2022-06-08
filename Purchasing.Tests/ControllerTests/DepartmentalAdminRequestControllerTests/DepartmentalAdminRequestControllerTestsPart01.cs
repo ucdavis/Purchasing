@@ -62,7 +62,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             try
             {
                 #region Arrange
-                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+                Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
                 Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns<DirectoryUser>(null);
                 thisFar = true;
                 #endregion Arrange
@@ -85,7 +85,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreateGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",
@@ -120,7 +120,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreateGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",
@@ -229,7 +229,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             try
             {
                 #region Arrange
-                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+                Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
                 Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns<DirectoryUser>(null);
                 thisFar = true;
                 #endregion Arrange
@@ -252,7 +252,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreatePostRetursViewWhenInvalid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",
@@ -298,7 +298,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreatePostRetursViewWhenInvalid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "1");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",
@@ -349,7 +349,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreatePostRedirectsWhenValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",

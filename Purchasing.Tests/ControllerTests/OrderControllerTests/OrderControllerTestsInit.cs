@@ -115,6 +115,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
             container.Install(new AutoMapperInstaller());
+            container.Register(Component.For<ISecurityService>().ImplementedBy<FakeSecurityService>().Named("securityService"));
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
             base.RegisterAdditionalServices(container);
         }
@@ -128,13 +129,6 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Mock.Get(Controller.Repository).Setup(a => a.OfType<User>()).Returns(UserRepository2);
 
             Mock.Get(Controller.Repository).Setup(a => a.OfType<Order>()).Returns(OrderRepository);
-        }
-
-        protected override void InitServiceLocator()
-        {
-            var container = ServiceLocatorInitializer.Init();
-            container.Register(Component.For<ISecurityService>().ImplementedBy<FakeSecurityService>().Named("securityService"));
-            RegisterAdditionalServices(container);
         }
         #endregion Init
 

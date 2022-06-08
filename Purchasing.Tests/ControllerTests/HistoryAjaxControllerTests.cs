@@ -99,7 +99,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestRecentActivityReturnsPartialView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderTrackingHistory = new List<OrderTrackingHistory>();
             for (int i = 0; i < 5; i++)
             {
@@ -130,7 +130,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestRecentActivityReturnsPartialView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderTrackingHistory = new List<OrderTrackingHistory>();
             for (int i = 0; i < 5; i++)
             {
@@ -161,7 +161,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestRecentActivityReturnsPartialView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderTrackingHistory = new List<OrderTrackingHistory>();
             for (int i = 0; i < 5; i++)
             {
@@ -196,7 +196,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestRecentCommentsReturnsPartialView()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var commentHistory = new List<CommentHistory>();
             for (int i = 0; i < 10; i++)
             {

@@ -154,7 +154,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeleteGetRedirectsWhenConditionalApprovalNotFound()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "2");
             SetupDateForIndex1();
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny)).Returns(false);            
             #endregion Arrange
@@ -175,12 +175,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeleteGetRedirectsWhenNoAccess1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDateForIndex1();
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = message }; });
             #endregion Arrange
 
             #region Act
@@ -203,12 +203,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeleteGetRedirectsWhenNoAccess2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDateForIndex1();
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = message }; });
             #endregion Arrange
 
             #region Act
@@ -232,12 +232,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeleteGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDateForIndex1();
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = message }; });
             #endregion Arrange
 
             #region Act
@@ -268,12 +268,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeleteGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDateForIndex1();
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = message }; });
             #endregion Arrange
 
             #region Act
@@ -305,7 +305,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeletePostRedirectsToIndexInConditionalApprovalNotFound()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDateForIndex1();
             var conditionalApprovalViewModel = new ConditionalApprovalViewModel();
             conditionalApprovalViewModel.Id = 19;
@@ -328,14 +328,14 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeletePostRedirectsWhenNoAccess1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDateForIndex1();
             var conditionalApprovalViewModel = new ConditionalApprovalViewModel();
             conditionalApprovalViewModel.Id = 1;
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = message }; });
             #endregion Arrange
 
             #region Act
@@ -358,14 +358,14 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeletePostRedirectsWhenNoAccess2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDateForIndex1();
             var conditionalApprovalViewModel = new ConditionalApprovalViewModel();
             conditionalApprovalViewModel.Id = 7;
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(false)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = message }; });
             #endregion Arrange
 
             #region Act
@@ -388,14 +388,14 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeletePostWhenValid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDateForIndex1();
             var conditionalApprovalViewModel = new ConditionalApprovalViewModel();
             conditionalApprovalViewModel.Id = 1;
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = message }; });
             ConditionalApproval args1 = default;
             Mock.Get( ConditionalApprovalRepository).Setup(a => a.Remove(It.IsAny<ConditionalApproval>()))
                 .Callback<ConditionalApproval>(x => args1 = x);
@@ -428,14 +428,14 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestDeletePostWhenValid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDateForIndex1();
             var conditionalApprovalViewModel = new ConditionalApprovalViewModel();
             conditionalApprovalViewModel.Id = 7;
             var message = "Fake Message";
             object[] args = default;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true)
-                .Callback((Workgroup a, Organization b, out string c) => args = new object[] { a, b, c = message });
+                .Callback((Workgroup a, Organization b, out string c) => { args = new object[] { a, b, c = message }; });
             ConditionalApproval args1 = default;
             Mock.Get(ConditionalApprovalRepository).Setup(a => a.Remove(It.IsAny<ConditionalApproval>()))
                 .Callback<ConditionalApproval>(x => args1 = x);
