@@ -380,7 +380,7 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(Index));
             }
 
-            if (_userIdentity.IsUserInRole(id, Role.Codes.DepartmentalAdmin) == false)
+            if (_userIdentity.IsUserInRole(id, Role.Codes.DepartmentalAdmin, true) == false)
             {
                 Message = id + " is not a departmental admin";
                 return this.RedirectToAction(nameof(Index));
