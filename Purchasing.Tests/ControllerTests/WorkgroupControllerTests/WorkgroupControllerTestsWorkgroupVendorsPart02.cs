@@ -216,7 +216,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupVendor.VendorId = null;
             workgroupVendor.VendorAddressTypeCode = null;
             workgroupVendor.Name = null;
-            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny))
+                .Callback((WorkgroupVendor source, ref WorkgroupVendor destination) => {
+                    destination = workgroupVendor;
+                });
             #endregion Arrange
 
             #region Act
@@ -252,7 +255,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupVendor.VendorId = null;
             workgroupVendor.VendorAddressTypeCode = null;
             workgroupVendor.Name = "Changed";
-            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny))
+                .Callback((WorkgroupVendor source, ref WorkgroupVendor destination) => {
+                    destination = workgroupVendor;
+                });
             WorkgroupVendor oldArgs = default;
             WorkgroupVendor newArgs = default;
             var ensurePersistentCount = 0;

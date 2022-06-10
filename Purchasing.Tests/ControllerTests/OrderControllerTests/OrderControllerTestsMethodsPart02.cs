@@ -656,7 +656,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("canCreateOrderInWorkgroup", ex.Message);
-                Mock.Get(SecurityService).Verify(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2)));
+                Mock.Get(SecurityService).Verify();
                 throw;
             }
         }
@@ -668,8 +668,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -701,8 +702,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 .Callback((Order a, Guid b) => orderServiceArgs2 = new object[] { a, b });
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
 
@@ -742,8 +742,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;           
@@ -757,8 +758,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -780,8 +780,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -797,8 +798,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Vendor = 0;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -821,8 +821,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             new FakeWorkgroupVendors(3, RepositoryFactory.WorkgroupVendorRepository);
             Mock.Get(RepositoryFactory.WorkgroupVendorRepository).Setup(a => a.GetById(2)).Returns(RepositoryFactory.WorkgroupVendorRepository.Queryable.Single(b => b.Id == 2));
@@ -841,8 +842,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Vendor = 2;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -864,8 +864,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             new FakeWorkgroupAddress(3, RepositoryFactory.WorkgroupAddressRepository);
             Mock.Get(RepositoryFactory.WorkgroupAddressRepository).Setup(a => a.GetById(2)).Returns(RepositoryFactory.WorkgroupAddressRepository.Queryable.Single(b => b.Id == 2));
@@ -884,8 +885,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShipAddress = 2;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -907,8 +907,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             new FakeShippingTypes(3, RepositoryFactory.ShippingTypeRepository);
             Mock.Get(RepositoryFactory.ShippingTypeRepository).Setup(a => a.GetById("2")).Returns(RepositoryFactory.ShippingTypeRepository.Queryable.Single(b => b.Id == "2"));
@@ -927,8 +928,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShippingType = "2";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -950,8 +950,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -967,8 +968,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.DateNeeded = DateTime.UtcNow.ToPacificTime().AddDays(3).Date;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -990,8 +990,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1007,8 +1008,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Backorder = "true";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -1030,8 +1030,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1047,8 +1048,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Backorder = string.Empty;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -1074,8 +1074,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             workgroups[0].PrimaryOrganization = CreateValidEntities.Organization(77);
             workgroups[0].Id = 1;
             new FakeWorkgroups(0, WorkgroupRepository, workgroups);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 1))).Returns(true);;
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(1)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 1));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 1);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);;
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(1)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 1;
@@ -1091,8 +1092,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.DateNeeded = DateTime.UtcNow.ToPacificTime().AddDays(3).Date;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -1115,8 +1115,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1132,8 +1133,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShipTo = "Some Ship";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -1155,8 +1155,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1172,8 +1173,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShipEmail = "ship@testy.com";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -1195,8 +1195,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1212,8 +1213,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.ShipPhone = "222 333 4444";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             #endregion Arrange
 
             #region Act
@@ -1235,8 +1235,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1259,8 +1260,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeOrderTypes(0, RepositoryFactory.OrderTypeRepository, orderTypes, true);
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
             
             #endregion Arrange
 
@@ -1286,8 +1286,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1301,8 +1302,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Items[0].Price = "0";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1326,8 +1326,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1343,8 +1344,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Justification = "Some Just";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1370,8 +1370,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1387,8 +1388,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Comments = "This is my Comment";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1417,8 +1417,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1434,8 +1435,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Comments = "  ";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1463,8 +1463,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1480,8 +1481,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Comments = string.Empty;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1510,8 +1510,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Mock.Get(RepositoryFactory.UserRepository).Setup(a => a.GetNullableById("2")).Returns(RepositoryFactory.UserRepository.Queryable.Single(b => b.Id == "2"));
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1527,8 +1528,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Comments = null;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1556,8 +1556,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeAttachments(5, RepositoryFactory.AttachmentRepository);
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1573,8 +1574,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.FileIds = null;
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1601,8 +1601,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             var xxx = RepositoryFactory.AttachmentRepository.Queryable.ToList();
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1618,8 +1619,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.FileIds = new[]{SpecificGuid.GetGuid(2)};
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1645,8 +1645,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             new FakeAttachments(5, RepositoryFactory.AttachmentRepository, null, false, true);
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1662,8 +1663,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.FileIds = new[] { SpecificGuid.GetGuid(2), SpecificGuid.GetGuid(3), SpecificGuid.GetGuid(4) };
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1690,8 +1690,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1716,8 +1717,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1745,8 +1745,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1771,8 +1772,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1800,8 +1800,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1826,8 +1827,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.CustomFields[2] = new OrderViewModel.CustomField { Answer = "Answer3", Id = 3 };
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1856,8 +1856,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1879,8 +1880,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Restricted.Users = "Someone who is authorized";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1909,8 +1909,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1932,8 +1933,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Restricted.Users = "Someone who is authorized";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -1963,8 +1963,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -1986,8 +1987,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orderViewModel.Restricted.Users = "Someone who is authorized";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -2017,8 +2017,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2040,8 +2041,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             //orderViewModel.Restricted.Users = "Someone who is authorized";
             object[] orderServiceArgs1 = default;
             Mock.Get(OrderService).Setup(a => a.CreateApprovalsForNewOrder(It.IsAny<Order>(), It.IsAny<int[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => orderServiceArgs1 = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((Order a, int[] b, string c, string d, string e) => orderServiceArgs1 = new object[] { a, b, c, d, e });
 
             #endregion Arrange
 
@@ -2073,8 +2073,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2117,8 +2118,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2168,8 +2170,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2210,8 +2213,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2252,8 +2256,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2294,8 +2299,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2341,8 +2347,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2396,8 +2403,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2451,8 +2459,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2527,8 +2536,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;
@@ -2602,8 +2612,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
 
             new FakeWorkgroups(3, WorkgroupRepository);
-            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(WorkgroupRepository.Queryable.Single(b => b.Id == 2))).Returns(true);
-            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(WorkgroupRepository.Queryable.Single(b => b.Id == 2));
+            var workgroup = WorkgroupRepository.Queryable.Single(b => b.Id == 2);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupAccess(workgroup)).Returns(true);
+            Mock.Get(WorkgroupRepository).Setup(a => a.GetById(2)).Returns(workgroup);
 
             var orderViewModel = new OrderViewModel();
             orderViewModel.Workgroup = 2;

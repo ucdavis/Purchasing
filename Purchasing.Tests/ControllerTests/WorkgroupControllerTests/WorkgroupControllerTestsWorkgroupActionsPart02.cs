@@ -108,11 +108,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Organizations.Count());
-            Assert.AreEqual("Name1 (1)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name3 (3)", result.Organizations[1].ToString());
-            Assert.AreEqual("Name4 (4)", result.Organizations[2].ToString());
-            Assert.AreEqual("Name5 (5)", result.Organizations[3].ToString());
-            Assert.AreEqual("Name6 (6)", result.Organizations[4].ToString());
+            Assert.AreEqual("Name1 (1)", result.Organizations[0].Text);
+            Assert.AreEqual("Name3 (3)", result.Organizations[1].Text);
+            Assert.AreEqual("Name4 (4)", result.Organizations[2].Text);
+            Assert.AreEqual("Name5 (5)", result.Organizations[3].Text);
+            Assert.AreEqual("Name6 (6)", result.Organizations[4].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual("Name3", result.Workgroup.Name);
             #endregion Assert
@@ -136,9 +136,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name1 (1)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name2 (2)", result.Organizations[1].ToString());
-            Assert.AreEqual("Name3 (3)", result.Organizations[2].ToString());
+            Assert.AreEqual("Name1 (1)", result.Organizations[0].Text);
+            Assert.AreEqual("Name2 (2)", result.Organizations[1].Text);
+            Assert.AreEqual("Name3 (3)", result.Organizations[2].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual("Name3", result.Workgroup.Name);
             #endregion Assert
@@ -162,11 +162,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Organizations.Count());
-            Assert.AreEqual("Name1 (1)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name3 (3)", result.Organizations[1].ToString());
-            Assert.AreEqual("Name7 (7)", result.Organizations[2].ToString());
-            Assert.AreEqual("Name8 (8)", result.Organizations[3].ToString());
-            Assert.AreEqual("Name9 (9)", result.Organizations[4].ToString());
+            Assert.AreEqual("Name1 (1)", result.Organizations[0].Text);
+            Assert.AreEqual("Name3 (3)", result.Organizations[1].Text);
+            Assert.AreEqual("Name7 (7)", result.Organizations[2].Text);
+            Assert.AreEqual("Name8 (8)", result.Organizations[3].Text);
+            Assert.AreEqual("Name9 (9)", result.Organizations[4].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual("Name3", result.Workgroup.Name);
             #endregion Assert
@@ -194,12 +194,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(6, result.Organizations.Count());
-            Assert.AreEqual("Name1 (1)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name3 ()", result.Organizations[1].ToString());
-            Assert.AreEqual("Name3 (3)", result.Organizations[2].ToString());
-            Assert.AreEqual("Name4 (4)", result.Organizations[3].ToString());
-            Assert.AreEqual("Name5 (5)", result.Organizations[4].ToString());
-            Assert.AreEqual("Name6 (6)", result.Organizations[5].ToString());
+            Assert.AreEqual("Name1 (1)", result.Organizations[0].Text);
+            Assert.AreEqual("Name3 ()", result.Organizations[1].Text);
+            Assert.AreEqual("Name3 (3)", result.Organizations[2].Text);
+            Assert.AreEqual("Name4 (4)", result.Organizations[3].Text);
+            Assert.AreEqual("Name5 (5)", result.Organizations[4].Text);
+            Assert.AreEqual("Name6 (6)", result.Organizations[5].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual("Name3", result.Workgroup.Name);
             Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
@@ -226,11 +226,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(5, result.Organizations.Count());
-            Assert.AreEqual("Name2 (2)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name3 ()", result.Organizations[1].ToString()); 
-            Assert.AreEqual("Name4 (4)", result.Organizations[2].ToString());
-            Assert.AreEqual("Name5 (5)", result.Organizations[3].ToString());
-            Assert.AreEqual("Name6 (6)", result.Organizations[4].ToString());
+            Assert.AreEqual("Name2 (2)", result.Organizations[0].Text);
+            Assert.AreEqual("Name3 ()", result.Organizations[1].Text); 
+            Assert.AreEqual("Name4 (4)", result.Organizations[2].Text);
+            Assert.AreEqual("Name5 (5)", result.Organizations[3].Text);
+            Assert.AreEqual("Name6 (6)", result.Organizations[4].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual("Name3", result.Workgroup.Name);
             Assert.AreEqual(3, result.Workgroup.Organizations.Count);

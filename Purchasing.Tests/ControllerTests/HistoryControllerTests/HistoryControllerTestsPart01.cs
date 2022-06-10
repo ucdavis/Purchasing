@@ -38,8 +38,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -99,8 +99,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -160,8 +160,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -225,8 +225,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -291,8 +291,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -357,8 +357,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -430,8 +430,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -502,8 +502,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -575,8 +575,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -663,8 +663,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -751,8 +751,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -838,8 +838,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -925,8 +925,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -991,8 +991,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -1057,8 +1057,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -1123,8 +1123,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -1189,8 +1189,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -1255,8 +1255,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act
@@ -1321,8 +1321,8 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<bool>(),
                                   It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
                                       rtValue)
-                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g,
-                          DateTime? h, DateTime? i) => args = new object[] { a, b, c, d, e, f, g, h, i });
+                .Callback((string a, string b, bool c, bool d, string e, DateTime? f, DateTime? g, bool h,
+                          DateTime? i, DateTime? j) => args = new object[] { a, b, c, d, e, f, g, h, i, j });
             #endregion Arrange
 
             #region Act

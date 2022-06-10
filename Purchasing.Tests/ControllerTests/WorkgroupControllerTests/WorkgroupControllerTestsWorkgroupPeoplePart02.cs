@@ -175,7 +175,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.IsNull(result.Users);
             #endregion Assert
-        } 
+        }
         #endregion AddPeople Get Tests
 
         #region AddPeople Post Tests
@@ -222,7 +222,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var postModel = new WorkgroupPeoplePostModel();
             postModel.Role = new Role();
             postModel.Role.Id = Role.Codes.DepartmentalAdmin;
-            postModel.Role.Level = 1;            
+            postModel.Role.Level = 1;
             #endregion Arrange
 
             #region Act
@@ -270,7 +270,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Mock.Get(SearchService).Verify(a => a.FindUser(It.IsAny<string>()), Times.Never());
-            
+
             Controller.ModelState.AssertErrorsAre("Invalid Role Selected");
             Assert.IsNotNull(result);
             Assert.AreEqual(Role.Codes.DepartmentalAdmin, result.Role.Id);
@@ -362,7 +362,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Must add at least one user", ex.Message);
                 throw;
-            }	
+            }
         }
 
         [TestMethod]
@@ -384,7 +384,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Validator.ValidateObject(test, context, true);
                 #endregion Act
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
@@ -392,7 +392,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 throw;
             }
         }
-        
+
         [TestMethod]
         public void TestAddPeoplePostRedirectsToPeople1()
         {
@@ -400,6 +400,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForPeopleList();
             var message = "Fake Message";
             int failCount = 2;
+            int duplicateCount = 2;
             Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true);
 
             var ldapUser = new DirectoryUser();
@@ -418,11 +419,16 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             var args = new Dictionary<int, object[]>();
             var argsIndex = 0;
-            Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(It.IsAny<int>(), It.IsAny<Role>(), It.IsAny<Workgroup>(), 
-                It.IsAny<int>(), It.IsAny<string>(), ref failCount, ref failCount, It.IsAny<List<KeyValuePair<string, string>>>()))
-                .Returns(7)
-                .Callback((int a, Role b, Workgroup c, int d, string e, ref int f, ref int g, List<KeyValuePair<string, string>> h) 
-                    => args[argsIndex++] = new object[] { a, b, c, d, e, f, g, h });
+            Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(It.IsAny<int>(), It.IsAny<Role>(), It.IsAny<Workgroup>(),
+                It.IsAny<int>(), It.IsAny<string>(), ref It.Ref<int>.IsAny, ref It.Ref<int>.IsAny, It.IsAny<List<KeyValuePair<string, string>>>()))
+                .Callback((int a, Role b, Workgroup c, int d, string e, ref int f, ref int g, List<KeyValuePair<string, string>> h)
+                    =>
+                {
+                    f = failCount;
+                    g = duplicateCount;
+                    args[argsIndex++] = new object[] { a, b, c, d, e, f, g, h };
+                })
+                .Returns(7);
             #endregion Arrange
 
             #region Act
@@ -445,10 +451,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                  ref failCount,
                 It.IsAny<List<KeyValuePair<string, string>>>()), Times.Exactly(4));
 
- 
+
             Assert.AreEqual(4, args.Count());
             Assert.AreEqual(3, args[0][0]);
-            Assert.AreEqual("AM", ((Role)args[0][1]).Id);   
+            Assert.AreEqual("AM", ((Role)args[0][1]).Id);
             Assert.AreEqual(3, ((Workgroup)args[0][2]).Id);
             Assert.AreEqual(0, args[0][3]);
             Assert.AreEqual(7, args[1][3]);

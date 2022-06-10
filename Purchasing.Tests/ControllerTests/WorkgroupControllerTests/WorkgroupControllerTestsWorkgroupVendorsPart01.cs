@@ -250,7 +250,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForVendors2();
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
 
-            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny))
+                .Callback((WorkgroupVendor source, ref WorkgroupVendor destination) => {
+                    destination = vendorToCreate;
+                });
             new FakeWorkgroupVendors(0, WorkgroupVendorRepository);
             WorkgroupVendor args = default;
             Mock.Get( WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()))
@@ -283,7 +286,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             SetupDataForVendors2();
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
-            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny))
+                .Callback((WorkgroupVendor source, ref WorkgroupVendor destination) => {
+                    destination = vendorToCreate;
+                });
 
             new FakeWorkgroupVendors(0, WorkgroupVendorRepository);
             WorkgroupVendor args = default;
@@ -318,7 +324,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForVendors2();
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
             vendorToCreate.VendorId = null;
-            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny))
+                .Callback((WorkgroupVendor source, ref WorkgroupVendor destination) => {
+                    destination = vendorToCreate;
+                });
             WorkgroupVendor args = default;
             Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()))
                 .Callback<WorkgroupVendor>(x => args = x);
@@ -357,7 +366,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForVendors2();
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
             vendorToCreate.VendorId = null;
-            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny))
+                .Callback((WorkgroupVendor source, ref WorkgroupVendor destination) => {
+                    destination = vendorToCreate;
+                });
             WorkgroupVendor args = default;
             Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()))
                 .Callback<WorkgroupVendor>(x => args = x);
@@ -390,7 +402,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForVendors3();
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
             vendorToCreate.Line1 = null;
-            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny))
+                .Callback((WorkgroupVendor source, ref WorkgroupVendor destination) => {
+                    destination = vendorToCreate;
+                });
             #endregion Arrange
 
             #region Act
@@ -413,7 +428,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
             vendorToCreate.VendorId = null;
             vendorToCreate.City = null;
-            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny))
+                .Callback((WorkgroupVendor source, ref WorkgroupVendor destination) => {
+                    destination = vendorToCreate;
+                });
             #endregion Arrange
 
             #region Act
@@ -443,7 +461,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var vendorToCreate = CreateValidEntities.WorkgroupVendor(9);
             vendorToCreate.VendorId = null;
             vendorToCreate.City = null;
-            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny));
+            Mock.Get(WorkgroupService).Setup(a => a.TransferValues(It.IsAny<WorkgroupVendor>(), ref It.Ref<WorkgroupVendor>.IsAny))
+                .Callback((WorkgroupVendor source, ref WorkgroupVendor destination) => {
+                    destination = vendorToCreate;
+                });
             #endregion Arrange
 
             #region Act

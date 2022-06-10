@@ -271,6 +271,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             WorkgroupPermission args = default;
             Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
                 .Callback<WorkgroupPermission>(x => args = x);
+            var permission = WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18);
+            Mock.Get(WorkgroupService).Setup(a => a.RemoveFromCache(permission));
             #endregion Arrange
 
             #region Act
@@ -290,7 +292,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(args);
             Assert.AreEqual(18, args.Id);
 
-            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18)));
+            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(permission));
             #endregion Assert	
         }
 
@@ -302,6 +304,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             WorkgroupPermission args = default;
             Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
                 .Callback<WorkgroupPermission>(x => args = x);
+            var permission = WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18);
+            Mock.Get(WorkgroupService).Setup(a => a.RemoveFromCache(permission));
             #endregion Arrange
 
             #region Act
@@ -321,7 +325,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.IsNotNull(args);
             Assert.AreEqual(18, args.Id);
 
-            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 18)));
+            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(permission));
             #endregion Assert
         }
 
@@ -417,6 +421,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             WorkgroupPermission args = default;
             Mock.Get( WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
                 .Callback<WorkgroupPermission>(x => args = x);
+            var permission = WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21);
+            Mock.Get(WorkgroupService).Setup(a => a.RemoveFromCache(permission));
             #endregion Arrange
 
             #region Act
@@ -435,7 +441,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(21, args.Id);
             Assert.AreEqual("1 role removed from FirstName3 LastName3", Controller.Message);
 
-            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21)));
+            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(permission));
             #endregion Assert
         }
 
@@ -452,6 +458,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var args = new List<WorkgroupPermission>();
             Mock.Get(WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
                 .Callback((WorkgroupPermission x) => args.Add(x));
+            var permission = WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21);
+            Mock.Get(WorkgroupService).Setup(a => a.RemoveFromCache(permission));
             #endregion Arrange
 
             #region Act
@@ -475,7 +483,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.AreEqual("4 roles removed from FirstName3 LastName3", Controller.Message);
 
-            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(WorkgroupPermissionRepository.Queryable.Single(b => b.Id == 21)));
+            Mock.Get(WorkgroupService).Verify(a => a.RemoveFromCache(permission));
             #endregion Assert
         }
         #endregion DeletePeople Post Tests

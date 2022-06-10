@@ -272,7 +272,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             #region Arrange
             new FakeUsers(3, UserRepository);
-            Mock.Get(UserIdentity).Setup(a => a.IsUserInRole("3", Role.Codes.SscAdmin)).Returns(false);
+            Mock.Get(UserIdentity).Setup(a => a.IsUserInRole("3", Role.Codes.SscAdmin, false)).Returns(false);
             #endregion Arrange
 
             #region Act
@@ -282,7 +282,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.AreEqual("3 is not an SSC admin", Controller.Message);
-            Mock.Get(UserIdentity).Verify(a => a.IsUserInRole("3", Role.Codes.SscAdmin));
+            Mock.Get(UserIdentity).Verify(a => a.IsUserInRole("3", Role.Codes.SscAdmin, false));
             #endregion Assert
         }
 
@@ -291,7 +291,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             #region Arrange
             new FakeUsers(3, UserRepository);
-            Mock.Get(UserIdentity).Setup(a => a.IsUserInRole("3", Role.Codes.SscAdmin)).Returns(true);
+            Mock.Get(UserIdentity).Setup(a => a.IsUserInRole("3", Role.Codes.SscAdmin, false)).Returns(true);
             #endregion Arrange
 
             #region Act
@@ -301,7 +301,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #endregion Act
 
             #region Assert
-            Mock.Get(UserIdentity).Verify(a => a.IsUserInRole("3", Role.Codes.SscAdmin));
+            Mock.Get(UserIdentity).Verify(a => a.IsUserInRole("3", Role.Codes.SscAdmin, false));
             Assert.IsNotNull(result);
             Assert.AreEqual("FirstName3 LastName3 (3)", result.FullNameAndId);
             #endregion Assert

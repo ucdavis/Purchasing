@@ -299,7 +299,7 @@ namespace Purchasing.Tests.ControllerTests
         /// Tests the controller has 6 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasSevenAttributes()
+        public void TestControllerHasSixAttributes()
         {
             #region Arrange
             var controllerClass = _controllerClass;
@@ -310,7 +310,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(7, result.Count());
+            Assert.AreEqual(6, result.Count());
             #endregion Assert
         }
 

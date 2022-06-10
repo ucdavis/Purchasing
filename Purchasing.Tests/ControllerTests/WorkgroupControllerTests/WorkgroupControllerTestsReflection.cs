@@ -167,13 +167,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var found = false;
             for(int i = 0; i < result.Count(); i++)
             {
-                if(result.ElementAt(i).Roles == "DA")
+                if(result.ElementAt(i).Policy == "DA")
                 {
                     found = true;
                     break;
                 }
             }
-            Assert.IsTrue(found, "DA role not Found");
+            Assert.IsTrue(found, "DA policy not Found");
             #endregion Assert
         }
         #endregion Controller Class Tests

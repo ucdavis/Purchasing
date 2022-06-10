@@ -897,7 +897,6 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             orders[0].Workgroup.Permissions[1].IsAdmin = true;
             new FakeOrders(0, OrderRepository, orders);
             
-
             //var orderPeeps = new List<OrderPeep>();
             //for (int i = 0; i < 12; i++)
             //{
@@ -937,7 +936,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
             Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[1]));
-            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), false));
+            // user declared here because Verify can't handle an expression containing a queryable
+            var user = UserRepository.Queryable.Single(b => b.Id == "1");
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], user, false));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
@@ -1008,7 +1009,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
             Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[0]));
-            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[0], UserRepository.Queryable.Single(b => b.Id == "1"), false));
+            // user declared here because Verify can't handle an expression containing a queryable
+            var user = UserRepository.Queryable.Single(b => b.Id == "1");
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[0], user, false));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.RouteValues["id"]);
@@ -1080,7 +1083,9 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #region Assert
             Assert.AreEqual("Order  rerouted to purchaser FirstName1 LastName1", Controller.Message);
             Mock.Get(ApprovalRepository).Verify(a => a.EnsurePersistent(orders[0].Approvals[1]));
-            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], UserRepository.Queryable.Single(b => b.Id == "1"), true));
+            // user declared here because Verify can't handle an expression containing a queryable
+            var user = UserRepository.Queryable.Single(b => b.Id == "1");
+            Mock.Get(OrderService).Verify(a => a.ReRouteSingleApprovalForExistingOrder(orders[0].Approvals[1], user, true));
 
             #endregion Assert
         }
