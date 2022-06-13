@@ -25,8 +25,19 @@ namespace UCDArch.Testing
     {
         public static IWindsorContainer Init()
         {
+            // var items = new Dictionary<object, object>();
+            // var mockItems = Mock.Of<IDictionary<object, object>>();
+            // Mock.Get(mockItems).SetupSet(m => m[It.IsAny<object>()] = It.IsAny<object>())
+            //     .Callback((object key, object value) => { items[key] = value; });
+            // Mock.Get(mockItems).Setup(m => m[It.IsAny<object>()])
+            //     .Returns((object key) => key switch {
+            //         NHibernateSessionManager.SESSION_KEY => NHibernateSessionManager.Instance.GetSession(),
+            //         _ => items[key]
+            //     } );
+
             var httpContext = Mock.Of<HttpContext>();
-            var mockHttpContext = Mock.Get(httpContext);
+            Mock.Get(httpContext).SetupGet(m => m.Features).Returns(new FeatureCollection());
+            Mock.Get(httpContext).SetupGet(m => m.Items).Returns(new Dictionary<object, object>());
 
 
             var httpContextAccessor = Mock.Of<IHttpContextAccessor>();
@@ -75,8 +86,6 @@ namespace UCDArch.Testing
             var mockHttpContext = Mock.Get(httpContext);
             mockHttpContext.SetupGet(m => m.User).Returns(claimsPrincipal);
             mockHttpContext.SetupGet(m => m.Request).Returns(httpRequest);
-            mockHttpContext.SetupGet(m => m.Features).Returns(new FeatureCollection());
-            mockHttpContext.SetupGet(m => m.Items).Returns(new Dictionary<object, object>());
             mockHttpContext.SetupGet(m => m.RequestServices).Returns(serviceProvider);
         }
 

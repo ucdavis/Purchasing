@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using Castle.Windsor;
 using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate.Cfg;
 using NHibernate.Stat;
@@ -41,15 +42,15 @@ namespace UCDArch.Testing
             
         private static Configuration BuildConfiguration()
         {
-            var mappingAssembly = typeof (TMappingClass).Assembly;
-            var conventionAssembly = typeof (TConventionClass).Assembly;
+            var mappingAssembly = typeof(TMappingClass).Assembly;
+            var conventionAssembly = typeof(TConventionClass).Assembly;
 
             NHibernateSessionConfiguration.Mappings.UseFluentMappings(mappingAssembly, conventionAssembly);
 
-            var config = Fluently.Configure().Mappings(
-                x =>
-                x.FluentMappings.AddFromAssembly(mappingAssembly).Conventions.AddAssembly(conventionAssembly)).
-                BuildConfiguration();
+            var config = Fluently.Configure()
+                .Database(SQLiteConfiguration.Standard.InMemory().ShowSql())
+                .Mappings(x => x.FluentMappings.AddFromAssembly(mappingAssembly).Conventions.AddAssembly(conventionAssembly))
+                .BuildConfiguration();
 
             return config;
         }

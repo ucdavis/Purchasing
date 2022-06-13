@@ -250,7 +250,8 @@ namespace UCDArch.Data.NHibernate
             {
                 if (IsInWebContext())
                 {
-                    return (ISession)SmartServiceLocator<Microsoft.AspNetCore.Http.IHttpContextAccessor>.GetService().HttpContext.Items[SESSION_KEY];
+                    SmartServiceLocator<Microsoft.AspNetCore.Http.IHttpContextAccessor>.GetService().HttpContext.Items.TryGetValue(SESSION_KEY, out var session);
+                    return (ISession)session;
                 }
                 else
                 {
