@@ -13,7 +13,7 @@
     <div class="section-contents">
     
 
-        <ul>
+        <ul>            
             <li>@Html.ActionLink("Update Email Preferences", "EmailPreferences", "User", new { id = Model.Id }, null)</li>            
             <li>@Html.ActionLink("Update Column Preferences", "ColumnPreferences", "User", new { id = Model.Id }, null)</li>
             <li>@Html.ActionLink("Change your Email", "EditEmail", "User", new {}, null)</li>
@@ -54,6 +54,8 @@
                     <div class="display-details">@String.Format("{0:dddd MMMM d, yyyy}", Model.AwayUntil)</div>
                 </li>
             }
+
+            <li>@Html.ActionLink("Update from Campus", "UpdateFromIAM", "User", new { }, new { @class = "button" })</li>   
         </ul>
     </div>
 

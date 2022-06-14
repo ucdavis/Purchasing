@@ -11,6 +11,7 @@ using UCDArch.Core.Utils;
 using Purchasing.Core.Domain;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
+using Purchasing.Mvc.Services;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -26,13 +27,16 @@ namespace Purchasing.Mvc.Controllers
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
 
-        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferencesRepository, IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory )
+        private readonly IDirectorySearchService _searchService;
+
+        public UserController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IRepositoryWithTypedId<ColumnPreferences, string> columnPreferencesRepository, IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IDirectorySearchService searchService )
         {
             _userRepository = userRepository;
             _emailPreferencesRepository = emailPreferencesRepository;
             _columnPreferencesRepository = columnPreferencesRepository;
             _repositoryFactory = repositoryFactory;
             _queryRepositoryFactory = queryRepositoryFactory;
+            _searchService = searchService;
         }
 
         //
@@ -50,8 +54,33 @@ namespace Purchasing.Mvc.Controllers
                 ErrorMessage = "You do not have an account in this system.  Please contact application support.";
                 return RedirectToAction("Index", "Home");
             }
-
+            
             return View(user);
+        }
+
+        public ActionResult UpdateFromIAM()
+        {
+            var user = GetCurrent();
+
+            if (user == null)
+            {
+                ErrorMessage = "You do not have an account in this system.  Please contact application support.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var iamUser = _searchService.SearchUsers(user.Id).First();
+            if (iamUser.LoginId != user.Id)
+            {
+                throw new Exception("IAM user login id does not match user id");
+            }
+            user.FirstName = iamUser.FirstName;
+            user.LastName = iamUser.LastName;
+            user.Email = string.IsNullOrWhiteSpace(iamUser.EmailAddress) ? user.Email : iamUser.EmailAddress;
+
+            _userRepository.EnsurePersistent(user);
+            Message = "User updated from Campus Source";
+
+            return RedirectToAction("Profile");
         }
 
         public ActionResult EmailPreferences(string id)
