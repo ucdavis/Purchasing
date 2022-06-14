@@ -58,6 +58,7 @@ namespace Purchasing.Mvc.Controllers
             return View(user);
         }
 
+        [HttpPost]
         public ActionResult UpdateFromIAM()
         {
             var user = GetCurrent();

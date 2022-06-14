@@ -54,8 +54,9 @@
                     <div class="display-details">@String.Format("{0:dddd MMMM d, yyyy}", Model.AwayUntil)</div>
                 </li>
             }
-
-            <li>@Html.ActionLink("Update from Campus", "UpdateFromIAM", "User", new { }, new { @class = "button" })</li>   
+            <form asp-controller="User" asp-action="UpdateFromIAM" method="post">
+                <button type="submit">Update from Campus</button>
+            </form>
         </ul>
     </div>
 
