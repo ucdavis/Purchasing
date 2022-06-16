@@ -51,7 +51,7 @@ namespace Purchasing.Mvc
 
             return logConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(esUrl))
             {
-                IndexFormat = "aspnet-purchasing-{0:yyyy.MM.dd}"
+                IndexFormat = "aspnet-purchasing-{0:yyyy.MM}"
             });
         }
     }
