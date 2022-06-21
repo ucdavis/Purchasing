@@ -15,7 +15,6 @@ namespace Purchasing.Jobs.Common.Logging
             if (_loggingSetup) return; //only setup logging once
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Stackify()
                 .WriteToElasticSearchCustom()
                 .CreateLogger();
 
