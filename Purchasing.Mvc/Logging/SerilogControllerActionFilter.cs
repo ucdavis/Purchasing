@@ -37,8 +37,9 @@ namespace Purchasing.Mvc.Logging
             }
 
             // Set User
-            var user = httpContext.User.Identity.Name ?? "anonymous";
-            _diagnosticContext.Set("User", user);
+            _diagnosticContext.Set("User", httpContext.User.Identity.Name ?? "anonymous");
+            _diagnosticContext.Set("SessionId", httpContext.Session?.Id ?? "no session");
+            _diagnosticContext.Set("TraceId", httpContext.TraceIdentifier ?? "no trace");
 
             // TODO: enable after upgrade to aspnetcore 3.x or higher
             //// Retrieve the IEndpointFeature selected for the request
