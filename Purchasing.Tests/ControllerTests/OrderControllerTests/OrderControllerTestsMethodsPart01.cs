@@ -54,12 +54,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Controller.SelectWorkgroup();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -190,12 +190,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Controller.ReroutePurchaser(4);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -567,12 +567,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Controller.ReroutePurchaser(4, "test");
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -796,12 +796,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Controller.ReroutePurchaser(1, "NotMe");
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -862,12 +862,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Controller.ReroutePurchaser(1, "3");
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Precondition failed.", ex.Message);
-                throw;
+                throw ex;
             }
         }
 

@@ -83,12 +83,12 @@ using UCDArch.Testing.Extensions;
 //                OrderService.GetAdministrativeListofOrders();
 //                #endregion Act
 //            }
-//            catch (Exception ex)
+//            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
 //            {
 //                Assert.IsTrue(thisFar);
 //                Assert.IsNotNull(ex);
 //                Assert.AreEqual("Possible infinite regression for Name3", ex.Message);
-//                throw;
+//                throw ex;
 //            }
 //        }
 

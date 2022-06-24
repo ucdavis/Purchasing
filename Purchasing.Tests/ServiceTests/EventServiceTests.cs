@@ -137,6 +137,8 @@ namespace Purchasing.Tests.ServiceTests
             var order = CreateValidEntities.Order(1);
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
             Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
+            var user = UserRepository.Queryable.Single(a => a.Id == "2");
+            Mock.Get(NotificationService).Setup(a => a.OrderDenied(order, user, "Some Comment", order.StatusCode));
             #endregion Arrange
 
             #region Act
@@ -144,7 +146,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            Mock.Get(NotificationService).Verify(a => a.OrderDenied(order, UserRepository.Queryable.Single(b => b.Id == "2"), "Some Comment", order.StatusCode));
+            Mock.Get(NotificationService).Verify(a => a.OrderDenied(order, user, "Some Comment", order.StatusCode));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -170,6 +172,8 @@ namespace Purchasing.Tests.ServiceTests
             var order = CreateValidEntities.Order(1);
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
             Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
+            var user = UserRepository.Queryable.Single(a => a.Id == "2");
+            Mock.Get(NotificationService).Setup(a => a.OrderCancelled(order, user, "Some Comment", order.StatusCode));
             #endregion Arrange
 
             #region Act
@@ -177,7 +181,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            Mock.Get(NotificationService).Verify(a => a.OrderCancelled(order, UserRepository.Queryable.Single(b => b.Id == "2"), "Some Comment", order.StatusCode));
+            Mock.Get(NotificationService).Verify(a => a.OrderCancelled(order, user, "Some Comment", order.StatusCode));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -203,6 +207,8 @@ namespace Purchasing.Tests.ServiceTests
             var order = CreateValidEntities.Order(1);
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
             Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
+            var user = UserRepository.Queryable.Single(a => a.Id == "2");
+            Mock.Get(NotificationService).Setup(a => a.OrderCompleted(order, user));
             #endregion Arrange
 
             #region Act
@@ -210,7 +216,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            Mock.Get(NotificationService).Verify(a => a.OrderCompleted(order, UserRepository.Queryable.Single(b => b.Id == "2")));
+            Mock.Get(NotificationService).Verify(a => a.OrderCompleted(order, user));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -313,6 +319,8 @@ namespace Purchasing.Tests.ServiceTests
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
             order.StatusCode.Level = 911;
             Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
+            var user = UserRepository.Queryable.Single(b => b.Id == "2");
+            Mock.Get(NotificationService).Setup(a => a.OrderEdited(order, user));
             #endregion Arrange
 
             #region Act
@@ -320,7 +328,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            Mock.Get(NotificationService).Verify(a => a.OrderEdited(order, UserRepository.Queryable.Single(b => b.Id == "2")));
+            Mock.Get(NotificationService).Verify(a => a.OrderEdited(order, user));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);

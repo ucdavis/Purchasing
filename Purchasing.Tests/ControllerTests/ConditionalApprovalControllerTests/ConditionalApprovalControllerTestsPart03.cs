@@ -35,12 +35,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 Controller.Create(null, null);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Missing Parameters", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -60,12 +60,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 Controller.Create(null, string.Empty);
                 #endregion Act
             }
-            catch(Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Missing Parameters", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -85,12 +85,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 Controller.Create(null, " ");
                 #endregion Act
             }
-            catch(Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Missing Parameters", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -114,12 +114,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 Controller.Create(3, null);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -349,12 +349,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //        Controller.Create(conditionalApprovalModifyModel);
         //        #endregion Act
         //    }
-        //    catch (Exception ex)
+        //    catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
         //    {
         //        Assert.IsTrue(thisFar);
         //        Assert.IsNotNull(ex);
         //        Assert.AreEqual("Must have a Workgroup or an Organization", ex.Message);
-        //        throw;
+        //        throw ex;
         //    }
         //}
 

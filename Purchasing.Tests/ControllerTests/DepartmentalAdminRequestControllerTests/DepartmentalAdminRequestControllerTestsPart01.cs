@@ -71,12 +71,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 Controller.Create();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Person requesting Departmental Access ID not found. ID = Me", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -177,12 +177,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 Controller.Create(null, new List<string> {"1"});
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Precondition failed.", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -238,12 +238,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 Controller.Create(new DepartmentalAdminRequestViewModel(), new List<string> {"1", "2"});
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Person requesting Departmental Access ID not found. ID = Me", ex.Message);
-                throw;
+                throw ex;
             }
         }
 

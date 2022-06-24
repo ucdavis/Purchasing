@@ -156,12 +156,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Controller.EditWorkgroupVendor(0, 1, workgroupVendor);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Can't have VendorId when editing", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -191,12 +191,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Controller.EditWorkgroupVendor(0, 1, workgroupVendor);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Can't have vendorAddresstypeCode when editing", ex.Message);
-                throw;
+                throw ex;
             }
         }
 

@@ -356,12 +356,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Validator.ValidateObject(test, context, true);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Must add at least one user", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -384,12 +384,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Validator.ValidateObject(test, context, true);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("The Role field is required.", ex.Message);
-                throw;
+                throw ex;
             }
         }
 

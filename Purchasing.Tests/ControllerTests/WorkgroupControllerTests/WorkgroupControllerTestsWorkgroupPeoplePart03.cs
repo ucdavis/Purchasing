@@ -403,12 +403,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Controller.DeletePeople(3, 21, Role.Codes.Purchaser, new WorkgroupPermission(), rolesToRemove);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }	
         }
         [TestMethod]

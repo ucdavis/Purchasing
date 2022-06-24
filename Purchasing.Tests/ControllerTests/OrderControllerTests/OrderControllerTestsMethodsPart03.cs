@@ -45,12 +45,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Controller.Edit(4);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Precondition failed.", ex.Message);
-                throw;
+                throw ex;
             }
         }
 

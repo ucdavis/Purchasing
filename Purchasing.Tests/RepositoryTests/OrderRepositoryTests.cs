@@ -180,12 +180,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.OrderType, Entity: Purchasing.Core.Domain.OrderType", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -234,12 +234,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.WorkgroupVendor, Entity: Purchasing.Core.Domain.WorkgroupVendor", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -338,12 +338,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.WorkgroupAddress, Entity: Purchasing.Core.Domain.WorkgroupAddress", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -392,12 +392,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.ShippingType, Entity: Purchasing.Core.Domain.ShippingType", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -1077,12 +1077,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Workgroup, Entity: Purchasing.Core.Domain.Workgroup", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -1160,12 +1160,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Organization, Entity: Purchasing.Core.Domain.Organization", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -1370,12 +1370,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Approval, Entity: Purchasing.Core.Domain.Approval", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -1764,12 +1764,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.OrderStatusCode, Entity: Purchasing.Core.Domain.OrderStatusCode", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -1847,12 +1847,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.User, Entity: Purchasing.Core.Domain.User", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -7849,12 +7849,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.User, Entity: Purchasing.Core.Domain.User", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -8293,7 +8293,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("DateCreated", "System.DateTime", new List<string>()));
             expectedFields.Add(new NameAndType("DateNeeded", "System.DateTime", new List<string>
             {               
-                 "[DataAnnotationsExtensions.DateAttribute()]",
+                 "[System.ComponentModel.DataAnnotations.DataTypeAttribute((System.ComponentModel.DataAnnotations.DataType)1)]",
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
             }));
             expectedFields.Add(new NameAndType("DateOrdered", "System.Nullable`1[System.DateTime]", new List<string>()));
@@ -8305,7 +8305,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("DeliverToEmail", "System.String", new List<string>
             {
-                 "[DataAnnotationsExtensions.EmailAttribute()]",
+                 "[System.ComponentModel.DataAnnotations.EmailAddressAttribute()]",
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));
             expectedFields.Add(new NameAndType("DeliverToPhone", "System.String", new List<string>

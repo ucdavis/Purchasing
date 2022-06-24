@@ -203,12 +203,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 Controller.Deny(dar);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -526,14 +526,14 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 Controller.TookTraining("TeSTvALue");
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Person requesting Departmental Access ID not found. ID = testvalue", ex.Message);
                 Mock.Get(DirectorySearchService).Verify(a => a.FindUser("testvalue"));
                 Mock.Get(DirectorySearchService).Verify(a => a.FindUser("TeSTvALue"), Times.Never());
-                throw;
+                throw ex;
             }
         }
 

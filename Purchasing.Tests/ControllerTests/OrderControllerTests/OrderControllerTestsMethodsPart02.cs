@@ -651,13 +651,13 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Controller.Request(new OrderViewModel{Workgroup = 2});
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("canCreateOrderInWorkgroup", ex.Message);
                 Mock.Get(SecurityService).Verify();
-                throw;
+                throw ex;
             }
         }
 

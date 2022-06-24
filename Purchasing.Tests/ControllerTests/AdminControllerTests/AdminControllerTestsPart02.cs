@@ -343,12 +343,12 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
                 Controller.RemoveAdminRole("3");
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no elements", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -499,12 +499,12 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
                 Controller.RemoveDepartmentalRole("1");
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no elements", ex.Message);
-                throw;
+                throw ex;
             }
         }
 

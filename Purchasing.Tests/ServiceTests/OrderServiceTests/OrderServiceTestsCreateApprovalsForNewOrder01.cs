@@ -33,12 +33,12 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
                 OrderService.CreateApprovalsForNewOrder(order, null, null, null, null);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("You must either supply the ID of a valid account or provide the userId for an account manager", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -190,6 +190,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals[0].MaxAmount = 200.00m;
             new FakeAutoApprovals(0, AutoAprovalRepository, autoApprovals);
 
+            Mock.Get(EventService).Setup(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()));
+            Mock.Get(EventService).Setup(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()));
             #endregion Arrange
 
             #region Act

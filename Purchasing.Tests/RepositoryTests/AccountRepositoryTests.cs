@@ -822,12 +822,12 @@ namespace Purchasing.Tests.RepositoryTests
                 AccountRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsNotNull(record);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Unexpected row count: 0; expected: 1", ex.Message);
-                throw;
+                throw ex;
             }
         }
 

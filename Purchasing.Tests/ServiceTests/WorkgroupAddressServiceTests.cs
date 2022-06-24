@@ -43,12 +43,12 @@ namespace Purchasing.Tests.ServiceTests
                 WorkgroupAddressService.CompareAddress(newAddress, existingAddress);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("New Address may not be null", ex.Message);
-                throw;
+                throw ex;
             }	
         }
 
@@ -69,12 +69,12 @@ namespace Purchasing.Tests.ServiceTests
                 WorkgroupAddressService.CompareAddress(newAddress, existingAddress);
                 #endregion Act
             }
-            catch(Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Existing Address may not be null", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -96,12 +96,12 @@ namespace Purchasing.Tests.ServiceTests
                 WorkgroupAddressService.CompareAddress(newAddress, existingAddress);
                 #endregion Act
             }
-            catch(Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Exiting Address must have an ID > 0", ex.Message);
-                throw;
+                throw ex;
             }
         }
         #endregion Exceptions

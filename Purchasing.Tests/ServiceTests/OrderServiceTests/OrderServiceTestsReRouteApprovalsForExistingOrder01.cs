@@ -85,6 +85,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             new FakeUsers(4, UserRepository);
             Mock.Get(SecurityService).Setup(a => a.GetUser("123")).Returns(CreateValidEntities.User(66));
             Mock.Get(SecurityService).Setup(a => a.GetUser("124")).Returns(CreateValidEntities.User(77));
+            Mock.Get(EventService).Setup(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()));
+            Mock.Get(EventService).Setup(a => a.OrderReRouted(order));
             #endregion Arrange
 
             #region Act
