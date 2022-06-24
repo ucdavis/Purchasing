@@ -7,7 +7,7 @@
     <UserSecretsId>8db1af8d-c21d-4a0d-a9d9-54009eb737eb</UserSecretsId>
     <Title>Purchasing.Mvc</Title>
     <Product>Purchasing.Mvc</Product>
-    <Copyright>Copyright ©  2015</Copyright>
+    <Copyright>Copyright ©  2022</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Version)' == '' ">
@@ -19,6 +19,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
+    <AssemblyVersion>2.0.0.1</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -84,7 +85,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Serilog.Enrichers.ClientInfo" Version="1.1.4" />
     <PackageReference Include="Serilog.Exceptions" Version="8.1.0" />
-		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1"/>
+		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
     <PackageReference Include="Castle.Windsor.Extensions.DependencyInjection" Version="5.1.1" />
     <PackageReference Include="AspNetCore.Security.CAS" Version="2.0.5" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />

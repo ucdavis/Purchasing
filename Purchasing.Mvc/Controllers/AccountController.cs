@@ -58,7 +58,20 @@ namespace Purchasing.Mvc.Controllers
                 var user = await _userRepository.Queryable.SingleOrDefaultAsync(x => x.Id == id);
                 if (user == null)
                 {
-                    Message = "No user found with that login ID";
+                    var identity2 = new ClaimsIdentity(new[]
+{
+                    new Claim(ClaimTypes.NameIdentifier, id),
+                    new Claim(ClaimTypes.Name, id),
+                    new Claim(ClaimTypes.GivenName, "Fake"),
+                    new Claim(ClaimTypes.Surname, "FakeLn"),
+                    new Claim(ClaimTypes.Email, "Fake@fake.com")
+                }, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    // kill old login
+                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    // create new login
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity2));
                     return RedirectToAction("Index", "Home");
                 }
 
