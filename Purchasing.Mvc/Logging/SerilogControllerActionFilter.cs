@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Serilog;
 
@@ -21,7 +22,7 @@ namespace Purchasing.Mvc.Logging
             _diagnosticContext.Set("ActionName", context.ActionDescriptor.DisplayName);
             _diagnosticContext.Set("ActionId", context.ActionDescriptor.Id);
             _diagnosticContext.Set("ValidationState", context.ModelState.IsValid);
-            
+
             var httpContext = context.HttpContext;
             var request = httpContext.Request;
 
@@ -36,18 +37,11 @@ namespace Purchasing.Mvc.Logging
                 _diagnosticContext.Set("QueryString", request.QueryString.Value);
             }
 
-            // Set User
+            // Set HttpContext properties
             _diagnosticContext.Set("User", httpContext.User.Identity.Name ?? "anonymous");
             _diagnosticContext.Set("SessionId", httpContext.Session?.Id ?? "no session");
             _diagnosticContext.Set("TraceId", httpContext.TraceIdentifier ?? "no trace");
-
-            // TODO: enable after upgrade to aspnetcore 3.x or higher
-            //// Retrieve the IEndpointFeature selected for the request
-            //var endpoint = httpContext.GetEndpoint();
-            //if (endpoint is object) // endpoint != null
-            //{
-            //  _diagnosticContext.Set("EndpointName", endpoint.DisplayName);
-            //}
+            _diagnosticContext.Set("EndpointName", httpContext.GetEndpoint()?.DisplayName ?? "no endpoint");
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
