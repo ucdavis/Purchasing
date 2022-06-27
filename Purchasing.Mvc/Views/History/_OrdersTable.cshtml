@@ -226,7 +226,7 @@
 	        }
 	        else
 	        {
-	            result.Append("<td>" + String.Format("{0:d}", item.DateCreated) + "</td>");
+	            result.Append("<td>" + "<span style=\"display:none;\">" + item.DateCreated.Ticks + "</span>" + String.Format("{0:d}", item.DateCreated) + "</td>");
 	        }
 	    }
 	
