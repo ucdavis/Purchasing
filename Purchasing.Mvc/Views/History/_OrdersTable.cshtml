@@ -286,7 +286,7 @@
 	        }
 	        else
 	        {
-	            result.Append("<td>" + String.Format("{0:d}", item.DateNeeded) + "</td>");
+	            result.Append("<td>" + "<span style=\"display:none;\">" + item.DateNeeded.Ticks + "</span>" + String.Format("{0:d}", item.DateNeeded) + "</td>");
 	        }
 	    }
 	
