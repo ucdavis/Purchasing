@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using UCDArch.Web.ModelBinder;
 
 namespace UCDArch.Core.DomainModel
 {
@@ -34,6 +36,7 @@ namespace UCDArch.Core.DomainModel
     /// http://devlicio.us/blogs/billy_mccafferty/archive/2007/04/25/using-equals-gethashcode-effectively.aspx
     /// </summary>
     [Serializable]
+    [SuppressNHibernateProxyValidation] // Exclude NHibernate proxies from AspNetCore binding validation
     public abstract class DomainObjectWithTypedId<IdT> : ValidatableObject, IDomainObjectWithTypedId<IdT>
     {
         #region IDomainObjectWithTypedId Members
