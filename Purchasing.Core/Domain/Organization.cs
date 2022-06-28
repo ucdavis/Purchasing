@@ -49,7 +49,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.TypeName);
             Map(x => x.IsActive);
             
-            References(x => x.Parent).Column("ParentId");
+            References(x => x.Parent).Column("ParentId").NotFound.Ignore();
 
             HasMany(a => a.Accounts);
             HasMany(a => a.ConditionalApprovals).Inverse().ExtraLazyLoad().Cascade.AllDeleteOrphan();
