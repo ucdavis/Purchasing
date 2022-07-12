@@ -7,10 +7,11 @@ using Dapper;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
 using Purchasing.Jobs.Common.Logging;
-using SparkPost;
 using Serilog;
 using UCDArch.Core;
 using Microsoft.Extensions.Configuration;
+using System.Net.Mail;
+using System.Net;
 
 namespace Purchasing.Jobs.NotificationsCommon
 {
@@ -19,7 +20,6 @@ namespace Purchasing.Jobs.NotificationsCommon
         public static void ProcessEmails(IDbService dbService, EmailPreferences.NotificationTypes notificationType)
         {
             var configuration = SmartServiceLocator<IConfiguration>.GetService();
-            var sparkPostApiKey = configuration["SparkPostApiKey"];
             var sendEmail = configuration["opp-send-email"];
 
             //Don't execute unless email is turned on
@@ -151,31 +151,27 @@ namespace Purchasing.Jobs.NotificationsCommon
 
                 message.Append(string.Format("<p><em>{0} </em><em><a href=\"{1}\">{2}</a>&nbsp;</em></p>", "You can change your email preferences at any time by", "http://prepurchasing.ucdavis.edu/User/Profile", "updating your profile on the PrePurchasing site"));
 
-                var emailTransmission = new Transmission
+                using var client = new SmtpClient("smtp.sparkpostmail.com", 587)
                 {
-                    Content = new Content
-                    {
-                        From =
-                            new Address
-                            {
-                                Email = "noreply@prepurchasing-notify.ucdavis.edu",
-                                Name = "UCD PrePurchasing No Reply"
-                            },
-                        Subject = pendingOrders.Count == 1
+                    Credentials = new NetworkCredential("SMTP_Injection", SmartServiceLocator<IConfiguration>.GetService()["SparkPostApiKey"]),
+                    EnableSsl = true
+                };
+
+                using var mailMessage = new MailMessage
+                {
+                    From = new MailAddress("noreply@prepurchasing-notify.ucdavis.edu", "UCD PrePurchasing No Reply"),
+                    Subject = pendingOrders.Count == 1
                             ? String.Format((string)"PrePurchasing Notification for Order #{0}",
                                 new[] { pendingOrders.Single().RequestNumber })
                             : "PrePurchasing Notifications",
-                        Html = message.ToString()
-                    }
+                    Body = message.ToString(),
+                    IsBodyHtml = true,
                 };
-                emailTransmission.Options.Transactional = true;
+                mailMessage.To.Add(new MailAddress(email));
 
-                emailTransmission.Recipients.Add(new Recipient { Address = new Address { Email = email } });
-
-                var client = new Client(SmartServiceLocator<IConfiguration>.GetService()["SparkPostApiKey"]);
                 try
                 {
-                    client.Transmissions.Send(emailTransmission).Wait();
+                    client.Send(mailMessage);
                 }
                 catch (Exception ex)
                 {

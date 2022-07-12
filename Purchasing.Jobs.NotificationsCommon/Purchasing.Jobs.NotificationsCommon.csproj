@@ -22,7 +22,6 @@
 	<ItemGroup>
 		<PackageReference Include="Sendgrid" Version="9.27.0"/>
 		<PackageReference Include="Flurl.Http" Version="3.2.2"/>
-		<PackageReference Include="SparkPost.DotNetCore" Version="1.0.0"/>
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="appsettings.json"/>
