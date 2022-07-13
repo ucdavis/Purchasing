@@ -83,6 +83,11 @@ namespace Purchasing.Mvc
             .AddCookie(options =>
                 {
                     options.LoginPath = new PathString("/LogOn");
+                    options.Events.OnRedirectToAccessDenied = context =>
+                    {
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    };
                 })
             .AddCAS(options =>
             {
@@ -136,6 +141,7 @@ namespace Purchasing.Mvc
                 {
                     switch (context.HttpContext.Response.StatusCode)
                     {
+                        case StatusCodes.Status401Unauthorized:
                         case StatusCodes.Status403Forbidden:
                             context.HttpContext.Response.Redirect("/Error/NotAuthorized");
                             break;
