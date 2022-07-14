@@ -62,6 +62,7 @@ namespace Purchasing.Mvc
                 options.ModelBinderProviders.Insert(
                     options.ModelBinderProviders.IndexOf(options.ModelBinderProviders.OfType<ComplexObjectModelBinderProvider>().First()),
                     new EntityModelBinderProvider());
+                options.ModelMetadataDetailsProviders.Add(new EmptyStringMetadataProvider());
             })
             .AddNewtonsoftJson(options =>
             {
