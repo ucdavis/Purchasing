@@ -463,7 +463,7 @@ namespace Purchasing.Mvc.Controllers
 
             Message = string.Format("Successfully added {0} people to workgroup as {1}.", successCount,
                                    workgroupPeoplePostModel.Role.Name);
-            return this.RedirectToAction(nameof(People));
+            return this.RedirectToAction(nameof(People), new { id = id, roleFilter = workgroupPeoplePostModel.Role.Id });
         }
 
 

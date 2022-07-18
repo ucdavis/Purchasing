@@ -252,6 +252,11 @@ namespace Purchasing.Mvc.Services
         /// <returns></returns>
         public int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp)
         {
+            if (string.IsNullOrWhiteSpace(bulk))
+            {
+                return successCount;
+            }
+            
             const string regexEmailPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
             const string regexKerbPattern = @"\b[A-Z0-9]{2,10}\b";
             string pattern;
