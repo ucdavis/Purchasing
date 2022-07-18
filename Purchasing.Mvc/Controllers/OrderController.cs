@@ -23,6 +23,7 @@ using UCDArch.Web.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -1203,9 +1204,10 @@ namespace Purchasing.Mvc.Controllers
 
             Check.Require(_securityService.HasWorkgroupAccess(workgroup));
 
+            var modelState = new ModelStateDictionary();
             vendor.Workgroup = workgroup;
-            vendor.TransferValidationMessagesTo(ModelState);
-            if (!ModelState.IsValid)
+            vendor.TransferValidationMessagesTo(modelState);
+            if (!modelState.IsValid)
             {
                 return Json(new {success = false});
             }
