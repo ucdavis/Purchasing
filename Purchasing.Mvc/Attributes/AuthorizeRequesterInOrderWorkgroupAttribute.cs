@@ -7,6 +7,7 @@ using CommonServiceLocator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using UCDArch.Core;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Attributes
 {
@@ -41,7 +42,7 @@ namespace Purchasing.Mvc.Attributes
 
             if (!hasRequestorPermission)
             {
-                filterContext.Result = new UnauthorizedObjectResult("You do not have access to copy this order");
+                filterContext.Result = ViewHelper.NotAuthorized("You do not have access to copy this order");
             }
         }
     }
