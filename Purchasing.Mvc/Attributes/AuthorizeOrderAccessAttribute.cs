@@ -6,6 +6,7 @@ using UCDArch.Core.PersistanceSupport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using UCDArch.Core;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Attributes
 {
@@ -41,7 +42,7 @@ namespace Purchasing.Mvc.Attributes
 
             if (!_accessLevel.HasFlag(accessLevel))
             {
-                filterContext.Result = new UnauthorizedObjectResult(Resources.Authorization_PermissionDenied);
+                filterContext.Result = ViewHelper.NotAuthorized(Resources.Authorization_PermissionDenied);
             }
         }
     }

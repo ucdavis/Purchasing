@@ -211,7 +211,7 @@
     <value>No results found</value>
   </data>
   <data name="Authorization_PermissionDenied" xml:space="preserve">
-    <value>You do not have the permissions required access this order</value>
+    <value>You do not have the permissions required to access this order</value>
   </data>
   <data name="NoAccess_Org" xml:space="preserve">
     <value>You do not have access to the requested Organization</value>

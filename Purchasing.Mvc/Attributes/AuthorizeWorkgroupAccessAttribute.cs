@@ -6,6 +6,7 @@ using UCDArch.Core.PersistanceSupport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using UCDArch.Core;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Attributes
 {
@@ -53,7 +54,7 @@ namespace Purchasing.Mvc.Attributes
                 {
                     message = "You do not have access to edit this workgroup";
                 }
-                filterContext.Result = new UnauthorizedObjectResult(message);
+                filterContext.Result = ViewHelper.NotAuthorized(message);
             }
         }
     }

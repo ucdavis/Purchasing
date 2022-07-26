@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -594,7 +595,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (!requiredAccessLevel.HasFlag(roleAndAccessLevel.OrderAccessLevel))
             {
-                return new UnauthorizedObjectResult(Resources.Authorization_PermissionDenied);
+                return ViewHelper.NotAuthorized(Resources.Authorization_PermissionDenied);
             }
             
             model.Vendor = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Vendor).Single();

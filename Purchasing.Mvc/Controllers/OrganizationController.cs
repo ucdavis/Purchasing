@@ -7,6 +7,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -52,7 +53,7 @@ namespace Purchasing.Mvc.Controllers
             var message = string.Empty;
             if (!_securityService.HasWorkgroupOrOrganizationAccess(null, org, out message))
             {
-                return new UnauthorizedObjectResult(message);
+                return ViewHelper.NotAuthorized(message);
             }
 
             //var adminOrg = _queryRepositoryFactory.AdminOrgRepository.Queryable.Where(a => a.AccessUserId == CurrentUser.Identity.Name && a.IsActive && a.OrgId == id).Select(a => a.OrgId).FirstOrDefault();

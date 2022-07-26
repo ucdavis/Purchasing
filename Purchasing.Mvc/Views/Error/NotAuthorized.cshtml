@@ -1,6 +1,9 @@
 ﻿@{
-    ViewBag.Title = "Not Authorized";
+  ViewBag.Title = "Not Authorized";
 }
 
-<h2>You are not authorized to view that.</h2>
-
+@* The default error message is not necessary if the error message banner is displayed. *@
+@if (!TempData.ContainsKey("ErrorMessage"))
+{
+  <h2>You are not authorized to view that.</h2>
+}

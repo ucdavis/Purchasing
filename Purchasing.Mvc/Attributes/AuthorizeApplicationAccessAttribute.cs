@@ -4,6 +4,7 @@ using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Attributes
 {
@@ -18,7 +19,7 @@ namespace Purchasing.Mvc.Attributes
 
             if (!roles.Any())
             {
-                filterContext.Result = new UnauthorizedObjectResult(Resources.NoAccess_Application);
+                filterContext.Result = ViewHelper.NotAuthorized(Resources.NoAccess_Application);
             }
         }
     }
