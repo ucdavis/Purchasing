@@ -42,7 +42,7 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
 
             if (!string.IsNullOrWhiteSpace(_defaultOption))
             {
-                _items.Add(new SelectListItem { Text = _defaultOption, Value = "", Selected = !_items.Any(i => i.Selected) });
+                _items.Insert(0, new SelectListItem { Text = _defaultOption, Value = "", Selected = !_items.Any(i => i.Selected) });
             }
 
             foreach (var item in _items)
