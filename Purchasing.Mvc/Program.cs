@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Purchasing.Mvc.Logging;
+using Elastic.Apm.NetCoreAll;
 
 namespace Purchasing.Mvc
 {
@@ -60,6 +61,7 @@ namespace Purchasing.Mvc
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseAllElasticApm();
     }
 }
