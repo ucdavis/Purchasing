@@ -37,7 +37,7 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
         {
             var select = new TagBuilder("select");
             select.Attributes.Add("name", _expression);
-            select.Attributes.Add("id", Regex.Replace(_expression, @"[^0-9a-zA-Z:\-.]+", "_"));
+            select.Attributes.Add("id", Regex.Replace(_expression, @"[^0-9a-zA-Z:\-]+", "_"));
             select.MergeAttributes(_htmlAttributes);
 
             if (!string.IsNullOrWhiteSpace(_defaultOption))
