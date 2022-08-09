@@ -5,6 +5,7 @@ using Serilog.Configuration;
 using Serilog.Sinks.Elasticsearch;
 using Serilog.Exceptions;
 using Microsoft.Extensions.Configuration;
+using Elastic.Apm.SerilogEnricher;
 
 namespace Purchasing.Mvc.Logging
 {
@@ -30,6 +31,7 @@ namespace Purchasing.Mvc.Logging
                 .Enrich.WithExceptionDetails()
                 .Enrich.WithProperty("Application", configuration["Stackify.AppName"])
                 .Enrich.WithProperty("AppEnvironment", configuration["Stackify.Environment"])
+                .Enrich.WithElasticApmCorrelationInfo()
                 .Enrich.FromLogContext()
                 //.Filter.ByExcluding(e => e.Exception != null && e.Exception.GetBaseException() is HttpException) //filter out those 404s and headers exceptions
                 .CreateLogger();

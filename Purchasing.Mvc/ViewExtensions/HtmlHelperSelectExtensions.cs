@@ -37,12 +37,12 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
         {
             var select = new TagBuilder("select");
             select.Attributes.Add("name", _expression);
-            select.Attributes.Add("id", Regex.Replace(_expression, @"[^0-9a-zA-Z:\-.]+", "_"));
+            select.Attributes.Add("id", Regex.Replace(_expression, @"[^0-9a-zA-Z:\-]+", "_"));
             select.MergeAttributes(_htmlAttributes);
 
             if (!string.IsNullOrWhiteSpace(_defaultOption))
             {
-                _items.Add(new SelectListItem { Text = _defaultOption, Value = "", Selected = !_items.Any(i => i.Selected) });
+                _items.Insert(0, new SelectListItem { Text = _defaultOption, Value = "", Selected = !_items.Any(i => i.Selected) });
             }
 
             foreach (var item in _items)
