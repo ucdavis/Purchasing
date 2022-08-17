@@ -90,7 +90,7 @@
 		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
     <PackageReference Include="Castle.Windsor.Extensions.DependencyInjection" Version="5.1.1" />
     <PackageReference Include="AspNetCore.Security.CAS" Version="2.0.5" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.11.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
   </ItemGroup>
 
   <Target Name="BundleMinify" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' ">
