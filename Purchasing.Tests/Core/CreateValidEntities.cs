@@ -3,6 +3,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 namespace Purchasing.Tests.Core
 {
@@ -27,7 +28,7 @@ namespace Purchasing.Tests.Core
         public static Account Account(int? counter, bool loadAll = true)
         {
             var rtValue = new Account();
-            rtValue.SetIdTo(counter.Extra());
+            rtValue.Id = counter.Extra();
             if (loadAll)
             {
                 rtValue.Name = "Name" + counter.Extra();
@@ -56,7 +57,7 @@ namespace Purchasing.Tests.Core
         public static Commodity Commodity(int? counter, bool loadAll = true)
         {
             var rtValue = new Commodity();
-            rtValue.SetIdTo(counter.Extra());
+            rtValue.Id = counter.Extra();
             if (loadAll)
             {
                 rtValue.Name = "Name" + counter.Extra();
@@ -92,7 +93,7 @@ namespace Purchasing.Tests.Core
         public static User User(int? i)
         {
             var rtResult = new User(i.HasValue? i.Value.ToString():"99");
-            rtResult.SetIdTo(i.ToString());
+            rtResult.Id = i.ToString();
             rtResult.IsActive = true;
             rtResult.LastName = "LastName" + i;
             rtResult.FirstName = "FirstName" + i;
@@ -178,7 +179,7 @@ namespace Purchasing.Tests.Core
             }
             var rtValue = new State();
             rtValue.Name = "Name" + counter.Extra();
-            rtValue.SetIdTo(locCounter);
+            rtValue.Id = locCounter;
 
             return rtValue;
         }
@@ -455,7 +456,7 @@ namespace Purchasing.Tests.Core
             {
                 locCounter = counter.Extra();
             }
-            rtValue.SetIdTo(locCounter);
+            rtValue.Id = locCounter;
             rtValue.BuildingCode = "BuildingCode" + counter.Extra();
             rtValue.BuildingName = "BuildingName" + counter.Extra();
             rtValue.CampusCode = "CampusCode" + counter.Extra();

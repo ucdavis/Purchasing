@@ -9,9 +9,10 @@ using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
 using Purchasing.WS;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {
@@ -46,34 +47,34 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 
         public OrderServiceTests()
         {
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            FinancialSystemService = MockRepository.GenerateStub<IFinancialSystemService>();
-            IndexService = MockRepository.GenerateStub<IIndexService>();
-            EventService = MockRepository.GenerateStub<IEventService>();
-            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
-            SecurityService = MockRepository.GenerateStub<ISecurityService>();
-            AccessQueryService = MockRepository.GenerateStub<IAccessQueryService>();
-            WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
-            ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
-            OrderTrackingRepository = MockRepository.GenerateStub<IRepository<OrderTracking>>();
-            OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-            OrderRepository = MockRepository.GenerateStub<IRepository<Order>>();
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            FinancialSystemService = Mock.Of<IFinancialSystemService>();
+            IndexService = Mock.Of<IIndexService>();
+            EventService = Mock.Of<IEventService>();
+            UserIdentity = Mock.Of<IUserIdentity>();
+            SecurityService = Mock.Of<ISecurityService>();
+            AccessQueryService = Mock.Of<IAccessQueryService>();
+            WorkgroupPermissionRepository = Mock.Of<IRepository<WorkgroupPermission>>();
+            ApprovalRepository = Mock.Of<IRepository<Approval>>();
+            OrderTrackingRepository = Mock.Of<IRepository<OrderTracking>>();
+            OrganizationRepository = Mock.Of<IRepositoryWithTypedId<Organization, string>>();
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            OrderRepository = Mock.Of<IRepository<Order>>();
 
-            WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
-            AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
-            OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
-            AutoAprovalRepository = MockRepository.GenerateStub<IRepository<AutoApproval>>();
-            ConditionalApprovalRepository = MockRepository.GenerateStub<IRepository<ConditionalApproval>>();
+            WorkgroupAccountRepository = Mock.Of<IRepository<WorkgroupAccount>>();
+            AccountRepository = Mock.Of<IRepositoryWithTypedId<Account, string>>();
+            OrderStatusCodeRepository = Mock.Of<IRepositoryWithTypedId<OrderStatusCode, string>>();
+            AutoAprovalRepository = Mock.Of<IRepository<AutoApproval>>();
+            ConditionalApprovalRepository = Mock.Of<IRepository<ConditionalApproval>>();
 
 
-            RepositoryFactory.WorkgroupAccountRepository = WorkgroupAccountRepository;
-            RepositoryFactory.AccountRepository = AccountRepository;
-            RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
-            RepositoryFactory.AutoApprovalRepository = AutoAprovalRepository;
-            RepositoryFactory.UserRepository = UserRepository;
-            RepositoryFactory.ConditionalApprovalRepository = ConditionalApprovalRepository;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupAccountRepository).Returns(WorkgroupAccountRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(AccountRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderStatusCodeRepository).Returns(OrderStatusCodeRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AutoApprovalRepository).Returns(AutoAprovalRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.UserRepository).Returns(UserRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ConditionalApprovalRepository).Returns(ConditionalApprovalRepository);
 
             SetupValidOrderStatusCodes();
 
@@ -100,7 +101,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             var statusCodes = new List<OrderStatusCode>();
             var statusCode = new OrderStatusCode();
-            statusCode.SetIdTo(OrderStatusCode.Codes.AccountManager);
+            statusCode.Id = OrderStatusCode.Codes.AccountManager;
             statusCode.Name = "Account Manager";
             statusCode.Level = 3;
             statusCode.IsComplete = false;
@@ -109,7 +110,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             statusCodes.Add(statusCode);
 
             statusCode = new OrderStatusCode();
-            statusCode.SetIdTo(OrderStatusCode.Codes.Approver);
+            statusCode.Id = OrderStatusCode.Codes.Approver;
             statusCode.Name = "Approver";
             statusCode.Level = 2;
             statusCode.IsComplete = false;
@@ -118,7 +119,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             statusCodes.Add(statusCode);
 
             statusCode = new OrderStatusCode();
-            statusCode.SetIdTo(OrderStatusCode.Codes.ConditionalApprover);
+            statusCode.Id = OrderStatusCode.Codes.ConditionalApprover;
             statusCode.Name = "Conditional Approval";
             statusCode.Level = 2;
             statusCode.IsComplete = false;
@@ -127,7 +128,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             statusCodes.Add(statusCode);
 
             statusCode = new OrderStatusCode();
-            statusCode.SetIdTo(OrderStatusCode.Codes.CompleteNotUploadedKfs);
+            statusCode.Id = OrderStatusCode.Codes.CompleteNotUploadedKfs;
             statusCode.Name = "Complete-Not Uploaded KFS";
             statusCode.Level = 5;
             statusCode.IsComplete = true;
@@ -136,7 +137,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             statusCodes.Add(statusCode);
 
             statusCode = new OrderStatusCode();
-            statusCode.SetIdTo(OrderStatusCode.Codes.Complete);
+            statusCode.Id = OrderStatusCode.Codes.Complete;
             statusCode.Name = "Complete";
             statusCode.Level = 5;
             statusCode.IsComplete = true;
@@ -145,7 +146,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             statusCodes.Add(statusCode);
 
             statusCode = new OrderStatusCode();
-            statusCode.SetIdTo(OrderStatusCode.Codes.Cancelled);
+            statusCode.Id = OrderStatusCode.Codes.Cancelled;
             statusCode.Name = "Cancelled";
             statusCode.Level = 5;
             statusCode.IsComplete = true;
@@ -154,7 +155,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             statusCodes.Add(statusCode);
 
             statusCode = new OrderStatusCode();
-            statusCode.SetIdTo(OrderStatusCode.Codes.Denied);
+            statusCode.Id = OrderStatusCode.Codes.Denied;
             statusCode.Name = "Denied";
             statusCode.Level = 5;
             statusCode.IsComplete = true;
@@ -163,7 +164,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             statusCodes.Add(statusCode);
 
             statusCode = new OrderStatusCode();
-            statusCode.SetIdTo(OrderStatusCode.Codes.Purchaser);
+            statusCode.Id = OrderStatusCode.Codes.Purchaser;
             statusCode.Name = "Purchaser";
             statusCode.Level = 4;
             statusCode.IsComplete = false;
@@ -172,7 +173,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             statusCodes.Add(statusCode);
            
             statusCode = new OrderStatusCode();
-            statusCode.SetIdTo(OrderStatusCode.Codes.Requester);
+            statusCode.Id = OrderStatusCode.Codes.Requester;
             statusCode.Name = "Requester";
             statusCode.Level = 1;
             statusCode.IsComplete = false;

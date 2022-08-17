@@ -1,6 +1,7 @@
-﻿@using System.Web.Configuration
-@using Purchasing.Core.Helpers
+﻿@using Purchasing.Core.Helpers
 @using Purchasing.Mvc.Services
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
 @{
     Layout = null;
 
@@ -17,7 +18,7 @@
 
 	<link rel="shortcut icon" href="@Url.Content("~/favicon.ico")">
     
-    @Styles.Render("~/Css/main")
+    @await Html.PartialAsync("_CssBundle", "~/Css/main")
     
     <style type="text/css">
 		#branding
@@ -72,14 +73,14 @@
 		
 	</style>
 
-    @Scripts.Render("~/bundles/jqueryui")
-    @Scripts.Render("~/bundles/head")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryui")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/head")
 
 </head>
 <body>
     <div class="wrapper">
 	
-        @Html.Partial("_ServiceMessages")
+        @await Component.InvokeAsync("ServiceMessages")
 	
         <header id="branding">
 			
@@ -133,7 +134,7 @@
 				
                 <div id="browser-warning" style="display:none;">
                     You are currently using a browser that is not supported.  
-                    Please check <a href="http://ucdavis.github.com/Purchasing/system.html">our system requirements page</a> and return to PrePurchasing using one of our recommended browsers.
+                    Please check <a href="https://ucdavis.github.io/Purchasing/system.html">our system requirements page</a> and return to PrePurchasing using one of our recommended browsers.
                 </div>
 
                 @if(!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string)){ 
@@ -204,7 +205,7 @@
                 
                 <div id="browsers">
                     
-                    <p>For an updated list of system requirements please view this website <a href="http://ucdavis.github.com/Purchasing/system.html">here</a>.</p>
+                    <p>For an updated list of system requirements please view this website <a href="https://ucdavis.github.io/Purchasing/system.html">here</a>.</p>
 
                 </div>
 
@@ -268,7 +269,7 @@
     <script type="text/javascript">
     (function (w) {
         var d = w['Configuration'] || (w['Configuration'] = {});
-        d.AnalyticsKey = '@WebConfigurationManager.AppSettings["AnalyticsKey"]';
+        d.AnalyticsKey = '@(configuration["AnalyticsKey"])';
         d.ActiveIssuesCountUrl = "/Help/GetActiveIssuesCount";
         d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
         d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
@@ -278,7 +279,7 @@
     }(window));
     </script>
     
-    @Scripts.Render("~/bundles/common")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/common")
 
     <script>
 

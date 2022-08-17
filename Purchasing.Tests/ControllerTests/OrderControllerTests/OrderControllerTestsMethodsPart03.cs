@@ -9,21 +9,19 @@ using Purchasing.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
-using Rhino.Mocks.Constraints;
-using Rhino.Mocks.Interfaces;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using UCDArch.Web.Attributes;
 using Purchasing.WS;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 {
@@ -47,12 +45,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 Controller.Edit(4);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Precondition failed.", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -61,7 +59,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestEditGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -105,7 +103,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestEditGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);
@@ -159,7 +157,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public void TestEditGetReturnsView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupRoles();
             new FakeUsers(3, UserRepository);
             new FakeWorkgroups(3, WorkgroupRepository);

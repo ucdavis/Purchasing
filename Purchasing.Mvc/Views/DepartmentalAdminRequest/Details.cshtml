@@ -1,4 +1,5 @@
-﻿@using System.Configuration
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
 @model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
 
 @{
@@ -7,11 +8,11 @@
 }
 
 @section AdditionalStyles{
-    @Styles.Render("~/Css/multiselector")
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")
 }
 
 @section AdditionalScripts{
-    @Scripts.Render("~/bundles/multiselector")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/multiselector")
     
  
     <script type="text/javascript">
@@ -39,7 +40,7 @@
     @Html.HiddenFor(x => x.DepartmentalAdminRequest.LastName)
     @Html.HiddenFor(x => x.DepartmentalAdminRequest.Email)
 
-    @Html.Partial("_daRequest")
+    @await Html.PartialAsync("_daRequest")
 
 
 <section class="display-form">
@@ -62,7 +63,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], email.Value);
+                    var url = string.Format("{0}{1}", configuration["PersonLookupUrl"], email.Value);
                                 var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>
@@ -99,7 +100,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], email.Value);
+                    var url = string.Format("{0}{1}", configuration["PersonLookupUrl"], email.Value);
                                 var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>
@@ -136,7 +137,7 @@
                         <div class="display-details">
                                      
                             @{
-                    var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], email.Value);
+                    var url = string.Format("{0}{1}", configuration["PersonLookupUrl"], email.Value);
                                 var emailString = string.Format("mailto:{0}", email.Value);
                             }
                             <a class="button" href="@url" target="_blank">Lookup</a>

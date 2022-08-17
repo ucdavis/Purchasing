@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using Purchasing.Mvc;
+using Microsoft.AspNetCore.Http;
+using UCDArch.Core;
 
 namespace Purchasing.Mvc.Services
 {
@@ -389,13 +392,13 @@ namespace Purchasing.Mvc.Services
         /// <returns></returns>
         public static List<string> UserRoles(string userId)
         {
-            var repositoryFactory = ServiceLocator.Current.GetInstance<IRepositoryFactory>();
+            var repositoryFactory = SmartServiceLocator<IRepositoryFactory>.GetService();
 
-            var context = HttpContext.Current;
-
+            var context = SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext;
+            
             // cached value exists?
             var cacheId = string.Format(Resources.Role_CacheId, userId);
-            var cRoles = (List<string>)context.Session[cacheId];
+            var cRoles = context.Session.GetObject<List<string>>(cacheId);
             if (cRoles != null)
             {
                 return cRoles;
@@ -439,7 +442,7 @@ namespace Purchasing.Mvc.Services
 
             // save the roles into the cache
             // var expiration = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day);
-            context.Session.Add(cacheId, roles); //HEY SCOTT!!! Any issues with this when running on both web and cloud service? !!!
+            context.Session.SetObject(cacheId, roles); //HEY SCOTT!!! Any issues with this when running on both web and cloud service? !!!
 
             return roles;
         }

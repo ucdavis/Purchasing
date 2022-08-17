@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Nest;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
@@ -13,11 +14,13 @@ namespace Purchasing.Core.Services
         private readonly IIndexService _indexService;
         private ElasticClient _client;
         private const int MaxSeachResults = 1000;
+        private readonly IMapper _mapper;
 
-        public ElasticSearchService(IIndexService indexService)
+        public ElasticSearchService(IIndexService indexService, IMapper mapper)
         {
             _indexService = indexService;
             _client = indexService.GetIndexClient();
+            _mapper = mapper;
         }
 
         public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds)
@@ -39,7 +42,7 @@ namespace Purchasing.Core.Services
                         .Sort(sort => sort.Descending(d => d.LastActionDate))
                         .Size(MaxSeachResults));
 
-            return results.Hits.Select(h => AutoMapper.Mapper.Map<SearchResults.OrderResult>(h.Source)).ToList();
+            return results.Hits.Select(h => _mapper.Map<SearchResults.OrderResult>(h.Source)).ToList();
         }
 
         public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds)

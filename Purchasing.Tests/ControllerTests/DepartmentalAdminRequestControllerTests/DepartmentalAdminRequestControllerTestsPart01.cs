@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTests
 {
@@ -61,8 +62,8 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             try
             {
                 #region Arrange
-                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
-                DirectorySearchService.Expect(a => a.FindUser("Me")).Return(null);
+                Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
+                Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns<DirectoryUser>(null);
                 thisFar = true;
                 #endregion Arrange
 
@@ -70,12 +71,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 Controller.Create();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Person requesting Departmental Access ID not found. ID = Me", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -84,7 +85,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreateGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",
@@ -93,7 +94,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                EmailAddress = "me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            DirectorySearchService.Expect(a => a.FindUser("Me")).Return(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
             #endregion Arrange
 
             #region Act
@@ -119,7 +120,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreateGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",
@@ -128,11 +129,11 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                EmailAddress = "me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            DirectorySearchService.Expect(a => a.FindUser("Me")).Return(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
 
             var daRequests = new List<DepartmentalAdminRequest>();
             daRequests.Add(CreateValidEntities.DepartmentalAdminRequest(1));
-            daRequests[0].SetIdTo("Me");
+            daRequests[0].Id = "Me";
             daRequests[0].Organizations = "1,2";
             new FakeDepartmentalAdminRequests(0, DepartmentalAdminRequestRepository, daRequests, true);
             new FakeOrganizations(2, OrganizationRepository);
@@ -176,12 +177,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 Controller.Create(null, new List<string> {"1"});
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Precondition failed.", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -195,8 +196,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Act
             Controller.Create(new DepartmentalAdminRequestViewModel(), null)
-                .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Create());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -213,8 +213,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Act
             Controller.Create(new DepartmentalAdminRequestViewModel(), new List<string>())
-                .AssertActionRedirect()
-                .ToAction<DepartmentalAdminRequestController>(a => a.Create());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -230,8 +229,8 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             try
             {
                 #region Arrange
-                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
-                DirectorySearchService.Expect(a => a.FindUser("Me")).Return(null);
+                Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
+                Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns<DirectoryUser>(null);
                 thisFar = true;
                 #endregion Arrange
 
@@ -239,12 +238,12 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                 Controller.Create(new DepartmentalAdminRequestViewModel(), new List<string> {"1", "2"});
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Person requesting Departmental Access ID not found. ID = Me", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -253,7 +252,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreatePostRetursViewWhenInvalid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",
@@ -263,11 +262,11 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                //"me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            DirectorySearchService.Expect(a => a.FindUser("Me")).Return(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
             var departmentalAdminRequestViewModel = new DepartmentalAdminRequestViewModel();
             departmentalAdminRequestViewModel.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(1);
-            departmentalAdminRequestViewModel.DepartmentalAdminRequest.SetIdTo("Me");
+            departmentalAdminRequestViewModel.DepartmentalAdminRequest.Id = "Me";
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.PhoneNumber = "333 321-1234";
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.DepartmentSize = 1;
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.SharedOrCluster = true;
@@ -299,7 +298,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreatePostRetursViewWhenInvalid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "1");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",
@@ -309,14 +308,14 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                //"me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            DirectorySearchService.Expect(a => a.FindUser("1")).Return(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("1")).Returns(ldap);
             var dars = new List<DepartmentalAdminRequest>();
             dars.Add(CreateValidEntities.DepartmentalAdminRequest(1));
             dars[0].Organizations = "This Will Be Replaced";
             new FakeDepartmentalAdminRequests(0, DepartmentalAdminRequestRepository, dars, false);
             var departmentalAdminRequestViewModel = new DepartmentalAdminRequestViewModel();
             departmentalAdminRequestViewModel.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(1);
-            departmentalAdminRequestViewModel.DepartmentalAdminRequest.SetIdTo("Me");
+            departmentalAdminRequestViewModel.DepartmentalAdminRequest.Id = "Me";
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.PhoneNumber = "333 321-1234";
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.DepartmentSize = 1;
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.SharedOrCluster = true;
@@ -341,7 +340,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             Assert.AreEqual("333 321-1234", results.DepartmentalAdminRequest.PhoneNumber);
             Assert.AreEqual(true, results.DepartmentalAdminRequest.SharedOrCluster);
             Assert.AreEqual(1, results.DepartmentalAdminRequest.DepartmentSize);
-            DepartmentalAdminRequestRepository.AssertWasCalled(a => a.GetNullableById("1"));
+            Mock.Get(DepartmentalAdminRequestRepository).Verify(a => a.GetNullableById("1"));
             #endregion Assert
         }
 
@@ -350,7 +349,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         public void TestCreatePostRedirectsWhenValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             var ldap = new DirectoryUser
                            {
                                LoginId = "Me",
@@ -359,30 +358,29 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
                                EmailAddress = "me@testy.com",
                                PhoneNumber = "999 999-9999"
                            };
-            DirectorySearchService.Expect(a => a.FindUser("Me")).Return(ldap);
+            Mock.Get(DirectorySearchService).Setup(a => a.FindUser("Me")).Returns(ldap);
             new FakeDepartmentalAdminRequests(3, DepartmentalAdminRequestRepository);
             var departmentalAdminRequestViewModel = new DepartmentalAdminRequestViewModel();
             departmentalAdminRequestViewModel.DepartmentalAdminRequest = CreateValidEntities.DepartmentalAdminRequest(1);
-            departmentalAdminRequestViewModel.DepartmentalAdminRequest.SetIdTo("Me");
+            departmentalAdminRequestViewModel.DepartmentalAdminRequest.Id = "Me";
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.PhoneNumber = "333 321-1234";
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.DepartmentSize = 1;
             departmentalAdminRequestViewModel.DepartmentalAdminRequest.SharedOrCluster = true;
+            DepartmentalAdminRequest args = default;
+            Mock.Get(DepartmentalAdminRequestRepository).Setup(a => a.EnsurePersistent(It.IsAny<DepartmentalAdminRequest>()))
+                .Callback<DepartmentalAdminRequest>((x) => args = x);
             #endregion Arrange
 
             #region Act
             Controller.Create(departmentalAdminRequestViewModel, new List<string> {"1", "3"})
-                .AssertActionRedirect()
-                .ToAction<HomeController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.AreEqual("Request created.", Controller.Message);
-            DepartmentalAdminRequestRepository.AssertWasCalled(
-                a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything));
-            var args =
-                (DepartmentalAdminRequest)
-                DepartmentalAdminRequestRepository.GetArgumentsForCallsMadeOn(
-                    a => a.EnsurePersistent(Arg<DepartmentalAdminRequest>.Is.Anything))[0][0];
+            Mock.Get(DepartmentalAdminRequestRepository).Verify(
+                a => a.EnsurePersistent(It.IsAny<DepartmentalAdminRequest>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("me", args.Id);
             Assert.AreEqual("FirstName", args.FirstName);

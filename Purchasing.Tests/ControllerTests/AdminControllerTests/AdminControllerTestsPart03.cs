@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Security;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc;
@@ -11,14 +8,16 @@ using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -94,7 +93,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         {
             #region Arrange
             new FakeUsers(3, UserRepository);
-            SearchService.Expect(a => a.FindUser("test")).Return(null);
+            Mock.Get(SearchService).Setup(a => a.FindUser("test")).Returns<DirectoryUser>(null);
             #endregion Arrange
 
             #region Act
@@ -103,7 +102,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Assert
             Assert.IsNull(result);
-            SearchService.AssertWasCalled(a => a.FindUser("test"));
+            Mock.Get(SearchService).Verify(a => a.FindUser("test"));
             #endregion Assert		
         }
 
@@ -117,7 +116,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             user.FirstName = "FN";
             user.LastName = "LN";
             new FakeUsers(3, UserRepository);
-            SearchService.Expect(a => a.FindUser("test")).Return(user);
+            Mock.Get(SearchService).Setup(a => a.FindUser("test")).Returns(user);
             #endregion Arrange
 
             #region Act
@@ -128,7 +127,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("[{\"id\":\"test\",\"FirstName\":\"FN\",\"LastName\":\"LN\",\"Email\":\"test@testy.com\",\"IsActive\":true}]", result.JsonResultString);
-            SearchService.AssertWasCalled(a => a.FindUser("test"));
+            Mock.Get(SearchService).Verify(a => a.FindUser("test"));
             #endregion Assert
         }
         #endregion FindUser Tests 

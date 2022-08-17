@@ -1,10 +1,10 @@
 ﻿using Ietws;
-using Microsoft.Azure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Mvc.Services
 {
@@ -12,9 +12,9 @@ namespace Purchasing.Mvc.Services
     {
         private readonly IetClient ietClient;
 
-        public IetWsDirectorySearchService()
+        public IetWsDirectorySearchService(IConfiguration configuration)
         {
-            ietClient = new IetClient(CloudConfigurationManager.GetSetting("IetWsKey"));
+            ietClient = new IetClient(configuration["IetWsKey"]);
 
         }
 

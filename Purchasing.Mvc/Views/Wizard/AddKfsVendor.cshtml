@@ -11,7 +11,7 @@
 }
 
 
-    @Html.Partial("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
+    @await Html.PartialAsync("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
     
     @{
         var helpText = "To add a existing KFS Vendor to this workgroup, type part of the vendor name in the Kfs vendor field. After at least 3 characters are entered a list of matches will appear. Select one of these.</br></br>" +
@@ -26,7 +26,7 @@
 	@Html.ValidationSummary(true)
     @Html.Hidden("newVendor", false)
     @Html.Hidden("WorkgroupVendor.Workgroup", Model.WorkgroupVendor.Workgroup.Id)
-     @Html.Partial("_Navigation")
+     @await Html.PartialAsync("_Navigation")
     <section class="ui-corner-all">
 	    <header class="ui-corner-top ui-widget-header">Kfs Vendor <a href="#" id="help-kfsvendor-page" class="ui-icon ui-icon-help showTip" title="@helpText" ></a></header>
         
@@ -39,7 +39,7 @@
 				<li>
 				    <div class="editor-label required">@Html.LabelFor(a => a.WorkgroupVendor.VendorId)</div>
 				    <div class="editor-field required">
-                        @*@this.Select("WorkgroupVendor.VendorId").Options(Model.Vendors, x => x.Id, x => x.Name).FirstOption("--Select Vendor--").Selected(Model.WorkgroupVendor.VendorId)*@
+                        @*@Html.Select("WorkgroupVendor.VendorId", o => o.Options(Model.Vendors, x => x.Id, x => x.Name).FirstOption("--Select Vendor--").Selected(Model.WorkgroupVendor.VendorId))*@
 
                         <input type="text" id="VendorSearch" class="wide500" />
                         @Html.Hidden("WorkgroupVendor.VendorId")<span>*</span> 
@@ -52,7 +52,7 @@
                 <li>
                     <div class="editor-label required">@Html.LabelFor(a => a.WorkgroupVendor.VendorAddressTypeCode)</div>
                     <div class="editor-field required wide500">
-                        @this.Select("WorkgroupVendor.VendorAddressTypeCode").FirstOption("--Select Address--").Options(Model.VendorAddresses).Selected(Model.WorkgroupVendor.VendorAddressTypeCode).Disabled(true)<span>*</span> 
+                        @Html.Select("WorkgroupVendor.VendorAddressTypeCode", o => o.FirstOption("--Select Address--").Options(Model.VendorAddresses).Selected(Model.WorkgroupVendor.VendorAddressTypeCode).Disabled(true))<span>*</span> 
                         @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorAddressTypeCode)
                     </div>
                 </li>
@@ -64,7 +64,7 @@
 
     </section>
        
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
 }
 
 <script type="text/javascript">

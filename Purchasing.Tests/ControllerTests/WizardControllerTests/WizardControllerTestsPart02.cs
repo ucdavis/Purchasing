@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
 using UCDArch.Core.Utils;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing.Fakes;
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -22,7 +24,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestAddSubOrganizationsGetRedirectsToCreateWorkgroupIfIdIsZero()
         {
             #region Arrange
-            
+
             #endregion Arrange
 
             #region Act
@@ -30,8 +32,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Assert
             Controller.AddSubOrganizations(0)
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.CreateWorkgroup());
+                .AssertActionRedirect();
             #endregion Assert		
         }
 
@@ -39,7 +40,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestAddSubOrganizationsGetReturnsView()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -70,22 +71,24 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestAddSubOrganizationsPostRedirectsToSubOrganizationsWhenNoOrgsAdded1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
+            Workgroup workgroupArgs = default;
+            Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => workgroupArgs = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.AddSubOrganizations(3, null)
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.SubOrganizations(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var workgroupArgs = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
+ 
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(2, workgroupArgs.Organizations.Count());
             Assert.AreEqual("Name1", workgroupArgs.Organizations[0].Name);
@@ -99,15 +102,17 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestAddSubOrganizationsPostRedirectsToSubOrganizationsWhenNoOrgsAdded2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             Assert.AreEqual(2, WorkgroupRepository.Queryable.Single(a => a.Id == 1).Organizations.Count()); //Organizations does not contain primary org
+            Workgroup workgroupArgs = default;
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => workgroupArgs = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.AddSubOrganizations(3, new string[0])
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.SubOrganizations(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -115,8 +120,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var workgroupArgs = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
+
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(2, workgroupArgs.Organizations.Count());
             Assert.AreEqual("Name1", workgroupArgs.Organizations[0].Name);
@@ -130,14 +135,16 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestAddSubOrganizationsPostRedirectsToSubOrganizationsWhenNoNewOrgsAdded3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
+            Workgroup workgroupArgs = default;
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => workgroupArgs = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.AddSubOrganizations(3, new[] { "1", "3" })
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.SubOrganizations(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -145,8 +152,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var workgroupArgs = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
+
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(2, workgroupArgs.Organizations.Count());
             Assert.AreEqual("Name1", workgroupArgs.Organizations[0].Name);
@@ -161,16 +168,18 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestAddSubOrganizationsPostRedirectsToSubOrganizationsWhenNewOrgsAdded()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
          
             Assert.AreEqual(2, WorkgroupRepository.Queryable.Single(a => a.Id == 1).Organizations.Count()); //Organizations does not contain primary org
+            Workgroup workgroupArgs = default;
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => workgroupArgs = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.AddSubOrganizations(3, new[] { "1", "2" })
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.SubOrganizations(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -179,8 +188,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
 
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var workgroupArgs = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
+
             Assert.IsNotNull(workgroupArgs);
             Assert.AreEqual(3, workgroupArgs.Organizations.Count());
             Assert.AreEqual("Name1", workgroupArgs.Organizations[0].Name);
@@ -199,7 +208,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestSubOrganizationsReturnsView()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             #endregion Arrange
 

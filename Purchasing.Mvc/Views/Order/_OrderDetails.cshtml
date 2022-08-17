@@ -56,7 +56,7 @@
                     <h2>Select an approver &amp; account manager</h2>
                     <div class="editor-label">Select An Approver:</div>
                     <div class="editor-field">
-                        @this.Select("approvers").FirstOption("--Select An Approver (Optional)--").Options(Model.Approvers, x => x.Id, x => x.FullNameAndId)
+                        @Html.Select("approvers", o => o.FirstOption("--Select An Approver (Optional)--").Options(Model.Approvers, x => x.Id, x => x.FullNameAndId))
                     </div>
                     <div class="editor-label">
                         Select An Account Manager:

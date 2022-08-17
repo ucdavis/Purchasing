@@ -350,13 +350,13 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRequestSaveRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.IsTrue(ex.Message.Contains("Entity: Purchasing.Core.Domain.User"));
                 Assert.IsTrue(ex.Message.Contains("Type: Purchasing.Core.Domain.User"));
-                throw;
+                throw ex;
             }
         }
 
@@ -435,13 +435,13 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRequestSaveRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.IsTrue(ex.Message.Contains("Entity: Purchasing.Core.Domain.User"));
                 Assert.IsTrue(ex.Message.Contains("Type: Purchasing.Core.Domain.User"));
-                throw;
+                throw ex;
             }
         }
 
@@ -539,13 +539,13 @@ namespace Purchasing.Tests.RepositoryTests
                 OrderRequestSaveRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.IsTrue(ex.Message.Contains("Entity: Purchasing.Core.Domain.Workgroup"));
                 Assert.IsTrue(ex.Message.Contains("Type: Purchasing.Core.Domain.Workgroup"));
-                throw;
+                throw ex;
             }
         }
 

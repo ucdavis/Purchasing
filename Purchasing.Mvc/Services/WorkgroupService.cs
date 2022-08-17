@@ -8,10 +8,11 @@ using Purchasing.Core.Helpers;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Utility;
-using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
+using UCDArch.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace Purchasing.Mvc.Services
 {
@@ -50,6 +51,7 @@ namespace Purchasing.Mvc.Services
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IUserIdentity _userIdentity;
+        private readonly IMapper _mapper;
         
 
         public WorkgroupService(IRepositoryWithTypedId<Vendor, string> vendorRepository, 
@@ -59,7 +61,8 @@ namespace Purchasing.Mvc.Services
             IRepository<WorkgroupPermission> workgroupPermissionRepository,
             IRepository<Workgroup> workgroupRepository,
             IRepositoryWithTypedId<Organization, string> organizationRepository,
-            IDirectorySearchService searchService, IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity)
+            IDirectorySearchService searchService, IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity,
+            IMapper mapper)
         {
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
@@ -72,6 +75,7 @@ namespace Purchasing.Mvc.Services
             _repositoryFactory = repositoryFactory;
             _queryRepositoryFactory = queryRepositoryFactory;
             _userIdentity = userIdentity;
+            _mapper = mapper;
         }
 
         public void UpdateDefaultAccountApprover(Workgroup workgroup, bool isDefault, string selectedApprover, string roleId)
@@ -114,7 +118,7 @@ namespace Purchasing.Mvc.Services
         /// <param name="destination">Note, this is a ref so tests work</param>
         public void TransferValues(WorkgroupVendor source, ref WorkgroupVendor destination)
         {
-            Mapper.Map(source, destination);
+            _mapper.Map(source, destination);
 
             // existing vendor, set the values
             if (!string.IsNullOrWhiteSpace(source.VendorId) && !string.IsNullOrWhiteSpace(source.VendorAddressTypeCode))
@@ -248,6 +252,11 @@ namespace Purchasing.Mvc.Services
         /// <returns></returns>
         public int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp)
         {
+            if (string.IsNullOrWhiteSpace(bulk))
+            {
+                return successCount;
+            }
+            
             const string regexEmailPattern = @"\b[A-Z0-9._-]+@[A-Z0-9][A-Z0-9.-]{0,61}[A-Z0-9]\.[A-Z.]{2,6}\b";
             const string regexKerbPattern = @"\b[A-Z0-9]{2,10}\b";
             string pattern;
@@ -282,7 +291,7 @@ namespace Purchasing.Mvc.Services
         {
             var workgroupToCreate = new Workgroup();
 
-            Mapper.Map(workgroup, workgroupToCreate);
+            _mapper.Map(workgroup, workgroupToCreate);
             workgroupToCreate.PrimaryOrganization = workgroup.PrimaryOrganization;
 
             if(selectedOrganizations != null)
@@ -529,7 +538,7 @@ namespace Purchasing.Mvc.Services
         public void RemoveFromCache(WorkgroupPermission workgroupPermissionToDelete)
         {
             //System.Web.HttpContext.Current.Cache.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
-            System.Web.HttpContext.Current.Session.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
+            SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.Session.Remove(string.Format(Resources.Role_CacheId, workgroupPermissionToDelete.User.Id));
         }
 
 

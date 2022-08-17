@@ -27,13 +27,13 @@
                    "If both of the conditional approvers are away, the order cannot be approved until one of them returns";
 }
 
-@Html.Partial("_StatusBar", Model.Workgroup.Id)
+@await Html.PartialAsync("_StatusBar", Model.Workgroup.Id)
 
 @using(Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
 
     <section class="ui-corner-all">
         @* Legend is required if you have more than one widget/unit to help the user understand what is being asked of them.
@@ -87,7 +87,7 @@ Example: Dinosaur 1  *@
         <footer class="ui-corner-bottom"></footer>
 	
     </section>
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
 }
 
 

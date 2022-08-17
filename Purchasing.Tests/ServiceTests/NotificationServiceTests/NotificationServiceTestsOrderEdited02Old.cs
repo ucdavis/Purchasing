@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
-using Rhino.Mocks;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 {
@@ -15,7 +15,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderEditedAccountManagerNoEmailPrefs1()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("burns");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("burns");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.AccountManager));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);

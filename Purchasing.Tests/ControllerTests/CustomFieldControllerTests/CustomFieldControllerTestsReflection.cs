@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Mvc.Helpers;
 using UCDArch.Web.Attributes;
@@ -33,7 +34,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
 
         [TestMethod]
-        public void TestControllerHasOnly6Attributes()
+        public void TestControllerHasSevenAttributes()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -44,7 +45,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(6, result.Count());
+            Assert.AreEqual(7, result.Count());
             #endregion Assert
         }
 
@@ -78,11 +79,11 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Count() > 0, "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 
@@ -115,7 +116,7 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             #region Assert
             Assert.IsTrue(result.Count() > 1, "AuthorizeAttribute not found.");
-            bool admin = result.ElementAt(0).Roles == "DA" || result.ElementAt(1).Roles == "DA";
+            bool admin = result.ElementAt(0).Policy == "DA" || result.ElementAt(1).Policy == "DA";
             Assert.IsTrue(admin, "Admin Role not found");
             #endregion Assert
         }

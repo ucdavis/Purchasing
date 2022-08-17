@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
-using System.Web.SessionState;
 using Dapper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
@@ -11,13 +9,13 @@ using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
 using UCDArch.Web.ActionResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for historical order ajax methods that don't require session state.  this way they can run in parallel.
     /// </summary>
-    [SessionState(SessionStateBehavior.Disabled)]
     public class HistoryAjaxController : ApplicationController
     {
         private readonly ISearchService _searchService;
@@ -33,7 +31,7 @@ namespace Purchasing.Mvc.Controllers
             _dbService = dbService;
         }
 
-        public PartialViewResult RecentActivity()
+        public Microsoft.AspNetCore.Mvc.PartialViewResult RecentActivity()
         {
             using (var conn = _dbService.GetConnection())
             {
@@ -45,7 +43,7 @@ namespace Purchasing.Mvc.Controllers
             }
         }
 
-        public PartialViewResult RecentComments()
+        public Microsoft.AspNetCore.Mvc.PartialViewResult RecentComments()
         {
             // recent comments will be required to be from orders acted upon in the last three months
             var cutoff = DateTime.UtcNow.AddMonths(-3);

@@ -2,20 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Castle.Windsor;
 using Purchasing.Mvc.Controllers;
 //using Purchasing.Controllers.Filters;
 using Purchasing.Core.Domain;
 //using Purchasing.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests
 {
@@ -55,7 +53,7 @@ namespace Purchasing.Tests.ControllerTests
         /// Tests the controller has Five attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasFiveAttributes()
+        public void TestControllerHaSixAttributes()
         {
             #region Arrange
             var controllerClass = _controllerClass;
@@ -66,7 +64,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, result.Count());
+            Assert.AreEqual(6, result.Count());
             #endregion Assert
         }
 
@@ -100,11 +98,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Count() > 0, "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 

@@ -1242,7 +1242,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("Email", "System.String", new List<string>
             {
-                 "[DataAnnotationsExtensions.EmailAttribute()]",
+                 "[System.ComponentModel.DataAnnotations.EmailAddressAttribute()]",
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"                 
             }));

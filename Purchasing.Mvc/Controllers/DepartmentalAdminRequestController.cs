@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web.Mvc;
-using Microsoft.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
-using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
@@ -44,7 +43,7 @@ namespace Purchasing.Mvc.Controllers
         /// #1
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Index(string filter = null)
         {
             var departmentalAdminRequestList = _departmentalAdminRequestRepository.Queryable;
@@ -120,7 +119,7 @@ namespace Purchasing.Mvc.Controllers
             if (orgs == null || !orgs.Any())
             {
                 ErrorMessage = "Must select at least one organization";
-                return this.RedirectToAction(x => x.Create());
+                return this.RedirectToAction(nameof(Create));
             }
            
             var ldap = _directorySearchService.FindUser(CurrentUser.Identity.Name);
@@ -149,7 +148,7 @@ namespace Purchasing.Mvc.Controllers
                 //TODO: Generate email to either all admins or a specific person that a DA request has arrived
 
                 Message = "Request created.";
-                return this.RedirectToAction<HomeController>(x => x.Index());
+                return this.RedirectToAction(nameof(HomeController.Index), typeof(HomeController).ControllerName());
             }
 
             ErrorMessage = "There were Errors, please correct and try again.";
@@ -163,19 +162,19 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Approve(string id)
         {
             var daRequest = _departmentalAdminRequestRepository.GetNullableById(id);
             if (daRequest == null)
             {
                 ErrorMessage = "Request not found";
-                return this.RedirectToAction(a => a.Index(null));
+                return this.RedirectToAction(nameof(Index));
             }
             if (daRequest.Complete)
             {
                 Message = "Request was already completed";
-                return this.RedirectToAction(a => a.Index(null));
+                return this.RedirectToAction(nameof(Index));
             }
 
             var model = DepartmentalAdminRequestViewModel.Create();
@@ -302,7 +301,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="existingOrgs"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Approve(DepartmentalAdminRequestViewModel request, List<string> orgs, List<string> existingOrgs)
         {
             var requestToUpdate =
@@ -311,7 +310,7 @@ namespace Purchasing.Mvc.Controllers
             if (orgs == null || !orgs.Any())
             {
                 ErrorMessage = "Must select at least one organization";
-                return this.RedirectToAction(x => x.Approve(request.DepartmentalAdminRequest.Id));
+                return this.RedirectToAction(nameof(Approve), new { id = request.DepartmentalAdminRequest.Id });
             }
             if (existingOrgs == null)
             {
@@ -367,7 +366,7 @@ namespace Purchasing.Mvc.Controllers
             //TODO: Generate email notifying user they now have access
             Message = string.Format("{0} {1} Departmental Admin Access", user.FullNameAndId, updateMessage);
 
-            return this.RedirectToAction(a => a.Index(null));
+            return this.RedirectToAction(nameof(Index));
         }
 
         /// <summary>
@@ -375,19 +374,19 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Deny(string id)
         {
             var daRequest = _departmentalAdminRequestRepository.GetNullableById(id);
             if (daRequest == null)
             {
                 ErrorMessage = "Request not found";
-                return this.RedirectToAction(a => a.Index(null));
+                return this.RedirectToAction(nameof(Index));
             }
             if (daRequest.Complete)
             {
                 Message = "Request was already completed";
-                return this.RedirectToAction(a => a.Index(null));
+                return this.RedirectToAction(nameof(Index));
             }
 
             var model = DepartmentalAdminRequestViewModel.Create();
@@ -438,21 +437,21 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Deny(DepartmentalAdminRequestViewModel request)
         {
             var requestToUpdate = _departmentalAdminRequestRepository.Queryable.Single(a => a.Id == request.DepartmentalAdminRequest.Id);
             if (requestToUpdate.Complete)
             {
                 Message = "Request was already completed";
-                return this.RedirectToAction(a => a.Index(null));
+                return this.RedirectToAction(nameof(Index));
             }
             requestToUpdate.Complete = true;
             _departmentalAdminRequestRepository.EnsurePersistent(requestToUpdate);
 
             Message = string.Format("Request Denied for {0}", requestToUpdate.FullNameAndId);
 
-            return this.RedirectToAction(a => a.Index(null));
+            return this.RedirectToAction(nameof(Index));
         }
 
         /// <summary>
@@ -460,14 +459,14 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Details(string id)
         {
             var daRequest = _departmentalAdminRequestRepository.GetNullableById(id);
             if (daRequest == null)
             {
                 ErrorMessage = "Request not found";
-                return this.RedirectToAction(a => a.Index(null));
+                return this.RedirectToAction(nameof(Index));
             }
 
             var model = DepartmentalAdminRequestViewModel.Create();
@@ -603,7 +602,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id"></param>
         /// <param name="overRide"> </param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult TookTraining(string id, string overRide = "Default")
         {
             id = id.ToLower();
@@ -637,11 +636,11 @@ namespace Purchasing.Mvc.Controllers
                 _departmentalAdminRequestRepository.EnsurePersistent(requestToSave);
 
                 Message = "Request created/Updated.";
-                return this.RedirectToAction(x => x.Details(id));
+                return this.RedirectToAction(nameof(Details), new { id = id });
             }
 
             ErrorMessage = "There were Errors, please correct and try again.";
-            return this.RedirectToAction(x => x.Index(null));
+            return this.RedirectToAction(nameof(Index));
         }
 
         public ActionResult Instructions()

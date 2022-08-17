@@ -1,19 +1,23 @@
-﻿@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Razor
+@using System.Globalization
 @using System.Text
 @using Purchasing.Core.Domain
 @using Purchasing.Core.Helpers
 @using Purchasing.Core.Queries
 @model FilteredOrderListModelDto
 
-@helper GetHtmlForApproval(string approvalName, int orderId, string orderStatusCodeId){
-    if (!string.IsNullOrWhiteSpace(approvalName) && approvalName.Contains("Workgroup"))
-    {
-        <td>[Workgroup] <span class='workgroupDetails showTip ui-icon ui-icon-person' data-id='@orderId' data-role='@orderStatusCodeId' title='Lookup all the people who have workgroup access to this order at this Status.'></span></td>
-    }
-    else
-    {
-        <td>@approvalName</td>
-    }
+@{
+	string GetHtmlForApproval(string approvalName, int orderId, string orderStatusCodeId){
+		if (!string.IsNullOrWhiteSpace(approvalName) && approvalName.Contains("Workgroup"))
+		{
+			return $"<td>[Workgroup] <span class='workgroupDetails showTip ui-icon ui-icon-person' data-id='{orderId}' data-role='{orderStatusCodeId}' title='Lookup all the people who have workgroup access to this order at this Status.'></span></td>";
+		}
+	    else
+	    {
+			return $"<td>{approvalName}</td>";
+		}
+
+	} 
 }
 
 <table class='dt-table'>
@@ -39,478 +43,478 @@
 }
 	</tbody>
 </table>
-@helper TableRowContent (bool tableHeader, OrderHistory item)
-{
-    var result = new StringBuilder();
-   
-
-    if (Model.ColumnPreferences.ShowRequestNumber)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Request #</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { target = "_blank" }) + "</td>");
-            
-        }
-    }
-    
-    if(Model.ColumnPreferences.ShowPurchaseOrderNumber)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>PO&nbsp;#</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.Encode(item.PoNumber) + "</td>");
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowReferenceNumber)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Ref&nbsp;#</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.Encode(item.ReferenceNumber) + "</td>");
-        }
-    }
-    
-    if (Model.ColumnPreferences.ShowTag)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Tag</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.Encode(item.Tag) + "</td>");
-        }
-    }
-    
-    if (Model.ColumnPreferences.ShowRequestType)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Request Type</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.Encode(item.RequestType) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowWorkgroup)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Workgroup</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.Encode(item.WorkgroupName) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowVendor)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Vendor</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.Encode(item.Vendor != null ? item.Vendor : "-- Unspecified --") + "</td>");
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowLineItems)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Line Item Summary</th>");
-        }
-                else
-        {
-            result.Append("<td>" + @Html.Encode(item.LineItems) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowShipTo)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Ship to</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.Encode(item.ShipTo) + "</td>");
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowShippingCost)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Shipping Cost</th>");
-        }
-        else
-        {
-            result.Append("<td>" + @Html.Encode(item.ShippingAmount) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowAllowBackorder)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Allow Backorder</th>");
-        }
-        else
-        {
-            string localString = item.AllowBackorder == "Yes" ? "<span class='table-bool-good'>Yes</span>" : "<span class='table-bool-bad'>No</span>";
-            result.Append("<td>" + localString + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowRestrictedOrder)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Restricted?</th>");
-        }
-        else
-        {
-            string localString = item.Restricted == "Yes" ? "<span class='table-bool-bad'>Yes</span>" : "<span class='table-bool-good'>No</span>";
-            result.Append("<td>" + localString + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowTotalAmount)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Total $</th>");
-        }
-        else
-        {
-            result.Append("<td>" + String.Format("{0:F}", item.TotalAmount) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowCreatedBy)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Created By</th>");
-        }
-        else
-        {
-            result.Append("<td>" + item.CreatedBy + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowCreatedDate)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Date Created</th>");
-        }
-        else
-        {
-            result.Append("<td>" + String.Format("{0:d}", item.DateCreated) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowLastActedOnDate)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Last Acted<br/>On Date</th>");
-        }
-        else
-        {
-            result.Append("<td>" + String.Format("{0:d}", item.LastActionDate) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowStatus)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Status</th>");
-        }
-        else
-        {
-            result.Append("<td>" + item.Status + "</td>");
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowPostStatus)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Poststatus</th>");
-        }
-        else
-        {
-            result.Append("<td>" + item.PostStatus + "</td>");
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowOrderNote)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Order Note</th>");
-        }
-        else
-        {
-            result.Append("<td>" + item.OrderNote + "</td>");
-        }
-    }
-    
-    if(Model.ColumnPreferences.ShowNeededDate)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Date Needed</th>");
-        }
-        else
-        {
-            result.Append("<td>" + String.Format("{0:d}", item.DateNeeded) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowShippingType)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Shipping Type</th>");
-        }
-        else
-        {
-            result.Append("<td>" + item.ShippingType + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowLastActedOnBy)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Last Acted On</th>");
-        }
-        else
-        {
-            result.Append("<td>" + item.LastActionUser + "</td>");
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowAccountNumber)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Account Numbers</th>");
-        }
-        else
-        {           
-            result.Append("<td>" + @Html.Encode(item.AccountSummary) + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowApprover)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Approver</th>");
-        }
-        else
-        {
-            result.Append(GetHtmlForApproval(item.Approver, item.OrderId, OrderStatusCode.Codes.Approver).ToHtmlString());
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowAccountManager)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Account Manager</th>");
-        }
-        else
-        {
-
-            result.Append(GetHtmlForApproval(item.AccountManager, item.OrderId, OrderStatusCode.Codes.AccountManager).ToHtmlString());
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowPurchaser)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Purchaser</th>");
-        }
-        else
-        {
-
-            result.Append(GetHtmlForApproval(item.Purchaser, item.OrderId, OrderStatusCode.Codes.Purchaser).ToHtmlString());
-        }
-    }
-
-
-    if(Model.ColumnPreferences.ShowDaysNotActedOn)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Days not acted-on</th>");
-        }
-        else
-        {
-            bool overdue = false;
-            string daysNotActedOnDisplay;
-            if (item.IsComplete)
-            {
-                daysNotActedOnDisplay = "--";
-            }
-            else
-            {
-                var lastDate = item.LastActionDate;
-                var timeSpan = DateTime.UtcNow.ToPacificTime().Date - lastDate;
-                var daysNotActedOn = timeSpan.Days;
-                if(daysNotActedOn > 7)
-                {
-                    overdue = true;
-                }
-                daysNotActedOnDisplay = daysNotActedOn.ToString(CultureInfo.InvariantCulture);
-            }
-
-            string localString;
-            if(overdue)
-            {
-                localString = "<td class='td-days-overdue-warning'>" + daysNotActedOnDisplay + "</td>";
-            }
-            else
-            {
-                localString = "<td>" + daysNotActedOnDisplay + "</td>";
-            }
-
-            result.Append(localString);
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowOrderType)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Order Type</th>");
-        }
-        else
-        {
-
-            result.Append("<td>" + item.OrderType + "</td>");
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowHasSplits)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Has Splits</th>");
-        }
-        else
-        {
-            if (item.HasAccountSplit)
-            {
-                result.Append("<td class='red'>Yes</td>");
-            }
-            else
-            {
-                result.Append("<td class='gree'>No</td>");
-            }
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowApUser)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>AP Assigned</th>");
-        }
-        else
-        {
-            result.Append("<td>" + item.ApUserAssigned + "</td>");
-        }
-    }
-
-    if(Model.ColumnPreferences.ShowOrderReceived)
-    {
-        if(tableHeader)
-        {
-            result.Append("<th>Received</th>");
-        }
-        else
-        {
-            if (item.Received == "Yes")
-            {
-                result.Append("<td class='green'>Yes</td>");
-            }
-            else
-            {
-                result.Append("<td class='red'>No</td>");
-            }
-        }
-    }
-
-    if (Model.ColumnPreferences.ShowOrderPaid)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>Paid</th>");
-        }
-        else
-        {
-            if (item.Paid == "Yes")
-            {
-                result.Append("<td class='green'>Yes</td>");
-            }
-            else
-            {
-                result.Append("<td class='red'>No</td>");
-            }
-        }
-    }    
-
-    if (Model.ColumnPreferences.ShowFpdCompleted)
-    {
-        if (tableHeader)
-        {
-            result.Append("<th>FPD Completed</th>");
-        }
-        else
-        {
-            if (item.FpdCompleted == "Yes")
-            {
-                result.Append("<td class='green'>FpdComplete</td>");
-            }
-            else if (item.OrderTypeId.Trim() == "PC")
-            {
-                result.Append("<td class='red'>FpdPending</td>");
-            }
-            else
-            {
-                result.Append("<td >NA</td>");
-            }
-        }
-    }
-   
-    @Html.Raw(result.ToString())
-   
-        
-}
+@{ HelperResult TableRowContent (bool tableHeader, OrderHistory item)
+	{
+	    var result = new StringBuilder();
+	   
+	
+	    if (Model.ColumnPreferences.ShowRequestNumber)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Request #</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + @Html.ActionLink(item.RequestNumber, "Review", "Order", new { id = item.OrderId }, new { target = "_blank" }).ToHtmlString() + "</td>");	            
+	        }
+	    }
+	    
+	    if(Model.ColumnPreferences.ShowPurchaseOrderNumber)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>PO&nbsp;#</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + @Html.Encode(item.PoNumber) + "</td>");
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowReferenceNumber)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Ref&nbsp;#</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + @Html.Encode(item.ReferenceNumber) + "</td>");
+	        }
+	    }
+	    
+	    if (Model.ColumnPreferences.ShowTag)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Tag</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + @Html.Encode(item.Tag) + "</td>");
+	        }
+	    }
+	    
+	    if (Model.ColumnPreferences.ShowRequestType)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Request Type</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + @Html.Encode(item.RequestType) + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowWorkgroup)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Workgroup</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + @Html.Encode(item.WorkgroupName) + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowVendor)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Vendor</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + @Html.Encode(item.Vendor != null ? item.Vendor : "-- Unspecified --") + "</td>");
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowLineItems)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Line Item Summary</th>");
+	        }
+	                else
+	        {
+	            result.Append("<td>" + @Html.Encode(item.LineItems) + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowShipTo)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Ship to</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + @Html.Encode(item.ShipTo) + "</td>");
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowShippingCost)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Shipping Cost</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + @Html.Encode(item.ShippingAmount) + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowAllowBackorder)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Allow Backorder</th>");
+	        }
+	        else
+	        {
+	            string localString = item.AllowBackorder == "Yes" ? "<span class='table-bool-good'>Yes</span>" : "<span class='table-bool-bad'>No</span>";
+	            result.Append("<td>" + localString + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowRestrictedOrder)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Restricted?</th>");
+	        }
+	        else
+	        {
+	            string localString = item.Restricted == "Yes" ? "<span class='table-bool-bad'>Yes</span>" : "<span class='table-bool-good'>No</span>";
+	            result.Append("<td>" + localString + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowTotalAmount)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Total $</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + String.Format("{0:F}", item.TotalAmount) + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowCreatedBy)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Created By</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + item.CreatedBy + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowCreatedDate)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Date Created</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + "<span style=\"display:none;\">" + item.DateCreated.Ticks + "</span>" + String.Format("{0:d}", item.DateCreated) + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowLastActedOnDate)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Last Acted<br/>On Date</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + "<span style=\"display:none;\">" + item.LastActionDate.Ticks + "</span>" + String.Format("{0:d}", item.LastActionDate) + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowStatus)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Status</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + item.Status + "</td>");
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowPostStatus)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Poststatus</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + item.PostStatus + "</td>");
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowOrderNote)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Order Note</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + item.OrderNote + "</td>");
+	        }
+	    }
+	    
+	    if(Model.ColumnPreferences.ShowNeededDate)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Date Needed</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + "<span style=\"display:none;\">" + item.DateNeeded.Ticks + "</span>" + String.Format("{0:d}", item.DateNeeded) + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowShippingType)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Shipping Type</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + item.ShippingType + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowLastActedOnBy)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Last Acted On</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + item.LastActionUser + "</td>");
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowAccountNumber)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Account Numbers</th>");
+	        }
+	        else
+	        {           
+	            result.Append("<td>" + @Html.Encode(item.AccountSummary) + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowApprover)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Approver</th>");
+	        }
+	        else
+	        {
+	            result.Append(GetHtmlForApproval(item.Approver, item.OrderId, OrderStatusCode.Codes.Approver));
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowAccountManager)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Account Manager</th>");
+	        }
+	        else
+	        {
+	
+	            result.Append( GetHtmlForApproval(item.AccountManager, item.OrderId, OrderStatusCode.Codes.AccountManager));
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowPurchaser)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Purchaser</th>");
+	        }
+	        else
+	        {
+	
+	            result.Append( GetHtmlForApproval(item.Purchaser, item.OrderId, OrderStatusCode.Codes.Purchaser));
+	        }
+	    }
+	
+	
+	    if(Model.ColumnPreferences.ShowDaysNotActedOn)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Days not acted-on</th>");
+	        }
+	        else
+	        {
+	            bool overdue = false;
+	            string daysNotActedOnDisplay;
+	            if (item.IsComplete)
+	            {
+	                daysNotActedOnDisplay = "--";
+	            }
+	            else
+	            {
+	                var lastDate = item.LastActionDate;
+	                var timeSpan = DateTime.UtcNow.ToPacificTime().Date - lastDate;
+	                var daysNotActedOn = timeSpan.Days;
+	                if(daysNotActedOn > 7)
+	                {
+	                    overdue = true;
+	                }
+	                daysNotActedOnDisplay = daysNotActedOn.ToString(CultureInfo.InvariantCulture);
+	            }
+	
+	            string localString;
+	            if(overdue)
+	            {
+	                localString = "<td class='td-days-overdue-warning'>" + daysNotActedOnDisplay + "</td>";
+	            }
+	            else
+	            {
+	                localString = "<td>" + daysNotActedOnDisplay + "</td>";
+	            }
+	
+	            result.Append(localString);
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowOrderType)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Order Type</th>");
+	        }
+	        else
+	        {
+	
+	            result.Append("<td>" + item.OrderType + "</td>");
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowHasSplits)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Has Splits</th>");
+	        }
+	        else
+	        {
+	            if (item.HasAccountSplit)
+	            {
+	                result.Append("<td class='red'>Yes</td>");
+	            }
+	            else
+	            {
+	                result.Append("<td class='gree'>No</td>");
+	            }
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowApUser)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>AP Assigned</th>");
+	        }
+	        else
+	        {
+	            result.Append("<td>" + item.ApUserAssigned + "</td>");
+	        }
+	    }
+	
+	    if(Model.ColumnPreferences.ShowOrderReceived)
+	    {
+	        if(tableHeader)
+	        {
+	            result.Append("<th>Received</th>");
+	        }
+	        else
+	        {
+	            if (item.Received == "Yes")
+	            {
+	                result.Append("<td class='green'>Yes</td>");
+	            }
+	            else
+	            {
+	                result.Append("<td class='red'>No</td>");
+	            }
+	        }
+	    }
+	
+	    if (Model.ColumnPreferences.ShowOrderPaid)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>Paid</th>");
+	        }
+	        else
+	        {
+	            if (item.Paid == "Yes")
+	            {
+	                result.Append("<td class='green'>Yes</td>");
+	            }
+	            else
+	            {
+	                result.Append("<td class='red'>No</td>");
+	            }
+	        }
+	    }    
+	
+	    if (Model.ColumnPreferences.ShowFpdCompleted)
+	    {
+	        if (tableHeader)
+	        {
+	            result.Append("<th>FPD Completed</th>");
+	        }
+	        else
+	        {
+	            if (item.FpdCompleted == "Yes")
+	            {
+	                result.Append("<td class='green'>FpdComplete</td>");
+	            }
+	            else if (item.OrderTypeId.Trim() == "PC")
+	            {
+	                result.Append("<td class='red'>FpdPending</td>");
+	            }
+	            else
+	            {
+	                result.Append("<td >NA</td>");
+	            }
+	        }
+	    }
+	   
+	    @Html.Raw(result.ToString())
+	   
+	        
+		return new HelperResult(w => Task.CompletedTask);
+} }
 
 
 

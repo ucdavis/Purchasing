@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
-using Microsoft.Azure;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
+using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace Purchasing.Mvc.Services
 {
@@ -15,36 +17,29 @@ namespace Purchasing.Mvc.Services
         /// </summary>
         /// <param name="id">attachmentID</param>
         /// <returns></returns>
-        Attachment GetAttachment(Guid id);
+        Task<Attachment> GetAttachment(Guid id);
 
         /// <summary>
         /// Upload an attachment to blob storage
         /// </summary>
-        void UploadAttachment(Guid id, Stream fileStream);
+        Task UploadAttachment(Guid id, Stream fileStream);
     }
 
     public class FileService : IFileService
     {
         private readonly IRepositoryWithTypedId<Attachment, Guid> _attachmentRepository;
-        private readonly CloudBlobContainer _container;
+        private readonly BlobServiceClient _blobServiceClient;
 
-        public FileService(IRepositoryWithTypedId<Attachment, Guid> attachmentRepository)
+        public FileService(IRepositoryWithTypedId<Attachment, Guid> attachmentRepository, IConfiguration configuration)
         {
             _attachmentRepository = attachmentRepository;
 
             var storageConnectionString =
                 string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}",
-                              CloudConfigurationManager.GetSetting("AzureStorageAccountName"),
-                              CloudConfigurationManager.GetSetting("AzureStorageKey"));
+                              configuration["AzureStorageAccountName"],
+                              configuration["AzureStorageKey"]);
 
-            var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-
-            var blobClient = storageAccount.CreateCloudBlobClient();
-
-            _container = blobClient.GetContainerReference("oppattachments");
-            _container.CreateIfNotExists();
-            _container.SetPermissions(new BlobContainerPermissions {PublicAccess = BlobContainerPublicAccessType.Off});
-
+            _blobServiceClient = new BlobServiceClient(storageConnectionString);
         }
 
         /// <summary>
@@ -52,7 +47,7 @@ namespace Purchasing.Mvc.Services
         /// </summary>
         /// <param name="id">attachmentID</param>
         /// <returns></returns>
-        public Attachment GetAttachment(Guid id)
+        public async Task<Attachment> GetAttachment(Guid id)
         {
             var file = _attachmentRepository.GetNullableById(id);
 
@@ -61,10 +56,11 @@ namespace Purchasing.Mvc.Services
             if (file.IsBlob)
             {
                 //Get file from blob storage and populate the contents
-                var blob = _container.GetBlockBlobReference(id.ToString());
                 using (var stream = new MemoryStream())
                 {
-                    blob.DownloadToStream(stream);
+                    var containerClient = await GetBlobContainer();
+                    var blobClient = containerClient.GetBlockBlobClient(id.ToString());
+                    await blobClient.DownloadToAsync(stream);
                     using (var reader = new BinaryReader(stream))
                     {
                         stream.Position = 0;
@@ -79,10 +75,20 @@ namespace Purchasing.Mvc.Services
         /// <summary>
         /// Upload an attachment to blob storage
         /// </summary>
-        public void UploadAttachment(Guid id, Stream fileStream)
+        public async Task UploadAttachment(Guid id, Stream fileStream)
         {
-            var blob = _container.GetBlockBlobReference(id.ToString());
-            blob.UploadFromStream(fileStream);
+            var containerClient = await GetBlobContainer();
+            await containerClient.CreateIfNotExistsAsync(PublicAccessType.None);
+            var blobClient = containerClient.GetBlockBlobClient(id.ToString());
+            await blobClient.UploadAsync(fileStream);
+        }
+
+        private async Task<BlobContainerClient> GetBlobContainer()
+        {
+            var containerClient = _blobServiceClient.GetBlobContainerClient("oppattachments");
+            await containerClient.CreateIfNotExistsAsync();
+
+            return containerClient;
         }
     }
 }

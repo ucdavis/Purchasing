@@ -48,7 +48,7 @@ namespace Purchasing.Tests.RepositoryTests
         protected override User GetValid(int? counter)
         {
             var rtValue = CreateValidEntities.User(counter);
-            rtValue.SetIdTo(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.Id = counter.HasValue ? counter.Value.ToString() : "99";
 
             return rtValue;
         }
@@ -179,7 +179,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 user = GetValid(9);
-                user.SetIdTo(null);
+                user.Id = null;
                 #endregion Arrange
 
                 #region Act
@@ -211,7 +211,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 user = GetValid(9);
-                user.SetIdTo(string.Empty);
+                user.Id = string.Empty;
                 #endregion Arrange
 
                 #region Act
@@ -243,7 +243,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 user = GetValid(9);
-                user.SetIdTo(" ");
+                user.Id = " ";
                 #endregion Arrange
 
                 #region Act
@@ -275,7 +275,7 @@ namespace Purchasing.Tests.RepositoryTests
             {
                 #region Arrange
                 user = GetValid(9);
-                user.SetIdTo( "x".RepeatTimes((10 + 1)));
+                user.Id =  "x".RepeatTimes((10 + 1));
                 #endregion Arrange
 
                 #region Act
@@ -307,7 +307,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var user = GetValid(9);
-            user.SetIdTo( "x");
+            user.Id =  "x";
             #endregion Arrange
 
             #region Act
@@ -330,7 +330,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var user = GetValid(9);
-            user.SetIdTo("x".RepeatTimes(10));
+            user.Id = "x".RepeatTimes(10);
             #endregion Arrange
 
             #region Act
@@ -1125,12 +1125,12 @@ namespace Purchasing.Tests.RepositoryTests
                 UserRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsNotNull(record);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Organization, Entity: Purchasing.Core.Domain.Organization", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -1234,7 +1234,7 @@ namespace Purchasing.Tests.RepositoryTests
             for (int i = 0; i < 3; i++)
             {
                 var role = CreateValidEntities.Role(i + 1);
-                role.SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
+                role.Id = (i + 1).ToString(CultureInfo.InvariantCulture);
                 RoleRepository.EnsurePersistent(role);
             }
             RoleRepository.DbContext.CommitTransaction();
@@ -1473,7 +1473,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("Email", "System.String", new List<string>
             {
-                 "[DataAnnotationsExtensions.EmailAttribute()]",
+                 "[System.ComponentModel.DataAnnotations.EmailAddressAttribute()]",
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"
             }));

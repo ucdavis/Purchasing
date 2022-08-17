@@ -1,12 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -23,8 +24,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -42,8 +42,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, false)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -61,8 +60,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -75,14 +73,13 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditGetRedirectsToErrorWhenCurrentIdDifferent()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "NotMe");
             SetupData3();
             #endregion Arrange
 
             #region Act
             Controller.Edit(3)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -94,7 +91,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             #endregion Arrange
@@ -131,7 +128,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             #endregion Arrange
@@ -176,8 +173,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, new AutoApproval(), true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -195,8 +191,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, new AutoApproval(), false)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -214,8 +209,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Edit(4, new AutoApproval())
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -228,14 +222,13 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostRedirectsToErrorWhenCurrentIdDifferent()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
             #region Act
             Controller.Edit(3, new AutoApproval())
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -248,11 +241,11 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostReturnsViewWhenInvalid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
-            autoApprovalToEdit.SetIdTo(99);
+            autoApprovalToEdit.Id = 99;
             autoApprovalToEdit.MaxAmount = (decimal) 12.44;
             autoApprovalToEdit.TargetUser = null;
             autoApprovalToEdit.Account = null;
@@ -288,7 +281,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsFalse(Controller.ViewBag.IsCreate);
 
             Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert		
         }
 
@@ -296,11 +289,11 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostReturnsViewWhenInvalid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
-            autoApprovalToEdit.SetIdTo(99);
+            autoApprovalToEdit.Id = 99;
             autoApprovalToEdit.MaxAmount = (decimal)12.44;
             autoApprovalToEdit.TargetUser = null;
             autoApprovalToEdit.Account = null;
@@ -336,7 +329,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsFalse(Controller.ViewBag.IsCreate);
 
             Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
 
@@ -344,11 +337,11 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestEditPostReturnsViewWhenInvalid3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
-            autoApprovalToEdit.SetIdTo(99);
+            autoApprovalToEdit.Id = 99;
             autoApprovalToEdit.MaxAmount = (decimal)12.44;
             autoApprovalToEdit.TargetUser = CreateValidEntities.User(88);
             autoApprovalToEdit.Account = CreateValidEntities.Account(87);
@@ -384,38 +377,40 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             Assert.IsFalse(Controller.ViewBag.IsCreate);
 
             Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
         [TestMethod]
         public void TestEditPostSavesWhenValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             SetupData3();
             var autoApprovalToEdit = CreateValidEntities.AutoApproval(99);
-            autoApprovalToEdit.SetIdTo(99);
+            autoApprovalToEdit.Id = 99;
             autoApprovalToEdit.MaxAmount = (decimal)12.44;
             autoApprovalToEdit.TargetUser = null;
             autoApprovalToEdit.Account = CreateValidEntities.Account(9);
             autoApprovalToEdit.User = null;
             var saveLessThan = AutoApprovalRepository.GetNullableById(3).LessThan;
             autoApprovalToEdit.LessThan = !saveLessThan;
+            AutoApproval args = default;
+            Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.Edit(3, autoApprovalToEdit, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
 
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval) AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
+
             Assert.AreEqual(3, args.Id);
             Assert.AreEqual((decimal)12.44, args.MaxAmount);
             Assert.IsNotNull(args.User);

@@ -2,12 +2,12 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/multiselector")
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")
 }
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/multiselector")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/multiselector")
     <script type="text/javascript">
 
         $(function () {
@@ -75,14 +75,14 @@
 
 
 
-@Html.Partial("_StatusBar", Model.Workgroup.Id)
+@await Html.PartialAsync("_StatusBar", Model.Workgroup.Id)
 
 
 @using(Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
     <section>
         @{
             var helpText = "";
@@ -182,7 +182,7 @@
                 <li>
                     <div class="selector editor-label" style="margin-top: 8px;">
                         <!--<a href="#" id="help-people" class="ui-icon ui-icon-help showTip" title="<strong>User(s) Selector</strong> Enter Kerberos ID or email of desired person, one at a time. After entry, click search button. If a valid user is found, the users name will appear below the text entry field. <strong>Click this name</strong> to add the user to the list. Repeat for each user you wish to add this way. Users in the list may be removed via the small x to the right of the name."></a>-->
-                    <label style="font-weight: bold">@(string.Format("{0}(s):", Model.Role.Name))</label>
+                    <label style="font-weight: bold">@(string.Format("{0}(s):", Model.Role.Name))<span class="required">&nbsp;*</span></label>
                         
                     </div>
                     <div class="editor-field">
@@ -223,7 +223,7 @@
 
 
     </section>
-    @Html.Partial("_Navigation")
+    @await Html.PartialAsync("_Navigation")
 }
 
 

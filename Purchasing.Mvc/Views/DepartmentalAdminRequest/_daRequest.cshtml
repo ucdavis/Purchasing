@@ -1,5 +1,6 @@
-﻿@using System.Configuration
+﻿@using Microsoft.Extensions.Configuration
 @model Purchasing.Mvc.Controllers.DepartmentalAdminRequestViewModel
+@inject IConfiguration configuration
            
     <section class="display-form">
     <header class="ui-widget-header ui-corner-top">User Details</header>
@@ -84,7 +85,7 @@
                 <div class="display-details">
                     @Html.DisplayFor(model => model.DepartmentalAdminRequest.Email)
                     @{
-                        var url = string.Format("{0}{1}", ConfigurationManager.AppSettings["PersonLookupUrl"], Model.DepartmentalAdminRequest.Email);
+                        var url = string.Format("{0}{1}", configuration["PersonLookupUrl"], Model.DepartmentalAdminRequest.Email);
                     }
                     <a class="button" href="@url" target="_blank">Lookup</a>
 

@@ -4,9 +4,9 @@
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
 //using Purchasing.Core.Domain;
 //using Purchasing.Tests.Core;
-//using Rhino.Mocks;
-//using UCDArch.Core.Utils;
+////using UCDArch.Core.Utils;
 //using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 //namespace Purchasing.Tests.ServiceTests.OrderAccessServiceTests
 //{
@@ -83,12 +83,12 @@
 //                OrderService.GetAdministrativeListofOrders();
 //                #endregion Act
 //            }
-//            catch (Exception ex)
+//            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
 //            {
 //                Assert.IsTrue(thisFar);
 //                Assert.IsNotNull(ex);
 //                Assert.AreEqual("Possible infinite regression for Name3", ex.Message);
-//                throw;
+//                throw ex;
 //            }
 //        }
 

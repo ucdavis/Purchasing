@@ -5,18 +5,18 @@
 }
 
 @section AdditionalStyles{
-    @Styles.Render("~/Css/order") 
+    @await Html.PartialAsync("_CssBundle", "~/Css/order") 
 }
 
 
 @section AdditionalScripts{
-    @Scripts.Render("~/bundles/order")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/order")
 
     <script type="text/javascript">
         $.validator.setDefaults({ ignore: ':hidden :not(.chzn-done)' }); //do not ignore hidden chosen select lists
 
         $(function () {
-            @Html.Partial("_Options")
+            @await Html.PartialAsync("_Options")
 
             purchasing.init(); //Init all base order form js
 
@@ -27,19 +27,19 @@
     
 }
 
-@Html.Partial("_SideNavigation")
+@await Html.PartialAsync("_SideNavigation")
 
 <div class="orders-right">
-@using (Html.BeginForm("Edit", "Order", new { Model.Order.Id }, FormMethod.Post, new { id = "order-form" }))
+@using (Html.BeginForm("Edit", "Order", new { Model.Order.Id }, FormMethod.Post, true, new { id = "order-form" }))
 {
     <input data-bind="value: adjustRouting" id="adjustRouting" name="adjustRouting" type="hidden" />
 
-    @Html.Partial("_OrderForm")
+    @await Html.PartialAsync("_OrderForm")
 }
 </div>
 
-@Html.Partial("_OrderTemplates")
+@await Html.PartialAsync("_OrderTemplates")
 
-@Html.Partial("_ItemModificationTemplate")
+@await Html.PartialAsync("_ItemModificationTemplate")
 
-@Html.Partial("_OrderDialogs")
+@await Html.PartialAsync("_OrderDialogs")

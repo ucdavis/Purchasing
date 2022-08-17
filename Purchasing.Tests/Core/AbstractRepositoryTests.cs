@@ -10,10 +10,11 @@ using UCDArch.Core.DomainModel;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
+using Moq;
 
 using Castle.Windsor;
-using Microsoft.Practices.ServiceLocation;
-using Rhino.Mocks;
+using CommonServiceLocator;
 using UCDArch.Core.CommonValidator;
 //using UCDArch.Core.NHibernateValidator.CommonValidatorAdapter;
 using UCDArch.Web.IoC;
@@ -112,12 +113,9 @@ namespace Purchasing.Tests.Core
             }
         }
 
-        protected override void InitServiceLocator()
+        protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            //base.InitServiceLocator();
-            var container = ServiceLocatorInitializer.Init();
-
-            base.RegisterAdditionalServices(container);
+            IConfigurationInitializer.Init(container, null);
         }
 
         #endregion Init
@@ -479,7 +477,7 @@ namespace Purchasing.Tests.Core
             for(int i = 0; i < entriesToAdd; i++)
             {
                 var validEntity  = CreateValidEntities.OrderStatusCode(i + 1);
-                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                validEntity.Id = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 orderStatusCodeRepository.EnsurePersistent(validEntity);
             }
         }
@@ -492,7 +490,7 @@ namespace Purchasing.Tests.Core
             for(int i = offset; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.User(i + 1);
-                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                validEntity.Id = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 userRepository.EnsurePersistent(validEntity);
             }
         }
@@ -503,7 +501,7 @@ namespace Purchasing.Tests.Core
             for(int i = 0; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.Account(i + 1);
-                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                validEntity.Id = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 accountRepository.EnsurePersistent(validEntity);
             }
         }
@@ -515,7 +513,7 @@ namespace Purchasing.Tests.Core
             {
                 var validEntity = CreateValidEntities.SubAccount(i + 1);
                 validEntity.AccountNumber = (i + 1).ToString(CultureInfo.InvariantCulture);
-                validEntity.SetIdTo(Guid.NewGuid());
+                validEntity.Id = Guid.NewGuid();
                 subAccountRepository.EnsurePersistent(validEntity);
             }
         }
@@ -584,7 +582,7 @@ namespace Purchasing.Tests.Core
             for(int i = 0; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.Vendor(i + 1);
-                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                validEntity.Id = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 vendorRepository.EnsurePersistent(validEntity);
             }
         }
@@ -596,7 +594,7 @@ namespace Purchasing.Tests.Core
             for(int i = offset; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.Organization(i + 1);
-                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                validEntity.Id = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 organizationRepository.EnsurePersistent(validEntity);
             }
         }
@@ -608,7 +606,7 @@ namespace Purchasing.Tests.Core
             for(int i = offset; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.Building(i + 1);
-                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                validEntity.Id = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 buildingRepository.EnsurePersistent(validEntity);
             }
         }
@@ -631,7 +629,7 @@ namespace Purchasing.Tests.Core
             for(int i = 0; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.Commodity(i + 1);
-                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                validEntity.Id = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 commodityRepository.EnsurePersistent(validEntity);
             }
         }
@@ -711,7 +709,7 @@ namespace Purchasing.Tests.Core
             for(int i = 0; i < entriesToAdd; i++)
             {
                 var validEntity = CreateValidEntities.ShippingType(i + 1);
-                validEntity.SetIdTo((i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                validEntity.Id = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 shippingTypeRepository.EnsurePersistent(validEntity);
             }
         }
@@ -726,7 +724,7 @@ namespace Purchasing.Tests.Core
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("AM");
+            orderStatusCode.Id = "AM";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -735,7 +733,7 @@ namespace Purchasing.Tests.Core
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("AP");
+            orderStatusCode.Id = "AP";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -744,7 +742,7 @@ namespace Purchasing.Tests.Core
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = false;
-            orderStatusCode.SetIdTo("CA");
+            orderStatusCode.Id = "CA";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -753,7 +751,7 @@ namespace Purchasing.Tests.Core
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = false;
-            orderStatusCode.SetIdTo("CN");
+            orderStatusCode.Id = "CN";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -762,7 +760,7 @@ namespace Purchasing.Tests.Core
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("CP");
+            orderStatusCode.Id = "CP";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -771,7 +769,7 @@ namespace Purchasing.Tests.Core
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("PR");
+            orderStatusCode.Id = "PR";
             orderStatusCodes.Add(orderStatusCode);
 
 
@@ -781,7 +779,7 @@ namespace Purchasing.Tests.Core
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = false;
-            orderStatusCode.SetIdTo("RQ");
+            orderStatusCode.Id = "RQ";
             orderStatusCodes.Add(orderStatusCode);
 
             foreach (var statusCode in orderStatusCodes)
@@ -794,34 +792,4 @@ namespace Purchasing.Tests.Core
 
 
     }
-
-    //public class ServiceLocatorInitializer
-    //{
-    //    public static IWindsorContainer Init()
-    //    {
-    //        IWindsorContainer container = new WindsorContainer();
-
-    //        container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
-    //        container.Register(Component.For<IDbContext>().ImplementedBy<DbContext>().Named("DbContext"));
-
-    //        ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
-
-    //        return container;
-    //    }
-
-    //    public static IWindsorContainer InitWithFakeDBContext()
-    //    {
-    //        IWindsorContainer container = new WindsorContainer();
-
-    //        container.Register(Component.For<IValidator>().ImplementedBy<Validator>().Named("validator"));
-
-    //        var dbContext = MockRepository.GenerateMock<IDbContext>();
-
-    //        container.Register(Component.For<IDbContext>().Instance(dbContext));
-
-    //        ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
-
-    //        return container;
-    //    }
-    //}
 }

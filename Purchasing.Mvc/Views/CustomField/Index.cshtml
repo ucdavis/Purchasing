@@ -15,7 +15,7 @@
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/customField")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/customField")
 
     <style type="text/css">
     #fields input[type='text'] { padding: .4em; min-width: 30px; width: 30px; }

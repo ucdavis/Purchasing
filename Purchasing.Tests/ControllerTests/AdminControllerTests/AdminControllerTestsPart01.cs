@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Controllers;
-using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -34,11 +35,11 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
                 }
             }
             roles[0].Name = "Admin";
-            roles[0].SetIdTo(Role.Codes.Admin);
+            roles[0].Id = Role.Codes.Admin;
             roles[2].Name = "DepartmentalAdmin";
-            roles[2].SetIdTo(Role.Codes.DepartmentalAdmin);
-            roles[1].SetIdTo(Role.Codes.Approver);
-            roles[3].SetIdTo(Role.Codes.SscAdmin);
+            roles[2].Id = Role.Codes.DepartmentalAdmin;
+            roles[1].Id = Role.Codes.Approver;
+            roles[3].Id = Role.Codes.SscAdmin;
             roles[3].Name = "SscAdmin";
 
             new FakeRoles(0, RoleRepository, roles, true);
@@ -117,7 +118,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             var users = new List<User>();
             users.Add(CreateValidEntities.User(1));
             users[0].IsActive = false;
-            users[0].SetIdTo("TestNotActive");
+            users[0].Id = "TestNotActive";
             new FakeUsers(0, UserRepository, users, true);
             #endregion Arrange
 
@@ -183,29 +184,30 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyDepartmentalSetsExpectedValues1()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);
             new FakeOrganizations(6, OrganizationRepository);
 
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
-            roles[0].SetIdTo(Role.Codes.DepartmentalAdmin);
+            roles[0].Id = Role.Codes.DepartmentalAdmin;
             new FakeRoles(0, RoleRepository, roles, true);
 
             var depUser = new DepartmentalAdminModel();
             depUser.User = CreateValidEntities.User(4);
             var orgs = new List<string> {"2", "4"};
+            User args = default;
+            Mock.Get( UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
+                .Callback<User>(x => args = x);
             #endregion Arrange
 
             #region Act
             Controller.ModifyDepartmental(depUser, orgs)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            var args = (User) UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0]; 
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual("4", args.Id);
             Assert.AreEqual("FirstName4 LastName4", args.FullName);
@@ -218,7 +220,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Assert.AreEqual("4", args.Organizations[1].Id);
 
             Assert.AreEqual("FirstName4 LastName4 (4) was added as a departmental admin to the specified organization(s)", Controller.Message);
-            UserIdentity.AssertWasCalled(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "4"));
+            Mock.Get(UserIdentity).Verify(a => a.RemoveUserRoleFromCache(Resources.Role_CacheId, "4"));
             #endregion Assert		
         }
 
@@ -226,13 +228,12 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyDepartmentalSetsExpectedValues2()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             new FakeUsers(3, UserRepository);
             new FakeOrganizations(6, OrganizationRepository);
 
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
-            roles[0].SetIdTo(Role.Codes.DepartmentalAdmin);
+            roles[0].Id = Role.Codes.DepartmentalAdmin;
             new FakeRoles(0, RoleRepository, roles, true);
 
             var depUser = new DepartmentalAdminModel();
@@ -241,17 +242,19 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             depUser.User.Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "1"));
 
             var orgs = new List<string> { "2", "4" };
+            User args = default;
+            Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
+                .Callback<User>(x => args = x);
             #endregion Arrange
 
             #region Act
             Controller.ModifyDepartmental(depUser, orgs)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            var args = (User)UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0];
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("3", args.Id);
             Assert.AreEqual("FirstName3 Changed", args.FullName);
@@ -271,20 +274,19 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyDepartmentalSetsExpectedValues3()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
-            roles[0].SetIdTo(Role.Codes.DepartmentalAdmin);
+            roles[0].Id = Role.Codes.DepartmentalAdmin;
             roles.Add(CreateValidEntities.Role(88));
-            roles[1].SetIdTo(Role.Codes.Admin);
+            roles[1].Id = Role.Codes.Admin;
             roles.Add(CreateValidEntities.Role(77));
-            roles[2].SetIdTo(Role.Codes.EmulationUser);
+            roles[2].Id = Role.Codes.EmulationUser;
             new FakeRoles(0, RoleRepository, roles, true);
 
             var users = new List<User>();
             users.Add(CreateValidEntities.User(3));
             users[0].Roles.Add(RoleRepository.Queryable.Single(a => a.Id == Role.Codes.DepartmentalAdmin));
-            users[0].SetIdTo("3");
+            users[0].Id = "3";
             new FakeUsers(0, UserRepository, users, true);
             new FakeOrganizations(6, OrganizationRepository);
 
@@ -296,17 +298,19 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             depUser.User.Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "1"));
 
             var orgs = new List<string> { "2", "4" };
+            User args = default;
+            Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
+                .Callback<User>(x => args = x);
             #endregion Arrange
 
             #region Act
             Controller.ModifyDepartmental(depUser, orgs)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            var args = (User)UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0];
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(Role.Codes.DepartmentalAdmin, args.Roles[0].Id);
 
@@ -318,20 +322,19 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public void TestModifyDepartmentalSetsExpectedValues4()
         {
             #region Arrange
-            //HttpContext.Current = new HttpContext(new HttpRequest(null, "http://test.org", null), new HttpResponse(null));
             var roles = new List<Role>();
             roles.Add(CreateValidEntities.Role(99));
-            roles[0].SetIdTo(Role.Codes.DepartmentalAdmin);
+            roles[0].Id = Role.Codes.DepartmentalAdmin;
             roles.Add(CreateValidEntities.Role(88));
-            roles[1].SetIdTo(Role.Codes.Admin);
+            roles[1].Id = Role.Codes.Admin;
             roles.Add(CreateValidEntities.Role(77));
-            roles[2].SetIdTo(Role.Codes.EmulationUser);
+            roles[2].Id = Role.Codes.EmulationUser;
             new FakeRoles(0, RoleRepository, roles, true);
 
             var users = new List<User>();
             users.Add(CreateValidEntities.User(3));
             users[0].Roles.Add(RoleRepository.Queryable.Single(a => a.Id == Role.Codes.EmulationUser));
-            users[0].SetIdTo("3");
+            users[0].Id = "3";
             new FakeUsers(0, UserRepository, users, true);
             new FakeOrganizations(6, OrganizationRepository);
 
@@ -343,17 +346,19 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             depUser.User.Organizations.Add(OrganizationRepository.Queryable.Single(a => a.Id == "1"));
 
             var orgs = new List<string> { "2", "4" };
+            User args = default;
+            Mock.Get(UserRepository).Setup(a => a.EnsurePersistent(It.IsAny<User>()))
+                .Callback<User>(x => args = x);
             #endregion Arrange
 
             #region Act
             Controller.ModifyDepartmental(depUser, orgs)
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
-            UserRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<User>.Is.Anything));
-            var args = (User)UserRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<User>.Is.Anything))[0][0];
+            Mock.Get(UserRepository).Verify(a => a.EnsurePersistent(It.IsAny<User>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(Role.Codes.EmulationUser, args.Roles[0].Id);
             Assert.AreEqual(Role.Codes.DepartmentalAdmin, args.Roles[1].Id);
@@ -375,7 +380,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
                 var roles = new List<Role>();
                 roles.Add(CreateValidEntities.Role(99));
-                roles[0].SetIdTo(Role.Codes.DepartmentalAdmin);
+                roles[0].Id = Role.Codes.DepartmentalAdmin;
                 new FakeRoles(0, RoleRepository, roles, true);
 
                 var depUser = new DepartmentalAdminModel();
@@ -391,12 +396,12 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
                 Controller.ModifyDepartmental(depUser, orgs);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }
         }
         #endregion ModifyDepartmental Post Texts

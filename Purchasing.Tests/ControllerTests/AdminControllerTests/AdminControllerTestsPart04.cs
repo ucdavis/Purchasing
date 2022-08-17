@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Security;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
@@ -12,14 +9,16 @@ using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -81,8 +80,8 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Assert
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.success.Value);
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: source", data.message.Value);
-            WorkgroupService.AssertWasNotCalled(a => a.AddRelatedAdminUsers(Arg<Workgroup>.Is.Anything));
+            Assert.AreEqual("Sequence contains no matching element", data.message.Value);
+            Mock.Get(WorkgroupService).Verify(a => a.AddRelatedAdminUsers(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert		
         }
 
@@ -115,7 +114,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.success.Value);
             Assert.AreEqual("Sequence contains no matching element", data.message.Value);
-            WorkgroupService.AssertWasNotCalled(a => a.AddRelatedAdminUsers(Arg<Workgroup>.Is.Anything));
+            Mock.Get(WorkgroupService).Verify(a => a.AddRelatedAdminUsers(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert
         }
 
@@ -148,7 +147,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.success.Value);
             Assert.AreEqual("Precondition failed.", data.message.Value);
-            WorkgroupService.AssertWasNotCalled(a => a.AddRelatedAdminUsers(Arg<Workgroup>.Is.Anything));
+            Mock.Get(WorkgroupService).Verify(a => a.AddRelatedAdminUsers(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert
         }
 
@@ -181,7 +180,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.success.Value);
             Assert.AreEqual("Precondition failed.", data.message.Value);
-            WorkgroupService.AssertWasNotCalled(a => a.AddRelatedAdminUsers(Arg<Workgroup>.Is.Anything));
+            Mock.Get(WorkgroupService).Verify(a => a.AddRelatedAdminUsers(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert
         }
 
@@ -203,6 +202,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[3].IsActive = false;
 
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
+            Mock.Get(WorkgroupService).Setup(a => a.AddRelatedAdminUsers(It.IsAny<Workgroup>()));
             #endregion Arrange
 
             #region Act
@@ -214,7 +214,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsTrue(data.success.Value);
             Assert.AreEqual("Updated", data.message.Value);
-            WorkgroupService.AssertWasCalled(a => a.AddRelatedAdminUsers(RepositoryFactory.WorkgroupRepository.Queryable.Single(b => b.Id == 5)));
+            Mock.Get(WorkgroupService).Verify(a => a.AddRelatedAdminUsers(workgroups[4]));
             #endregion Assert
         }
         #endregion ProcessWorkGroup Tests
@@ -235,8 +235,8 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Assert
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.success.Value);
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: source", data.message.Value);
-            WorkgroupService.AssertWasNotCalled(a => a.GetChildWorkgroups(Arg<int>.Is.Anything));
+            Assert.AreEqual("Sequence contains no matching element", data.message.Value);
+            Mock.Get(WorkgroupService).Verify(a => a.GetChildWorkgroups(It.IsAny<int>()), Times.Never());
             #endregion Assert
         }
 
@@ -269,7 +269,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.success.Value);
             Assert.AreEqual("Precondition failed.", data.message.Value);
-            WorkgroupService.AssertWasNotCalled(a => a.GetChildWorkgroups(Arg<int>.Is.Anything));
+            Mock.Get(WorkgroupService).Verify(a => a.GetChildWorkgroups(It.IsAny<int>()), Times.Never());
             #endregion Assert
         }
         [TestMethod]
@@ -301,7 +301,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsFalse(data.success.Value);
             Assert.AreEqual("Precondition failed.", data.message.Value);
-            WorkgroupService.AssertWasNotCalled(a => a.GetChildWorkgroups(Arg<int>.Is.Anything));
+            Mock.Get(WorkgroupService).Verify(a => a.GetChildWorkgroups(It.IsAny<int>()), Times.Never());
             #endregion Assert
         }
 
@@ -323,7 +323,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[3].IsActive = false;
 
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
-            WorkgroupService.Expect(a => a.GetChildWorkgroups(5)).Return(new List<int>() {5, 2, 6, 7}).Repeat.Any();
+            Mock.Get(WorkgroupService).Setup(a => a.GetChildWorkgroups(5)).Returns(new List<int>() {5, 2, 6, 7});
             #endregion Arrange
 
             #region Act
@@ -335,7 +335,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsTrue(data.success.Value);
             Assert.AreEqual(" 2 5 6 7", data.message.Value);
-            WorkgroupService.AssertWasCalled(a => a.GetChildWorkgroups(5));
+            Mock.Get(WorkgroupService).Verify(a => a.GetChildWorkgroups(5));
             #endregion Assert
         }
 
@@ -357,7 +357,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[3].IsActive = false;
 
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
-            WorkgroupService.Expect(a => a.GetChildWorkgroups(5)).Return(null).Repeat.Any();
+            Mock.Get(WorkgroupService).Setup(a => a.GetChildWorkgroups(5)).Returns<List<int>>(null);
             #endregion Arrange
 
             #region Act
@@ -369,7 +369,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsTrue(data.success.Value);
             Assert.AreEqual("None", data.message.Value);
-            WorkgroupService.AssertWasCalled(a => a.GetChildWorkgroups(5));
+            Mock.Get(WorkgroupService).Verify(a => a.GetChildWorkgroups(5));
             #endregion Assert
         }
 
@@ -391,7 +391,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[3].IsActive = false;
 
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
-            WorkgroupService.Expect(a => a.GetChildWorkgroups(5)).Return(new List<int>()).Repeat.Any();
+            Mock.Get(WorkgroupService).Setup(a => a.GetChildWorkgroups(5)).Returns(new List<int>());
             #endregion Arrange
 
             #region Act
@@ -403,7 +403,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             dynamic data = JObject.FromObject(result.Data);
             Assert.IsTrue(data.success.Value);
             Assert.AreEqual("None", data.message.Value);
-            WorkgroupService.AssertWasCalled(a => a.GetChildWorkgroups(5));
+            Mock.Get(WorkgroupService).Verify(a => a.GetChildWorkgroups(5));
             #endregion Assert
         }
         #endregion GetChildWorkgroupIds Tests
@@ -433,7 +433,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
-            WorkgroupService.AssertWasNotCalled(a => a.GetParentWorkgroups(Arg<int>.Is.Anything));
+            Mock.Get(WorkgroupService).Verify(a => a.GetParentWorkgroups(It.IsAny<int>()), Times.Never());
             #endregion Assert		
         }
 
@@ -453,7 +453,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[1].Administrative = false;
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
 
-            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() { 1 }).Repeat.Any();
+            Mock.Get(WorkgroupService).Setup(a => a.GetParentWorkgroups(2)).Returns(new List<int>() { 1 });
 
             var workgroupPermissions = new List<WorkgroupPermission>();
             for (int i = 0; i < 7; i++)
@@ -511,7 +511,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
-            WorkgroupService.AssertWasCalled(a => a.GetParentWorkgroups(2));
+            Mock.Get(WorkgroupService).Verify(a => a.GetParentWorkgroups(2));
             #endregion Assert
         }
 
@@ -531,7 +531,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[1].Administrative = false;
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
 
-            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() {1}).Repeat.Any();
+            Mock.Get(WorkgroupService).Setup(a => a.GetParentWorkgroups(2)).Returns(new List<int>() {1});
 
             var workgroupPermissions = new List<WorkgroupPermission>();
             for (int i = 0; i < 6; i++)
@@ -607,7 +607,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[1].Administrative = false;
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
 
-            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() { 1 }).Repeat.Any();
+            Mock.Get(WorkgroupService).Setup(a => a.GetParentWorkgroups(2)).Returns(new List<int>() { 1 });
 
             var workgroupPermissions = new List<WorkgroupPermission>();
             for (int i = 0; i < 7; i++)
@@ -698,7 +698,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[1].Administrative = false;
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
 
-            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() { 1 }).Repeat.Any();
+            Mock.Get(WorkgroupService).Setup(a => a.GetParentWorkgroups(2)).Returns(new List<int>() { 1 });
 
             var workgroupPermissions = new List<WorkgroupPermission>();
             for (int i = 0; i < 7; i++)
@@ -789,13 +789,12 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.RemoveExtraChildPermissions()
-                .AssertActionRedirect()
-                .ToAction<AdminController>(a => a.ValidateChildWorkgroups());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
-            WorkgroupService.AssertWasNotCalled(a => a.GetParentWorkgroups(Arg<int>.Is.Anything));
-            RepositoryFactory.WorkgroupPermissionRepository.AssertWasNotCalled(a => a.Remove(Arg<WorkgroupPermission>.Is.Anything));
+            Mock.Get(WorkgroupService).Verify(a => a.GetParentWorkgroups(It.IsAny<int>()), Times.Never());
+            Mock.Get(RepositoryFactory.WorkgroupPermissionRepository).Verify(a => a.Remove(It.IsAny<WorkgroupPermission>()), Times.Never());
             #endregion Assert
         }
 
@@ -815,7 +814,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[1].Administrative = false;
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
 
-            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() { 1 }).Repeat.Any();
+            Mock.Get(WorkgroupService).Setup(a => a.GetParentWorkgroups(2)).Returns(new List<int>() { 1 });
 
             var workgroupPermissions = new List<WorkgroupPermission>();
             for (int i = 0; i < 6; i++)
@@ -859,12 +858,11 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 
             #region Act
             Controller.RemoveExtraChildPermissions()
-                            .AssertActionRedirect()
-                            .ToAction<AdminController>(a => a.ValidateChildWorkgroups());
+                            .AssertActionRedirect();
             #endregion Act
 
             #region Assert
-            RepositoryFactory.WorkgroupPermissionRepository.AssertWasNotCalled(a => a.Remove(Arg<WorkgroupPermission>.Is.Anything));
+            Mock.Get(RepositoryFactory.WorkgroupPermissionRepository).Verify(a => a.Remove(It.IsAny<WorkgroupPermission>()), Times.Never());
             Assert.AreEqual("0 permissions removed", Controller.Message);
             #endregion Assert
         }
@@ -885,7 +883,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroups[1].Administrative = false;
             new FakeWorkgroups(0, RepositoryFactory.WorkgroupRepository, workgroups);
 
-            WorkgroupService.Expect(a => a.GetParentWorkgroups(2)).Return(new List<int>() { 1 }).Repeat.Any();
+            Mock.Get(WorkgroupService).Setup(a => a.GetParentWorkgroups(2)).Returns(new List<int>() { 1 });
 
             var workgroupPermissions = new List<WorkgroupPermission>();
             for (int i = 0; i < 7; i++)
@@ -934,17 +932,19 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             workgroupPermissions[6].IsFullFeatured = true; //different from parent
 
             new FakeWorkgroupPermissions(0, RepositoryFactory.WorkgroupPermissionRepository, workgroupPermissions);
+            WorkgroupPermission args = default;
+            Mock.Get(RepositoryFactory.WorkgroupPermissionRepository).Setup(a => a.Remove(It.IsAny<WorkgroupPermission>()))
+                .Callback<WorkgroupPermission>(x => args = x);
             #endregion Arrange
 
             #region Act
             Controller.RemoveExtraChildPermissions()
-                            .AssertActionRedirect()
-                            .ToAction<AdminController>(a => a.ValidateChildWorkgroups());
+                            .AssertActionRedirect();
             #endregion Act
 
             #region Assert
-            RepositoryFactory.WorkgroupPermissionRepository.AssertWasCalled(a => a.Remove(Arg<WorkgroupPermission>.Is.Anything));
-            var args = (WorkgroupPermission)RepositoryFactory.WorkgroupPermissionRepository.GetArgumentsForCallsMadeOn(a => a.Remove(Arg<WorkgroupPermission>.Is.Anything))[0][0]; 
+            Mock.Get(RepositoryFactory.WorkgroupPermissionRepository).Verify(a => a.Remove(It.IsAny<WorkgroupPermission>()));
+ 
             Assert.AreEqual(7, args.Id);
             Assert.AreEqual("1 permissions removed", Controller.Message);
             #endregion Assert

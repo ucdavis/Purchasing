@@ -1,6 +1,8 @@
 ﻿@using System.Configuration
-@using System.Web.Configuration
 @using Purchasing.Core.Domain
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
+
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
@@ -14,15 +16,7 @@
     
     <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")">
     
-    @{
-        var roles = Purchasing.Mvc.Services.UserSecurityService.UserRoles(User.Identity.Name);
-        var aRoles = new List<string>() { Role.Codes.Admin, Role.Codes.DepartmentalAdmin, Role.Codes.Approver };
-        // user have something that requires the admin menu?
-        var hasAdmin = roles.Any(a => aRoles.Contains(a));
-        
-    }
-    
-    @Styles.Render("~/Css/main")
+    @await Html.PartialAsync("_CssBundle", "~/Css/main")
 
     <style type="text/css">
         #branding
@@ -33,20 +27,30 @@
     
     @RenderSection("AdditionalStyles", false)
     
-    @Scripts.Render("~/bundles/jqueryui")
-    @Scripts.Render("~/bundles/head")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryui")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/head")
 
+@{ #pragma warning disable CS0162 } 
 	@if (false)
  { //Load the jquery docs for intellisense
 	<script src="../../Scripts/jquery-1.7.1-vsdoc.js" type="text/javascript"></script>
  }
-    
+@{ #pragma warning restore CS0162 } 
+
 </head>
 <body>
+    @{
+        var roles = Purchasing.Mvc.Services.UserSecurityService.UserRoles(User.Identity.Name);
+        var aRoles = new List<string>() { Role.Codes.Admin, Role.Codes.DepartmentalAdmin, Role.Codes.Approver };
+        // user have something that requires the admin menu?
+        var hasAdmin = roles.Any(a => aRoles.Contains(a));
+        
+    }
+    
 
 	<div class="wrapper">	
 
-    @Html.Action("ServiceMessages", "ServiceMessage")
+    @await Component.InvokeAsync("ServiceMessages")
 	
 		<header id="branding">
 			
@@ -112,7 +116,7 @@
                     </ul>
                 
                 </li>
-                @if (hasAdmin)
+                @if (@hasAdmin)
                 {
                 <li class="drop-down-menu">
                     @*@Html.ActionLink("Administration", "Index", "Admin", new {}, new {@class="navigation-button"})*@
@@ -178,7 +182,7 @@
 				
                 <div id="browser-warning" style="display:none;">
                     You are currently using a browser that is not supported.  
-                    Please check <a href="http://ucdavis.github.com/Purchasing/system.html">our system requirements page</a> and return to PrePurchasing using one of our recommended browsers.
+                    Please check <a href="https://ucdavis.github.io/Purchasing/system.html">our system requirements page</a> and return to PrePurchasing using one of our recommended browsers.
                 </div>
 
 			    @if (!string.IsNullOrWhiteSpace(TempData["ErrorMessage"] as string))
@@ -243,17 +247,17 @@
     <script type="text/javascript">
     (function (w) {
         var d = w['Configuration'] || (w['Configuration'] = {});
-        d.AnalyticsKey = '@WebConfigurationManager.AppSettings["AnalyticsKey"]';
+        d.AnalyticsKey = '@(configuration["AnalyticsKey"])';
         d.DataTablesPageSize = @(ViewBag.DataTablesPageSize ?? 10);
         d.LoadTableTools = @(ViewBag.LoadTableTools == null ? "false" : ViewBag.LoadTableTools.ToString().ToLower());
         d.DisableGlobalDataTables = @(ViewBag.DisableGlobalDataTables == null ? "false" : ViewBag.DisableGlobalDataTables.ToString().ToLower());
-        d.TableToolsSwf = '@Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf")';
+        d.TableToolsSwf = '@(Url.Content("~/Content/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls.swf"))';
         d.LoadFixedHeaders = @(ViewBag.LoadFixedHeaders == null ? "false" : ViewBag.LoadFixedHeaders.ToString().ToLower());
-        d.PersonLookup = '@ConfigurationManager.AppSettings["PersonLookupUrl"]';
+        d.PersonLookup = '@(configuration["PersonLookupUrl"])';
     }(window));
     </script>
     
-    @Scripts.Render("~/bundles/common")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/common")
 
     @RenderSection("AdditionalScripts", false)
     

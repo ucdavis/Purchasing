@@ -3,6 +3,8 @@ using Ninject;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
 using Purchasing.Jobs.Common;
+using Purchasing.Jobs.Common.Logging;
+using Serilog;
 
 namespace Purchasing.Jobs.UpdateLookupIndexes
 {
@@ -16,16 +18,17 @@ namespace Purchasing.Jobs.UpdateLookupIndexes
 
             try
             {
+                Log.Information("Updating Lookup Indexes");
                 indexService.CreateAccountsIndex();
                 indexService.CreateBuildingsIndex();
                 indexService.CreateCommoditiesIndex();
                 indexService.CreateVendorsIndex();
 
-                Console.WriteLine("Lookup indexes updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
+                Log.Information("Lookup indexes updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
             }
             catch (Exception ex)
             {
-                Console.WriteLine("FAILED: Indexes failed because {0}", ex.Message);
+                Log.Error(ex, "FAILED: Indexes failed because {0}", ex.Message);
             }
         }
     }

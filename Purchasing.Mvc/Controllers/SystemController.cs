@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -14,7 +15,7 @@ using System;
 namespace Purchasing.Mvc.Controllers
 {
     [HandleTransactionsManually]
-    [Authorize(Roles = Role.Codes.Admin)]
+    [Authorize(Policy = Role.Codes.Admin)]
     public class SystemController : SuperController
     {
         private readonly IIndexService _indexService;

@@ -9,11 +9,11 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/single/chosen")
+    @await Html.PartialAsync("_CssBundle", "~/Css/single/chosen")
 }
 
 @section AdditionalScripts{
-    @Scripts.Render("~/bundles/single/chosen")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/single/chosen")
     <script type="text/javascript">
         $(document).ready(function () {
             $(".chzn-select").chosen({ no_results_text: "No results matched", search_contains: true });
@@ -51,7 +51,7 @@
                     <label>Accounts Payable User to (Re)Route to:</label><span>*</span>
                 </div>
                 <div class="editor-field">
-                    @this.Select("ApUserId").Options(Model.PurchaserPeeps, x=>x.Id, x=>x.FullName).Selected(null).FirstOption("-- Clear --").Class("chzn-select")
+                    @Html.Select("ApUserId", o => o.Options(Model.PurchaserPeeps, x=>x.Id, x=>x.FullName).Selected(null).FirstOption("-- Clear --").Class("chzn-select"))
                 </div>
             </li>
             <li>				

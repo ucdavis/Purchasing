@@ -1,22 +1,24 @@
 ﻿using System;
-using System.Web.Mvc;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Services;
-using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using UCDArch.Core;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Attributes
 {
-    public class AuthorizeWorkgroupAccessAttribute : AuthorizeAttribute
+    public class AuthorizeWorkgroupAccessAttribute : Attribute, IAuthorizationFilter
     {
         private readonly ISecurityService _securityService;
 
         public AuthorizeWorkgroupAccessAttribute()
         {
-            _securityService = ServiceLocator.Current.GetInstance<ISecurityService>();
+            _securityService = SmartServiceLocator<ISecurityService>.GetService();
         }
-        public override void OnAuthorization(AuthorizationContext filterContext)
+        public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
             var workgroupId = 0;
             try
@@ -36,7 +38,6 @@ namespace Purchasing.Mvc.Attributes
             }
             if(workgroupId == 0) //We let this past because the workgroup has not been created and we will redirect within the methods
             {
-                base.OnAuthorization(filterContext);
                 return;
             }            
             bool hasAccess;
@@ -53,11 +54,8 @@ namespace Purchasing.Mvc.Attributes
                 {
                     message = "You do not have access to edit this workgroup";
                 }
-                filterContext.Result = new HttpUnauthorizedResult(message);
+                filterContext.Result = ViewHelper.NotAuthorized(message);
             }
-
-            base.OnAuthorization(filterContext);
-
         }
     }
 }

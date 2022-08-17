@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -20,7 +21,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestIndexReturnsView()
         {
             #region Arrange
-            
+
             #endregion Arrange
 
             #region Act
@@ -41,7 +42,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             try
             {
                 #region Arrange
-                Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NoMatch");
+                Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NoMatch");
                 SetupDataForWorkgroupActions1();
                 thisFar = true;
                 #endregion Arrange
@@ -50,12 +51,12 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
                 Controller.CreateWorkgroup();
                 #endregion Act
             }
-            catch(Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -63,7 +64,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -77,9 +78,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name4 (4)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name5 (5)", result.Organizations[1].ToString());
-            Assert.AreEqual("Name6 (6)", result.Organizations[2].ToString());
+            Assert.AreEqual("Name4 (4)", result.Organizations[0].Text);
+            Assert.AreEqual("Name5 (5)", result.Organizations[1].Text);
+            Assert.AreEqual("Name6 (6)", result.Organizations[2].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
             #endregion Assert
@@ -89,7 +90,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -103,9 +104,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name1 (1)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name2 (2)", result.Organizations[1].ToString());
-            Assert.AreEqual("Name3 (3)", result.Organizations[2].ToString());
+            Assert.AreEqual("Name1 (1)", result.Organizations[0].Text);
+            Assert.AreEqual("Name2 (2)", result.Organizations[1].Text);
+            Assert.AreEqual("Name3 (3)", result.Organizations[2].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
             #endregion Assert
@@ -115,7 +116,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupGetReturnsView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
@@ -129,9 +130,9 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name7 (7)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name8 (8)", result.Organizations[1].ToString());
-            Assert.AreEqual("Name9 (9)", result.Organizations[2].ToString());
+            Assert.AreEqual("Name7 (7)", result.Organizations[0].Text);
+            Assert.AreEqual("Name8 (8)", result.Organizations[1].Text);
+            Assert.AreEqual("Name9 (9)", result.Organizations[2].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
             #endregion Assert
@@ -145,13 +146,13 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupPostReturnsViewWhenNotValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "7");
             workgroup.Name = null;
             Controller.ModelState.AddModelError("Fake", "Error");
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(null).Dummy)).Return(true);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny)).Returns(true);
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
@@ -165,13 +166,13 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Controller.ModelState.AssertErrorsAre("Error");
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name7 (7)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name8 (8)", result.Organizations[1].ToString());
-            Assert.AreEqual("Name9 (9)", result.Organizations[2].ToString());
+            Assert.AreEqual("Name7 (7)", result.Organizations[0].Text);
+            Assert.AreEqual("Name8 (8)", result.Organizations[1].Text);
+            Assert.AreEqual("Name9 (9)", result.Organizations[2].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
 
-            WorkgroupService.AssertWasNotCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
+            Mock.Get(WorkgroupService).Verify(a => a.CreateWorkgroup(It.IsAny<Workgroup>(), It.IsAny<string[]>()), Times.Never());
             #endregion Assert		
         }
 
@@ -179,12 +180,12 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupPostReturnsViewWhenNotValid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "1");
             workgroup.Name = null;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(null).Dummy)).Return(false);
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny)).Returns(false);
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             #endregion Arrange
 
@@ -198,13 +199,13 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Controller.ModelState.AssertErrorsAre("You do not have access to the selected organization");
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Organizations.Count());
-            Assert.AreEqual("Name7 (7)", result.Organizations[0].ToString());
-            Assert.AreEqual("Name8 (8)", result.Organizations[1].ToString());
-            Assert.AreEqual("Name9 (9)", result.Organizations[2].ToString());
+            Assert.AreEqual("Name7 (7)", result.Organizations[0].Text);
+            Assert.AreEqual("Name8 (8)", result.Organizations[1].Text);
+            Assert.AreEqual("Name9 (9)", result.Organizations[2].Text);
             Assert.IsNotNull(result.Workgroup);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
 
-            WorkgroupService.AssertWasNotCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
+            Mock.Get(WorkgroupService).Verify(a => a.CreateWorkgroup(It.IsAny<Workgroup>(), It.IsAny<string[]>()), Times.Never());
             #endregion Assert
         }
 
@@ -213,20 +214,21 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestCreateWorkgroupPostRedirectsWhenValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
             SetupDataForWorkgroupActions1();
             new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
             var workgroup = CreateValidEntities.Workgroup(1);
             workgroup.PrimaryOrganization = OrganizationRepository.Queryable.Single(a => a.Id == "7");
-            workgroup.SetIdTo(99);
-            WorkgroupService.Expect(a => a.CreateWorkgroup(workgroup, null)).Return(workgroup).Repeat.Any();
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(null).Dummy)).Return(true); 
+            workgroup.Id = 99;
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny)).Returns(true);
+            object[] args = default;
+            Mock.Get(WorkgroupService).Setup(a => a.CreateWorkgroup(workgroup, null)).Returns(workgroup)
+                .Callback((Workgroup a, string[] b) => args = new object[] { a, b });
             #endregion Arrange
 
             #region Act
             var result = Controller.CreateWorkgroup(workgroup)
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.AddSubOrganizations(99));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -234,8 +236,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             Assert.AreEqual(99, result.RouteValues["id"]);
             Assert.AreEqual(1, Controller.ViewBag.StepNumber);
 
-            WorkgroupService.AssertWasCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
-            var args = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything))[0];
+            Mock.Get(WorkgroupService).Verify(a => a.CreateWorkgroup(It.IsAny<Workgroup>(), It.IsAny<string[]>()));
+
             Assert.AreEqual("Name1", ((Workgroup)args[0]).Name);
             Assert.IsNull(args[1]);
             Assert.AreEqual("Name1 workgroup was created", Controller.Message);

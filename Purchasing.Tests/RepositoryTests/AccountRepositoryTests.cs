@@ -7,6 +7,7 @@ using Purchasing.Tests.Core;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 
 
 namespace Purchasing.Tests.RepositoryTests
@@ -786,7 +787,7 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var record = CreateValidEntities.Account(4);
-            record.SetIdTo("IdTest");
+            record.Id = "IdTest";
             #endregion Arrange
 
             #region Act
@@ -821,12 +822,12 @@ namespace Purchasing.Tests.RepositoryTests
                 AccountRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsNotNull(record);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Unexpected row count: 0; expected: 1", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -917,7 +918,7 @@ namespace Purchasing.Tests.RepositoryTests
             #region Arrange
             OrganizationRepository.DbContext.BeginTransaction();
             var organization = CreateValidEntities.Organization(1);
-            organization.SetIdTo(" ");
+            organization.Id = " ";
             OrganizationRepository.EnsurePersistent(organization);
             OrganizationRepository.DbContext.CommitTransaction();
             var account = GetValid(9);
@@ -972,7 +973,7 @@ namespace Purchasing.Tests.RepositoryTests
             #region Arrange
             OrganizationRepository.DbContext.BeginTransaction();
             var organization = CreateValidEntities.Organization(1);
-            organization.SetIdTo("x".RepeatTimes(999));
+            organization.Id = "x".RepeatTimes(999);
             OrganizationRepository.EnsurePersistent(organization);
             OrganizationRepository.DbContext.CommitTransaction();
             var account = GetValid(9);

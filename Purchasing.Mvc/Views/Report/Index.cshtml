@@ -1,4 +1,5 @@
-﻿@using Purchasing.Core.Domain
+@using Microsoft.AspNetCore.Mvc.Razor
+@using Purchasing.Core.Domain
 @using Purchasing.Mvc.Services
 @{
     ViewBag.Title = "Reports";
@@ -59,37 +60,38 @@
 }
 
 
-@helper ContainerFor(string linkText, string action, bool special = false)
-{
-    if (special)
-    {
-            <a href="@Url.Action(action, "Report", new { showAdmin = false })">
-                <div class="report-info gradientbackground ui-corner-all box-shadow">
-        
-                    <ul>
-        
-                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(linkText)</li>
-
-                    </ul>
-        
-                </div>
-            </a>  
-    }
-    else
-    {
-            <a href="@Url.Action(action, "Report")">
-                <div class="report-info gradientbackground ui-corner-all box-shadow">
-        
-                    <ul>
-        
-                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(linkText)</li>
-
-                    </ul>
-        
-                </div>
-            </a>  
-    }
-}
+@{ HelperResult ContainerFor(string linkText, string action, bool special = false)
+	{
+	    if (special)
+	    {
+	            <a href="@Url.Action(action, "Report", new { showAdmin = false })">
+	                <div class="report-info gradientbackground ui-corner-all box-shadow">
+	        
+	                    <ul>
+	        
+	                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(linkText)</li>
+	
+	                    </ul>
+	        
+	                </div>
+	            </a>  
+	    }
+	    else
+	    {
+	            <a href="@Url.Action(action, "Report")">
+	                <div class="report-info gradientbackground ui-corner-all box-shadow">
+	        
+	                    <ul>
+	        
+	                        <li class="prop-name ui-corner-all border-all blue-gradientbackground">@(linkText)</li>
+	
+	                    </ul>
+	        
+	                </div>
+	            </a>  
+	    }
+		return new HelperResult(w => Task.CompletedTask);
+} }
 
 
 @if (roles.Contains(Role.Codes.DepartmentalAdmin))

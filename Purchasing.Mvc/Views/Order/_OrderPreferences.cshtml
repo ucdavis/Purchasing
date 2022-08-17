@@ -34,7 +34,7 @@
                         {
                             var selectedShipType = Model.Order.ShippingType != null ? Model.Order.ShippingType.Id : "ST";
                             
-                            <option value="@shipType.Id" data-warning="@shipType.Warning" @(selectedShipType == shipType.Id ? "selected='selected" : string.Empty) >@shipType.Name</option>
+                            <option value="@shipType.Id" data-warning="@shipType.Warning" selected="@(selectedShipType == shipType.Id)" >@shipType.Name</option>
                         }
                     </select>
                 </div>

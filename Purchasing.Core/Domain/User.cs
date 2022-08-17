@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using DataAnnotationsExtensions;
 using FluentNHibernate.Mapping;
 using UCDArch.Core.DomainModel;
 
@@ -38,7 +37,7 @@ namespace Purchasing.Core.Domain
         [StringLength(10)]
         [Display(Name = "KerberosID")]
         [DomainSignature]
-        public override string Id { get; protected set; }
+        public override string Id { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -52,7 +51,7 @@ namespace Purchasing.Core.Domain
 
         [Required]
         [StringLength(50)]
-        [Email]
+        [EmailAddress]
         public virtual string Email { get; set; }
 
         [Display(Name = "Away Until")]

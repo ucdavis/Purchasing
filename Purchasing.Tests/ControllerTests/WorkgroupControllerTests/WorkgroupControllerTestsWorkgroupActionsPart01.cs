@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
-
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -22,10 +22,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestIndexReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
             new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
-            WorkgroupService.Expect(a => a.LoadAdminWorkgroups(false)).Return(new Workgroup[0]);
+            Mock.Get(WorkgroupService).Setup(a => a.LoadAdminWorkgroups(false)).Returns(new Workgroup[0]);
             #endregion Arrange
 
             #region Act
@@ -57,10 +57,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         public void TestIndexReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
             SetupDataForWorkgroupActions1();
             new FakeAdminWorkgroups(3, AdminWorkgroupRepository);
-            WorkgroupService.Expect(a => a.LoadAdminWorkgroups(false)).Return(new Workgroup[0]);
+            Mock.Get(WorkgroupService).Setup(a => a.LoadAdminWorkgroups(false)).Returns(new Workgroup[0]);
             #endregion Arrange
 
             #region Act
@@ -87,7 +87,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //    try
         //    {
         //        #region Arrange
-        //        Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NoMatch");
+        //        Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NoMatch");
         //        SetupDataForWorkgroupActions1();
         //        thisFar = true;
         //        #endregion Arrange
@@ -96,12 +96,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //        Controller.Create();
         //        #endregion Act
         //    }
-        //    catch (Exception ex)
+        //    catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
         //    {
         //        Assert.IsTrue(thisFar);
         //        Assert.IsNotNull(ex);
         //        Assert.AreEqual("Sequence contains no elements", ex.Message);
-        //        throw;
+        //        throw ex;
         //    }	
         //}
 
@@ -110,7 +110,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreateGetReturnsView1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDataForWorkgroupActions1();
         //    new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
         //    #endregion Arrange
@@ -135,7 +135,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreateGetReturnsView2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "1");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "1");
         //    SetupDataForWorkgroupActions1();
         //    new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
         //    #endregion Arrange
@@ -160,7 +160,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreateGetReturnsView3()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
         //    SetupDataForWorkgroupActions1();
         //    new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
         //    #endregion Arrange
@@ -189,12 +189,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreatePostReturnsViewInNotValid()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
         //    SetupDataForWorkgroupActions1();
         //    var workgroup = CreateValidEntities.Workgroup(1);
         //    workgroup.Name = null;
         //    Controller.ModelState.AddModelError("Fake", "Error");
-        //    SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(null).Dummy)).Return(true);
+        //    Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out It.Ref<string>.IsAny)).Returns(true);
         //    new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
         //    #endregion Arrange
 
@@ -219,10 +219,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreatePostRedirectsToIndex1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
         //    SetupDataForWorkgroupActions1();
         //    var workgroup = CreateValidEntities.Workgroup(1);
-        //    WorkgroupService.Expect(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything)).Return(workgroup);
+        //    Mock.Get(WorkgroupService).Setup(a => a.CreateWorkgroup(It.IsAny<Workgroup>(), It.IsAny<string[]>())).Returns(workgroup);
         //    #endregion Arrange
 
         //    #region Act
@@ -233,9 +233,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
         //    #region Assert
         //    Assert.AreEqual("Name1 workgroup was created", Controller.Message);
-        //    //WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-        //    //var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
-        //    WorkgroupService.AssertWasCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
+        //    //Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
+        //    //var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(It.IsAny<Workgroup>()))[0][0]; 
+        //    Mock.Get(WorkgroupService).Verify(a => a.CreateWorkgroup(It.IsAny<Workgroup>(), It.IsAny<string[]>()));
         //    #endregion Assert
         //}
 
@@ -243,17 +243,16 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         //public void TestCreatePostRedirectsToIndex2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "3");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "3");
         //    SetupDataForWorkgroupActions1(true);
         //    var workgroup = CreateValidEntities.Workgroup(1);
         //    var organizations = new List<Organization>();
         //    for (int i = 0; i < 5; i++)
         //    {
         //        organizations.Add(CreateValidEntities.Organization(i+1));
-        //        organizations[i].SetIdTo((i + 1).ToString());
+        //        organizations[i].Id = (i + 1).ToString();
         //    }
-        //    OrganizationRepository.Expect(a => a.Queryable).Return(organizations.AsQueryable()).Repeat.Any();
-        //    WorkgroupService.Expect(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything)).Return(workgroup);
+        //    Mock.Get(WorkgroupService).Setup(a => a.CreateWorkgroup(It.IsAny<Workgroup>(), It.IsAny<string[]>())).Returns(workgroup);
         //    #endregion Arrange
 
         //    #region Act
@@ -264,8 +263,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
         //    #region Assert
         //    Assert.AreEqual("Name1 workgroup was created", Controller.Message);
-        //    WorkgroupService.AssertWasCalled(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything));
-        //    var args = (string[])WorkgroupService.GetArgumentsForCallsMadeOn(a => a.CreateWorkgroup(Arg<Workgroup>.Is.Anything, Arg<string[]>.Is.Anything))[0][1];
+        //    Mock.Get(WorkgroupService).Verify(a => a.CreateWorkgroup(It.IsAny<Workgroup>(), It.IsAny<string[]>()));
+        //    var args = (string[])WorkgroupService.GetArgumentsForCallsMadeOn(a => a.CreateWorkgroup(It.IsAny<Workgroup>(), It.IsAny<string[]>()))[0][1];
         //    Assert.AreEqual(2, args.Count());
         //    Assert.AreEqual("2", args[0]);
         //    Assert.AreEqual("4", args[1]);

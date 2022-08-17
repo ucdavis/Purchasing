@@ -1046,12 +1046,12 @@ namespace Purchasing.Tests.RepositoryTests
                 LineItemRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Order, Entity: Purchasing.Core.Domain.Order", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -1099,12 +1099,12 @@ namespace Purchasing.Tests.RepositoryTests
                 LineItemRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Commodity, Entity: Purchasing.Core.Domain.Commodity", ex.Message);
-                throw;
+                throw ex;
             }
         }
 

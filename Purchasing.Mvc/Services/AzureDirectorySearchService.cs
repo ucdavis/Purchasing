@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AzureActiveDirectorySearcher;
-using Microsoft.Azure;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Mvc.Services
 {
@@ -10,15 +10,15 @@ namespace Purchasing.Mvc.Services
     {
         private readonly GraphSearchClient _searcher;
 
-        public AzureDirectorySearchService()
+        public AzureDirectorySearchService(IConfiguration configuration)
         {
             _searcher =
                 new GraphSearchClient(
                     new ActiveDirectoryConfigurationValues(
-                        tenantName: CloudConfigurationManager.GetSetting("AzureSearchTenantName"),
-                        tenantId: CloudConfigurationManager.GetSetting("AzureSearchTenantId"),
-                        clientId: CloudConfigurationManager.GetSetting("AzureSearchClientId"),
-                        clientSecret: CloudConfigurationManager.GetSetting("AzureSearchClientSecret")));
+                        tenantName: configuration["AzureSearchTenantName"],
+                        tenantId: configuration["AzureSearchTenantId"],
+                        clientId: configuration["AzureSearchClientId"],
+                        clientSecret: configuration["AzureSearchClientSecret"]));
         }
         public List<DirectoryUser> SearchUsers(string searchTerm)
         {

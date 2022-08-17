@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Purchasing.Mvc.Helpers
 {

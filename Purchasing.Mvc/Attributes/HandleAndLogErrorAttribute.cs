@@ -1,9 +1,9 @@
-﻿using System.Web.Mvc;
-using Serilog;
+﻿using Serilog;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Purchasing.Mvc.Attributes
 {
-    public class HandleAndLogErrorAttribute : HandleErrorAttribute
+    public class HandleAndLogErrorAttribute : ExceptionFilterAttribute
     {
         public override void OnException(ExceptionContext filterContext)
         {

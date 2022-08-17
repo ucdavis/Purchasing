@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web.Mvc;
-using Microsoft.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
-using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Controllers;
-using Purchasing.Mvc.Services;
 using Serilog;
 
 namespace Purchasing.Mvc.Controllers
@@ -57,7 +54,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 if (Repository.OfType<Order>().Queryable.Any(a => a.RequestNumber == q.Trim().ToUpper()))
                 {
-                    return this.RedirectToAction<OrderController>(a => a.Lookup(q.Trim().ToUpper()));
+                    return this.RedirectToAction(nameof(OrderController.Lookup), typeof(OrderController).ControllerName(), new { id = q.Trim().ToUpper() });
                 }
             }
  

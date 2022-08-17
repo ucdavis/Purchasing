@@ -1,22 +1,26 @@
+using System;
 using System.Linq;
-using System.Web.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using UCDArch.Core.PersistanceSupport;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using UCDArch.Core;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Attributes
 {
-    public class AuthorizeRequesterInOrderWorkgroupAttribute : AuthorizeAttribute
+    public class AuthorizeRequesterInOrderWorkgroupAttribute : Attribute, IAuthorizationFilter
     {
         private readonly IRepositoryFactory _repositoryFactory;
         
         public AuthorizeRequesterInOrderWorkgroupAttribute()
         {
-            _repositoryFactory = ServiceLocator.Current.GetInstance<IRepositoryFactory>();
+            _repositoryFactory = SmartServiceLocator<IRepositoryFactory>.GetService();
         }
 
-        public override void OnAuthorization(AuthorizationContext filterContext)
+        public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
             var orderId = int.Parse((string)filterContext.RouteData.Values["id"]);
             var user = filterContext.HttpContext.User.Identity.Name;
@@ -38,10 +42,8 @@ namespace Purchasing.Mvc.Attributes
 
             if (!hasRequestorPermission)
             {
-                filterContext.Result = new HttpUnauthorizedResult("You do not have access to copy this order");
+                filterContext.Result = ViewHelper.NotAuthorized("You do not have access to copy this order");
             }
-
-            base.OnAuthorization(filterContext);
         }
     }
 }

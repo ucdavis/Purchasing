@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Routing;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Purchasing.Core;
@@ -11,14 +10,13 @@ using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
-
-
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
@@ -44,16 +42,16 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         {
             ConditionalApprovalRepository = FakeRepository<ConditionalApproval>();
             WorkgroupRepository = FakeRepository<Workgroup>();
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-            DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
-            SecurityService = MockRepository.GenerateStub<ISecurityService>();
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            DirectorySearchService = Mock.Of<IDirectorySearchService>();
+            SecurityService = Mock.Of<ISecurityService>();
 
-            OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            AdminWorkgroupRepository = MockRepository.GenerateStub<IRepository<AdminWorkgroup>>();
-            QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
+            OrganizationRepository = Mock.Of<IRepositoryWithTypedId<Organization, string>>();
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            AdminWorkgroupRepository = Mock.Of<IRepository<AdminWorkgroup>>();
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.AdminWorkgroupRepository).Returns(AdminWorkgroupRepository);
 
-            Controller = new TestControllerBuilder().CreateController<ConditionalApprovalController>(
+            Controller = new ConditionalApprovalController(
                 ConditionalApprovalRepository, 
                 WorkgroupRepository,
                 UserRepository,
@@ -63,15 +61,9 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 QueryRepositoryFactory);
         }
 
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);//Try this one if below doesn't work
-            //RouteRegistrar.RegisterRoutes(RouteTable.Routes);
-        }
-
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
 
             //Fixes problem where .Fetch is used in a query
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
@@ -81,7 +73,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
         public ConditionalApprovalControllerTests()
         {
-            Controller.Repository.Expect(a => a.OfType<ConditionalApproval>()).Return(ConditionalApprovalRepository).Repeat.Any();	
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<ConditionalApproval>()).Returns(ConditionalApprovalRepository);
         }
         #endregion Init
 
@@ -98,7 +90,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 {
                     var organization = CreateValidEntities.Organization((i * 4) + (j + 1));
                     organization.Name = "O" + organization.Name;
-                    organization.SetIdTo(((i * 4) + (j + 1)).ToString());
+                    organization.Id = ((i * 4) + (j + 1)).ToString();
                     users[i].Organizations.Add(organization);
                     organizations.Add(organization);
                 }

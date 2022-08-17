@@ -1,6 +1,9 @@
 using System.Security.Principal;
 using System.Web;
-using System.Web.Security;
+using CommonServiceLocator;
+using Microsoft.AspNetCore.Http;
+using Purchasing.Mvc;
+using UCDArch.Core;
 
 namespace Purchasing.Mvc.Services
 {
@@ -8,22 +11,22 @@ namespace Purchasing.Mvc.Services
     {
         string Current { get; }
         IPrincipal CurrentPrincipal { get; }
-        bool IsUserInRole(string userId, string roleId);
+        bool IsUserInRole(string userId, string roleId, bool showInactive = false);
         void RemoveUserRoleFromCache(string roleCacheId, string userId);
     }
 
     public class UserIdentity : IUserIdentity
     {
-        public string Current { get { return HttpContext.Current.User.Identity.Name; } }
-        public IPrincipal CurrentPrincipal { get { return HttpContext.Current.User; } }
-        public bool IsUserInRole(string userId, string roleId)
+        public string Current { get { return SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.User.Identity.Name; } }
+        public IPrincipal CurrentPrincipal { get { return SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.User; } }
+        public bool IsUserInRole(string userId, string roleId, bool showInactive = false)
         {
-            return Roles.IsUserInRole(userId, roleId);
+            return SmartServiceLocator<IRoleService>.GetService().IsUserInRole(userId, roleId, showInactive);
         }
 
         public void RemoveUserRoleFromCache(string roleCacheId, string userId)
         {
-            HttpContext.Current.Session.Remove(string.Format(roleCacheId, userId));
+            SmartServiceLocator<IHttpContextAccessor>.GetService().HttpContext.Session.Remove(string.Format(roleCacheId, userId));
         }
 
     }

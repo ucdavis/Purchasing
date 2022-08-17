@@ -1,13 +1,15 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
 using UCDArch.Testing.Fakes;
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -19,7 +21,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             SetupData2();
             #endregion Arrange
 
@@ -54,7 +56,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             #endregion Arrange
 
@@ -89,7 +91,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             #endregion Arrange
 
@@ -124,7 +126,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NoOneMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NoOneMe");
             SetupData2();
             #endregion Arrange
 
@@ -148,7 +150,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreateGetReturnsView5()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData2();
             #endregion Arrange
 
@@ -176,7 +178,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostReturnsViewWhenInvalid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -208,7 +210,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostReturnsViewWhenInvalid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -240,7 +242,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostReturnsViewWhenInvalid3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -273,7 +275,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostReturnsViewWhenInvalid4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -305,7 +307,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -315,19 +317,21 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.LessThan = true;
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = null;
+            AutoApproval args = default;
+            Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.Create(autoApprovalToCreate, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval) AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0]; 
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -344,7 +348,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -354,19 +358,21 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.LessThan = true;
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = null;
+            AutoApproval args = default;
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.Create(autoApprovalToCreate, false)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(false, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -384,7 +390,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -394,19 +400,21 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.LessThan = false;
             autoApprovalToCreate.Equal = false;
             autoApprovalToCreate.Expiration = null;
+            AutoApproval args = default;
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.Create(autoApprovalToCreate, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -423,7 +431,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -433,19 +441,21 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.LessThan = false;
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = null;
+            AutoApproval args = default;
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.Create(autoApprovalToCreate, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -462,7 +472,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid5()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -472,19 +482,21 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.LessThan = false;
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(6);
+            AutoApproval args = default;
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.Create(autoApprovalToCreate, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -501,7 +513,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid6()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -511,19 +523,21 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.LessThan = false;
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(5);
+            AutoApproval args = default;
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.Create(autoApprovalToCreate, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);
@@ -540,7 +554,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestCreatePostRedirectsWhenValid7()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData2();
             var autoApprovalToCreate = CreateValidEntities.AutoApproval(9);
             autoApprovalToCreate.User = null;
@@ -550,19 +564,21 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             autoApprovalToCreate.LessThan = false;
             autoApprovalToCreate.Equal = true;
             autoApprovalToCreate.Expiration = DateTime.UtcNow.ToPacificTime().Date.AddDays(1);
+            AutoApproval args = default;
+            Mock.Get(AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.Create(autoApprovalToCreate, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval)AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0];
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("Me", args.User.Id);
             Assert.AreEqual((decimal)765.32, args.MaxAmount);

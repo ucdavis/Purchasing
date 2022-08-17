@@ -1,0 +1,75 @@
+﻿@model string
+
+@switch (Model)
+{
+  case "~/Css/main":
+    <environment names="Staging,Production">
+      <link rel="stylesheet" href="~/bundles/main.min.css" />
+    </environment>
+    <environment names="Development">
+      <link rel="stylesheet" href="~/Css/Site.css" />
+      <link rel="stylesheet" href="~/Css/jquery-ui-1.8.16.caes.css" />
+      <link rel="stylesheet" href="~/Css/jquery.qtip.min.css" />
+      <link rel="stylesheet" href="~/Css/jquery.tzCheckbox.css" />
+      <link rel="stylesheet" href="~/Css/Datatables.css" />
+      <link rel="stylesheet" href="~/Css/custom.css" />
+      <link rel="stylesheet" href="~/Css/icons.css" />
+    </environment>
+    break;
+
+  case "~/Css/order":
+    <environment names="Staging,Production">
+      <link rel="stylesheet" href="~/bundles/order.min.css" />
+    </environment>
+    <environment names="Development">
+      <link rel="stylesheet" href="~/Css/single/fileuploader/fileuploader.css" />
+      <link rel="stylesheet" href="~/Css/single/orderrequest.css" />
+      <link rel="stylesheet" href="~/Css/single/chosen.css" />
+    </environment>
+    break;
+
+  case "~/Css/single/chosen":
+    <environment names="Staging,Production">
+      <link rel="stylesheet" href="~/bundles/single/chosen.min.css" />
+    </environment>
+    <environment names="Development">
+      <link rel="stylesheet" href="~/Css/single/chosen.css" />
+    </environment>
+    break;
+
+  case "~/Css/single/fileuploader/fileuploader":
+    <environment names="Staging,Production">
+      <link rel="stylesheet" href="~/bundles/single/fileuploader/fileuploader.min.css" />
+    </environment>
+    <environment names="Development">
+      <link rel="stylesheet" href="~/Css/single/fileuploader/fileuploader.css" />
+    </environment>
+    break;
+
+  case "~/Css/single/orderrequest":
+    <environment names="Staging,Production">
+      <link rel="stylesheet" href="~/bundles/single/orderrequest.min.css" />
+    </environment>
+    <environment names="Development">
+      <link rel="stylesheet" href="~/Css/single/orderrequest.css" />
+    </environment>
+    break;
+
+  case "~/Css/multiselector":
+    <environment names="Staging,Production">
+      <link rel="stylesheet" href="~/bundles/multiselector.min.css" />
+    </environment>
+    <environment names="Development">
+      <link rel="stylesheet" href="~/Css/single/jquery.multiselector.css" />
+    </environment>
+    break;
+
+  case "~/Css/single/receive-payment":
+    <environment names="Staging,Production">
+      <link rel="stylesheet" href="~/bundles/single/receive-payment.min.css" />
+    </environment>
+    <environment names="Development">
+      <link rel="stylesheet" href="~/Css/single/receive-payment.css" />
+    </environment>
+    break;
+}

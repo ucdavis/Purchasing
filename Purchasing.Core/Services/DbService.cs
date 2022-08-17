@@ -1,6 +1,8 @@
 ﻿using System.Configuration;
 using System.Data.Common;
 using System.Data.SqlClient;
+using UCDArch.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Core.Services
 {
@@ -16,7 +18,7 @@ namespace Purchasing.Core.Services
             //If connection string is null, use the default sql ce connection
             if (connectionString == null)
             {
-                connectionString = ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
+                connectionString = SmartServiceLocator<IConfiguration>.GetService()["ConnectionStrings:MainDB"];
             }
 
             var connection = new SqlConnection(connectionString);

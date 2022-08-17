@@ -6,29 +6,30 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Configuration;
-using System.Web.Mvc;
+using System.Web;
+using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using AzureActiveDirectorySearcher;
 using Ietws;
-using Microsoft.Azure;
-using Microsoft.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
-using Purchasing.Mvc.Services;
 using Serilog;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for the Admin class
     /// </summary>
-    [Authorize(Roles = Role.Codes.Admin)]
+    [Authorize(Policy = Role.Codes.Admin)]
     public class AdminController : ApplicationController
     {
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
@@ -39,8 +40,20 @@ namespace Purchasing.Mvc.Controllers
         private readonly IUserIdentity _userIdentity;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IWorkgroupService _workgroupService;
+        private readonly SendGridSettings _sendGridSettings;
+        private readonly IConfiguration _configuration;
 
-        public AdminController(IRepositoryWithTypedId<User, string> userRepository, IRepositoryWithTypedId<Role, string> roleRepository, IRepositoryWithTypedId<Organization,string> organizationRepository, IDirectorySearchService searchService, IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, IUserIdentity userIdentity, IRepositoryFactory repositoryFactory, IWorkgroupService workgroupService)
+        public AdminController(
+            IRepositoryWithTypedId<User, string> userRepository,
+            IRepositoryWithTypedId<Role, string> roleRepository,
+            IRepositoryWithTypedId<Organization, string> organizationRepository,
+            IDirectorySearchService searchService,
+            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository,
+            IUserIdentity userIdentity,
+            IRepositoryFactory repositoryFactory,
+            IWorkgroupService workgroupService,
+            IOptions<SendGridSettings> sendGridSettings,
+            IConfiguration configuration)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -50,6 +63,8 @@ namespace Purchasing.Mvc.Controllers
             _userIdentity = userIdentity;
             _repositoryFactory = repositoryFactory;
             _workgroupService = workgroupService;
+            _sendGridSettings = sendGridSettings.Value;
+            _configuration = configuration;
         }
 
         //
@@ -59,11 +74,11 @@ namespace Purchasing.Mvc.Controllers
             var admins = _roleRepository.Queryable.Where(x => x.Name.EndsWith("Admin")).Fetch(x => x.Users).ToList();
 
             var model = new AdminListModel()
-                            {
-                                Admins = admins.Single(x => x.Id == Role.Codes.Admin).Users.ToList(),
-                                DepartmentalAdmins = admins.Single(x => x.Id == Role.Codes.DepartmentalAdmin).Users.ToList(),
-                                SscAdmins = admins.Single(x => x.Id == Role.Codes.SscAdmin).Users.ToList()
-                            };
+            {
+                Admins = admins.Single(x => x.Id == Role.Codes.Admin).Users.ToList(),
+                DepartmentalAdmins = admins.Single(x => x.Id == Role.Codes.DepartmentalAdmin).Users.ToList(),
+                SscAdmins = admins.Single(x => x.Id == Role.Codes.SscAdmin).Users.ToList()
+            };
 
             return View(model);
         }
@@ -71,14 +86,14 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult ModifyDepartmental(string id)
         {
             var user = _userRepository.Queryable.Where(x => x.Id == id).Fetch(x => x.Organizations).SingleOrDefault() ??
-                       new User(null) {IsActive = true};
+                       new User(null) { IsActive = true };
             var isSscAdmin = user.Roles.Any(x => x.Id == Role.Codes.SscAdmin);
 
             var model = new DepartmentalAdminModel
-                            {
-                                User = user,
-                                IsSscAdmin = isSscAdmin
-                            };
+            {
+                User = user,
+                IsSscAdmin = isSscAdmin
+            };
 
             return View(model);
         }
@@ -86,7 +101,7 @@ namespace Purchasing.Mvc.Controllers
         [HttpPost]
         public ActionResult ModifyDepartmental(DepartmentalAdminModel departmentalAdminModel, List<string> orgs)
         {
-            if(orgs == null || orgs.Count == 0)
+            if (orgs == null || orgs.Count == 0)
             {
                 ModelState.AddModelError("User.Organizations", "You must select at least one department for a departmental Admin.");
             }
@@ -100,7 +115,7 @@ namespace Purchasing.Mvc.Controllers
 
             departmentalAdminModel.User.Roles = user.Roles;
 
-            //Mapper.Map(departmentalAdminModel.User, user); // This was causing problems if an existing DA was saved.
+            //_mapper.Map(departmentalAdminModel.User, user); // This was causing problems if an existing DA was saved.
             user.FirstName = departmentalAdminModel.User.FirstName;
             user.LastName = departmentalAdminModel.User.LastName;
             user.Email = departmentalAdminModel.User.Email;
@@ -108,7 +123,7 @@ namespace Purchasing.Mvc.Controllers
 
             var isDeptAdmin = user.Roles.Any(x => x.Id == Role.Codes.DepartmentalAdmin);
             var isSscAdmin = user.Roles.Any(x => x.Id == Role.Codes.SscAdmin);
-            
+
             if (!isDeptAdmin)
             {
                 user.Roles.Add(_roleRepository.GetById(Role.Codes.DepartmentalAdmin));
@@ -154,13 +169,14 @@ namespace Purchasing.Mvc.Controllers
                                     user.FullNameAndId);
             }
 
-            return this.RedirectToAction(a => a.Index());
+            //return this.RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(Index));
         }
 
         public ActionResult ModifyAdmin(string id)
         {
-            var user = (!string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id)  : new User(null) { IsActive = true }) ??
-                       new User(null) {IsActive = true};
+            var user = (!string.IsNullOrWhiteSpace(id) ? _userRepository.GetNullableById(id) : new User(null) { IsActive = true }) ??
+                       new User(null) { IsActive = true };
 
             return View(user);
         }
@@ -168,7 +184,7 @@ namespace Purchasing.Mvc.Controllers
         [HttpPost]
         public ActionResult ModifyAdmin(User user)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(user);
             }
@@ -181,12 +197,12 @@ namespace Purchasing.Mvc.Controllers
             userToSave.Email = user.Email;
             userToSave.IsActive = user.IsActive;
 
-            //Mapper.Map(user, userToSave);
+            //_mapper.Map(user, userToSave);
 
 
             var isAdmin = userToSave.Roles.Any(x => x.Id == Role.Codes.Admin);
 
-            if(!isAdmin)
+            if (!isAdmin)
             {
                 userToSave.Roles.Add(_roleRepository.GetById(Role.Codes.Admin));
             }
@@ -195,16 +211,16 @@ namespace Purchasing.Mvc.Controllers
 
             // invalid the cache for the user that was just given permissions
             _userIdentity.RemoveUserRoleFromCache(Resources.Role_CacheId, userToSave.Id);
-            
 
-            if(_emailPreferencesRepository.GetNullableById(userToSave.Id) == null)
+
+            if (_emailPreferencesRepository.GetNullableById(userToSave.Id) == null)
             {
                 _emailPreferencesRepository.EnsurePersistent(new EmailPreferences(userToSave.Id));
             }
 
             Message = string.Format("{0} was edited under the administrator role", user.FullNameAndId);
 
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(nameof(Index));
         }
 
         public ActionResult ModifySscAdmin(string id)
@@ -231,7 +247,7 @@ namespace Purchasing.Mvc.Controllers
             userToSave.Email = user.Email;
             userToSave.IsActive = user.IsActive;
 
-            //Mapper.Map(user, userToSave);
+            //_mapper.Map(user, userToSave);
 
 
             var isAdmin = userToSave.Roles.Any(x => x.Id == Role.Codes.SscAdmin);
@@ -254,7 +270,7 @@ namespace Purchasing.Mvc.Controllers
 
             Message = string.Format("{0} was edited under the SSC administrator role", user.FullNameAndId);
 
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(nameof(Index));
         }
 
         public ActionResult RemoveSscAdmin(string id)
@@ -264,13 +280,13 @@ namespace Purchasing.Mvc.Controllers
             if (user == null)
             {
                 ErrorMessage = string.Format("User {0} not found.", id);
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
 
             if (_userIdentity.IsUserInRole(id, Role.Codes.SscAdmin) == false)
             {
                 Message = id + " is not an SSC admin";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
 
             return View(user);
@@ -283,7 +299,7 @@ namespace Purchasing.Mvc.Controllers
             if (user == null)
             {
                 ErrorMessage = string.Format("User {0} not found.", id);
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
 
             var adminRole = user.Roles.Where(x => x.Id == Role.Codes.SscAdmin).Single();
@@ -297,10 +313,10 @@ namespace Purchasing.Mvc.Controllers
 
             Message = user.FullNameAndId + " was successfully removed from the SSC admin role";
 
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(nameof(Index));
         }
 
-           
+
 
         /// <summary>
         /// Note, post of this method is RemoveAdminRole
@@ -314,15 +330,15 @@ namespace Purchasing.Mvc.Controllers
             if (user == null)
             {
                 ErrorMessage = string.Format("User {0} not found.", id);
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
-            
+
             if (_userIdentity.IsUserInRole(id, Role.Codes.Admin) == false)
             {
                 Message = id + " is not an admin";
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
-            
+
             return View(user);
         }
 
@@ -333,7 +349,7 @@ namespace Purchasing.Mvc.Controllers
             if (user == null)
             {
                 ErrorMessage = string.Format("User {0} not found.", id);
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
 
             var adminRole = user.Roles.Where(x => x.Id == Role.Codes.Admin).Single();
@@ -347,7 +363,7 @@ namespace Purchasing.Mvc.Controllers
 
             Message = user.FullNameAndId + " was successfully removed from the admin role";
 
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(nameof(Index));
         }
 
         /// <summary>
@@ -361,13 +377,13 @@ namespace Purchasing.Mvc.Controllers
             if (user == null)
             {
                 ErrorMessage = string.Format("User {0} not found.", id);
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
 
-            if (_userIdentity.IsUserInRole(id, Role.Codes.DepartmentalAdmin) == false)
+            if (_userIdentity.IsUserInRole(id, Role.Codes.DepartmentalAdmin, true) == false)
             {
                 Message = id + " is not a departmental admin";
-                return this.RedirectToAction(a=> a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
 
             user.Organizations.ToList(); //pull in the orgs
@@ -384,12 +400,12 @@ namespace Purchasing.Mvc.Controllers
             if (user == null)
             {
                 ErrorMessage = string.Format("User {0} not found.", id);
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
             var adminRole = user.Roles.Where(x => x.Id == Role.Codes.DepartmentalAdmin).Single();
 
             user.Roles.Remove(adminRole);
-            user.Organizations.Clear(); 
+            user.Organizations.Clear();
 
             _userRepository.EnsurePersistent(user);
 
@@ -398,7 +414,7 @@ namespace Purchasing.Mvc.Controllers
 
             Message = user.FullNameAndId + " was successfully removed from the departmental admin role";
 
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(nameof(Index));
         }
 
         public ActionResult Clone(string id)
@@ -407,21 +423,21 @@ namespace Purchasing.Mvc.Controllers
             if (userToClone == null)
             {
                 ErrorMessage = string.Format("User {0} not found.", id);
-                return this.RedirectToAction(a => a.Index());
+                return this.RedirectToAction(nameof(Index));
             }
 
-            var newUser = new User {Organizations = userToClone.Organizations.ToList(), IsActive = true};
+            var newUser = new User { Organizations = userToClone.Organizations.ToList(), IsActive = true };
 
             var model = new DepartmentalAdminModel
             {
-                User = newUser               
+                User = newUser
             };
 
             Message =
                 string.Format(
                     "Please enter the new user's information. Department associations for {0} have been selected by default.",
                     userToClone.FullNameAndId);
- 
+
             //Using the modify departmental since it already has the proper logic
             return View("ModifyDepartmental", model);
         }
@@ -451,7 +467,7 @@ namespace Purchasing.Mvc.Controllers
                 Check.Require(workgroup.Administrative);
                 Check.Require(workgroup.IsActive);
 
-               _workgroupService.AddRelatedAdminUsers(workgroup);
+                _workgroupService.AddRelatedAdminUsers(workgroup);
             }
             catch (Exception ex)
             {
@@ -459,7 +475,7 @@ namespace Purchasing.Mvc.Controllers
                 message = ex.Message;
             }
 
-            return new JsonNetResult(new {success, message});
+            return new JsonNetResult(new { success, message });
         }
 
         /// <summary>
@@ -527,12 +543,12 @@ namespace Purchasing.Mvc.Controllers
 
             var view = new List<ValidateChildWorkgroupsViewModel>();
 
-            var childWorkGroups =_repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && !a.Administrative);
+            var childWorkGroups = _repositoryFactory.WorkgroupRepository.Queryable.Where(a => a.IsActive && !a.Administrative);
             foreach (var childWorkGroup in childWorkGroups)
             {
                 var parentWorkGroupIds = _workgroupService.GetParentWorkgroups(childWorkGroup.Id);
-                var parentPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => parentWorkGroupIds.Contains(a.Workgroup.Id)).Select(s => new {s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.Workgroup.Id, s.Workgroup.IsFullFeatured}).ToList();
-                var childPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.Workgroup == childWorkGroup && a.IsAdmin).Select(s => new {s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.ParentWorkgroup.Id, s.IsFullFeatured }).ToList();
+                var parentPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => parentWorkGroupIds.Contains(a.Workgroup.Id)).Select(s => new { s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.Workgroup.Id, s.Workgroup.IsFullFeatured }).ToList();
+                var childPermissions = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Where(a => a.Workgroup == childWorkGroup && a.IsAdmin).Select(s => new { s.Id, role = s.Role.Id, user = s.User.Id, parentWorkgroupId = s.ParentWorkgroup.Id, s.IsFullFeatured }).ToList();
 
                 var missingChildPermissions = parentPermissions.Where(a => !childPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
                 var extraChildPermissions = childPermissions.Where(a => !parentPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
@@ -573,7 +589,7 @@ namespace Purchasing.Mvc.Controllers
         public virtual bool NeedToCheckWorkgroupPermissions(string key)
         {
             Log.Information("NeedToCheckWorkgroupPermissions Starting");
-            if (string.IsNullOrWhiteSpace(key) || key != ConfigurationManager.AppSettings["ValidationKey"])
+            if (string.IsNullOrWhiteSpace(key) || key != _configuration["ValidationKey"])
             {
                 Log.Warning("NeedToCheckWorkgroupPermissions Validation Key missing");
                 return true;
@@ -601,8 +617,8 @@ namespace Purchasing.Mvc.Controllers
                     Log.Warning("NeedToCheckWorkgroupPermissions Run the Workgroup Permissions Check");
 
                     var smtpClient = new SmtpClient("smtp.sendgrid.net", Convert.ToInt32(587));
-                    var credentials = new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"],
-                        WebConfigurationManager.AppSettings["SendGridPassword"]);
+                    var credentials = new NetworkCredential(_sendGridSettings.SendGridUserName,
+                        _sendGridSettings.SendGridPassword);
                     smtpClient.Credentials = credentials;
 
                     smtpClient.Send(sgMessage);
@@ -634,7 +650,7 @@ namespace Purchasing.Mvc.Controllers
                 //var missingChildPermissions = parentPermissions.Where(a => !childPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
                 var extraChildPermissions = childPermissions.Where(a => !parentPermissions.Any(b => b.role == a.role && b.user == a.user && b.parentWorkgroupId == a.parentWorkgroupId && b.IsFullFeatured == a.IsFullFeatured)).ToList();
 
-                
+
                 if (extraChildPermissions.Count > 0)
                 {
                     foreach (var extraChildPermission in extraChildPermissions)
@@ -649,7 +665,7 @@ namespace Purchasing.Mvc.Controllers
                 }
             }
             Message = string.Format("{0} permissions removed", count);
-            return this.RedirectToAction(a => a.ValidateChildWorkgroups());
+            return this.RedirectToAction(nameof(ValidateChildWorkgroups));
         }
 
         /// <summary>
@@ -672,14 +688,14 @@ namespace Purchasing.Mvc.Controllers
             };
 
             var smtpClient = new SmtpClient("smtp.sendgrid.net", Convert.ToInt32(587));
-            var credentials = new NetworkCredential(WebConfigurationManager.AppSettings["SendGridUserName"],
-                WebConfigurationManager.AppSettings["SendGridPassword"]);
+            var credentials = new NetworkCredential(_sendGridSettings.SendGridUserName,
+                _sendGridSettings.SendGridPassword);
             smtpClient.Credentials = credentials;
 
             smtpClient.Send(sgMessage);
 
             Message = "Test message sent";
-            return this.RedirectToAction(a => a.Index());
+            return this.RedirectToAction(nameof(Index));
         }
 
         /// <summary>
@@ -691,12 +707,12 @@ namespace Purchasing.Mvc.Controllers
             //var _searcher =
             //    new GraphSearchClient(
             //        new ActiveDirectoryConfigurationValues(
-            //            tenantName: CloudConfigurationManager.GetSetting("AzureSearchTenantName"),
-            //            tenantId: CloudConfigurationManager.GetSetting("AzureSearchTenantId"),
-            //            clientId: CloudConfigurationManager.GetSetting("AzureSearchClientId"),
-            //            clientSecret: CloudConfigurationManager.GetSetting("AzureSearchClientSecret")));
+            //            tenantName: configuration["AzureSearchTenantName"],
+            //            tenantId: configuration["AzureSearchTenantId"],
+            //            clientId: configuration["AzureSearchClientId"],
+            //            clientSecret: configuration["AzureSearchClientSecret"]));
 
-            var _searcher = new IetClient(CloudConfigurationManager.GetSetting("IetWsKey"));
+            var _searcher = new IetClient(_configuration["IetWsKey"]);
             if (id != null && id.Contains("@"))
             {
                 var ucdContactResult = await _searcher.Contacts.Search(ContactSearchField.email, id);
@@ -718,7 +734,7 @@ namespace Purchasing.Mvc.Controllers
                     return new JsonNetResult(new IetWsDirectorySearchService.Person());
                 }
                 var ucdKerbPerson = ucdKerbResult.ResponseData.Results.First();
-                var xxx =  new IetWsDirectorySearchService.Person
+                var xxx = new IetWsDirectorySearchService.Person
 
                 {
                     GivenName = ucdKerbPerson.DFirstName,
@@ -752,7 +768,7 @@ namespace Purchasing.Mvc.Controllers
                     return new JsonNetResult(new IetWsDirectorySearchService.Person());
                 }
                 var ucdContact = ucdContactResult.ResponseData.Results.First();
-                var xxx =  new IetWsDirectorySearchService.Person
+                var xxx = new IetWsDirectorySearchService.Person
 
                 {
                     GivenName = ucdKerbPerson.DFirstName,
@@ -777,10 +793,10 @@ namespace Purchasing.Mvc.Controllers
             searchTerm = searchTerm.ToLower().Trim();
 
             var users = _userRepository.Queryable.Where(a => a.Email == searchTerm || a.Id == searchTerm).ToList();
-            if(users.Count == 0)
+            if (users.Count == 0)
             {
                 var ldapuser = _searchService.FindUser(searchTerm);
-                if(ldapuser != null)
+                if (ldapuser != null)
                 {
                     Check.Require(!string.IsNullOrWhiteSpace(ldapuser.LoginId));
                     Check.Require(!string.IsNullOrWhiteSpace(ldapuser.EmailAddress));
@@ -794,18 +810,18 @@ namespace Purchasing.Mvc.Controllers
                 }
             }
 
-            if(users.Count() == 0)
+            if (users.Count() == 0)
             {
                 return null;
             }
             return new JsonNetResult(users.Select(a => new { id = a.Id, FirstName = a.FirstName, LastName = a.LastName, Email = a.Email, IsActive = a.IsActive }));
-        } 
+        }
 
         public JsonNetResult SearchOrgs(string searchTerm)
         {
             var orgs = _organizationRepository.Queryable.Where(a => a.Id.Contains(searchTerm) || a.Name.Contains(searchTerm)).OrderBy(o => o.Name);
 
-            return new JsonNetResult(orgs.Select(a => new {id = a.Id, label = string.Format("{0} ({1})", a.Name, a.Id) }));
+            return new JsonNetResult(orgs.Select(a => new { id = a.Id, label = string.Format("{0} ({1})", a.Name, a.Id) }));
         }
 
         #endregion AJAX Helpers
@@ -825,7 +841,7 @@ namespace Purchasing.Mvc.Controllers
         public IList<User> Admins { get; set; }
         public IList<User> DepartmentalAdmins { get; set; }
 
-        public IList<User> SscAdmins { get; set; } 
+        public IList<User> SscAdmins { get; set; }
     }
 
 
@@ -833,7 +849,7 @@ namespace Purchasing.Mvc.Controllers
     {
         public Workgroup ChildWorkgroup { get; set; }
         public List<WorkgroupPermission> MissingChildPermissions { get; set; }
-        public List<WorkgroupPermission> ExtraChildPermissions { get; set; } 
+        public List<WorkgroupPermission> ExtraChildPermissions { get; set; }
     }
 
 }

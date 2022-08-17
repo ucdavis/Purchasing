@@ -1,5 +1,10 @@
-﻿@using System.Configuration
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
 @model ReviewOrderViewModel
+
+@{
+    var personLookupUrl = configuration["PersonLookupUrl"];
+}
 
 <section id="history" class="ui-corner-all display-form">
 
@@ -14,7 +19,7 @@
                         <td>@tracking.DateCreated</td>
                         <td>@tracking.Description</td>
                         <td>@tracking.StatusCode.Name</td>
-                        <td>@tracking.User.FullName <a class="showTip ui-icon ui-icon-info" href="@ConfigurationManager.AppSettings["PersonLookupUrl"]@tracking.User.Email" target="_blank" title='Opens a new window to the campus directory performing a search for this person.'></a></td>
+                        <td>@tracking.User.FullName <a class="showTip ui-icon ui-icon-info" href="@personLookupUrl@tracking.User.Email" target="_blank" title='Opens a new window to the campus directory performing a search for this person.'></a></td>
                     </tr>
                 }
             </tbody>

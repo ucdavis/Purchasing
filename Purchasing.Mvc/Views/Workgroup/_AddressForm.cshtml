@@ -87,7 +87,7 @@ Example: Dinosaur 1  *@
                         @Html.LabelFor(model => model.WorkgroupAddress.State)<span>*</span> 
                     </div>
                     <div class="editor-field">
-                        @this.Select("WorkgroupAddress.State").Options(Model.States, a => a.Id, a => a.Name).FirstOption("--Select State--").Selected(Model.WorkgroupAddress != null && !string.IsNullOrEmpty(Model.WorkgroupAddress.State) ? Model.WorkgroupAddress.State : string.Empty)
+                        @Html.Select("WorkgroupAddress.State", o => o.Options(Model.States, a => a.Id, a => a.Name).FirstOption("--Select State--").Selected(Model.WorkgroupAddress != null && !string.IsNullOrEmpty(Model.WorkgroupAddress.State) ? Model.WorkgroupAddress.State : string.Empty))
                         @*@Html.EditorFor(model => model.WorkgroupAddress.State)*@
                         @Html.ValidationMessageFor(model => model.WorkgroupAddress.State)
                     </div>

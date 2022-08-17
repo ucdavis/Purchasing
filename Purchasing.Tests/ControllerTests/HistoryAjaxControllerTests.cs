@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
@@ -18,12 +15,15 @@ using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Moq;
 
 
 namespace Purchasing.Tests.ControllerTests
@@ -45,27 +45,22 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            //QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            OrderService = MockRepository.GenerateStub<IOrderService>();
-            SearchService = MockRepository.GenerateStub<ISearchService>();
-            AccessQueryService = MockRepository.GenerateStub<IAccessQueryService>();
-            //QueryRepositoryFactory.OrderTrackingHistoryRepository = MockRepository.GenerateStub<IRepository<OrderTrackingHistory>>();
-            //QueryRepositoryFactory.CommentHistoryRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<CommentHistory, Guid>>();
-            //QueryRepositoryFactory.OrderHistoryRepository = MockRepository.GenerateStub<IRepository<OrderHistory>>();
-            DbService = MockRepository.GenerateStub<IDbService>();
+            //QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            OrderService = Mock.Of<IOrderService>();
+            SearchService = Mock.Of<ISearchService>();
+            AccessQueryService = Mock.Of<IAccessQueryService>();
+            //QueryRepositoryFactory.OrderTrackingHistoryRepository = Mock.Of<IRepository<OrderTrackingHistory>>();
+            //QueryRepositoryFactory.CommentHistoryRepository = Mock.Of<IRepositoryWithTypedId<CommentHistory, Guid>>();
+            //QueryRepositoryFactory.OrderHistoryRepository = Mock.Of<IRepository<OrderHistory>>();
+            DbService = Mock.Of<IDbService>();
 
-            Controller = new TestControllerBuilder().CreateController<HistoryAjaxController>(SearchService, AccessQueryService, OrderService, DbService);
+            Controller = new HistoryAjaxController(SearchService, AccessQueryService, OrderService, DbService);
 
-        }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
 
             //Fixes problem where .Fetch is used in a query
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
@@ -104,7 +99,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestRecentActivityReturnsPartialView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderTrackingHistory = new List<OrderTrackingHistory>();
             for (int i = 0; i < 5; i++)
             {
@@ -135,7 +130,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestRecentActivityReturnsPartialView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderTrackingHistory = new List<OrderTrackingHistory>();
             for (int i = 0; i < 5; i++)
             {
@@ -166,7 +161,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestRecentActivityReturnsPartialView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderTrackingHistory = new List<OrderTrackingHistory>();
             for (int i = 0; i < 5; i++)
             {
@@ -201,7 +196,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestRecentCommentsReturnsPartialView()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var commentHistory = new List<CommentHistory>();
             for (int i = 0; i < 10; i++)
             {
@@ -251,12 +246,10 @@ namespace Purchasing.Tests.ControllerTests
             rtValue2.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             //rtValue2.Results = QueryRepositoryFactory.OrderHistoryRepository.Queryable.Take(3).ToList();
 
-            OrderService.Expect(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
-                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null))
-                                                       .Return(rtValue1);
-            OrderService.Expect(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
-                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null))
-                                                       .Return(rtValue2);
+            Mock.Get(OrderService).Setup(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
+                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null)).Returns(rtValue1);
+            Mock.Get(OrderService).Setup(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
+                                                       new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null)).Returns(rtValue2);
             #endregion Arrange
 
             #region Act
@@ -269,9 +262,9 @@ namespace Purchasing.Tests.ControllerTests
             dynamic data = JObject.FromObject(results.Data);
             Assert.AreEqual(5, (int)data.deniedThisMonth);
             Assert.AreEqual(3, (int)data.completedThisMonth);
-            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
+            Mock.Get(OrderService).Verify(a => a.GetIndexedListofOrders(null, null, false, false, OrderStatusCode.Codes.Denied, null, null, true,
                                                        new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null));
-            OrderService.AssertWasCalled(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
+            Mock.Get(OrderService).Verify(a => a.GetIndexedListofOrders(null, null, true, false, OrderStatusCode.Codes.Complete, null, null, true,
                                                        new DateTime(DateTime.UtcNow.ToPacificTime().Year, DateTime.UtcNow.ToPacificTime().Month, 1), null));
             #endregion Assert
         }
@@ -306,7 +299,7 @@ namespace Purchasing.Tests.ControllerTests
         /// Tests the controller has 6 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasFiveAttributes()
+        public void TestControllerHasSixAttributes()
         {
             #region Arrange
             var controllerClass = _controllerClass;
@@ -351,11 +344,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Count() > 0, "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 
@@ -404,23 +397,6 @@ namespace Purchasing.Tests.ControllerTests
 
             #region Assert
             Assert.IsTrue(result.Count() > 0, "ProfileAttribute not found.");
-            #endregion Assert
-        }
-
-        [TestMethod]
-        public void TestControllerHasSessionStateAttribute()
-        {
-            #region Arrange
-            var controllerClass = _controllerClass;
-            #endregion Arrange
-
-            #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<SessionStateAttribute>();
-            #endregion Act
-
-            #region Assert
-            Assert.IsTrue(result.Count() > 0, "SessionStateAttribute not found.");
-            Assert.AreEqual("Disabled", result.ElementAt(0).Behavior.ToString());
             #endregion Assert
         }
 

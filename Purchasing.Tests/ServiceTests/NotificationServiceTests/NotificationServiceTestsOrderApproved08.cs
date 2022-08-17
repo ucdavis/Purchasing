@@ -4,10 +4,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
-using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using System.Linq;
 using System.Linq.Expressions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 {
@@ -20,7 +21,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromPurchaser01()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("awong");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("awong");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -75,7 +76,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromPurchaser02()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("awong");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("awong");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);
@@ -129,7 +130,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         public void TestOrderApprovedWhenApprovedFromPurchaser03()
         {
             #region Arrange
-            UserIdentity.Expect(a => a.Current).Return("awong");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("awong");
             SetupUsers();
             var order = SetupData1("bender", OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.Purchaser));
             order.DateCreated = new DateTime(2011, 12, 31, 09, 49, 33);

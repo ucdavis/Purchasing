@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
-
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -29,13 +29,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.DeleteWorkgroupVendor(0,4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.Remove(Arg<WorkgroupVendor>.Is.Anything));
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()), Times.Never());
             #endregion Assert		
         }
 
@@ -56,8 +55,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Id);
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.Remove(Arg<WorkgroupVendor>.Is.Anything));
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()), Times.Never());
             #endregion Assert		
         }
         #endregion DeleteWorkgroupVendor Get Tests
@@ -72,14 +71,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.DeleteWorkgroupVendor(0, 4, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.AreEqual("WorkgroupVendor not found.", Controller.ErrorMessage);
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.Remove(Arg<WorkgroupVendor>.Is.Anything));
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()), Times.Never());
             #endregion Assert
         }
 
@@ -99,12 +97,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             }
             workgroupVendors[2].IsActive = false;
             new FakeWorkgroupVendors(3, WorkgroupVendorRepository, workgroupVendors);
+            WorkgroupVendor args = default;
+            Mock.Get( WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.DeleteWorkgroupVendor(3, 2, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -112,9 +112,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual("WorkgroupVendor Removed Successfully", Controller.Message);
 
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.Remove(Arg<WorkgroupVendor>.Is.Anything));
-            WorkgroupVendorRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
-            var args = (WorkgroupVendor) WorkgroupVendorRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything))[0][0]; 
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()));
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual(2, args.Id);
             Assert.IsFalse(args.IsActive);
@@ -137,12 +137,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             }
             workgroupVendors[2].IsActive = false;
             new FakeWorkgroupVendors(3, WorkgroupVendorRepository, workgroupVendors);
+            WorkgroupVendor args = default;
+            Mock.Get(WorkgroupVendorRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()))
+                .Callback<WorkgroupVendor>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.DeleteWorkgroupVendor(4, 3, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.VendorList(4));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -150,9 +152,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(4, result.RouteValues["id"]);
             Assert.AreEqual("WorkgroupVendor Removed Successfully", Controller.Message);
 
-            WorkgroupVendorRepository.AssertWasNotCalled(a => a.Remove(Arg<WorkgroupVendor>.Is.Anything));
-            WorkgroupVendorRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything));
-            var args = (WorkgroupVendor)WorkgroupVendorRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupVendor>.Is.Anything))[0][0];
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.Remove(It.IsAny<WorkgroupVendor>()), Times.Never());
+            Mock.Get(WorkgroupVendorRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupVendor>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Id);
             Assert.IsFalse(args.IsActive);

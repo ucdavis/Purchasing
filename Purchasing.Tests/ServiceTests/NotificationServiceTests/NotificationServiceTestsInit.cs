@@ -8,9 +8,10 @@ using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 {
@@ -35,26 +36,25 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
         public NotificationServiceTests()
         {
-            EmailRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<EmailQueue, Guid>>();
-            EmailPreferenceRepository = MockRepository.GenerateStub < IRepositoryWithTypedId<EmailPreferences, string>>();
-            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-            OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
-            ServerLink = MockRepository.GenerateStub<IServerLink>();
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
-            RepositoryFactory.OrganizationRepository =
-                MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
+            EmailRepository = Mock.Of<IRepositoryWithTypedId<EmailQueue, Guid>>();
+            EmailPreferenceRepository = Mock.Of<IRepositoryWithTypedId<EmailPreferences, string>>();
+            UserIdentity = Mock.Of<IUserIdentity>();
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            OrderStatusCodeRepository = Mock.Of<IRepositoryWithTypedId<OrderStatusCode, string>>();
+            ServerLink = Mock.Of<IServerLink>();
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrganizationRepository).Returns(Mock.Of<IRepositoryWithTypedId<Organization, string>>());
 
-            AdminWorkgroupRepository = MockRepository.GenerateStub<IRepository<AdminWorkgroup>>();
-            QueryRepositoryFactory.AdminWorkgroupRepository = AdminWorkgroupRepository;
-            WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
-            RepositoryFactory.WorkgroupRepository = WorkgroupRepository;
+            AdminWorkgroupRepository = Mock.Of<IRepository<AdminWorkgroup>>();
+            Mock.Get(QueryRepositoryFactory).SetupGet(r => r.AdminWorkgroupRepository).Returns(AdminWorkgroupRepository);
+            WorkgroupRepository = Mock.Of<IRepository<Workgroup>>();
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupRepository).Returns(WorkgroupRepository);
 
             NotificationService = new NotificationService(EmailRepository, EmailPreferenceRepository, UserRepository, OrderStatusCodeRepository, UserIdentity, ServerLink, QueryRepositoryFactory, RepositoryFactory);
 
-            ServerLink.Expect(a => a.Address).Return("FakeHost").Repeat.Any();
-            ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
+            Mock.Get(ServerLink).SetupGet(a => a.Address).Returns("FakeHost");
+            ApprovalRepository = Mock.Of<IRepository<Approval>>();
 
             SetupOrderStatusCodes();
         }
@@ -71,7 +71,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("AM");
+            orderStatusCode.Id = "AM";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -80,7 +80,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("AP");
+            orderStatusCode.Id = "AP";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -89,7 +89,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = false;
-            orderStatusCode.SetIdTo("CA");
+            orderStatusCode.Id = "CA";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -98,7 +98,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = false;
-            orderStatusCode.SetIdTo("CN");
+            orderStatusCode.Id = "CN";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -107,7 +107,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             orderStatusCode.IsComplete = true;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("CP");
+            orderStatusCode.Id = "CP";
             orderStatusCodes.Add(orderStatusCode);
 
             orderStatusCode = new OrderStatusCode();
@@ -116,7 +116,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = true;
-            orderStatusCode.SetIdTo("PR");
+            orderStatusCode.Id = "PR";
             orderStatusCodes.Add(orderStatusCode);
 
 
@@ -126,7 +126,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             orderStatusCode.IsComplete = false;
             orderStatusCode.KfsStatus = false;
             orderStatusCode.ShowInFilterList = false;
-            orderStatusCode.SetIdTo("RQ");
+            orderStatusCode.Id = "RQ";
             orderStatusCodes.Add(orderStatusCode);
 
             new FakeOrderStatusCodes(0, OrderStatusCodeRepository, orderStatusCodes, true);
@@ -138,68 +138,68 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             var user = CreateValidEntities.User(1);
             user.FirstName = "Philip";
             user.LastName = "Fry";
-            user.SetIdTo("pjfry");
+            user.Id = "pjfry";
             users.Add(user);
 
             user = CreateValidEntities.User(2);
             user.FirstName = "Homer";
             user.LastName = "Simpson";
-            user.SetIdTo("hsimpson");
+            user.Id = "hsimpson";
             users.Add(user);
 
             user = CreateValidEntities.User(3);
             user.FirstName = "Zapp";
             user.LastName = "Brannigan";
-            user.SetIdTo("brannigan");
+            user.Id = "brannigan";
             users.Add(user);
 
 
             user = CreateValidEntities.User(4);
             user.FirstName = "Amy";
             user.LastName = "Wong";
-            user.SetIdTo("awong");
+            user.Id = "awong";
             users.Add(user);
 
             user = CreateValidEntities.User(5);
             user.FirstName = "John";
             user.LastName = "Zoidberg";
-            user.SetIdTo("zoidberg");
+            user.Id = "zoidberg";
             users.Add(user);
 
             user = CreateValidEntities.User(6);
             user.FirstName = "Moe";
             user.LastName = "Szyslak";
-            user.SetIdTo("moe");
+            user.Id = "moe";
             users.Add(user);
 
             user = CreateValidEntities.User(7);
             user.FirstName = "Monty";
             user.LastName = "Burns";
-            user.SetIdTo("burns");
+            user.Id = "burns";
             users.Add(user);
 
             user = CreateValidEntities.User(8);
             user.FirstName = "Ned";
             user.LastName = "Flanders";
-            user.SetIdTo("flanders");
+            user.Id = "flanders";
             users.Add(user);
 
             user = CreateValidEntities.User(9);
             user.FirstName = "Frank";
             user.LastName = "Grimes";
-            user.SetIdTo("grimes");
+            user.Id = "grimes";
             users.Add(user);
 
             user = CreateValidEntities.User(10);
             user.FirstName = "Bender";
             user.LastName = "Rodriguez";
-            user.SetIdTo("bender");
+            user.Id = "bender";
             users.Add(user);
 
             user = CreateValidEntities.User(11);
             user.FirstName = "Hermes";
             user.LastName = "Conrad";
-            user.SetIdTo("hconrad");
+            user.Id = "hconrad";
             users.Add(user);
 
             if(updateUser != null)
@@ -226,7 +226,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             var approvals = new List<Approval>();
 
             var order = CreateValidEntities.Order(1);
-            order.SetIdTo(1);
+            order.Id = 1;
             order.CreatedBy = UserRepository.GetNullableById(userId);
             Assert.IsNotNull(order.CreatedBy);
             order.StatusCode = currentLevel;
@@ -237,7 +237,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
             order.OrderTrackings = SetupOrderTracking(order);
 
             order.Organization = CreateValidEntities.Organization(9);
-            order.Organization.SetIdTo("testOrg");
+            order.Organization.Id = "testOrg";
 
             return order;
         }
@@ -280,7 +280,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
         {
             //var approval = new Approval();
             //approval.Order = new Order();
-            //approval.Order.SetIdTo(i + 1 + currentOffSet);
+            //approval.Order.Id = i + 1 + currentOffSet;
             //approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Requester);
             //approval.User = createdBy;
             //approval.Approved = true;
@@ -288,7 +288,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             var approval = new Approval();
             approval.Order = new Order();
-            approval.Order.SetIdTo(order.Id);
+            approval.Order.Id = order.Id;
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Approver);
             approval.User = UserRepository.GetNullableById("hsimpson");
             if(approval.StatusCode.Level < currentLevel.Level)
@@ -299,7 +299,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             approval = new Approval();
             approval.Order = new Order();
-            approval.Order.SetIdTo(order.Id);
+            approval.Order.Id = order.Id;
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.AccountManager);
             approval.User = UserRepository.GetNullableById("flanders");
             if(approval.StatusCode.Level < currentLevel.Level)
@@ -310,7 +310,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             approval = new Approval();
             approval.Order = new Order();
-            approval.Order.SetIdTo(order.Id);
+            approval.Order.Id = order.Id;
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(Role.Codes.Purchaser);
             approval.User = UserRepository.GetNullableById("awong");
             if(approval.StatusCode.Level < currentLevel.Level)
@@ -321,7 +321,7 @@ namespace Purchasing.Tests.ServiceTests.NotificationServiceTests
 
             approval = new Approval();
             approval.Order = new Order();
-            approval.Order.SetIdTo(order.Id);
+            approval.Order.Id = order.Id;
             approval.StatusCode = OrderStatusCodeRepository.GetNullableById(OrderStatusCode.Codes.CompleteNotUploadedKfs);
             approval.User = UserRepository.GetNullableById("zoidberg");
             if(approval.StatusCode.Level < currentLevel.Level)

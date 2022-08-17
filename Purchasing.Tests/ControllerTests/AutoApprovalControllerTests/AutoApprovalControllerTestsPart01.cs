@@ -1,10 +1,12 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using UCDArch.Testing.Fakes;
+using UCDArch.Testing.Extensions;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -16,7 +18,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestIndexReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
             SetupData1();
             #endregion Arrange
 
@@ -38,7 +40,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestIndexReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData1();
             #endregion Arrange
 
@@ -59,7 +61,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestIndexReturnsView3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData1();
             #endregion Arrange
 
@@ -80,7 +82,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestIndexReturnsView4()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NoOne");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NoOne");
             SetupData1();
             #endregion Arrange
 
@@ -100,7 +102,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestIndexReturnsView5()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData1();
             #endregion Arrange
 
@@ -132,8 +134,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Details(8, false)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -151,8 +152,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Details(8)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -170,8 +170,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Details(8, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -185,14 +184,13 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDetailsRedirectsToErrorIndexWhenNoAccess1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData1();
             #endregion Arrange
 
             #region Act
             Controller.Details(3, false)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -204,14 +202,13 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDetailsRedirectsToErrorIndexWhenNoAccess2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData1();
             #endregion Arrange
 
             #region Act
             Controller.Details(3, true)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -224,7 +221,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDetailsReturnsView1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData1();
             #endregion Arrange
 
@@ -245,7 +242,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDetailsReturnsView2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData1();
             #endregion Arrange
 

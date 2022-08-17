@@ -1,9 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Controllers;
-using Rhino.Mocks;
 using UCDArch.Testing.Fakes;
+using UCDArch.Testing.Extensions;
+using Moq;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 {
@@ -19,8 +21,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Delete(4, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -38,13 +39,11 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Delete(4, false)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(false, result.RouteValues["showAll"]);
             #endregion Assert
         }
 
@@ -57,13 +56,11 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Delete(4)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(false, result.RouteValues["showAll"]);
             #endregion Assert
         }
 
@@ -71,14 +68,13 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeleteGetRedirectsToErrorWhenCurrentIdDifferent()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
             #region Act
             Controller.Delete(3)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -91,14 +87,13 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeleteGetRedirectsWhenAlreadyDeactivated()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
             #region Act
             var result = Controller.Delete(1, true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -112,7 +107,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeleteGetReturnsView()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData3();
             #endregion Arrange
 
@@ -140,15 +135,14 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Delete(4, new AutoApproval(), true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
+            Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
 
@@ -161,15 +155,14 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Delete(4, new AutoApproval(), false)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(false, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
+            Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
 
@@ -182,15 +175,14 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
 
             #region Act
             var result = Controller.Delete(4, new AutoApproval())
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(false, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
+            Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
 
@@ -198,20 +190,19 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeletePostRedirectsToErrorWhenCurrentIdDifferent()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
             #region Act
             Controller.Delete(3, new AutoApproval())
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.AreEqual("No Access", Controller.ErrorMessage);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
+            Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
 
@@ -219,21 +210,20 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeletePostRedirectsWhenAlreadyDeactivated()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "NotMe");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "NotMe");
             SetupData3();
             #endregion Arrange
 
             #region Act
             var result = Controller.Delete(1, new AutoApproval(), true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()), Times.Never());
+            Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
 
@@ -241,25 +231,27 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
         public void TestDeletePostRedirectsToErrorWhenValid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             SetupData3();
+            AutoApproval args = default;
+            Mock.Get( AutoApprovalRepository).Setup(a => a.EnsurePersistent(It.IsAny<AutoApproval>()))
+                .Callback<AutoApproval>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.Delete(3, new AutoApproval(), true)
-                .AssertActionRedirect()
-                .ToAction<AutoApprovalController>(a => a.Index(true));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(true, result.RouteValues["showAll"]);
             Assert.AreEqual("AutoApproval Deactivated Successfully", Controller.Message);
-            AutoApprovalRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything));
-            var args = (AutoApproval) AutoApprovalRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<AutoApproval>.Is.Anything))[0][0]; 
+            Mock.Get(AutoApprovalRepository).Verify(a => a.EnsurePersistent(It.IsAny<AutoApproval>()));
+ 
             Assert.IsNotNull(args);
             Assert.IsFalse(args.IsActive);
-            AutoApprovalRepository.AssertWasNotCalled(a => a.Remove(Arg<AutoApproval>.Is.Anything));
+            Mock.Get(AutoApprovalRepository).Verify(a => a.Remove(It.IsAny<AutoApproval>()), Times.Never());
             #endregion Assert
         }
         #endregion Delete Post Tests

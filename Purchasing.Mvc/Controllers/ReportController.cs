@@ -2,19 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web.Mvc;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.QueryParsers;
-using Lucene.Net.Search;
-using Lucene.Net.Util;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
-using Purchasing.Mvc.Attributes;
-using Purchasing.Mvc.Models;
-using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
@@ -49,7 +43,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [AuthorizeReadOrEditOrder]
-        public FileResult Invoice(int id, bool showOrderHistory = false, bool forVendor = false)
+        public Microsoft.AspNetCore.Mvc.FileResult Invoice(int id, bool showOrderHistory = false, bool forVendor = false)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
@@ -63,7 +57,7 @@ namespace Purchasing.Mvc.Controllers
             return View();
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult PurchaserWorkLoad(DateTime? reportDate)
         {
@@ -121,7 +115,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult Workload(int? workgroupId = null)
         {
@@ -143,7 +137,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         public ActionResult Permissions(bool hideInherited = false)
         {
             var viewModel = ReportPermissionsViewModel.Create(_repositoryFactory, _workgroupService, hideInherited);
@@ -151,7 +145,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByWorkgroup(DateTime? startDate, DateTime? endDate, bool showAdmin)
         {
@@ -267,7 +261,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByPrimaryOrg(DateTime? startDate, DateTime? endDate)
         {
@@ -354,7 +348,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult TotalByVendor(DateTime? startDate, DateTime? endDate)
         {
@@ -432,7 +426,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult ProcessingTime(int? workgroupId = null, DateTime? month = null,
             bool? onlyShowReRouted = null)
@@ -464,7 +458,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult ProcessingTimeSummary(int? workgroupId = null, DateTime? startDate = null,
             DateTime? endDate = null)
@@ -507,7 +501,7 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = Role.Codes.DepartmentalAdmin)]
+        [Authorize(Policy = Role.Codes.DepartmentalAdmin)]
         [AuthorizeWorkgroupAccess]
         public ActionResult ProcessingTimeByRole(int? workgroupId = null, DateTime? startDate = null,
             DateTime? endDate = null, string role = "purchaser")

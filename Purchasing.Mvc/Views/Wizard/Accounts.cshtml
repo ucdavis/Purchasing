@@ -14,8 +14,8 @@
 
 }
 
-@Html.Partial("_StatusBar", Model.Id) 
-	@Html.Partial("_Navigation")
+@await Html.PartialAsync("_StatusBar", Model.Id) 
+	@await Html.PartialAsync("_Navigation")
     <nav class="col2">
         <ul class='navigation'>
             <li>
@@ -27,6 +27,6 @@
         </ul>
     </nav>
 
-@Html.Partial("_AccountsTable", Model.Accounts)
+@await Html.PartialAsync("_AccountsTable", Model.Accounts)
 
-@Html.Partial("_Navigation")
+@await Html.PartialAsync("_Navigation")

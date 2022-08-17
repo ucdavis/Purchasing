@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
-using System.Web.Caching;
 using FluentNHibernate.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core;
@@ -12,12 +10,12 @@ using Purchasing.Tests.Core;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests
 {
@@ -34,11 +32,11 @@ namespace Purchasing.Tests.ServiceTests
         #region Init
         public SecurityServiceTests()
         {
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
-            AccessQueryService = MockRepository.GenerateStub<IAccessQueryService>();
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
-            DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
+            AccessQueryService = Mock.Of<IAccessQueryService>();
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            UserIdentity = Mock.Of<IUserIdentity>();
+            DirectorySearchService = Mock.Of<IDirectorySearchService>();
 
             SecurityService = new SecurityService(RepositoryFactory, UserIdentity, DirectorySearchService, AccessQueryService, QueryRepositoryFactory);
 

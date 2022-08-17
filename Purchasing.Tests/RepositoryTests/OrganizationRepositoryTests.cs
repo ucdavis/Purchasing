@@ -42,7 +42,7 @@ namespace Purchasing.Tests.RepositoryTests
         protected override Organization GetValid(int? counter)
         {
             var rtValue = CreateValidEntities.Organization(counter);
-            rtValue.SetIdTo(counter.HasValue ? counter.Value.ToString() : "99");
+            rtValue.Id = counter.HasValue ? counter.Value.ToString() : "99";
             return rtValue;
         }
 
@@ -1189,12 +1189,12 @@ namespace Purchasing.Tests.RepositoryTests
                 OrganizationRepository.DbContext.CommitTransaction();
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsNotNull(record);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: Purchasing.Core.Domain.Workgroup, Entity: Purchasing.Core.Domain.Workgroup", ex.Message);
-                throw;
+                throw ex;
             }
         }
 

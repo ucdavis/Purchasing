@@ -2,7 +2,7 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/multiselector")
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")
 
     <style type="text/css">
         .selector {
@@ -28,7 +28,7 @@
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/multiselector")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/multiselector")
     <script type="text/javascript">
 
         $(function () {
@@ -74,7 +74,7 @@
                 @Html.Label("Select Role:") <span>*</span>
             </div>
             <div class="editor-field">
-                @this.Select("Role").Options(Model.Roles, x=> x.Id, x=> x.Name).FirstOption("--Select Role--").Selected(Model.Role != null ? Model.Role.Id.ToString() : string.Empty)   
+                @Html.Select("Role", o => o.Options(Model.Roles, x=> x.Id, x=> x.Name).FirstOption("--Select Role--").Selected(Model.Role != null ? Model.Role.Id.ToString() : string.Empty))   
                 @Html.ValidationMessageFor(x=> x.Role)             
             </div>
         </li>

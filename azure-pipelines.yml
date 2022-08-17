@@ -4,37 +4,60 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 trigger:
-- master
+  - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: "windows-latest"
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  solution: "**/*.sln"
+  buildPlatform: "Any CPU"
+  buildConfiguration: "Release"
 
 steps:
-- task: NuGetToolInstaller@1
+  - task: UseDotNet@2
+    displayName: "Use net6.0"
+    inputs:
+      packageType: "sdk"
+      version: "6.0.x"
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+  - task: DotNetCoreCLI@2
+    displayName: Restore nuget packages
+    inputs:
+      command: restore
+      projects: "**/*.csproj"
+      workingDirectory: $(Build.SourcesDirectory)
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: DotNetCoreCLI@2
+    displayName: Restore cli tools
+    inputs:
+      command: custom
+      custom: tool
+      arguments: restore
+      workingDirectory: $(Build.SourcesDirectory)
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: DotNetCoreCLI@2
+    displayName: "Assemble Purchasing.Mvc"
+    inputs:
+      command: "publish"
+      publishWebProjects: false
+      zipAfterPublish: false
+      modifyOutputPath: false
+      projects: "./Purchasing.Mvc/Purchasing.Mvc.csproj"
+      arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/Purchasing.Mvc"
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+  - task: DotNetCoreCLI@2
+    displayName: "Assemble Purchasing Jobs"
+    inputs:
+      command: "publish"
+      publishWebProjects: false
+      zipAfterPublish: false
+      modifyOutputPath: true
+      projects: "**/Purchasing.Jobs.!(*Common)/*.csproj"
+      arguments: "--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/Purchasing.Jobs/app_data/jobs/triggered"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+      ArtifactName: "drop"
+      publishLocation: "Container"

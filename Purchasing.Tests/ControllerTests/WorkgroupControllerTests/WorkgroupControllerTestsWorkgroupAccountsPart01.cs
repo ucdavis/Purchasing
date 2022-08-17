@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
 using UCDArch.Testing;
-
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -24,8 +24,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.Accounts(4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -66,8 +65,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AddAccount(4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -164,8 +162,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AddAccount(4, new WorkgroupAccount(), null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -181,16 +178,18 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForAccounts1();
             var workgroupAccountToCreate = CreateValidEntities.WorkgroupAccount(9);
             workgroupAccountToCreate.Workgroup = WorkgroupRepository.GetNullableById(2); //This one will be replaced
-            workgroupAccountToCreate.Account.SetIdTo("Blah");
-            workgroupAccountToCreate.AccountManager.SetIdTo("AccMan");
-            workgroupAccountToCreate.Approver.SetIdTo("App");
-            workgroupAccountToCreate.Purchaser.SetIdTo("Purchase");
+            workgroupAccountToCreate.Account.Id = "Blah";
+            workgroupAccountToCreate.AccountManager.Id = "AccMan";
+            workgroupAccountToCreate.Approver.Id = "App";
+            workgroupAccountToCreate.Purchaser.Id = "Purchase";
+            WorkgroupAccount args = default;
+            Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()))
+                .Callback<WorkgroupAccount>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.AddAccount(3, workgroupAccountToCreate, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Accounts(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -198,8 +197,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual("Workgroup account saved.", Controller.Message);
 
-            WorkgroupAccountRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
-            var args = (WorkgroupAccount) WorkgroupAccountRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything))[0][0]; 
+            Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()));
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Workgroup.Id);
             Assert.AreEqual("Blah", args.Account.Id);
@@ -216,11 +215,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForAccounts1();
             var workgroupAccountToCreate = CreateValidEntities.WorkgroupAccount(9);
             workgroupAccountToCreate.Workgroup = WorkgroupRepository.GetNullableById(2); //This one will be replaced
-            //workgroupAccountToCreate.Account.SetIdTo("Blah");
+            //workgroupAccountToCreate.Account.Id = "Blah";
             workgroupAccountToCreate.Account = null;
-            workgroupAccountToCreate.AccountManager.SetIdTo("AccMan");
-            workgroupAccountToCreate.Approver.SetIdTo("App");
-            workgroupAccountToCreate.Purchaser.SetIdTo("Purchase");
+            workgroupAccountToCreate.AccountManager.Id = "AccMan";
+            workgroupAccountToCreate.Approver.Id = "App";
+            workgroupAccountToCreate.Purchaser.Id = "Purchase";
 
             new FakeAccounts(0, AccountRepository);
             #endregion Arrange
@@ -233,7 +232,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Controller.ModelState.AssertErrorsAre("Account not found");
-            WorkgroupAccountRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<WorkgroupAccount>.Is.Anything));
+            Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()), Times.Never());
 
             Assert.IsNotNull(result);
             Assert.AreEqual(10, result.Accounts.Count());

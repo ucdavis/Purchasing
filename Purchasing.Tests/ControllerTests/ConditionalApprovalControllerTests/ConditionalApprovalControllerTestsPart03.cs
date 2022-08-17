@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.Utils;
 using UCDArch.Testing.Fakes;
-
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using UCDArch.Testing;
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
@@ -35,12 +35,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 Controller.Create(null, null);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Missing Parameters", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -60,12 +60,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 Controller.Create(null, string.Empty);
                 #endregion Act
             }
-            catch(Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Missing Parameters", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -85,12 +85,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 Controller.Create(null, " ");
                 #endregion Act
             }
-            catch(Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Missing Parameters", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -114,12 +114,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
                 Controller.Create(3, null);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Sequence contains no matching element", ex.Message);
-                throw;
+                throw ex;
             }
         }
 
@@ -138,8 +138,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Act
             var results = Controller.Create(1, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Details(1));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -155,7 +154,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestCreateGetRedirectsWhenWorkgroupIfNoWorkgroups()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "4");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "4");
             SetupDateForIndex1();
             new FakeAdminWorkgroups(1, QueryRepositoryFactory.AdminWorkgroupRepository);
             const string approvalType = "Workgroup";
@@ -163,8 +162,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Act
             Controller.Create(1, null)
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -176,15 +174,14 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         public void TestCreateGetRedirectsWhenOrganizationIfNoOrganizations()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "4");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "4");
             SetupDateForIndex1();
             const string approvalType = "Organization";
             #endregion Arrange
 
             #region Act
             Controller.Create(null, "test")
-                .AssertActionRedirect()
-                .ToAction<ErrorController>(a => a.Index());
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -198,7 +195,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreateGetReturnsView2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    const string approvalType = "Organization";
         //    #endregion Arrange
@@ -229,7 +226,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostReturnsViewWhenModelInvalid1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    Controller.ModelState.AddModelError("Fake", "Fake Error");
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
@@ -264,7 +261,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostReturnsViewWhenModelInvalid2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    Controller.ModelState.AddModelError("Fake", "Fake Error");
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
@@ -300,7 +297,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostReturnsViewWhenModelInvalid3()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    Controller.ModelState.AddModelError("Fake", "Fake Error");
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
@@ -339,7 +336,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //    try
         //    {
         //        #region Arrange
-        //        Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //        Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //        SetupDateForIndex1();
         //        var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //        conditionalApprovalModifyModel.ApprovalType = "Organization";
@@ -352,12 +349,12 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //        Controller.Create(conditionalApprovalModifyModel);
         //        #endregion Act
         //    }
-        //    catch (Exception ex)
+        //    catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
         //    {
         //        Assert.IsTrue(thisFar);
         //        Assert.IsNotNull(ex);
         //        Assert.AreEqual("Must have a Workgroup or an Organization", ex.Message);
-        //        throw;
+        //        throw ex;
         //    }
         //}
 
@@ -366,7 +363,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCallsFindUser1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";
@@ -405,7 +402,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCallsFindUser2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";
@@ -447,7 +444,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCallsFindUser3()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";
@@ -488,7 +485,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCreateNewUser1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";
@@ -535,7 +532,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         //public void TestCreatePostCreateNewUser2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "2");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
         //    SetupDateForIndex1();
         //    var conditionalApprovalModifyModel = new ConditionalApprovalModifyModel();
         //    conditionalApprovalModifyModel.ApprovalType = "Workgroup";

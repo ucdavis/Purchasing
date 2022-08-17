@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {
@@ -25,8 +26,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            EventService.AssertWasCalled(a => a.OrderEdited(order));
-            EventService.AssertWasNotCalled(a => a.OrderEdited(order2));
+            Mock.Get(EventService).Verify(a => a.OrderEdited(order));
+            Mock.Get(EventService).Verify(a => a.OrderEdited(order2), Times.Never());
             #endregion Assert		
         }
 

@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
-using Rhino.Mocks.Constraints;
 using UCDArch.Testing;
-
+using UCDArch.Testing.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -29,8 +28,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AddPeople(4, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -47,8 +45,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AddPeople(4, Role.Codes.DepartmentalAdmin)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -178,7 +175,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.IsNull(result.Users);
             #endregion Assert
-        } 
+        }
         #endregion AddPeople Get Tests
 
         #region AddPeople Post Tests
@@ -191,8 +188,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AddPeople(4, new WorkgroupPeoplePostModel(), null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -209,8 +205,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.AddPeople(4, new WorkgroupPeoplePostModel(), Role.Codes.DepartmentalAdmin)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -226,8 +221,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForPeopleList();
             var postModel = new WorkgroupPeoplePostModel();
             postModel.Role = new Role();
-            postModel.Role.SetIdTo(Role.Codes.DepartmentalAdmin);
-            postModel.Role.Level = 1;            
+            postModel.Role.Id = Role.Codes.DepartmentalAdmin;
+            postModel.Role.Level = 1;
             #endregion Arrange
 
             #region Act
@@ -259,7 +254,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             SetupDataForPeopleList();
             var postModel = new WorkgroupPeoplePostModel();
             postModel.Role = new Role();
-            postModel.Role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            postModel.Role.Id = Role.Codes.DepartmentalAdmin;
             postModel.Role.Level = 1;
             postModel.Users = new List<string>();
             postModel.Users.Add("1");
@@ -274,8 +269,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            SearchService.AssertWasNotCalled(a => a.FindUser(Arg<string>.Is.Anything));
-            
+            Mock.Get(SearchService).Verify(a => a.FindUser(It.IsAny<string>()), Times.Never());
+
             Controller.ModelState.AssertErrorsAre("Invalid Role Selected");
             Assert.IsNotNull(result);
             Assert.AreEqual(Role.Codes.DepartmentalAdmin, result.Role.Id);
@@ -303,10 +298,10 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             ldapUser.FirstName = "Me";
             ldapUser.LastName = "You";
             ldapUser.LoginId = "Logger";
-            SearchService.Expect(a => a.FindUser("Me")).Return(ldapUser);
+            Mock.Get(SearchService).Setup(a => a.FindUser("Me")).Returns(ldapUser);
             var postModel = new WorkgroupPeoplePostModel();
             postModel.Role = new Role();
-            postModel.Role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            postModel.Role.Id = Role.Codes.DepartmentalAdmin;
             postModel.Role.Level = 1;
             postModel.Users = new List<string>();
             postModel.Users.Add("1");
@@ -322,7 +317,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            SearchService.AssertWasCalled(a => a.FindUser("Me"));
+            Mock.Get(SearchService).Verify(a => a.FindUser("Me"));
 
             Controller.ModelState.AssertErrorsAre("Invalid Role Selected");
             Assert.IsNotNull(result);
@@ -361,13 +356,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Validator.ValidateObject(test, context, true);
                 #endregion Act
             }
-            catch (Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("Must add at least one user", ex.Message);
-                throw;
-            }	
+                throw ex;
+            }
         }
 
         [TestMethod]
@@ -389,39 +384,31 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 Validator.ValidateObject(test, context, true);
                 #endregion Act
             }
-            catch(Exception ex)
+            catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
             {
                 Assert.IsTrue(thisFar);
                 Assert.IsNotNull(ex);
                 Assert.AreEqual("The Role field is required.", ex.Message);
-                throw;
+                throw ex;
             }
         }
-        
+
         [TestMethod]
         public void TestAddPeoplePostRedirectsToPeople1()
         {
             #region Arrange
             SetupDataForPeopleList();
-            string message = "Fake Message";
+            var message = "Fake Message";
             int failCount = 2;
-            SecurityService.Expect(a => a.HasWorkgroupOrOrganizationAccess(Arg<Workgroup>.Is.Anything, Arg<Organization>.Is.Anything, out Arg<string>.Out(message).Dummy)).Return(true);
-            WorkgroupService.Expect(a => a.TryToAddPeople(
-                Arg<int>.Is.Anything, 
-                Arg<Role>.Is.Anything, 
-                Arg<Workgroup>.Is.Anything, 
-                Arg<int>.Is.Anything, 
-                Arg<string>.Is.Anything, 
-                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                Arg<List<KeyValuePair<string, string>>>.Is.Anything)).Return(7).Repeat.Any();
+            int duplicateCount = 2;
+            Mock.Get(SecurityService).Setup(a => a.HasWorkgroupOrOrganizationAccess(It.IsAny<Workgroup>(), It.IsAny<Organization>(), out message)).Returns(true);
 
             var ldapUser = new DirectoryUser();
             ldapUser.FirstName = "Me";
             ldapUser.LastName = "You";
             ldapUser.LoginId = "Logger";
             ldapUser.EmailAddress = "tester@testy.com";
-            SearchService.Expect(a => a.FindUser("Me")).Return(ldapUser);
+            Mock.Get(SearchService).Setup(a => a.FindUser("Me")).Returns(ldapUser);
             var postModel = new WorkgroupPeoplePostModel();
             postModel.Role = RoleRepository.GetNullableById(Role.Codes.AccountManager);
             postModel.Users = new List<string>();
@@ -429,12 +416,24 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             postModel.Users.Add("Me");
             postModel.Users.Add("2");
             postModel.Users.Add("3");
+
+            var args = new Dictionary<int, object[]>();
+            var argsIndex = 0;
+            Mock.Get(WorkgroupService).Setup(a => a.TryToAddPeople(It.IsAny<int>(), It.IsAny<Role>(), It.IsAny<Workgroup>(),
+                It.IsAny<int>(), It.IsAny<string>(), ref It.Ref<int>.IsAny, ref It.Ref<int>.IsAny, It.IsAny<List<KeyValuePair<string, string>>>()))
+                .Callback((int a, Role b, Workgroup c, int d, string e, ref int f, ref int g, List<KeyValuePair<string, string>> h)
+                    =>
+                {
+                    f = failCount;
+                    g = duplicateCount;
+                    args[argsIndex++] = new object[] { a, b, c, d, e, f, g, h };
+                })
+                .Returns(7);
             #endregion Arrange
 
             #region Act
             var result = Controller.AddPeople(3, postModel, null)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.People(3, null));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -442,28 +441,20 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual(Role.Codes.AccountManager, result.RouteValues["roleFilter"]);
 
-            WorkgroupService.AssertWasCalled(a => a.TryToAddPeople(
-                Arg<int>.Is.Anything,
-                Arg<Role>.Is.Anything,
-                Arg<Workgroup>.Is.Anything,
-                Arg<int>.Is.Anything,
-                Arg<string>.Is.Anything,
-                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                Arg<List<KeyValuePair<string, string>>>.Is.Anything), x => x.Repeat.Times(4));
+            Mock.Get(WorkgroupService).Verify(a => a.TryToAddPeople(
+                It.IsAny<int>(),
+                It.IsAny<Role>(),
+                It.IsAny<Workgroup>(),
+                It.IsAny<int>(),
+                It.IsAny<string>(),
+                ref failCount,
+                 ref failCount,
+                It.IsAny<List<KeyValuePair<string, string>>>()), Times.Exactly(4));
 
-            var args = WorkgroupService.GetArgumentsForCallsMadeOn(a => a.TryToAddPeople(Arg<int>.Is.Anything,
-                Arg<Role>.Is.Anything,
-                Arg<Workgroup>.Is.Anything,
-                Arg<int>.Is.Anything,
-                Arg<string>.Is.Anything,
-                ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                 ref Arg<int>.Ref(Is.Anything(), failCount).Dummy,
-                Arg<List<KeyValuePair<string, string>>>.Is.Anything));
- 
+
             Assert.AreEqual(4, args.Count());
             Assert.AreEqual(3, args[0][0]);
-            Assert.AreEqual("AM", ((Role)args[0][1]).Id);   
+            Assert.AreEqual("AM", ((Role)args[0][1]).Id);
             Assert.AreEqual(3, ((Workgroup)args[0][2]).Id);
             Assert.AreEqual(0, args[0][3]);
             Assert.AreEqual(7, args[1][3]);

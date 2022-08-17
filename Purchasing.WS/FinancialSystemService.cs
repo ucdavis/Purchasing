@@ -4,8 +4,8 @@ using System.Linq;
 using System.ServiceModel;
 using Purchasing.Core.Domain;
 using Purchasing.WS.PurchaseDocumentService;
-using System.Configuration;
 using Serilog;
+using Microsoft.Extensions.Configuration;
 
 namespace Purchasing.WS
 {
@@ -17,8 +17,14 @@ namespace Purchasing.WS
         private const string Countrycode = "US";
         private const string RequestType = "PR";
 
-        private readonly string _url = ConfigurationManager.AppSettings["AfsUrl"];
-        private readonly string _token = ConfigurationManager.AppSettings["AfsToken"];
+        private readonly string _url;
+        private readonly string _token;
+
+        public FinancialSystemService(IConfiguration configuration)
+        {
+            _url = configuration["AfsUrl"];
+            _token = configuration["AfsToken"];
+        }
 
         private purchasingDocumentsInterfaceServiceSOAPClient InitializeClient(bool extendedWait = false)
         {

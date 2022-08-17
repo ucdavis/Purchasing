@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Castle.Windsor;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
-
+using Purchasing.Tests.Core;
 
 namespace Purchasing.Tests.ControllerTests
 {
@@ -25,17 +25,12 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            Controller = new TestControllerBuilder().CreateController<ErrorController>();
-        }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            Controller = new ErrorController();
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
             base.RegisterAdditionalServices(container);
         }
 
@@ -113,7 +108,7 @@ namespace Purchasing.Tests.ControllerTests
         /// Tests the controller has 5 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasFiveAttributes()
+        public void TestControllerHasSixAttributes()
         {
             #region Arrange
             var controllerClass = _controllerClass;
@@ -124,7 +119,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, result.Count());
+            Assert.AreEqual(6, result.Count());
             #endregion Assert
         }
 
@@ -158,11 +153,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Any(), "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Any(), "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 

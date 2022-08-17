@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
@@ -14,9 +12,9 @@ using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using UCDArch.Web.Attributes;
 
@@ -47,7 +45,7 @@ namespace Purchasing.Tests.ControllerTests
         //    QueryRepositoryFactory.PendingOrderRepository = PendingOrderRepository;
         //    QueryRepositoryFactory.OpenOrderByUserRepository = OpenOrderByUserRepository;
 
-        //    Controller = new TestControllerBuilder().CreateController<HomeController>(UserRepository, QueryRepositoryFactory);
+        //    Controller = new HomeController(UserRepository, QueryRepositoryFactory);
             
         //}
 
@@ -102,7 +100,7 @@ namespace Purchasing.Tests.ControllerTests
         //public void TestLandingRedirectsWhenUserNotFound()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] {""}, "Me");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
         //    new FakeUsers(3, UserRepository);
         //    #endregion Arrange
 
@@ -122,11 +120,11 @@ namespace Purchasing.Tests.ControllerTests
         //public void TestLandingRedirectsWhenUserNotActive()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
         //    var users = new List<User>();
         //    users.Add(CreateValidEntities.User(2));
         //    users[0].IsActive = false;
-        //    users[0].SetIdTo("Me");
+        //    users[0].Id = "Me";
         //    new FakeUsers(0, UserRepository, users, true);
         //    #endregion Arrange
 
@@ -146,11 +144,11 @@ namespace Purchasing.Tests.ControllerTests
         //public void TestLandReturnsView1()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
         //    var users = new List<User>();
         //    users.Add(CreateValidEntities.User(2));
         //    users[0].IsActive = true;
-        //    users[0].SetIdTo("Me");
+        //    users[0].Id = "Me";
         //    new FakeUsers(0, UserRepository, users, true);
 
         //    new FakePendingOrders(3, PendingOrderRepository);
@@ -172,11 +170,11 @@ namespace Purchasing.Tests.ControllerTests
         //public void TestLandReturnsView2()
         //{
         //    #region Arrange
-        //    Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+        //    Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
         //    var users = new List<User>();
         //    users.Add(CreateValidEntities.User(2));
         //    users[0].IsActive = true;
-        //    users[0].SetIdTo("Me");
+        //    users[0].Id = "Me";
         //    new FakeUsers(0, UserRepository, users, true);
 
         //    var pendingOrders = new List<PendingOrder>();
@@ -258,7 +256,7 @@ namespace Purchasing.Tests.ControllerTests
         //    #endregion Act
 
         //    #region Assert
-        //    Assert.AreEqual(5, result.Count());
+        //    Assert.AreEqual(6, result.Count());
         //    #endregion Assert
         //}
 

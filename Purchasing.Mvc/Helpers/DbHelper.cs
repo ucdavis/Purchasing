@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Security;
 using Dapper;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using NHibernate;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using UCDArch.Data.NHibernate;
 using Purchasing.Core.Domain;
+using UCDArch.Core;
 
 namespace Purchasing.Mvc.Helpers
 {
@@ -20,7 +20,8 @@ namespace Purchasing.Mvc.Helpers
         /// </summary>
         public static void ResetDatabase(bool demoMode = false, bool blankDb = false)
         {
-            var dbService = ServiceLocator.Current.GetInstance<IDbService>();
+            var dbService = SmartServiceLocator<IDbService>.GetService();
+            var roleService = SmartServiceLocator<IRoleService>.GetService();
 
             // wipe all the tables
             WipeTables(dbService);
@@ -51,14 +52,14 @@ namespace Purchasing.Mvc.Helpers
 
                 if (!demoMode)
                 {
-                    InsertData(session);
+                    InsertData(session, roleService);
                 }
                 else
                 {
                     InsertDemoData(session);
                 }
 
-                session.Transaction.Commit();        
+                session.GetCurrentTransaction().Commit();
             }
 
         }
@@ -750,11 +751,11 @@ namespace Purchasing.Mvc.Helpers
                     );
             }
         }
-        
+
         /*
          * Dev Data
          */
-        private static void InsertData(ISession session)
+        private static void InsertData(ISession session, IRoleService roleService)
         {
             //Now insert new data
             var scott = new User("postit") { FirstName = "Scott", LastName = "Kirkland", Email = "srkirkland@ucdavis.edu", IsActive = true };
@@ -765,12 +766,12 @@ namespace Purchasing.Mvc.Helpers
             var chris = new User("cthielen") { FirstName = "Christopher", LastName = "Thielen", Email = "cmthielen@ucdavis.edu", IsActive = true };
             var scottd = new User("sadyer") { FirstName = "Scott", LastName = "Dyer", Email = "sadyer@ucdavis.edu", IsActive = true };
             var jscub = new User("jscub")
-                            {
-                                FirstName = "James",
-                                LastName = "Cubbage",
-                                Email = "jscubbage@ucdavis.edu",
-                                IsActive = true
-                            };
+            {
+                FirstName = "James",
+                LastName = "Cubbage",
+                Email = "jscubbage@ucdavis.edu",
+                IsActive = true
+            };
             var jsylvest = new User("jsylvest")
             {
                 FirstName = "Jason",
@@ -808,11 +809,11 @@ namespace Purchasing.Mvc.Helpers
             workGroupAccount.Account = session.Load<Account>("3-6851000");
             testWorkgroup.AddAccount(workGroupAccount);
             var workgroupAccountWithUsers = new WorkgroupAccount
-                                                {
-                                                    Account = session.Load<Account>("3-APSO013"),
-                                                    Approver = approverUser,
-                                                    AccountManager = acctMgrUser
-                                                };
+            {
+                Account = session.Load<Account>("3-APSO013"),
+                Approver = approverUser,
+                AccountManager = acctMgrUser
+            };
             testWorkgroup.AddAccount(workgroupAccountWithUsers);
 
             testWorkgroup.PrimaryOrganization = session.Load<Organization>("AAES");
@@ -829,31 +830,31 @@ namespace Purchasing.Mvc.Helpers
                 State = "CA",
                 Zip = "95616"
             };
-            
+
             var testWorkgroupVendor2 = new WorkgroupVendor
-                                          {
-                                              Name = "Manually Added Vendor Corp.",
-                                              City = "Sacramento",
-                                              CountryCode = "US",
-                                              Line1 = "5 1/4 External Drive",// (get it?)
-                                              State = "CA",
-                                              Zip = "95816"
-                                          };
-            
-            
+            {
+                Name = "Manually Added Vendor Corp.",
+                City = "Sacramento",
+                CountryCode = "US",
+                Line1 = "5 1/4 External Drive",// (get it?)
+                State = "CA",
+                Zip = "95816"
+            };
+
+
             testWorkgroup.AddVendor(testWorkgroupVendor);
             testWorkgroup.AddVendor(testWorkgroupVendor2);
 
             var testWorkgroupAddress = new WorkgroupAddress()
-                                           {
-                                               Name = "The Office",
-                                               Address = "One Shields Ave",
-                                               Building = "Mrak",
-                                               City = "Davis",
-                                               State = "CA",
-                                               Zip = "95616",
-                                               IsActive = true
-                                           };
+            {
+                Name = "The Office",
+                Address = "One Shields Ave",
+                Building = "Mrak",
+                City = "Davis",
+                State = "CA",
+                Zip = "95616",
+                IsActive = true
+            };
 
             testWorkgroup.AddAddress(testWorkgroupAddress);
 
@@ -870,14 +871,14 @@ namespace Purchasing.Mvc.Helpers
             var orderType = session.Load<Role>("OR");
 
             var autoApproval = new AutoApproval //Approve anything scott sends to alan under $1000 for the next 2 years
-                                   {
-                                       TargetUser = scott,
-                                       User = alan,
-                                       IsActive = true,
-                                       Expiration = DateTime.Now.AddYears(2),
-                                       LessThan = true,
-                                       MaxAmount = 1000.00M
-                                   };
+            {
+                TargetUser = scott,
+                User = alan,
+                IsActive = true,
+                Expiration = DateTime.Now.AddYears(2),
+                LessThan = true,
+                MaxAmount = 1000.00M
+            };
 
             var autoApprovalAccount = new AutoApproval //Approve anything from account 3-APSO013 associated with approverUser under $1000 for 2 years
             {
@@ -913,15 +914,15 @@ namespace Purchasing.Mvc.Helpers
 
             session.Save(autoApproval);
             session.Save(autoApprovalAccount);
-            
-            Roles.AddUsersToRole(new[] { "postit", "anlai", "cthielen" }, "AD");
-            Roles.AddUserToRole("anlai", "RQ");
-            Roles.AddUserToRole("anlai", "DA");
-            Roles.AddUserToRole("anlai", "AP");
-            Roles.AddUserToRole("taylorkj", "DA");
-            Roles.AddUserToRole("postit", "DA");
-            Roles.AddUserToRole("jscub", "DA");
-            Roles.AddUserToRole("jsylvest", "DA");
+
+            roleService.AddUsersToRoles(new[] { "postit", "anlai", "cthielen" }, new[] { "AD" });
+            roleService.AddUsersToRoles(new[] { "anlai" }, new[] { "RQ" });
+            roleService.AddUsersToRoles(new[] { "anlai" }, new[] { "DA" });
+            roleService.AddUsersToRoles(new[] { "anlai" }, new[] { "AP" });
+            roleService.AddUsersToRoles(new[] { "taylorkj" }, new[] { "DA" });
+            roleService.AddUsersToRoles(new[] { "postit" }, new[] { "DA" });
+            roleService.AddUsersToRoles(new[] { "jscub" }, new[] { "DA" });
+            roleService.AddUsersToRoles(new[] { "jsylvest" }, new[] { "DA" });
 
             session.Flush(); //Flush out the changes
         }
@@ -935,7 +936,7 @@ namespace Purchasing.Mvc.Helpers
             var admin = new User("anlai") { FirstName = "Alan", LastName = "Lai", Email = "anlai@ucdavis.edu", IsActive = true };
 
             var user1 = new User("pjfry") { FirstName = "Philip", LastName = "Fry", Email = "pjfry@fake.com", IsActive = true };
-            var user2 = new User("hsimpson") { FirstName = "Homer", LastName = "Simpson", Email="hsimpson@fake.com", IsActive = true};
+            var user2 = new User("hsimpson") { FirstName = "Homer", LastName = "Simpson", Email = "hsimpson@fake.com", IsActive = true };
             var user3 = new User("brannigan") { FirstName = "Zapp", LastName = "Brannigan", Email = "zbrannigan@fake.com", IsActive = true };
             var user4 = new User("awong") { FirstName = "Amy", LastName = "Wong", Email = "awong@fake.com", IsActive = true };
             var user5 = new User("zoidberg") { FirstName = "John", LastName = "Zoidberg", Email = "zoidberg@fake.com", IsActive = true };
@@ -949,7 +950,7 @@ namespace Purchasing.Mvc.Helpers
             var org1 = session.Load<Organization>("APLS");
             var org2 = session.Load<Organization>("AINF");
             var org3 = session.Load<Organization>("ACRU");
-            
+
             var orgset1 = new List<Organization>();
             orgset1.Add(org1);
             orgset1.Add(org2);
@@ -957,14 +958,14 @@ namespace Purchasing.Mvc.Helpers
             orgset2.Add(org2);
             orgset2.Add(org3);
 
-            var workgroup = new Workgroup() { Name = "Legitimate Workgroup, Not a Front", IsActive = true, PrimaryOrganization = org1,  Organizations = orgset1};
+            var workgroup = new Workgroup() { Name = "Legitimate Workgroup, Not a Front", IsActive = true, PrimaryOrganization = org1, Organizations = orgset1 };
 
             var acct1 = session.Load<Account>("3-APSAC37");
             var acct2 = session.Load<Account>("3-APSM170");
             var acct3 = session.Load<Account>("3-APSRSTR"); // has sub account
             var acct4 = session.Load<Account>("3-APSM152"); // has sub account
             var acct5 = session.Load<Account>("3-APSM326"); // has sub account
-            
+
             workgroup.AddAccount(new WorkgroupAccount() { Account = acct1 });
             workgroup.AddAccount(new WorkgroupAccount() { Account = acct3 });
             workgroup.AddAccount(new WorkgroupAccount() { Account = acct5 });
@@ -979,12 +980,12 @@ namespace Purchasing.Mvc.Helpers
 
             var vendor2 = session.Load<Vendor>("0000008573");
             var vendoraddr2 = session.QueryOver<VendorAddress>().Where(a => a.Vendor == vendor2).Take(1).SingleOrDefault();
-            var wv2 = new WorkgroupVendor(){VendorId = vendor2.Id, VendorAddressTypeCode = vendoraddr2.TypeCode, Name = vendor2.Name, Line1 = vendoraddr2.Line1, City = vendoraddr2.City, State = vendoraddr2.State, Zip = vendoraddr2.Zip, CountryCode = vendoraddr2.CountryCode};
+            var wv2 = new WorkgroupVendor() { VendorId = vendor2.Id, VendorAddressTypeCode = vendoraddr2.TypeCode, Name = vendor2.Name, Line1 = vendoraddr2.Line1, City = vendoraddr2.City, State = vendoraddr2.State, Zip = vendoraddr2.Zip, CountryCode = vendoraddr2.CountryCode };
             workgroup.AddVendor(wv2);
 
             var vendor3 = session.Load<Vendor>("0000006849");
             var vendoraddr3 = session.QueryOver<VendorAddress>().Where(a => a.Vendor == vendor2).Take(1).SingleOrDefault();
-            var wv3 = new WorkgroupVendor(){VendorId = vendor3.Id, VendorAddressTypeCode = vendoraddr3.TypeCode, Name = vendor3.Name, Line1 = vendoraddr3.Line1, City = vendoraddr3.City, State = vendoraddr3.State, Zip = vendoraddr3.Zip, CountryCode = vendoraddr3.CountryCode};
+            var wv3 = new WorkgroupVendor() { VendorId = vendor3.Id, VendorAddressTypeCode = vendoraddr3.TypeCode, Name = vendor3.Name, Line1 = vendoraddr3.Line1, City = vendoraddr3.City, State = vendoraddr3.State, Zip = vendoraddr3.Zip, CountryCode = vendoraddr3.CountryCode };
             workgroup.AddVendor(wv3);
 
             var wv4 = new WorkgroupVendor() { Name = "Legitimate Paper Mill", Line1 = "1 Fake Street.", City = "Davis", State = "CA", Zip = "95616", CountryCode = "US" };
@@ -996,7 +997,7 @@ namespace Purchasing.Mvc.Helpers
 
             var addr1 = new WorkgroupAddress() { Name = "128 Fake Hall", Address = "Fake Hall Road", City = "Davis", State = "CA", Zip = "95616" };
             workgroup.AddAddress(addr1);
-            var addr2 = new WorkgroupAddress() { Name = "10 Fake Hall", Address = "Fake Hall Road", City = "Davis", State = "CA", Zip = "95616"};
+            var addr2 = new WorkgroupAddress() { Name = "10 Fake Hall", Address = "Fake Hall Road", City = "Davis", State = "CA", Zip = "95616" };
             workgroup.AddAddress(addr2);
             var addr3 = new WorkgroupAddress() { Name = "526 Fake Hall", Address = "Fake Hall Road", City = "Davis", State = "CA", Zip = "95616" };
             workgroup.AddAddress(addr3);
@@ -1025,8 +1026,8 @@ namespace Purchasing.Mvc.Helpers
             workgroup.AddPermission(permission10);
 
             // create some conditional approvals
-            var ca1 = new ConditionalApproval() {Workgroup = workgroup, PrimaryApprover = user5, Question = "Is this an IT purchaser?"};
- 
+            var ca1 = new ConditionalApproval() { Workgroup = workgroup, PrimaryApprover = user5, Question = "Is this an IT purchaser?" };
+
             // save all the objects
             session.Save(admin);
             session.Save(user1);
@@ -1062,15 +1063,15 @@ namespace Purchasing.Mvc.Helpers
             }
             for (var i = 0; i < 2; i++)
             {
-                var order = GenderateRandomOrder(workgroup, session.Load<OrderStatusCode>("CN"), session, permission1, excludeUser:permission1);
+                var order = GenderateRandomOrder(workgroup, session.Load<OrderStatusCode>("CN"), session, permission1, excludeUser: permission1);
                 session.Save(order);
             }
 
             // now generate another random 50 orders
             for (var i = 0; i < 50; i++)
             {
-                var status = session.QueryOver<OrderStatusCode>().Skip(_random.Next()%4).Take(1).SingleOrDefault();
-                var order = GenderateRandomOrder(workgroup, status, session, excludeUser:permission1);
+                var status = session.QueryOver<OrderStatusCode>().Skip(_random.Next() % 4).Take(1).SingleOrDefault();
+                var order = GenderateRandomOrder(workgroup, status, session, excludeUser: permission1);
                 session.Save(order);
             }
         }
@@ -1084,10 +1085,10 @@ namespace Purchasing.Mvc.Helpers
         };
 
         private static KeyValuePair<string, decimal>[] _items = new KeyValuePair<string, decimal>[6] {
-            new KeyValuePair<string, decimal>("pencils", .50m), 
-            new KeyValuePair<string, decimal>("beakers", 5.99m), 
-            new KeyValuePair<string, decimal>("laptop", 1658.99m), 
-            new KeyValuePair<string, decimal>("desktop", 599.99m), 
+            new KeyValuePair<string, decimal>("pencils", .50m),
+            new KeyValuePair<string, decimal>("beakers", 5.99m),
+            new KeyValuePair<string, decimal>("laptop", 1658.99m),
+            new KeyValuePair<string, decimal>("desktop", 599.99m),
             new KeyValuePair<string, decimal>("paper clips", .10m),
             new KeyValuePair<string, decimal>("cake", 15m)
         };
@@ -1101,48 +1102,48 @@ namespace Purchasing.Mvc.Helpers
         /// <param name="vendors">List of vendors to select from</param>
         /// <param name="statusCode">Status code to set the order approved through</param>
         /// <returns></returns>
-        private static Order GenderateRandomOrder(Workgroup workgroup, OrderStatusCode statusCode, ISession session, WorkgroupPermission user = null, WorkgroupPermission excludeUser = null )
+        private static Order GenderateRandomOrder(Workgroup workgroup, OrderStatusCode statusCode, ISession session, WorkgroupPermission user = null, WorkgroupPermission excludeUser = null)
         {
-            var randomizedPerms = workgroup.Permissions.Select(a => new {Permission = a, Key = Guid.NewGuid()});
-            var requester =  user ?? (excludeUser == null ? 
-                randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault() 
-                : randomizedPerms.Where(a=>a.Permission.Role.Id == "RQ" && a.Permission != excludeUser).OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault());
-            var approver = randomizedPerms.Where(a => a.Permission.Role.Id == "AP" && a.Permission.User.Id !="zoidberg").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
+            var randomizedPerms = workgroup.Permissions.Select(a => new { Permission = a, Key = Guid.NewGuid() });
+            var requester = user ?? (excludeUser == null ?
+                randomizedPerms.Where(a => a.Permission.Role.Id == "RQ").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault()
+                : randomizedPerms.Where(a => a.Permission.Role.Id == "RQ" && a.Permission != excludeUser).OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault());
+            var approver = randomizedPerms.Where(a => a.Permission.Role.Id == "AP" && a.Permission.User.Id != "zoidberg").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
             var conditionalApprover = session.Load<User>("zoidberg");  //workgroup.Permissions.Where(a => a.User.Id == "zoidberg").FirstOrDefault();
             var accountmgr = randomizedPerms.Where(a => a.Permission.Role.Id == "AM").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
             var purchaser = randomizedPerms.Where(a => a.Permission.Role.Id == "PR").OrderBy(a => a.Key).Select(a => a.Permission).FirstOrDefault();
 
             var order = new Order()
-                            {
-                                Justification = _justifications.Skip(_random.Next() % 5).Take(1).FirstOrDefault(),
-                                OrderType = session.Load<OrderType>("OR"),
-                                Workgroup = workgroup,
-                                Organization = workgroup.PrimaryOrganization,
+            {
+                Justification = _justifications.Skip(_random.Next() % 5).Take(1).FirstOrDefault(),
+                OrderType = session.Load<OrderType>("OR"),
+                Workgroup = workgroup,
+                Organization = workgroup.PrimaryOrganization,
 
-                                Vendor = workgroup.Vendors.Skip(_random.Next() % workgroup.Vendors.Count).Take(1).FirstOrDefault(),
-                                Address = workgroup.Addresses.Skip(_random.Next() % workgroup.Addresses.Count).Take(1).FirstOrDefault(),
-                                ShippingType = session.QueryOver<ShippingType>().Skip(_random.Next() % 3).Take(1).SingleOrDefault(),
+                Vendor = workgroup.Vendors.Skip(_random.Next() % workgroup.Vendors.Count).Take(1).FirstOrDefault(),
+                Address = workgroup.Addresses.Skip(_random.Next() % workgroup.Addresses.Count).Take(1).FirstOrDefault(),
+                ShippingType = session.QueryOver<ShippingType>().Skip(_random.Next() % 3).Take(1).SingleOrDefault(),
 
-                                DeliverTo = "Mr. Smith",
-                                DateNeeded = DateTime.Now.AddDays(_random.Next() % 30),
-                                AllowBackorder = _random.Next() % 2 == 1,
+                DeliverTo = "Mr. Smith",
+                DateNeeded = DateTime.Now.AddDays(_random.Next() % 30),
+                AllowBackorder = _random.Next() % 2 == 1,
 
-                                EstimatedTax = 8.89m,
-                                CreatedBy = requester.User,
-                                StatusCode = statusCode
-                            };
+                EstimatedTax = 8.89m,
+                CreatedBy = requester.User,
+                StatusCode = statusCode
+            };
 
             order.GenerateRequestNumber();
 
             // add the tracking
             order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("RQ"), Completed = true, User = requester.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Completed = statusCode.Level > 2 , User = approver.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Completed = statusCode.Level > 3 , User = accountmgr.User });
-            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR"), Completed = statusCode.Level > 4 , User = purchaser.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AP"), Completed = statusCode.Level > 2, User = approver.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("AM"), Completed = statusCode.Level > 3, User = accountmgr.User });
+            order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("PR"), Completed = statusCode.Level > 4, User = purchaser.User });
 
             // add the approvals
 
-            var daysBack = ((-1)*(_random.Next()%10)) - 10;
+            var daysBack = ((-1) * (_random.Next() % 10)) - 10;
 
             order.AddTracking(new OrderTracking() { User = requester.User, DateCreated = DateTime.Now.AddDays(daysBack), Description = "Order submitted by " + requester.User.FullName, StatusCode = session.Load<OrderStatusCode>("RQ") });
             if (statusCode.Level > 2)
@@ -1155,14 +1156,14 @@ namespace Purchasing.Mvc.Helpers
             }
             if (statusCode.Level > 4)
             {
-                order.AddTracking(new OrderTracking() { User = purchaser.User, DateCreated = DateTime.Now.AddDays(daysBack + (_random.Next() % 4)+3), Description = "Order reviewed by " + purchaser.User.FullName, StatusCode = session.Load<OrderStatusCode>("PR") });
-                order.AddTracking(new OrderTracking() { User = purchaser.User, DateCreated = DateTime.Now.AddDays(daysBack + (_random.Next() % 4)+8), Description = "Order marked complete by " + purchaser.User.FullName, StatusCode = session.Load<OrderStatusCode>("CN") });
+                order.AddTracking(new OrderTracking() { User = purchaser.User, DateCreated = DateTime.Now.AddDays(daysBack + (_random.Next() % 4) + 3), Description = "Order reviewed by " + purchaser.User.FullName, StatusCode = session.Load<OrderStatusCode>("PR") });
+                order.AddTracking(new OrderTracking() { User = purchaser.User, DateCreated = DateTime.Now.AddDays(daysBack + (_random.Next() % 4) + 8), Description = "Order marked complete by " + purchaser.User.FullName, StatusCode = session.Load<OrderStatusCode>("CN") });
             }
 
             // add the conditional stuff if we feel like it
             if (_random.Next() % 2 == 1)
             {
-                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CA"), Completed = statusCode.Level > 2 , User = conditionalApprover });
+                order.AddApproval(new Approval() { StatusCode = session.Load<OrderStatusCode>("CA"), Completed = statusCode.Level > 2, User = conditionalApprover });
 
                 if (statusCode.Level > 2)
                 {
@@ -1171,30 +1172,31 @@ namespace Purchasing.Mvc.Helpers
             }
 
             // add the line items
-            var numLineItems = (_random.Next()%5) + 1;  // minimum of 1 line item
+            var numLineItems = (_random.Next() % 5) + 1;  // minimum of 1 line item
 
             for (var i = 0; i < numLineItems; i++)
             {
-                var item = _items.Skip(_random.Next()%_items.Count()).Take(1).FirstOrDefault();
-                order.AddLineItem(new LineItem() { Quantity = _random.Next() % 10, UnitPrice = item.Value + (item.Value * ((_random.Next() % 10)+1 / 10)), Unit = "each", Description = item.Key });
+                var item = _items.Skip(_random.Next() % _items.Count()).Take(1).FirstOrDefault();
+                order.AddLineItem(new LineItem() { Quantity = _random.Next() % 10, UnitPrice = item.Value + (item.Value * ((_random.Next() % 10) + 1 / 10)), Unit = "each", Description = item.Key });
             }
 
             // account information
-            var splitType = _random.Next()%2;
+            var splitType = _random.Next() % 2;
 
-            if (splitType == 1) {
-                var numSplits = _random.Next()%2;
-                var skip = _random.Next()%18;
-                var accounts = session.QueryOver<Account>().Skip(skip+numSplits>=18 ? 18-numSplits : skip).Take(numSplits);
+            if (splitType == 1)
+            {
+                var numSplits = _random.Next() % 2;
+                var skip = _random.Next() % 18;
+                var accounts = session.QueryOver<Account>().Skip(skip + numSplits >= 18 ? 18 - numSplits : skip).Take(numSplits);
 
                 foreach (var act in accounts.List())
                 {
-                    order.AddSplit(new Split(){Account = act.Id, Amount = order.Total()/numSplits});
+                    order.AddSplit(new Split() { Account = act.Id, Amount = order.Total() / numSplits });
                 }
             }
 
             // set shipping
-            order.ShippingAmount = order.Total()*.1m;
+            order.ShippingAmount = order.Total() * .1m;
 
             order.TotalFromDb = order.Total();
 
@@ -1208,7 +1210,7 @@ namespace Purchasing.Mvc.Helpers
         /// <param name="statusCodes"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        private static List<Order> GenerateTestOrders(Workgroup workgroup, List<OrderStatusCode> statusCodes, ISession session )
+        private static List<Order> GenerateTestOrders(Workgroup workgroup, List<OrderStatusCode> statusCodes, ISession session)
         {
             var orders = new List<Order>();
 
@@ -1235,7 +1237,7 @@ namespace Purchasing.Mvc.Helpers
 
             // create the aprover level orders
             var order = new Order() { Workgroup = workgroup, Organization = workgroup.PrimaryOrganization, StatusCode = approver, CreatedBy = requester1.User };
-            order.AddTracking(new OrderTracking(){DateCreated = DaysBack(), User = requester1.User, Description = "n/a"});
+            order.AddTracking(new OrderTracking() { DateCreated = DaysBack(), User = requester1.User, Description = "n/a" });
             order.AddApproval(new Approval() { Completed = true, User = requester1.User, StatusCode = requester });
             order.AddApproval(new Approval() { Completed = false, User = requester1.User, StatusCode = approver });
             order.AddApproval(new Approval() { Completed = false, User = requester1.User, StatusCode = accountmgr });

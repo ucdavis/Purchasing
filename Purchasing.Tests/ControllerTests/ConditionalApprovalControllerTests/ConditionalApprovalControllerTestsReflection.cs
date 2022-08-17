@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Web.Mvc;
 using Castle.Windsor;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 {
@@ -47,7 +46,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         /// Tests the controller has 6 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasSixAttributes()
+        public void TestControllerHasSevenAttributes()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -58,7 +57,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(6, result.Count());
+            Assert.AreEqual(7, result.Count());
             #endregion Assert
         }
 
@@ -92,11 +91,11 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Count() > 0, "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 
@@ -145,7 +144,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
 
             #region Assert
             Assert.IsTrue(result.Count() > 1, "AuthorizeAttribute not found.");
-            Assert.IsTrue(result.ElementAt(0).Roles.Contains("DA") || result.ElementAt(1).Roles.Contains("DA"));
+            Assert.IsTrue(result.ElementAt(0).Policy.Contains("DA") || result.ElementAt(1).Policy.Contains("DA"));
             #endregion Assert
         }
 

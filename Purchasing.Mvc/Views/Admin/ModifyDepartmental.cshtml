@@ -7,7 +7,7 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/multiselector")    
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")    
 }
 
 @section SubNav
@@ -17,13 +17,13 @@
         {
             <li>@Html.ActionLink("Clone User", "Clone", "Admin", new {id = Model.User.Id}, new {@class="button"})</li>
         }
-		<li>@Html.ActionLink("Back to List", "Index", null, new {@class="button"})</li>
+		<li>@Html.ActionLink("Back to List", "Index", new {}, new {@class="button"})</li>
 	</ul>
 }
 
 @section AdditionalScripts{
  
-    @Scripts.Render("~/bundles/multiselector")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/multiselector")
 
     <script type="text/javascript">
 

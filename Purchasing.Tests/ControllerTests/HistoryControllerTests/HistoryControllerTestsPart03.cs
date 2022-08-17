@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
@@ -10,10 +9,11 @@ using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
-
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 {
@@ -25,7 +25,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsAll1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
 
@@ -33,9 +33,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
-            OrderService.Expect(
+            object[] args = default;
+            Mock.Get(OrderService).Setup(
                 a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(rtValue);
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -47,12 +49,10 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(
+            Mock.Get(OrderService).Verify(
                 a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(
-                a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
             Assert.IsNull(args[1]);
@@ -80,17 +80,19 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsAll2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             new FakeColumnPreferences(3, ColumnPreferencesRepository);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
-            OrderService.Expect(
+            object[] args = default;
+            Mock.Get(OrderService).Setup(
                 a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -102,10 +104,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
             Assert.IsNull(args[1]);
@@ -132,20 +133,22 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsAll3()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -157,10 +160,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
             Assert.IsNull(args[1]);
@@ -188,19 +190,21 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsReceived1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -212,10 +216,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("yes", args[0]);
             Assert.AreEqual(null, args[1]);
@@ -243,19 +246,21 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsPaid1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -267,10 +272,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
             Assert.AreEqual("yes", args[1]);
@@ -298,7 +302,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsReceived2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -309,15 +313,17 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             new FakeOrderHistory(0, OrderHistoryRepository, orderHistories);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -329,10 +335,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("yes", args[0]);
             Assert.AreEqual(null, args[1]);
@@ -358,7 +363,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsPaid2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -369,15 +374,17 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             new FakeOrderHistory(0, OrderHistoryRepository, orderHistories);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -389,10 +396,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
             Assert.AreEqual("yes", args[1]);
@@ -419,7 +425,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsUnReceived()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -430,15 +436,17 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             new FakeOrderHistory(0, OrderHistoryRepository, orderHistories);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -450,10 +458,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("no", args[0]);
             Assert.AreEqual(null, args[1]);
@@ -480,7 +487,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsUnPaid()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -492,15 +499,17 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             new FakeOrderHistory(0, OrderHistoryRepository, orderHistories);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -512,10 +521,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
             Assert.AreEqual("no", args[1]);
@@ -543,7 +551,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenNeedSpecialColumns1()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -559,16 +567,16 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             {
                 approvals.Add(CreateValidEntities.Approval(i + 1));
                 approvals[i].Order = CreateValidEntities.Order(i + 1);
-                approvals[i].Order.SetIdTo(i + 1);
+                approvals[i].Order.Id = i + 1;
             }
 
-            approvals[1].Order.SetIdTo(99);
+            approvals[1].Order.Id = 99;
             new FakeApprovals(0, ApprovalRepository, approvals);
 
 
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             prefs[0].ShowApprover = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
@@ -577,9 +585,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -591,10 +601,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("no", args[0]);
             Assert.AreEqual(null, args[1]);
@@ -622,7 +631,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenNeedSpecialColumns1A() //Paid filter
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -639,16 +648,16 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             {
                 approvals.Add(CreateValidEntities.Approval(i + 1));
                 approvals[i].Order = CreateValidEntities.Order(i + 1);
-                approvals[i].Order.SetIdTo(i + 1);
+                approvals[i].Order.Id = i + 1;
             }
 
-            approvals[1].Order.SetIdTo(99);
+            approvals[1].Order.Id = 99;
             new FakeApprovals(0, ApprovalRepository, approvals);
 
 
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             prefs[0].ShowApprover = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
@@ -657,9 +666,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -671,10 +682,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
             Assert.AreEqual("no", args[1]);
@@ -702,7 +712,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenNeedSpecialColumns2()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -718,15 +728,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             {
                 orderTracking.Add(CreateValidEntities.OrderTracking(i + 1));
                 orderTracking[i].Order = new Order();
-                orderTracking[i].Order.SetIdTo(2);
+                orderTracking[i].Order.Id = 2;
             }
-            orderTracking[1].Order.SetIdTo(9);
+            orderTracking[1].Order.Id = 9;
             new FakeOrderTracking(0, OrderTrackingRepository, orderTracking);
 
 
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             prefs[0].ShowDaysNotActedOn = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
@@ -735,9 +745,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -749,10 +761,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual("no", args[0]);
             Assert.AreEqual(null, args[1]);
@@ -780,7 +791,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenNeedSpecialColumns2A()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             var orderHistories = new List<OrderHistory>();
             for (int i = 0; i < 3; i++)
             {
@@ -797,15 +808,15 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             {
                 orderTracking.Add(CreateValidEntities.OrderTracking(i + 1));
                 orderTracking[i].Order = new Order();
-                orderTracking[i].Order.SetIdTo(2);
+                orderTracking[i].Order.Id = 2;
             }
-            orderTracking[1].Order.SetIdTo(9);
+            orderTracking[1].Order.Id = 9;
             new FakeOrderTracking(0, OrderTrackingRepository, orderTracking);
 
 
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             prefs[0].ShowDaysNotActedOn = true;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
@@ -814,9 +825,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -828,10 +841,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
             Assert.AreEqual("no", args[1]);
@@ -859,19 +871,21 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsApprover()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -883,10 +897,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
             Assert.IsNull(args[1]);
@@ -914,11 +927,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsAccountManager()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
 
@@ -926,9 +939,11 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
 
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -940,10 +955,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(null, args[0]);
             Assert.AreEqual(null, args[1]);
@@ -971,19 +985,21 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsPurchaser()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -995,10 +1011,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
             Assert.IsNull(args[1]);
@@ -1026,19 +1041,21 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsComplete()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -1050,10 +1067,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
             Assert.IsNull(args[1]);
@@ -1081,19 +1097,21 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsCancelled()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -1105,10 +1123,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
             Assert.IsNull(args[1]);
@@ -1136,19 +1153,21 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
         public void TestAccountsPayableOrdersWhenOrderStatusFilterIsDenied()
         {
             #region Arrange
-            Controller.ControllerContext.HttpContext = new MockHttpContext(0, new[] { "" }, "Me");
+            Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
             new FakeOrderHistory(3, OrderHistoryRepository);
             var prefs = new List<ColumnPreferences>();
             prefs.Add(CreateValidEntities.ColumnPreferences(1));
-            prefs[0].SetIdTo("Me");
+            prefs[0].Id = "Me";
             prefs[0].DisplayRows = 25;
             new FakeColumnPreferences(0, ColumnPreferencesRepository, prefs, true);
             var rtValue = new IndexedList<OrderHistory>();
             rtValue.LastModified = DateTime.UtcNow.ToPacificTime().Date.AddHours(7);
             rtValue.Results = OrderHistoryRepository.Queryable.ToList();
-            OrderService.Expect(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything)).Return(
-                                      rtValue);
+            object[] args = default;
+            Mock.Get(OrderService).Setup(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>())).Returns(
+                                      rtValue)
+                .Callback((string a, string b, string c, DateTime? d, DateTime? e, DateTime? f, DateTime? g) => args = new object[] { a, b, c, d, e, f, g });
             #endregion Arrange
 
             #region Act
@@ -1160,10 +1179,9 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #region Assert
 
             #region GetListOfOrder Args
-            OrderService.AssertWasCalled(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything));
-            var args = OrderService.GetArgumentsForCallsMadeOn(a =>
-                a.GetAccountsPayableIndexedListofOrders(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime?>.Is.Anything))[0];
+            Mock.Get(OrderService).Verify(a =>
+                a.GetAccountsPayableIndexedListofOrders(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()));
+
             Assert.IsNotNull(args);
             Assert.IsNull(args[0]);
             Assert.IsNull(args[1]);

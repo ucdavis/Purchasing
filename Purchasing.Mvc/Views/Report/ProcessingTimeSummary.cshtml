@@ -45,7 +45,7 @@
                             @Html.Label("Workgroup")
                         </div>
                         <div class="editor-field">
-                            @this.Select("WorkgroupId").Options(Model.Workgroups.OrderBy(x => x.Name), x => x.Id, x => x.NameAndAdmin).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--")
+                            @Html.Select("WorkgroupId", o => o.Options(Model.Workgroups.OrderBy(x => x.Name), x => x.Id.ToString(), x => x.NameAndAdmin).Selected(Model.Workgroup != null ? Model.Workgroup.Id.ToString() : string.Empty).FirstOption("--Select Workgroup--"))
                         </div>
                     </li>
                     <li>&nbsp;</li>

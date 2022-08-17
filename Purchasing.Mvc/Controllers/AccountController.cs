@@ -1,37 +1,48 @@
-﻿using System.Web.Mvc;
-using System.Web.Security;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using AspNetCore.Security.CAS;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using UCDArch.Core.PersistanceSupport;
+using NHibernate.Linq;
 
 namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for the Account class.
     /// </summary>
-    public class AccountController : Controller 
+    public class AccountController : Microsoft.AspNetCore.Mvc.Controller
     {
+        private readonly IRepositoryWithTypedId<User, string> _userRepository;
+
         public string Message
         {
             set { TempData["Message"] = value; }
         }
-        public ActionResult LogOn(string returnUrl)
+
+        public AccountController(IRepositoryWithTypedId<User,string> userRepository)
         {
-            string resultUrl = CasHelper.Login(); //Do the CAS Login
+            _userRepository = userRepository;
+        }
+        
 
-            if (resultUrl != null)
-            {
-                 return Redirect(resultUrl);
-            }
-
-            TempData["URL"] = returnUrl;
-
-            return View();
-
+        [Route("LogOut")]
+        public async Task<ActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult LogOut()
+        [AllowAnonymous]
+        [Route("LogOn")]
+        public async Task LogOn(string returnUrl)
         {
-            return Redirect(CasHelper.Logout());
+            var props = new AuthenticationProperties { RedirectUri = returnUrl };
+            await HttpContext.ChallengeAsync(CasDefaults.AuthenticationScheme, props);
         }
 
         /// <summary>
@@ -39,20 +50,53 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.Codes.EmulationUser)]
-        public RedirectToRouteResult Emulate(string id /* Login ID*/)
+        [Authorize(Policy = Role.Codes.EmulationUser)]
+        public async Task<ActionResult> Emulate(string id /* Login ID*/)
         {
             if (!string.IsNullOrEmpty(id))
             {
-                //Message = "Emulating " + id;
-                Message = string.Format("Emulating {0}.  To exit emulation use /Account/EndEmulation", id);
-                FormsAuthentication.RedirectFromLoginPage(id, false);
+                var user = await _userRepository.Queryable.SingleOrDefaultAsync(x => x.Id == id);
+                if (user == null)
+                {
+                    var identity2 = new ClaimsIdentity(new[]
+{
+                    new Claim(ClaimTypes.NameIdentifier, id),
+                    new Claim(ClaimTypes.Name, id),
+                    new Claim(ClaimTypes.GivenName, "Fake"),
+                    new Claim(ClaimTypes.Surname, "FakeLn"),
+                    new Claim(ClaimTypes.Email, "Fake@fake.com")
+                }, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    // kill old login
+                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    // create new login
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity2));
+                    return RedirectToAction("Index", "Home");
+                }
+
+                var identity = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(ClaimTypes.Name, user.Id),
+                    new Claim(ClaimTypes.GivenName, user.FirstName),
+                    new Claim(ClaimTypes.Surname, user.LastName),
+                    new Claim(ClaimTypes.Email, user.Email)
+                }, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                // kill old login
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                // create new login
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+                return RedirectToAction("Index", "Home");
             }
             else
             {
                 Message = "Login ID not provided.  Use /Emulate/login";
             }
-            
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -60,10 +104,9 @@ namespace Purchasing.Mvc.Controllers
         /// Just a signout, without the hassle of signing out of CAS.  Ends emulated credentials.
         /// </summary>
         /// <returns></returns>
-        public RedirectToRouteResult EndEmulate()
+        public async Task<ActionResult> EndEmulate()
         {
-            FormsAuthentication.SignOut();
-
+            await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
     }

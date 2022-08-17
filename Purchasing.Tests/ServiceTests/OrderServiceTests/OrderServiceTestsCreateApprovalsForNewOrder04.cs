@@ -4,8 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Tests.Core;
-using Rhino.Mocks;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
+using Moq;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {
@@ -19,12 +20,12 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             #region Arrange
             var order = CreateValidEntities.Order(1);
-            order.SetIdTo(99);
+            order.Id = 99;
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             order.Splits[0].Account = null;
             order.Splits[0].Order = order;
-            order.Workgroup.SetIdTo(1);
+            order.Workgroup.Id = 1;
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             new FakeAccounts(3, AccountRepository);
 
@@ -45,10 +46,10 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
-            EventService.AssertWasNotCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
-            EventService.AssertWasCalled(a => a.OrderCreated(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser(It.IsAny<string>()), Times.Never()); // the account was not found in the workgroup or the account table
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(3));
+            Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
+            Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(4, order.Approvals.Count);
             Assert.AreEqual(OrderStatusCode.Codes.Approver, order.Approvals[0].StatusCode.Id);
@@ -69,12 +70,12 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             #region Arrange
             var order = CreateValidEntities.Order(1);
-            order.SetIdTo(99);
+            order.Id = 99;
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             order.Splits[0].Account = null;
             order.Splits[0].Order = order;
-            order.Workgroup.SetIdTo(1);
+            order.Workgroup.Id = 1;
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             new FakeAccounts(3, AccountRepository);
 
@@ -87,7 +88,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             conditionalApprovals[0].SecondaryApprover = CreateValidEntities.User(5);
 
             new FakeConditionalApprovals(0, ConditionalApprovalRepository, conditionalApprovals);
-            UserIdentity.Expect(a => a.Current).Return("4"); // Same As conditional approval, but conditional approvals do not auto approve.
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("4"); // Same As conditional approval, but conditional approvals do not auto approve.
             #endregion Arrange
 
             #region Act
@@ -95,10 +96,10 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
-            EventService.AssertWasNotCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
-            EventService.AssertWasCalled(a => a.OrderCreated(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser(It.IsAny<string>()), Times.Never()); // the account was not found in the workgroup or the account table
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(3));
+            Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
+            Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(4, order.Approvals.Count);
             Assert.AreEqual(OrderStatusCode.Codes.Approver, order.Approvals[0].StatusCode.Id);
@@ -121,12 +122,12 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             #region Arrange
             var order = CreateValidEntities.Order(1);
-            order.SetIdTo(99);
+            order.Id = 99;
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             order.Splits[0].Account = null;
             order.Splits[0].Order = order;
-            order.Workgroup.SetIdTo(1);
+            order.Workgroup.Id = 1;
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             new FakeAccounts(3, AccountRepository);
 
@@ -143,7 +144,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             conditionalApprovals[1].SecondaryApprover = null;
 
             new FakeConditionalApprovals(0, ConditionalApprovalRepository, conditionalApprovals);
-            UserIdentity.Expect(a => a.Current).Return("4"); // Same As conditional approval, but conditional approvals do not auto approve.
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("4"); // Same As conditional approval, but conditional approvals do not auto approve.
             #endregion Arrange
 
             #region Act
@@ -151,10 +152,10 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasNotCalled(a => a.GetUser(Arg<string>.Is.Anything)); // the account was not found in the workgroup or the account table
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(3));
-            EventService.AssertWasNotCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
-            EventService.AssertWasCalled(a => a.OrderCreated(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser(It.IsAny<string>()), Times.Never()); // the account was not found in the workgroup or the account table
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(3));
+            Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
+            Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(5, order.Approvals.Count);
             Assert.AreEqual(OrderStatusCode.Codes.Approver, order.Approvals[0].StatusCode.Id);
@@ -181,7 +182,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             #region Arrange
             var order = CreateValidEntities.Order(1);
-            order.SetIdTo(99);
+            order.Id = 99;
             order.Splits = new List<Split>();
             order.Splits.Add(new Split());
             order.Splits[0].Account = "12345";
@@ -195,14 +196,14 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             order.Splits[2].Account = "777";
             order.Splits[2].Order = order;
 
-            order.Workgroup.SetIdTo(1);
+            order.Workgroup.Id = 1;
             var workgroupAccounts = new List<WorkgroupAccount>();
             workgroupAccounts.Add(CreateValidEntities.WorkgroupAccount(1));
             workgroupAccounts[0].Workgroup = order.Workgroup;
             workgroupAccounts[0].Account = CreateValidEntities.Account(9);
-            workgroupAccounts[0].Account.SetIdTo("777");
+            workgroupAccounts[0].Account.Id = "777";
             workgroupAccounts[0].Approver = CreateValidEntities.User(11);
-            workgroupAccounts[0].Approver.SetIdTo("11");
+            workgroupAccounts[0].Approver.Id = "11";
             workgroupAccounts[0].AccountManager = CreateValidEntities.User(22);
             workgroupAccounts[0].Purchaser = CreateValidEntities.User(33);
 
@@ -210,14 +211,14 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 
             var accounts = new List<Account>();
             accounts.Add(CreateValidEntities.Account(1));
-            accounts[0].SetIdTo("23456");
+            accounts[0].Id = "23456";
             accounts[0].AccountManagerId = "TestUser";
             accounts.Add(CreateValidEntities.Account(2));
-            accounts[1].SetIdTo("12345");
+            accounts[1].Id = "12345";
             accounts[1].AccountManagerId = null;
             new FakeAccounts(0, AccountRepository, accounts, true);
-            SecurityService.Expect(a => a.GetUser("TestUser")).Return(CreateValidEntities.User(55));
-            SecurityService.Expect(a => a.GetUser(null)).Return(null);
+            Mock.Get(SecurityService).Setup(a => a.GetUser("TestUser")).Returns(CreateValidEntities.User(55));
+            Mock.Get(SecurityService).Setup(a => a.GetUser(null)).Returns<User>(null);
 
             var autoApprovals = new List<AutoApproval>();
             autoApprovals.Add(CreateValidEntities.AutoApproval(1));
@@ -228,7 +229,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             autoApprovals[0].Account = workgroupAccounts[0].Account;
             new FakeAutoApprovals(0, AutoAprovalRepository, autoApprovals);
 
-            //UserIdentity.Expect(a => a.Current).Return("11");
+            //Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("11");
+            //Mock.Get(UserIdentity).SetupSet(a => a.Current);
 
             new FakeUsers(5, UserRepository);
 
@@ -246,11 +248,11 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            SecurityService.AssertWasCalled(a => a.GetUser("TestUser"));
-            SecurityService.AssertWasCalled(a => a.GetUser(null));
-            EventService.AssertWasCalled(a => a.OrderApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything, Arg<bool>.Is.Anything), x => x.Repeat.Times(4));
-            EventService.AssertWasCalled(a => a.OrderAutoApprovalAdded(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
-            EventService.AssertWasCalled(a => a.OrderCreated(order));
+            Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser"));
+            Mock.Get(SecurityService).Verify(a => a.GetUser(null));
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(4));
+            Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()));
+            Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
             Assert.AreEqual(6, order.Approvals.Count);
             Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[0].StatusCode.Id);

@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Castle.Windsor;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
@@ -15,14 +12,16 @@ using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Attributes;
 using Purchasing.Mvc.Utility;
 using IdAndName = Purchasing.Core.Services.IdAndName;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests
 {
@@ -40,20 +39,16 @@ namespace Purchasing.Tests.ControllerTests
         /// </summary>
         protected override void SetupController()
         {
-            SubAccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<SubAccount, Guid>>();
-            SearchService = MockRepository.GenerateStub<ISearchService>();
+            SubAccountRepository = Mock.Of<IRepositoryWithTypedId<SubAccount, Guid>>();
+            //SubAccountRepository = Mock.Of<IRepositoryWithTypedId<SubAccount, Guid>>();
+            SearchService = Mock.Of<ISearchService>();
 
-            Controller = new TestControllerBuilder().CreateController<AccountsController>(SubAccountRepository, SearchService);
-        }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            Controller = new AccountsController(SubAccountRepository, SearchService);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
             base.RegisterAdditionalServices(container);
         }
 
@@ -81,7 +76,7 @@ namespace Purchasing.Tests.ControllerTests
         public void TestSearchKfsAccountsReturnsExpectedResults1()
         {
             #region Arrange
-            SearchService.Expect(a => a.SearchAccounts("Test")).Return(new List<IdAndName>());
+            Mock.Get(SearchService).Setup(a => a.SearchAccounts("Test")).Returns(new List<IdAndName>());
             #endregion Arrange
 
             #region Act
@@ -104,7 +99,7 @@ namespace Purchasing.Tests.ControllerTests
             {
                 accounts.Add(new IdAndName((i+1).ToString(CultureInfo.InvariantCulture), "name"));
             }
-            SearchService.Expect(a => a.SearchAccounts("Test")).Return(accounts);
+            Mock.Get(SearchService).Setup(a => a.SearchAccounts("Test")).Returns(accounts);
             #endregion Arrange           
             
             #region Act
@@ -197,7 +192,7 @@ namespace Purchasing.Tests.ControllerTests
         /// Tests the controller has 6 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasSixAttributes()
+        public void TestControllerHasSevenAttributes()
         {
             #region Arrange
             var controllerClass = _controllerClass;
@@ -208,7 +203,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(6, result.Count());
+            Assert.AreEqual(7, result.Count());
             #endregion Assert
         }
 
@@ -242,11 +237,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Any(), "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Any(), "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 

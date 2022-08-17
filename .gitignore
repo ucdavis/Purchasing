@@ -2,7 +2,7 @@
 #ignore thumbnails created by windows
 Thumbs.db
 #Ignore files build by Visual Studio
-Purchasing.Web/bin/*
+Purchasing.Mvc/bin/*
 *.obj
 *.exe
 *.pdb
@@ -47,8 +47,9 @@ Purchasing.WS/bin/Test/Purchasing.WS.dll.config
 *.ldf
 *.mdf
 #Azure config files
-Purchasing.Web/Purchasing.Web.Publish.xml
+Purchasing.Mvc/Purchasing.Mvc.Publish.xml
 Web.ReleaseAzure.config
 newrelic.cmd
-Purchasing.Web.Azure/ServiceDefinition.build.csdef
+Purchasing.Mvc.Azure/ServiceDefinition.build.csdef
 .vs/
+**/wwwroot/bundles/*

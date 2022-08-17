@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Helpers;
@@ -33,7 +34,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
         /// Tests the controller has 5 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHas5Attributes()
+        public void TestControllerHasSixAttributes()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -44,7 +45,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, result.Count());
+            Assert.AreEqual(6, result.Count());
             #endregion Assert
         }
 
@@ -78,11 +79,11 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Any(), "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Any(), "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 
@@ -171,7 +172,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
-            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Policy);
             Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
@@ -230,7 +231,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
-            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Policy);
             Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
@@ -251,7 +252,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
-            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Policy);
             Assert.AreEqual(2, allAttributes.Count());
             #endregion Assert
         }
@@ -292,7 +293,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
-            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Policy);
             Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
@@ -313,7 +314,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
-            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Policy);
             Assert.AreEqual(2, allAttributes.Count());
             #endregion Assert
         }
@@ -372,7 +373,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
-            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Policy);
             Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
@@ -393,7 +394,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
-            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Policy);
             Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
@@ -414,7 +415,7 @@ namespace Purchasing.Tests.ControllerTests.DepartmentalAdminRequestControllerTes
 
             #region Assert
             //Assert.AreEqual(1, expectedAttribute.Count(), "AuthorizeAttribute not found");
-            //Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Roles);
+            //Assert.AreEqual(Role.Codes.Admin, expectedAttribute.ElementAt(0).Policy);
             Assert.AreEqual(0, allAttributes.Count());
             #endregion Assert
         }

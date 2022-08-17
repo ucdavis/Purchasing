@@ -1,4 +1,5 @@
-﻿@using Purchasing.Core.Domain
+@using Microsoft.AspNetCore.Mvc.Razor
+@using Purchasing.Core.Domain
 @model ReportPermissionsViewModel
 
 @{
@@ -8,7 +9,7 @@
 @section SubNav
 {
 	<ul class="navigation">
-        <li>@Html.ActionLink("Back to List", "Index", "Report", null, new { @class = "button" })</li>
+        <li>@Html.ActionLink("Back to List", "Index", "Report", new { }, new { @class = "button" })</li>
         <li>@Html.ActionLink(Model.HideInherited ? "Show All":"Hide Inherited", "Permissions", "Report", new { hideInherited = !Model.HideInherited } , new { @class = "button" })</li>
 	</ul>
 }
@@ -23,29 +24,30 @@
     
 }
 
-@helper DisplayWorkgroupType(Workgroup wk)
-{
-    if (wk.Administrative || wk.IsFullFeatured)
-    {
-        <text>(</text>
-        if (wk.Administrative && wk.IsFullFeatured)
-        {
-            <text>Admin, Shared or Cluster</text>
-        }
-        else
-        {
-            if (wk.Administrative)
-            {
-                <text>Admin</text>
-            }
-            if (wk.IsFullFeatured)
-            {
-                <text>Shared or Cluster</text>
-            }
-        }
-        <text>)</text>
-    }
-}
+@{ HelperResult DisplayWorkgroupType(Workgroup wk)
+	{
+	    if (wk.Administrative || wk.IsFullFeatured)
+	    {
+	        <text>(</text>
+	        if (wk.Administrative && wk.IsFullFeatured)
+	        {
+	            <text>Admin, Shared or Cluster</text>
+	        }
+	        else
+	        {
+	            if (wk.Administrative)
+	            {
+	                <text>Admin</text>
+	            }
+	            if (wk.IsFullFeatured)
+	            {
+	                <text>Shared or Cluster</text>
+	            }
+	        }
+	        <text>)</text>
+	    }
+		return new HelperResult(w => Task.CompletedTask);
+} }
 
 <div id="tabs">
     

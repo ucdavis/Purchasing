@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using System.Web.Mvc;
-using System.Web.Caching;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Purchasing.Mvc.Attributes
 {
@@ -26,26 +27,23 @@ namespace Purchasing.Mvc.Attributes
         /// and places the version in ViewData
         /// </summary>
         /// <param name="filterContext"></param>
-        private void LoadAssemblyVersion(ActionExecutingContext filterContext)
+        private void LoadAssemblyVersion(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext filterContext)
         {
-            var version = filterContext.HttpContext.Cache[VersionKey] as string;
+            var cache = filterContext.HttpContext.RequestServices.GetService(typeof(IMemoryCache)) as IMemoryCache;
 
-            if (string.IsNullOrEmpty(version))
+            var version = cache.GetOrCreate(VersionKey, entry =>
             {
-                version = Assembly.GetExecutingAssembly().GetName().Version.ToString(); //Version from AppVeyor.
+                entry.AbsoluteExpiration = DateTime.Today.AddDays(1);
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString();;
+            });
 
-                //Insert version into the cache until tomorrow (Today + 1 day)
-                filterContext.HttpContext.Cache.Insert(VersionKey, version, null, DateTime.Today.AddDays(1), Cache.NoSlidingExpiration);
-            }
-
-            filterContext.Controller.ViewData[VersionKey] = version;
+            var controller = filterContext.Controller as Controller;
+            controller.ViewData[VersionKey] = version;
         }
 
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        public override void OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext filterContext)
         {
             LoadAssemblyVersion(filterContext);
-
-            base.OnActionExecuting(filterContext);
         }
     }
 }

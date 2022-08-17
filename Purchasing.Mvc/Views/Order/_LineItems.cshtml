@@ -72,7 +72,7 @@
                         <table class="sub-line-item-split">
                             <tbody data-bind="foreach: splits" class="sub-line-item-split-body">
                                 <tr class="sub-line-item-split-row">
-                                    <td>@Html.Partial("_AccountSelectTemplate")</td>
+                                    <td>@await Html.PartialAsync("_AccountSelectTemplate")</td>
                                     <td>
                                         <div class="account-split-amounts">
                                             <span>$</span>

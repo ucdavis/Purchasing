@@ -7,8 +7,8 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/multiselector")
-    @Styles.Render("~/Css/single/chosen")
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")
+    @await Html.PartialAsync("_CssBundle", "~/Css/single/chosen")
 
 
     <style type="text/css">
@@ -31,9 +31,9 @@
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/multiselector")
-    @Scripts.Render("~/bundles/single/chosen")
-    @Scripts.Render("~/bundles/jquery-qtip")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/multiselector")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/single/chosen")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jquery-qtip")
 
     
 	<script type="text/javascript">
@@ -87,7 +87,7 @@
 {
 	<ul class="navigation">
 		<li>@Html.ActionLink("Details", "Details", new { id = @Model.Workgroup.Id }, new { @class = "button" })</li>
-		<li>@Html.ActionLink("Back to List", "Index", "Edit", new { @class = "button" })</li>
+		<li>@Html.ActionLink("Back to List", "Index", "Edit", new { }, new { @class = "button" })</li>
 	</ul>
 }
 
@@ -110,7 +110,7 @@ Example: Dinosaur 1  *@
 	<div class="section-contents">
 
 		<ul>
-			@Html.Partial("_WorkgroupForm")
+			@await Html.PartialAsync("_WorkgroupForm")
 
 			@Html.HiddenFor(model => model.Workgroup.Id)
 			<li>

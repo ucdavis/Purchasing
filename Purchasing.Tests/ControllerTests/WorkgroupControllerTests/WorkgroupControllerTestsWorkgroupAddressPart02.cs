@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Rhino.Mocks;
+using UCDArch.Testing.Extensions;
+using Moq;
 
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
@@ -22,8 +23,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.DeleteAddress(4, 6)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -40,8 +40,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.DeleteAddress(3, 6)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -126,13 +125,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             Controller.DeleteAddress(4, 6, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.AreEqual("Workgroup could not be found.", Controller.ErrorMessage);
-            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert
         }
 
@@ -145,15 +143,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.DeleteAddress(3, 6, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(3));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.RouteValues["id"]);
             Assert.AreEqual("Address not found.", Controller.ErrorMessage);
-            WorkgroupRepository.AssertWasNotCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
             #endregion Assert
         }
         
@@ -162,20 +159,22 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForAddress();
+            Workgroup args = default;
+            Mock.Get( WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.DeleteAddress(2, 4, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.AreEqual("Address deleted.", Controller.Message);
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup) WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0]; 
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
+ 
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());
             Assert.IsFalse(args.Addresses[0].IsActive);
@@ -189,20 +188,22 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForAddress();
+            Workgroup args = default;
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.DeleteAddress(2, 5, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.AreEqual("Address deleted.", Controller.Message);
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());
             Assert.IsTrue(args.Addresses[0].IsActive);
@@ -216,20 +217,22 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             SetupDataForAddress();
+            Workgroup args = default;
+            Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
+                .Callback<Workgroup>(x => args = x);
             #endregion Arrange
 
             #region Act
             var result = Controller.DeleteAddress(2, 6, new WorkgroupAddress())
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Addresses(2));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
             Assert.AreEqual("Address deleted.", Controller.Message);
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.RouteValues["id"]);
-            WorkgroupRepository.AssertWasCalled(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything));
-            var args = (Workgroup)WorkgroupRepository.GetArgumentsForCallsMadeOn(a => a.EnsurePersistent(Arg<Workgroup>.Is.Anything))[0][0];
+            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()));
+
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Addresses.Count());
             Assert.IsTrue(args.Addresses[0].IsActive);

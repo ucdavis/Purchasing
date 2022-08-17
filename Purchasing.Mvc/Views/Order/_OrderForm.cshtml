@@ -12,29 +12,29 @@
         <option value="@account.Id" title="@account.Name">@account.Id</option>
     }
 </select>
-@Html.Partial("_Justification")
+@await Html.PartialAsync("_Justification")
 
-@Html.Partial("_BusinessPurpose")    
+@await Html.PartialAsync("_BusinessPurpose")    
 
-@Html.Partial("_Vendor")
+@await Html.PartialAsync("_Vendor")
     
-@Html.Partial("_ShippingAddress")
+@await Html.PartialAsync("_ShippingAddress")
 
-@Html.Partial("_LineItems")
+@await Html.PartialAsync("_LineItems")
 
-@Html.Partial("_OrderDetails")
+@await Html.PartialAsync("_OrderDetails")
     
-@Html.Partial("_OrderSplits")
+@await Html.PartialAsync("_OrderSplits")
 
-@Html.Partial("_ConditionalApprovals")
+@await Html.PartialAsync("_ConditionalApprovals")
     
 @if (Model.Workgroup.AllowControlledSubstances)
 {
-    @Html.Partial("_RestrictedInfo")
+    @await Html.PartialAsync("_RestrictedInfo")
 }
 
-@Html.Partial("_CustomFields")
+@await Html.PartialAsync("_CustomFields")
     
-@Html.Partial("_OrderPreferences")
+@await Html.PartialAsync("_OrderPreferences")
     
-@Html.Partial("_Submit")
+@await Html.PartialAsync("_Submit")

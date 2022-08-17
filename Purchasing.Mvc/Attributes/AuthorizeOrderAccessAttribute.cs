@@ -1,13 +1,16 @@
-using System.Web.Mvc;
-using Microsoft.Practices.ServiceLocation;
+using System;
+using CommonServiceLocator;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
-using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using UCDArch.Core;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Attributes
 {
-    public class AuthorizeOrderAccessAttribute : AuthorizeAttribute
+    public class AuthorizeOrderAccessAttribute : Attribute, IAuthorizationFilter
     {
         private readonly OrderAccessLevel _accessLevel;
         private readonly ISecurityService _securityService;
@@ -15,7 +18,7 @@ namespace Purchasing.Mvc.Attributes
         public AuthorizeOrderAccessAttribute(OrderAccessLevel accessLevel)
         {
             _accessLevel = accessLevel;
-            _securityService = ServiceLocator.Current.GetInstance<ISecurityService>();
+            _securityService = SmartServiceLocator<ISecurityService>.GetService();
         }
 
         /// <summary>
@@ -25,7 +28,7 @@ namespace Purchasing.Mvc.Attributes
         /// First check access with vOpenAccess and then vClosedAccess if the user doesn't have access there
         /// </remarks>
         /// <param name="filterContext"></param>
-        public override void OnAuthorization(AuthorizationContext filterContext)
+        public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
             var orderId = int.Parse((string)filterContext.RouteData.Values["id"]);
 
@@ -39,10 +42,8 @@ namespace Purchasing.Mvc.Attributes
 
             if (!_accessLevel.HasFlag(accessLevel))
             {
-                filterContext.Result = new HttpUnauthorizedResult(Resources.Authorization_PermissionDenied);
+                filterContext.Result = ViewHelper.NotAuthorized(Resources.Authorization_PermissionDenied);
             }
-
-            base.OnAuthorization(filterContext);
         }
     }
 

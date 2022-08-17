@@ -6,7 +6,7 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/single/fileuploader/fileuploader")
+    @await Html.PartialAsync("_CssBundle", "~/Css/single/fileuploader/fileuploader")
 
     <style type="text/css">
         .navigation li {display: inline-block;width: auto;padding: 0 0 0 10px;}
@@ -96,45 +96,45 @@
 
 <nav class="orders-nav" style="left: -200px;"></nav>
 
-@Html.Partial("_ReviewMessage")
+@await Html.PartialAsync("_ReviewMessage")
 
-@Html.Partial("_ReviewOrderDetails")
+@await Html.PartialAsync("_ReviewOrderDetails")
 
 @if (Model.Order.IsValidKfs())
 {
-    @Html.Partial("_ReviewKfs")
+    @await Html.PartialAsync("_ReviewKfs")
 }
 
 @if (!string.IsNullOrWhiteSpace(Model.Order.BusinessPurpose))
 {
-    @Html.Partial("_ReviewBusinessPurpose")
+    @await Html.PartialAsync("_ReviewBusinessPurpose")
 }
 
-@Html.Partial("_ReviewLineItems")
+@await Html.PartialAsync("_ReviewLineItems")
 
-@Html.Partial("_ReviewLineSplits")
+@await Html.PartialAsync("_ReviewLineSplits")
 
-@Html.Partial("_ReviewControlledSubstances")
+@await Html.PartialAsync("_ReviewControlledSubstances")
 
-@Html.Partial("_ReviewCustomFields")
+@await Html.PartialAsync("_ReviewCustomFields")
 
-@Html.Partial("_ReviewNotes")
+@await Html.PartialAsync("_ReviewNotes")
 
-@Html.Partial("_ReviewAttachments")
+@await Html.PartialAsync("_ReviewAttachments")
 
-@Html.Partial("_ReviewApprovals")
+@await Html.PartialAsync("_ReviewApprovals")
 
-@Html.Partial("_ReviewHistory")
+@await Html.PartialAsync("_ReviewHistory")
 
-@Html.Partial("_ReviewCancel")
+@await Html.PartialAsync("_ReviewCancel")
 
-@Html.Partial("_ReviewSubmit")
+@await Html.PartialAsync("_ReviewSubmit")
 
-@Html.Partial("_ReviewFpdComplete")
+@await Html.PartialAsync("_ReviewFpdComplete")
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/orderreview")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/orderreview")
 
 
     <script type="text/javascript">

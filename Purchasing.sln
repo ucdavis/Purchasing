@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1EFCD76D-1C9A-499A-906C-7130C1427185}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1EFCD7
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jobs", "Jobs", "{3201A95E-A908-42BC-9363-D8B5720F6881}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Tests", "Purchasing.Tests\Purchasing.Tests.csproj", "{E0236983-79B2-4279-8B12-6EF256C48AE9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Core", "Purchasing.Core\Purchasing.Core.csproj", "{B1C96724-966E-4481-89A7-DF4B1C26069D}"
 EndProject
@@ -36,6 +34,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.DailyEmailN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.NotificationsCommon", "Purchasing.Jobs.NotificationsCommon\Purchasing.Jobs.NotificationsCommon.csproj", "{029BA1FC-A03F-490D-AF92-FA69E6565ABA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCDArch", "UCDArch\UCDArch.csproj", "{1CB10538-1934-4C0B-97CB-A440A31FA384}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Tests", "Purchasing.Tests\Purchasing.Tests.csproj", "{4741AA67-04E3-4E90-A701-BA9419526209}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCDARch.testing", "UCDArch.Testing\UCDARch.testing.csproj", "{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,15 +49,6 @@ Global
 		Test|Any CPU = Test|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.ReleaseAzure|Any CPU.ActiveCfg = ReleaseAzure|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.ReleaseAzure|Any CPU.Build.0 = ReleaseAzure|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.ReleaseCAES|Any CPU.ActiveCfg = ReleaseCAES|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.ReleaseCAES|Any CPU.Build.0 = ReleaseCAES|Any CPU
-		{E0236983-79B2-4279-8B12-6EF256C48AE9}.Test|Any CPU.ActiveCfg = Test|Any CPU
 		{B1C96724-966E-4481-89A7-DF4B1C26069D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1C96724-966E-4481-89A7-DF4B1C26069D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1C96724-966E-4481-89A7-DF4B1C26069D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -172,6 +167,36 @@ Global
 		{029BA1FC-A03F-490D-AF92-FA69E6565ABA}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
 		{029BA1FC-A03F-490D-AF92-FA69E6565ABA}.Test|Any CPU.ActiveCfg = Release|Any CPU
 		{029BA1FC-A03F-490D-AF92-FA69E6565ABA}.Test|Any CPU.Build.0 = Release|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.ReleaseAzure|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.ReleaseAzure|Any CPU.Build.0 = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.ReleaseCAES|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.ReleaseCAES|Any CPU.Build.0 = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB10538-1934-4C0B-97CB-A440A31FA384}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.ReleaseAzure|Any CPU.ActiveCfg = Debug|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.ReleaseAzure|Any CPU.Build.0 = Debug|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.ReleaseCAES|Any CPU.ActiveCfg = Debug|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.ReleaseCAES|Any CPU.Build.0 = Debug|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{4741AA67-04E3-4E90-A701-BA9419526209}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.ReleaseAzure|Any CPU.ActiveCfg = Debug|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.ReleaseAzure|Any CPU.Build.0 = Debug|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.ReleaseCAES|Any CPU.ActiveCfg = Debug|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.ReleaseCAES|Any CPU.Build.0 = Debug|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

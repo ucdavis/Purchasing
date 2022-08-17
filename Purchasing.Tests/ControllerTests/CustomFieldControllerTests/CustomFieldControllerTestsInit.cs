@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Castle.Windsor;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
+using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using UCDArch.Core;
+using Moq;
 //using Purchasing.Controllers.Filters;
 //using Purchasing.Services;
 
@@ -36,32 +37,28 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
         protected override void SetupController()
         {
             CustomFieldRepository = FakeRepository<CustomField>();
-            OrganazationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
-            SecurityService = MockRepository.GenerateStub<ISecurityService>();
+            OrganazationRepository = Mock.Of<IRepositoryWithTypedId<Organization, string>>();
+            SecurityService = Mock.Of<ISecurityService>();
 
-            Controller = new TestControllerBuilder().CreateController<CustomFieldController>(CustomFieldRepository,
+            Controller = new CustomFieldController(CustomFieldRepository,
                 OrganazationRepository,
-                SecurityService);
-            //Controller = new TestControllerBuilder().CreateController<CustomFieldController>(CustomFieldRepository, ExampleService);
-        }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
+                SecurityService,
+                SmartServiceLocator<IMapper>.GetService());
+            //Controller = new CustomFieldController(CustomFieldRepository, ExampleService);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
             base.RegisterAdditionalServices(container);
         }
 
         public CustomFieldControllerTests()
         {
             //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            //    Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
 
-            Controller.Repository.Expect(a => a.OfType<CustomField>()).Return(CustomFieldRepository).Repeat.Any();	
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<CustomField>()).Returns(CustomFieldRepository);
         }
         #endregion Init
 

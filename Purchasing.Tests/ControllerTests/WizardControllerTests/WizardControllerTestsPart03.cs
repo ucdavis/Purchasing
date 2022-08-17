@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Castle.Windsor;
 using FluentNHibernate.Data;
 using Purchasing.Tests.Core;
@@ -11,16 +9,16 @@ using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using UCDArch.Web.Attributes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -32,7 +30,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         public void TestAddPeopleRedirectsToCreateWorkgroupWhenWorkgroupIdIsZero()
         {
             #region Arrange
-            
+
             #endregion Arrange
 
             #region Act
@@ -40,8 +38,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Assert
             Controller.AddPeople(0, null)
-                .AssertActionRedirect()
-                .ToAction<WizardController>(a => a.CreateWorkgroup());
+                .AssertActionRedirect();
             #endregion Assert		
         }
 

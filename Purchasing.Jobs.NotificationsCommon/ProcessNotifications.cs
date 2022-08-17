@@ -4,27 +4,28 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using Dapper;
-using Microsoft.Azure;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
 using Purchasing.Jobs.Common.Logging;
-using SparkPost;
 using Serilog;
+using UCDArch.Core;
+using Microsoft.Extensions.Configuration;
+using System.Net.Mail;
+using System.Net;
 
 namespace Purchasing.Jobs.NotificationsCommon
 {
     public static class ProcessNotifications
     {
-        static readonly string SparkPostApiKey = CloudConfigurationManager.GetSetting("SparkPostApiKey");
-
         public static void ProcessEmails(IDbService dbService, EmailPreferences.NotificationTypes notificationType)
         {
-            var sendEmail = CloudConfigurationManager.GetSetting("opp-send-email");
+            var configuration = SmartServiceLocator<IConfiguration>.GetService();
+            var sendEmail = configuration["opp-send-email"];
 
             //Don't execute unless email is turned on
             if (!string.Equals(sendEmail, "Yes", StringComparison.InvariantCultureIgnoreCase))
             {
-                Console.WriteLine("No emails sent because opp-send-email is not set to 'Yes'");
+                Log.Information("No emails sent because opp-send-email is not set to 'Yes'");
                 return;
             }
 
@@ -70,7 +71,7 @@ namespace Purchasing.Jobs.NotificationsCommon
         }
 
         private static void BatchEmail(IDbConnection connection, string email, List<dynamic> pendingForUser)
-        {            
+        {
             var pendingOrderIds = pendingForUser.Select(x => x.OrderId).Distinct();
 
             //Do batches inside of their own transactions
@@ -88,7 +89,7 @@ namespace Purchasing.Jobs.NotificationsCommon
                               .ToList();
 
                 var message = new StringBuilder();
-                message.Append(string.Format("<p>{0}</p>", "Here is your summary for the PrePurchasing system."));                
+                message.Append(string.Format("<p>{0}</p>", "Here is your summary for the PrePurchasing system."));
                 foreach (var order in pendingOrders)
                 {
                     var extraStyle1 = string.Empty;
@@ -150,39 +151,35 @@ namespace Purchasing.Jobs.NotificationsCommon
 
                 message.Append(string.Format("<p><em>{0} </em><em><a href=\"{1}\">{2}</a>&nbsp;</em></p>", "You can change your email preferences at any time by", "http://prepurchasing.ucdavis.edu/User/Profile", "updating your profile on the PrePurchasing site"));
 
-                var emailTransmission = new Transmission
+                using var client = new SmtpClient("smtp.sparkpostmail.com", 587)
                 {
-                    Content = new Content
-                    {
-                        From =
-                            new Address
-                            {
-                                Email = "noreply@prepurchasing-notify.ucdavis.edu",
-                                Name = "UCD PrePurchasing No Reply"
-                            },
-                        Subject = pendingOrders.Count == 1
-                            ? String.Format((string) "PrePurchasing Notification for Order #{0}",
-                                new[] {pendingOrders.Single().RequestNumber})
-                            : "PrePurchasing Notifications",
-                        Html = message.ToString()
-                    }
+                    Credentials = new NetworkCredential("SMTP_Injection", SmartServiceLocator<IConfiguration>.GetService()["SparkPostApiKey"]),
+                    EnableSsl = true
                 };
-                emailTransmission.Options.Transactional = true;
 
-                emailTransmission.Recipients.Add(new Recipient { Address = new Address { Email = email } });
+                using var mailMessage = new MailMessage
+                {
+                    From = new MailAddress("noreply@prepurchasing-notify.ucdavis.edu", "UCD PrePurchasing No Reply"),
+                    Subject = pendingOrders.Count == 1
+                            ? String.Format((string)"PrePurchasing Notification for Order #{0}",
+                                new[] { pendingOrders.Single().RequestNumber })
+                            : "PrePurchasing Notifications",
+                    Body = message.ToString(),
+                    IsBodyHtml = true,
+                };
+                mailMessage.To.Add(new MailAddress(email));
 
-                var client = new Client(SparkPostApiKey);
                 try
                 {
-                    client.Transmissions.Send(emailTransmission).Wait();
+                    client.Send(mailMessage);
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex, "There was a problem emailing {email}", email);
-                    ts.Rollback(); 
+                    ts.Rollback();
                     return;
                 }
-                
+
 
                 ts.Commit();
             }

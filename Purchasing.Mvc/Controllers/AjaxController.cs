@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
-using System.Web.SessionState;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Utility;
 using Purchasing.Mvc.Services;
@@ -9,13 +7,13 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using IdAndName = Purchasing.Core.Services.IdAndName;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {
     /// <summary>
     /// Controller for AJAX service calls
     /// </summary>
-    [SessionState(SessionStateBehavior.Disabled)] //Disabled so requests can run in parallel
     public class AjaxController : ApplicationController
     {
         private readonly ISearchService _searchService;
@@ -46,7 +44,7 @@ namespace Purchasing.Mvc.Controllers
         {
             var results = _searchService.SearchCommodities(searchTerm).Select(a => new IdAndName(a.Id, a.Name));
 
-            return Json(results, JsonRequestBehavior.AllowGet);
+            return Json(results);
         }
     }
 }

@@ -1,11 +1,13 @@
-﻿using System.Web.Mvc;
+﻿using System;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Services;
-using Purchasing.Mvc.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Purchasing.Mvc.Helpers;
 
 namespace Purchasing.Mvc.Attributes
 {
-    public class AuthorizeWorkgroupRoleAttribute : AuthorizeAttribute
+    public class AuthorizeWorkgroupRoleAttribute : Attribute, IAuthorizationFilter
     {
         private readonly string _role; //TODO: Review making this a public readonly var so I can test for it with reflection
 
@@ -14,16 +16,14 @@ namespace Purchasing.Mvc.Attributes
             _role = Role;
         }
 
-        public override void OnAuthorization(AuthorizationContext filterContext)
+        public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
             var roles = UserSecurityService.UserRoles(filterContext.HttpContext.User.Identity.Name);
 
             if (!roles.Contains(_role))
             {
-                filterContext.Result = new HttpUnauthorizedResult(Resources.NoAccess);
+                filterContext.Result = ViewHelper.NotAuthorized(Resources.NoAccess);
             }
-
-            base.OnAuthorization(filterContext);
         }
     }
 }

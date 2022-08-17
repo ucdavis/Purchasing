@@ -16,7 +16,7 @@
             
             <tbody data-bind="foreach: splits">
                 <tr class="order-split-line">
-                    <td>@Html.Partial("_AccountSelectTemplate")</td>
+                    <td>@await Html.PartialAsync("_AccountSelectTemplate")</td>
                     <td class="account-split-amounts">
                         <span>$</span><input data-bind="value: amountComputed, splitName: 'amount', valueUpdate: 'afterkeydown'"
                                              type="text" autocomplete="off" placeholder="amt" class="order-split-account-amount" 

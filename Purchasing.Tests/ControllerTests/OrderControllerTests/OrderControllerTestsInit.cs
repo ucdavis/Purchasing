@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Routing;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Purchasing.Core.Queries;
@@ -10,14 +9,16 @@ using Purchasing.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using Purchasing.WS;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Moq;
 
 namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 {
@@ -46,6 +47,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public IRepositoryWithTypedId<OrderStatusCode, string> OrderStatusCodeRepository;
 
         public IFileService FileService;
+        public IMemoryCache MemoryCache;
 
         #region Init
         /// <summary>
@@ -54,50 +56,51 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         protected override void SetupController()
         {
             OrderRepository = FakeRepository<Order>();
-            RepositoryFactory = MockRepository.GenerateStub<IRepositoryFactory>();
-            OrderService = MockRepository.GenerateStub<IOrderService>();
-            SecurityService = MockRepository.GenerateStub<ISecurityService>();
-            DirectorySearchService = MockRepository.GenerateStub<IDirectorySearchService>();
-            FinancialSystemService = MockRepository.GenerateStub<IFinancialSystemService>();
-            ColumnPreferencesRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<ColumnPreferences, string>>();
-            OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
-            QueryRepositoryFactory = MockRepository.GenerateStub<IQueryRepositoryFactory>();
-            EventService = MockRepository.GenerateStub<IEventService>();
-            BugTrackingService = MockRepository.GenerateStub<IBugTrackingService>();
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-            RoleRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Role, string>>();
-            //OrderPeepRepository = MockRepository.GenerateStub<IRepository<OrderPeep>>();
-            ApprovalRepository = MockRepository.GenerateStub<IRepository<Approval>>();
-            WorkgroupRepository = MockRepository.GenerateStub<IRepository<Workgroup>>();
-            WorkgroupPermissionRepository = MockRepository.GenerateStub<IRepository<WorkgroupPermission>>();
+            RepositoryFactory = Mock.Of<IRepositoryFactory>();
+            OrderService = Mock.Of<IOrderService>();
+            SecurityService = Mock.Of<ISecurityService>();
+            DirectorySearchService = Mock.Of<IDirectorySearchService>();
+            FinancialSystemService = Mock.Of<IFinancialSystemService>();
+            ColumnPreferencesRepository = Mock.Of<IRepositoryWithTypedId<ColumnPreferences, string>>();
+            OrderStatusCodeRepository = Mock.Of<IRepositoryWithTypedId<OrderStatusCode, string>>();
+            QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
+            EventService = Mock.Of<IEventService>();
+            BugTrackingService = Mock.Of<IBugTrackingService>();
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            RoleRepository = Mock.Of<IRepositoryWithTypedId<Role, string>>();
+            //OrderPeepRepository = Mock.Of<IRepository<OrderPeep>>();
+            ApprovalRepository = Mock.Of<IRepository<Approval>>();
+            WorkgroupRepository = Mock.Of<IRepository<Workgroup>>();
+            WorkgroupPermissionRepository = Mock.Of<IRepository<WorkgroupPermission>>();
 
-            RepositoryFactory.ColumnPreferencesRepository = ColumnPreferencesRepository;
-            RepositoryFactory.OrderRepository = OrderRepository;
-            RepositoryFactory.OrderStatusCodeRepository = OrderStatusCodeRepository;
-            RepositoryFactory.RoleRepository = RoleRepository;
-            RepositoryFactory.UserRepository = UserRepository;
-            RepositoryFactory.ApprovalRepository = ApprovalRepository;
-            RepositoryFactory.WorkgroupRepository = WorkgroupRepository;
-            RepositoryFactory.WorkgroupPermissionRepository = WorkgroupPermissionRepository;
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ColumnPreferencesRepository).Returns(ColumnPreferencesRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderRepository).Returns(OrderRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderStatusCodeRepository).Returns(OrderStatusCodeRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(RoleRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.UserRepository).Returns(UserRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ApprovalRepository).Returns(ApprovalRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupRepository).Returns(WorkgroupRepository);
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(WorkgroupPermissionRepository);
 
-            RepositoryFactory.UnitOfMeasureRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<UnitOfMeasure, string>>();
-            RepositoryFactory.WorkgroupAccountRepository = MockRepository.GenerateStub<IRepository<WorkgroupAccount>>();
-            RepositoryFactory.WorkgroupVendorRepository = MockRepository.GenerateStub<IRepository<WorkgroupVendor>>();
-            RepositoryFactory.WorkgroupAddressRepository = MockRepository.GenerateStub<IRepository<WorkgroupAddress>>();
-            RepositoryFactory.ShippingTypeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<ShippingType, string>>();
-            RepositoryFactory.CustomFieldRepository = MockRepository.GenerateStub<IRepository<CustomField>>();
-            RepositoryFactory.OrganizationRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Organization, string>>();
-            RepositoryFactory.OrderTypeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderType, string>>();
-            RepositoryFactory.AttachmentRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Attachment, Guid>>();
-            RepositoryFactory.CommodityRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Commodity, string>>();
-            RepositoryFactory.SplitRepository = MockRepository.GenerateStub<IRepository<Split>>();
-            RepositoryFactory.AccountRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<Account, string>>();
+            Mock.Get(RepositoryFactory).SetupGet(r => r.UnitOfMeasureRepository).Returns(Mock.Of<IRepositoryWithTypedId<UnitOfMeasure, string>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupAccountRepository).Returns(Mock.Of<IRepository<WorkgroupAccount>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupVendorRepository).Returns(Mock.Of<IRepository<WorkgroupVendor>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupAddressRepository).Returns(Mock.Of<IRepository<WorkgroupAddress>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.ShippingTypeRepository).Returns(Mock.Of<IRepositoryWithTypedId<ShippingType, string>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.CustomFieldRepository).Returns(Mock.Of<IRepository<CustomField>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrganizationRepository).Returns(Mock.Of<IRepositoryWithTypedId<Organization, string>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.OrderTypeRepository).Returns(Mock.Of<IRepositoryWithTypedId<OrderType, string>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AttachmentRepository).Returns(Mock.Of<IRepositoryWithTypedId<Attachment, Guid>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.CommodityRepository).Returns(Mock.Of<IRepositoryWithTypedId<Commodity, string>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.SplitRepository).Returns(Mock.Of<IRepository<Split>>());
+            Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(Mock.Of<IRepositoryWithTypedId<Account, string>>());
 
-            FileService = MockRepository.GenerateStub<IFileService>();
+            FileService = Mock.Of<IFileService>();
+            MemoryCache = Mock.Of<IMemoryCache>();
 
             //QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 
-            Controller = new TestControllerBuilder().CreateController<OrderController>(
+            Controller = new OrderController(
                 RepositoryFactory,
                 OrderService,
                 SecurityService,
@@ -106,18 +109,13 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 QueryRepositoryFactory,
                 EventService,
                 BugTrackingService,
-                FileService);
+                FileService,
+                MemoryCache);
         }
-
-        protected override void RegisterRoutes()
-        {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);//Try this one if below doesn't work
-            //RouteRegistrar.RegisterRoutes(RouteTable.Routes);
-        }
-
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            AutomapperConfig.Configure();
+            container.Install(new AutoMapperInstaller());
+            container.Register(Component.For<ISecurityService>().ImplementedBy<FakeSecurityService>().Named("securityService"));
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
             base.RegisterAdditionalServices(container);
         }
@@ -125,20 +123,12 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public OrderControllerTests()
         {
             //    ExampleRepository = FakeRepository<Example>();
-            //    Controller.Repository.Expect(a => a.OfType<Example>()).Return(ExampleRepository).Repeat.Any();
+            //    Mock.Get(Controller.Repository).Setup(a => a.OfType<Example>()).Returns(ExampleRepository);
 
-            UserRepository2 = MockRepository.GenerateStub<IRepository<User>>();
-            Controller.Repository.Expect(a => a.OfType<User>()).Return(UserRepository2).Repeat.Any();
+            UserRepository2 = Mock.Of<IRepository<User>>();
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<User>()).Returns(UserRepository2);
 
-            Controller.Repository.Expect(a => a.OfType<Order>()).Return(OrderRepository).Repeat.Any();	
-            
-        }
-
-        protected override void InitServiceLocator()
-        {
-            var container = Core.ServiceLocatorInitializer.Init();
-            container.Register(Component.For<ISecurityService>().ImplementedBy<FakeSecurityService>().Named("securityService"));
-            RegisterAdditionalServices(container);
+            Mock.Get(Controller.Repository).Setup(a => a.OfType<Order>()).Returns(OrderRepository);
         }
         #endregion Init
 
@@ -170,7 +160,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             new FakeOrders(0, OrderRepository, orders);
             
-            //OrderService.Expect(a => a.GetListofOrders(Arg<bool>.Is.Anything, Arg<bool>.Is.Anything, Arg<string>.Is.Anything, Arg<DateTime?>.Is.Anything, Arg<DateTime>.Is.Anything, Arg<bool>.Is.Anything)).Return(OrderRepository.Queryable);
+            //Mock.Get(OrderService).Setup(a => a.GetListofOrders(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime>(), It.IsAny<bool>())).Returns(OrderRepository.Queryable);
         }
 
         protected void SetupRoles()
@@ -178,39 +168,39 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             var roles = new List<Role>();
 
             var role = new Role(Role.Codes.Admin);
-            role.SetIdTo(Role.Codes.Admin);
+            role.Id = Role.Codes.Admin;
             role.Name = "Admin";
             role.Level = 0;
             role.IsAdmin = true;
             roles.Add(role);
 
             role = new Role(Role.Codes.DepartmentalAdmin);
-            role.SetIdTo(Role.Codes.DepartmentalAdmin);
+            role.Id = Role.Codes.DepartmentalAdmin;
             role.Name = "Departmental Admin";
             role.Level = 0;
             role.IsAdmin = true;
             roles.Add(role);
 
             role = new Role(Role.Codes.Requester);
-            role.SetIdTo(Role.Codes.Requester);
+            role.Id = Role.Codes.Requester;
             role.Name = "Requester";
             role.Level = 1;
             roles.Add(role);
 
             role = new Role(Role.Codes.Approver);
-            role.SetIdTo(Role.Codes.Approver);
+            role.Id = Role.Codes.Approver;
             role.Name = "Approver";
             role.Level = 2;
             roles.Add(role);
 
             role = new Role(Role.Codes.AccountManager);
-            role.SetIdTo(Role.Codes.AccountManager);
+            role.Id = Role.Codes.AccountManager;
             role.Name = "Account Manager";
             role.Level = 3;
             roles.Add(role);
 
             role = new Role(Role.Codes.Purchaser);
-            role.SetIdTo(Role.Codes.Purchaser);
+            role.Id = Role.Codes.Purchaser;
             role.Name = "Purchaser";
             role.Level = 4;
             roles.Add(role);
@@ -221,7 +211,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public delegate void SetOrderDelegate(Order order);
         public void SetOrderInstance(Order order)
         {
-            order.SetIdTo(SetMyId.Id);
+            order.Id = SetMyId.Id;
         }
 
         public static class SetMyId

@@ -1,6 +1,6 @@
 ﻿@using Purchasing.Mvc.Models
 @model WorkgroupModifyModel
-@Html.Partial("_CommonWorkgroupForm")
+@await Html.PartialAsync("_CommonWorkgroupForm")
 <li>
     <div class="editor-label">
         @Html.LabelFor(model => model.Workgroup.IsActive)
@@ -16,7 +16,7 @@
     </div>
     <div class="editor-field">
         @*@Html.DropDownListFor(x => x.Workgroup.PrimaryOrganization, new SelectList(Model.Organizations, "Value", "Text"))*@
-        @this.Select("Workgroup.PrimaryOrganization").Options(Model.Organizations, x => x.Value, x => x.Text).Selected(Model.Workgroup.PrimaryOrganization == null ? string.Empty : Model.Workgroup.PrimaryOrganization.Id).Class("chzn-select")
+        @Html.Select("Workgroup.PrimaryOrganization", o => o.Options(Model.Organizations, x => x.Value, x => x.Text).Selected(Model.Workgroup.PrimaryOrganization == null ? string.Empty : Model.Workgroup.PrimaryOrganization.Id).Class("chzn-select"))
         @Html.ValidationMessageFor(x => x.Workgroup.PrimaryOrganization)
     </div>
 </li>
@@ -29,7 +29,7 @@
             <select id="SelectedOrganizations" name="selectedOrganizations" multiple="">
                 @foreach (var a in Model.Organizations)
                 {
-                    <option @(a.Selected ? "selected" : "") value="@a.Value">@a.Text</option>
+                    <option selected="@(a.Selected)" value="@a.Value">@a.Text</option>
                 }
             </select>
         </div>

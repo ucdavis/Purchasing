@@ -2,22 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Castle.Windsor;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Core.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
+using Microsoft.AspNetCore.Mvc;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using VersionAttribute = Purchasing.Mvc.Attributes.VersionAttribute;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -50,7 +49,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         /// Tests the controller has only 7 attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHas7Attributes()
+        public void TestControllerHasEightAttributes()
         {
             #region Arrange
             var controllerClass = ControllerClass;
@@ -61,7 +60,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(7, result.Count());
+            Assert.AreEqual(8, result.Count());
             #endregion Assert
         }
 
@@ -95,11 +94,11 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseAntiForgeryTokenOnPostByDefault>();
+            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
-            Assert.IsTrue(result.Count() > 0, "UseAntiForgeryTokenOnPostByDefault not found.");
+            Assert.IsTrue(result.Count() > 0, "AutoValidateAntiforgeryTokenAttribute not found.");
             #endregion Assert
         }
 
@@ -135,13 +134,13 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             var found = false;
             for (int i = 0; i < result.Count(); i++)
             {
-                if(result.ElementAt(i).Roles == "DA")
+                if(result.ElementAt(i).Policy == "DA")
                 {
                     found = true;
                     break;
                 }
             }
-            Assert.IsTrue(found, "DA role not Found");
+            Assert.IsTrue(found, "DA policy not Found");
             #endregion Assert
         }
 

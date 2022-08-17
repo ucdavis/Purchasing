@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Caching;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using AutoMapper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -9,6 +10,7 @@ using Purchasing.Mvc.Controllers;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.Attributes;
+using Purchasing.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -21,14 +23,19 @@ namespace Purchasing.Mvc.Controllers
 
 	    private readonly IRepository<ServiceMessage> _serviceMessageRepository;
 
-        public ServiceMessageController(IRepository<ServiceMessage> serviceMessageRepository)
+        private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
+
+        public ServiceMessageController(IRepository<ServiceMessage> serviceMessageRepository, IMapper mapper, IMemoryCache cache)
         {
             _serviceMessageRepository = serviceMessageRepository;
+            _mapper = mapper;
+            _cache = cache;
         }
     
         //
         // GET: /ServiceMessage/
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Index()
         {
             var serviceMessageList = _serviceMessageRepository.Queryable;
@@ -36,30 +43,9 @@ namespace Purchasing.Mvc.Controllers
             return View(serviceMessageList.ToList());
         }
 
-        [ChildActionOnly]
-        [HandleTransactionsManually]
-        public ActionResult ServiceMessages()
-        {
-            if(HttpContext.Cache[CacheKey]==null)
-            {
-                using (var ts = new TransactionScope())
-                {
-                    var currentDate = DateTime.UtcNow.ToPacificTime().Date;
-                    var serviceMessageListToCache = _serviceMessageRepository.Queryable.Where(a => a.IsActive && a.BeginDisplayDate <= currentDate && (a.EndDisplayDate == null || a.EndDisplayDate >= currentDate)).ToList();
-                    System.Web.HttpContext.Current.Cache.Insert(CacheKey, serviceMessageListToCache, null, DateTime.UtcNow.ToPacificTime().Date.AddDays(1), Cache.NoSlidingExpiration);
-
-                    ts.CommitTransaction();
-                }
-            }
-            
-            var serviceMessageList = HttpContext.Cache[CacheKey];
-            
-            return PartialView("~/Views/Shared/_ServiceMessages.cshtml", serviceMessageList); 
-        }
-
         //
         // GET: /ServiceMessage/Create
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Create()
         {
 			var viewModel = ServiceMessageViewModel.Create(Repository);
@@ -69,7 +55,7 @@ namespace Purchasing.Mvc.Controllers
 
         //
         // POST: /ServiceMessage/Create
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         [HttpPost]
         public ActionResult Create(ServiceMessage serviceMessage)
         {
@@ -82,7 +68,7 @@ namespace Purchasing.Mvc.Controllers
                 _serviceMessageRepository.EnsurePersistent(serviceMessageToCreate);
 
                 // invalidate the cache
-                System.Web.HttpContext.Current.Cache.Remove(CacheKey);
+                _cache.Remove(CacheKey);
 
                 Message = "ServiceMessage Created Successfully";
 
@@ -99,7 +85,7 @@ namespace Purchasing.Mvc.Controllers
 
         //
         // GET: /ServiceMessage/Edit/5
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         public ActionResult Edit(int id)
         {
             var serviceMessage = _serviceMessageRepository.GetNullableById(id);
@@ -114,7 +100,7 @@ namespace Purchasing.Mvc.Controllers
         
         //
         // POST: /ServiceMessage/Edit/5
-        [Authorize(Roles = Role.Codes.Admin)]
+        [Authorize(Policy = Role.Codes.Admin)]
         [HttpPost]
         public ActionResult Edit(int id, ServiceMessage serviceMessage)
         {
@@ -129,7 +115,7 @@ namespace Purchasing.Mvc.Controllers
                 _serviceMessageRepository.EnsurePersistent(serviceMessageToEdit);
 
                 // invalidate the cache
-                System.Web.HttpContext.Current.Cache.Remove(CacheKey);
+                _cache.Remove(CacheKey);
 
                 Message = "ServiceMessage Edited Successfully";
 
@@ -149,10 +135,10 @@ namespace Purchasing.Mvc.Controllers
         /// <summary>
         /// Transfer editable values from source to destination
         /// </summary>
-        private static void TransferValues(ServiceMessage source, ServiceMessage destination)
+        private void TransferValues(ServiceMessage source, ServiceMessage destination)
         {
 			//Recommendation: Use AutoMapper
-            Mapper.Map(source, destination);
+            _mapper.Map(source, destination);
             //throw new NotImplementedException();
         }
 

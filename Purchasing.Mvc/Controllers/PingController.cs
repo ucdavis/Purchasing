@@ -1,5 +1,5 @@
-﻿using System.Web.Mvc;
-using UCDArch.Web.Controller;
+﻿using UCDArch.Web.Controller;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Mvc.Controllers
 {

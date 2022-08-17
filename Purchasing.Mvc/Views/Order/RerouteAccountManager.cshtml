@@ -8,11 +8,11 @@
 }
 
 @section AdditionalStyles{
-    @Styles.Render("~/Css/single/chosen") 
+    @await Html.PartialAsync("_CssBundle", "~/Css/single/chosen") 
 }
 
 @section AdditionalScripts{
-    @Scripts.Render("~/bundles/single/chosen")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/single/chosen")
     <script type="text/javascript">
         $(document).ready(function () {
             $(".chzn-select").chosen({ no_results_text: "No results matched", search_contains: true });
@@ -45,7 +45,7 @@
                     <label>Account Manager to Reroute to:</label><span>*</span>
                 </div>
                 <div class="editor-field">                                      
-                    @this.Select("AccountManagerId").Options(Model.PurchaserPeeps, x => x.Id, x => x.FullName).Selected("--Select Account Manager--").Class("chzn-select")                    
+                    @Html.Select("AccountManagerId", o => o.Options(Model.PurchaserPeeps, x => x.Id, x => x.FullName).FirstOption("--Select Account Manager--").Class("chzn-select"))                    
                 </div>
             </li>
             <li>				

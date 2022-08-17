@@ -1,4 +1,5 @@
-﻿@using Purchasing.Core.Domain
+@using Microsoft.AspNetCore.Mvc.Razor
+@using Purchasing.Core.Domain
 @model OrderReceiveModel
 
 
@@ -17,15 +18,15 @@
 
 @section AdditionalStyles
 {
-    @Styles.Render("~/Css/single/fileuploader/fileuploader")
-    @Styles.Render("~/Css/single/receive-payment")
+    @await Html.PartialAsync("_CssBundle", "~/Css/single/fileuploader/fileuploader")
+    @await Html.PartialAsync("_CssBundle", "~/Css/single/receive-payment")
 }
 
 @section AdditionalScripts
 {
-    @Scripts.Render("~/bundles/jqueryTmpl")
-    @Scripts.Render("~/bundles/fileuploader-js")
-    @Scripts.Render("~/bundles/single/payInvoice")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryTmpl")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/fileuploader-js")
+    @await Html.PartialAsync("_JsBundle", "~/bundles/single/payInvoice")
 
     <script type="text/javascript">
 
@@ -80,33 +81,34 @@
     </script>
 }
 
-@helper UnaccountedAmount(decimal total, decimal? received)
-{
-    var rtValue = string.Format("<td ");
-    if (received != null)
-    {
-        var diff = total - received;
-        if (diff > 0)
-        {
-            rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", diff));
-        }
-        else
-        {
-            rtValue = string.Format("{0} class='unaccounted green bold'>{1}</td>", rtValue, string.Format("{0:0.###}", diff * -1));
-        }
-    }
-    else
-    {
-        rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", total));
-    }
-    @Html.Raw(rtValue)
-}
+@{ HelperResult UnaccountedAmount(decimal total, decimal? received)
+	{
+	    var rtValue = string.Format("<td ");
+	    if (received != null)
+	    {
+	        var diff = total - received;
+	        if (diff > 0)
+	        {
+	            rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", diff));
+	        }
+	        else
+	        {
+	            rtValue = string.Format("{0} class='unaccounted green bold'>{1}</td>", rtValue, string.Format("{0:0.###}", diff * -1));
+	        }
+	    }
+	    else
+	    {
+	        rtValue = string.Format("{0} class='unaccounted red bold'>({1})</td>", rtValue, string.Format("{0:0.###}", total));
+	    }
+	    @Html.Raw(rtValue)
+		return new HelperResult(w => Task.CompletedTask);
+} }
 
 <div id="status-message">
     We have made some functional changes to this page. Here is a short video describing the changes: <a href="https://youtu.be/bAKKMUo6-2E" target="_blank">https://youtu.be/bAKKMUo6-2E</a>.
 </div>
 
-@Html.Partial("_ReviewOrderDetails", Model.ReviewOrderViewModel)
+@await Html.PartialAsync("_ReviewOrderDetails", Model.ReviewOrderViewModel)
 
 
 <section id="line-items" class="ui-corner-all display-form">
@@ -246,8 +248,8 @@
 
 </section>
 
-@Html.Partial("_ReceivedItemsHistoryDialog")
+@await Html.PartialAsync("_ReceivedItemsHistoryDialog")
 
-@Html.Partial("_ReviewAttachments", Model.ReviewOrderViewModel)
+@await Html.PartialAsync("_ReviewAttachments", Model.ReviewOrderViewModel)
 
-@Html.Partial("_ReviewNotes", Model.ReviewOrderViewModel)
+@await Html.PartialAsync("_ReviewNotes", Model.ReviewOrderViewModel)

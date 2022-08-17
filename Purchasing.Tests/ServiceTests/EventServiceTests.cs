@@ -5,9 +5,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
+using Moq;
 
 
 namespace Purchasing.Tests.ServiceTests
@@ -24,10 +25,10 @@ namespace Purchasing.Tests.ServiceTests
 
         public EventServiceTests()
         {
-            UserIdentity = MockRepository.GenerateStub<IUserIdentity>();
-            UserRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<User, string>>();
-            OrderStatusCodeRepository = MockRepository.GenerateStub<IRepositoryWithTypedId<OrderStatusCode, string>>();
-            NotificationService = MockRepository.GenerateStub<INotificationService>();
+            UserIdentity = Mock.Of<IUserIdentity>();
+            UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
+            OrderStatusCodeRepository = Mock.Of<IRepositoryWithTypedId<OrderStatusCode, string>>();
+            NotificationService = Mock.Of<INotificationService>();
 
             EventService = new EventService(UserIdentity, UserRepository, OrderStatusCodeRepository, NotificationService);
         }
@@ -50,7 +51,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasNotCalled(a => a.OrderReRouted(Arg<Order>.Is.Anything, Arg<int>.Is.Anything, Arg<bool>.Is.Anything));
+            Mock.Get(NotificationService).Verify(a => a.OrderReRouted(It.IsAny<Order>(), It.IsAny<int>(), It.IsAny<bool>()), Times.Never());
             Assert.AreEqual(trackingCount, order.OrderTrackings.Count());
             #endregion Assert		
         }
@@ -75,7 +76,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasNotCalled(a => a.OrderApproved(Arg<Order>.Is.Anything, Arg<Approval>.Is.Anything));
+            Mock.Get(NotificationService).Verify(a => a.OrderApproved(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName3 LastName3", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -94,7 +95,7 @@ namespace Purchasing.Tests.ServiceTests
             for (int i = 0; i < 3; i++)
             {
                 users.Add(CreateValidEntities.User(i+1));
-                users[i].SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
+                users[i].Id = (i + 1).ToString(CultureInfo.InvariantCulture);
             }
             new FakeUsers(0, UserRepository, users, true);
 
@@ -102,7 +103,7 @@ namespace Purchasing.Tests.ServiceTests
             var approval = CreateValidEntities.Approval(1);
             approval.User = UserRepository.Queryable.Single(a => a.Id == "3");
             approval.StatusCode = CreateValidEntities.OrderStatusCode(4);
-            UserIdentity.Expect(a => a.Current).Return("2");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
             #endregion Arrange
 
             #region Act
@@ -110,7 +111,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasCalled(a => a.OrderApproved(order, approval));
+            Mock.Get(NotificationService).Verify(a => a.OrderApproved(order, approval));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -129,13 +130,15 @@ namespace Purchasing.Tests.ServiceTests
             for (int i = 0; i < 3; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
+                users[i].Id = (i + 1).ToString(CultureInfo.InvariantCulture);
             }
             new FakeUsers(0, UserRepository, users, true);
 
             var order = CreateValidEntities.Order(1);
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
-            UserIdentity.Expect(a => a.Current).Return("2");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
+            var user = UserRepository.Queryable.Single(a => a.Id == "2");
+            Mock.Get(NotificationService).Setup(a => a.OrderDenied(order, user, "Some Comment", order.StatusCode));
             #endregion Arrange
 
             #region Act
@@ -143,7 +146,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasCalled(a => a.OrderDenied(order, UserRepository.Queryable.Single(b => b.Id == "2"), "Some Comment", order.StatusCode));
+            Mock.Get(NotificationService).Verify(a => a.OrderDenied(order, user, "Some Comment", order.StatusCode));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -162,13 +165,15 @@ namespace Purchasing.Tests.ServiceTests
             for (int i = 0; i < 3; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
+                users[i].Id = (i + 1).ToString(CultureInfo.InvariantCulture);
             }
             new FakeUsers(0, UserRepository, users, true);
 
             var order = CreateValidEntities.Order(1);
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
-            UserIdentity.Expect(a => a.Current).Return("2");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
+            var user = UserRepository.Queryable.Single(a => a.Id == "2");
+            Mock.Get(NotificationService).Setup(a => a.OrderCancelled(order, user, "Some Comment", order.StatusCode));
             #endregion Arrange
 
             #region Act
@@ -176,7 +181,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasCalled(a => a.OrderCancelled(order, UserRepository.Queryable.Single(b => b.Id == "2"), "Some Comment", order.StatusCode));
+            Mock.Get(NotificationService).Verify(a => a.OrderCancelled(order, user, "Some Comment", order.StatusCode));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -195,13 +200,15 @@ namespace Purchasing.Tests.ServiceTests
             for (int i = 0; i < 3; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
+                users[i].Id = (i + 1).ToString(CultureInfo.InvariantCulture);
             }
             new FakeUsers(0, UserRepository, users, true);
 
             var order = CreateValidEntities.Order(1);
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
-            UserIdentity.Expect(a => a.Current).Return("2");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
+            var user = UserRepository.Queryable.Single(a => a.Id == "2");
+            Mock.Get(NotificationService).Setup(a => a.OrderCompleted(order, user));
             #endregion Arrange
 
             #region Act
@@ -209,7 +216,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasCalled(a => a.OrderCompleted(order, UserRepository.Queryable.Single(b => b.Id == "2")));
+            Mock.Get(NotificationService).Verify(a => a.OrderCompleted(order, user));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -228,12 +235,12 @@ namespace Purchasing.Tests.ServiceTests
             for (int i = 0; i < 3; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
+                users[i].Id = (i + 1).ToString(CultureInfo.InvariantCulture);
             }
             new FakeUsers(0, UserRepository, users, true);
             var statusCodes = new List<OrderStatusCode>();
             statusCodes.Add(CreateValidEntities.OrderStatusCode(1));
-            statusCodes[0].SetIdTo(OrderStatusCode.Codes.Requester);
+            statusCodes[0].Id = OrderStatusCode.Codes.Requester;
             statusCodes[0].Name = "Requestor";
             new FakeOrderStatusCodes(0, OrderStatusCodeRepository, statusCodes, true);
             
@@ -241,8 +248,8 @@ namespace Purchasing.Tests.ServiceTests
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
             order.CreatedBy = UserRepository.Queryable.First();
             order.Organization = CreateValidEntities.Organization(1);
-            order.Organization.SetIdTo("TEST");
-            UserIdentity.Expect(a => a.Current).Return("2");
+            order.Organization.Id = "TEST";
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
 
             #endregion Arrange
 
@@ -251,7 +258,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasCalled(a => a.OrderCreated(order));
+            Mock.Get(NotificationService).Verify(a => a.OrderCreated(order));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Requestor", order.OrderTrackings[0].StatusCode.Name);
@@ -270,14 +277,14 @@ namespace Purchasing.Tests.ServiceTests
             for (int i = 0; i < 3; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
+                users[i].Id = (i + 1).ToString(CultureInfo.InvariantCulture);
             }
             new FakeUsers(0, UserRepository, users, true);
 
             var order = CreateValidEntities.Order(1);
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
             order.StatusCode.Level = 911;
-            UserIdentity.Expect(a => a.Current).Return("2");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
             #endregion Arrange
 
             #region Act
@@ -285,7 +292,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasCalled(a => a.OrderReRouted(order, 911));
+            Mock.Get(NotificationService).Verify(a => a.OrderReRouted(order, 911, false));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);
@@ -304,14 +311,16 @@ namespace Purchasing.Tests.ServiceTests
             for (int i = 0; i < 3; i++)
             {
                 users.Add(CreateValidEntities.User(i + 1));
-                users[i].SetIdTo((i + 1).ToString(CultureInfo.InvariantCulture));
+                users[i].Id = (i + 1).ToString(CultureInfo.InvariantCulture);
             }
             new FakeUsers(0, UserRepository, users, true);
 
             var order = CreateValidEntities.Order(1);
             order.StatusCode = CreateValidEntities.OrderStatusCode(4);
             order.StatusCode.Level = 911;
-            UserIdentity.Expect(a => a.Current).Return("2");
+            Mock.Get(UserIdentity).SetupGet(a => a.Current).Returns("2");
+            var user = UserRepository.Queryable.Single(b => b.Id == "2");
+            Mock.Get(NotificationService).Setup(a => a.OrderEdited(order, user));
             #endregion Arrange
 
             #region Act
@@ -319,7 +328,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Act
 
             #region Assert
-            NotificationService.AssertWasCalled(a => a.OrderEdited(order, UserRepository.Queryable.Single(b => b.Id == "2")));
+            Mock.Get(NotificationService).Verify(a => a.OrderEdited(order, user));
             Assert.AreEqual(1, order.OrderTrackings.Count());
             Assert.AreEqual("FirstName2 LastName2", order.OrderTrackings[0].User.FullName);
             Assert.AreEqual("Name4", order.OrderTrackings[0].StatusCode.Name);

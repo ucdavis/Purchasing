@@ -5,18 +5,17 @@ using System.Globalization;
 using System.Linq;
 using FluentNHibernate.MappingModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
-using Rhino.Mocks;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Data.NHibernate;
 using UCDArch.Testing;
+using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -34,8 +33,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.BulkVendor(4)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Index(false));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -57,8 +55,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Act
             var result = Controller.BulkVendor(1)
-                .AssertActionRedirect()
-                .ToAction<WorkgroupController>(a => a.Details(1));
+                .AssertActionRedirect();
             #endregion Act
 
             #region Assert
@@ -119,7 +116,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var workgroupVendors = new List<WorkgroupVendor>();
             workgroupVendors.Add(CreateValidEntities.WorkgroupVendor(1));
             workgroupVendors[0].Workgroup = new Workgroup();
-            workgroupVendors[0].Workgroup.SetIdTo(1);
+            workgroupVendors[0].Workgroup.Id = 1;
             new FakeWorkgroupVendors(0, WorkgroupVendorRepository, workgroupVendors);
             #endregion Arrange
 
@@ -146,17 +143,17 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             {
                 workgroupPermissions.Add(CreateValidEntities.WorkgroupPermission(i+1));
                 workgroupPermissions[i].User = CreateValidEntities.User(i + 1);
-                workgroupPermissions[i].User.SetIdTo((i+1).ToString(CultureInfo.InvariantCulture));
+                workgroupPermissions[i].User.Id = (i+1).ToString(CultureInfo.InvariantCulture);
                 workgroupPermissions[i].User.IsActive = true;
                 workgroupPermissions[i].Workgroup = CreateValidEntities.Workgroup(1);
-                workgroupPermissions[i].Workgroup.SetIdTo(1);
+                workgroupPermissions[i].Workgroup.Id = 1;
                 workgroupPermissions[i].Role = CreateValidEntities.Role(1);
-                workgroupPermissions[i].Role.SetIdTo(Role.Codes.Requester);
+                workgroupPermissions[i].Role.Id = Role.Codes.Requester;
             }
 
             workgroupPermissions[0].User.IsActive = false;
-            workgroupPermissions[2].Workgroup.SetIdTo(99);
-            workgroupPermissions[3].Role.SetIdTo(Role.Codes.Admin);
+            workgroupPermissions[2].Workgroup.Id = 99;
+            workgroupPermissions[3].Role.Id = Role.Codes.Admin;
             new FakeWorkgroupPermissions(0, WorkgroupPermissionRepository, workgroupPermissions);
             #endregion Arrange
 

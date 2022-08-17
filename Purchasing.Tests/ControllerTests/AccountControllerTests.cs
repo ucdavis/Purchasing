@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Mvc;
-using System.Web.Routing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MvcContrib.TestHelper;
 using Purchasing.Tests.Core;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Purchasing.Tests.ControllerTests
 {
@@ -18,7 +16,6 @@ namespace Purchasing.Tests.ControllerTests
         #region Init
         public AccountControllerTests()
         {
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
 
         #endregion Init
@@ -80,7 +77,7 @@ namespace Purchasing.Tests.ControllerTests
         /// Tests the controller has only three attributes.
         /// </summary>
         [TestMethod]
-        public void TestControllerHasNoAttributes()
+        public void TestControllerHasOneAttribute()
         {
             #region Arrange
             var controllerClass = _controllerClass;
@@ -91,7 +88,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, result.Count());
+            Assert.AreEqual(1, result.Count());
             #endregion Assert
         }
 
@@ -131,7 +128,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(4, allAttributes.Count());
             #endregion Assert
         }
 
@@ -148,7 +145,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(3, allAttributes.Count());
             #endregion Assert
         }
 
@@ -167,8 +164,8 @@ namespace Purchasing.Tests.ControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), message: "AuthorizeAttribute");
-            Assert.AreEqual("EU", expectedAttribute.ElementAt(0).Roles);
-            Assert.AreEqual(1, allAttributes.Count());
+            Assert.AreEqual("EU", expectedAttribute.ElementAt(0).Policy);
+            Assert.AreEqual(3, allAttributes.Count());
             #endregion Assert
         }
 
@@ -185,7 +182,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(2, allAttributes.Count());
             #endregion Assert
         }
 
