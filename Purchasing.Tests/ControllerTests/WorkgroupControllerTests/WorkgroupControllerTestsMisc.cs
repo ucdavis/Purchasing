@@ -22,11 +22,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
     {
         #region WhoHasAccessToWorkgroup Tests
 
-        [TestMethod]
+        [Ignore("Write these tests")]
         public void TestWhoHasAccessToWorkgroup()
         {
             #region Arrange
-            Assert.Inconclusive("Write these tests");
+
             #endregion Arrange
 
             #region Act

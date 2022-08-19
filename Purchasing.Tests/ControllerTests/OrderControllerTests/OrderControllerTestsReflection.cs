@@ -154,7 +154,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
         #region Controller Method Tests
 
-        [TestMethod]
+        [Ignore("Tests are still being written. When done, remove this line.")]
         public void TestControllerContainsExpectedNumberOfPublicMethods()
         {
             #region Arrange
@@ -166,7 +166,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Act
 
             #region Assert
-            Assert.Inconclusive("Tests are still being written. When done, remove this line.");
+
             Assert.AreEqual(6, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }

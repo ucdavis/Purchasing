@@ -675,11 +675,11 @@ namespace Purchasing.Tests.ServiceTests
         }
 
 
-        [TestMethod]
+        [Ignore("Need to test the related workgroups")]
         public void TestRelatedWorkgroups()
         {
             #region Arrange
-            Assert.Inconclusive("Need to test the related workgroups");
+
             #endregion Arrange
 
             #region Act

@@ -381,11 +381,11 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Assert
         }
 
-        [TestMethod]
+        [Ignore("Continue these tests")]
         public void TestDescription()
         {
             #region Arrange
-            Assert.Inconclusive("Continue these tests");
+
             #endregion Arrange
 
             #region Act

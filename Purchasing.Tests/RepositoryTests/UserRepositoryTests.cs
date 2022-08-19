@@ -1513,7 +1513,7 @@ namespace Purchasing.Tests.RepositoryTests
 
             AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(User));
 
-            //Assert.Inconclusive("Override of Id looks like it removed two attributes");
+            //Ignore("Override of Id looks like it removed two attributes")
 
         }
 

@@ -211,11 +211,11 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
         #endregion Edit Get Tests
 
-        [TestMethod]
+        [Ignore("Need to write these tests")]
         public void TestWriteMethodTests()
         {
             #region Arrange
-            Assert.Inconclusive("Need to write these tests");
+
             #endregion Arrange
 
             #region Act
