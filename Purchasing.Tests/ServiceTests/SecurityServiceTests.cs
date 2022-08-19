@@ -64,11 +64,11 @@ namespace Purchasing.Tests.ServiceTests
         }
 
 
-        [TestMethod]
+        [Ignore("Write HasWorkgroupOrOrganizationAccess Tests")]
         public void Test1()
         {
             #region Arrange
-            Assert.Inconclusive("Write HasWorkgroupOrOrganizationAccess Tests");
+
             #endregion Arrange
 
             #region Act
@@ -80,11 +80,11 @@ namespace Purchasing.Tests.ServiceTests
         #endregion HasWorkgroupOrOrganizationAccess Tests
 
         #region HasWorkgroupAccess Tests
-        [TestMethod]
+        [Ignore("Write HasWorkgroupAccess Tests")]
         public void Test2()
         {
             #region Arrange
-            Assert.Inconclusive("Write HasWorkgroupAccess Tests");
+
             #endregion Arrange
 
             #region Act
@@ -97,11 +97,11 @@ namespace Purchasing.Tests.ServiceTests
 
 
         #region HasWorkgroupEditAccess Tests
-        [TestMethod]
+        [Ignore("Write HasWorkgroupEditAccess Tests")]
         public void Test3()
         {
             #region Arrange
-            Assert.Inconclusive("Write HasWorkgroupEditAccess Tests");
+
             #endregion Arrange
 
             #region Act
@@ -113,11 +113,11 @@ namespace Purchasing.Tests.ServiceTests
         #endregion HasWorkgroupEditAccess Tests
 
         #region IsInRole Tests
-        [TestMethod]
+        [Ignore("Write IsInRole Tests")]
         public void Test4()
         {
             #region Arrange
-            Assert.Inconclusive("Write IsInRole Tests");
+
             #endregion Arrange
 
             #region Act
@@ -129,11 +129,11 @@ namespace Purchasing.Tests.ServiceTests
         #endregion IsInRole Tests
 
         #region hasWorkgroupRole Tests
-        [TestMethod]
+        [Ignore("Write hasWorkgroupRole Tests")]
         public void Test5()
         {
             #region Arrange
-            Assert.Inconclusive("Write hasWorkgroupRole Tests");
+
             #endregion Arrange
 
             #region Act
@@ -145,11 +145,11 @@ namespace Purchasing.Tests.ServiceTests
         #endregion hasWorkgroupRole Tests
 
         #region GetAccessLevel Tests
-        [TestMethod]
+        [Ignore("Write GetAccessLevel Tests")]
         public void Test6()
         {
             #region Arrange
-            Assert.Inconclusive("Write GetAccessLevel Tests");
+
             #endregion Arrange
 
             #region Act
@@ -161,11 +161,11 @@ namespace Purchasing.Tests.ServiceTests
         #endregion GetAccessLevel Tests
 
         #region GetUser Tests
-        [TestMethod]
+        [Ignore("Write GetUser Tests")]
         public void Test7()
         {
             #region Arrange
-            Assert.Inconclusive("Write GetUser Tests");
+
             #endregion Arrange
 
             #region Act
@@ -179,11 +179,11 @@ namespace Purchasing.Tests.ServiceTests
 
 
 
-        [TestMethod]
+        [Ignore("Write tests for UserSecurityService")]
         public void TestOthers()
         {
             #region Arrange
-            Assert.Inconclusive("Write tests for UserSecurityService");
+
             #endregion Arrange
 
             #region Act

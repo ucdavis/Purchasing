@@ -37,6 +37,12 @@ steps:
       workingDirectory: $(Build.SourcesDirectory)
 
   - task: DotNetCoreCLI@2
+    displayName: "Run tests"
+    inputs:
+      command: "test"
+      projects: "./Purchasing.Tests/Purchasing.Tests.csproj"
+
+  - task: DotNetCoreCLI@2
     displayName: "Assemble Purchasing.Mvc"
     inputs:
       command: "publish"
