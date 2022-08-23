@@ -55,7 +55,7 @@ namespace UCDArch.Web.Attributes
             //We might want to close sessions even if we aren't delegated transaction support
             if (_delegateTransactionSupport) return;
 
-            _dbContext.CloseSession();
+            _dbContext?.CloseSession();
         }
 
         /// <summary>
