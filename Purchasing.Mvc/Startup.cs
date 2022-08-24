@@ -166,6 +166,7 @@ namespace Purchasing.Mvc
                 });
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSerilogRequestLogging();
 
