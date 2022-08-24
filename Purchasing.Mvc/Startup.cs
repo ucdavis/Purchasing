@@ -32,6 +32,7 @@ using UCDArch.Web.IoC;
 using UCDArch.Web.ModelBinder;
 using Purchasing.Mvc.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Purchasing.Mvc.Attributes;
 
 namespace Purchasing.Mvc
 {
@@ -142,6 +143,15 @@ namespace Purchasing.Mvc
                     switch (context.HttpContext.Response.StatusCode)
                     {
                         case StatusCodes.Status401Unauthorized:
+                            if (context.HttpContext.Items.TryGetValue(AuthenticateListView.BLOCK_401_TO_302_REDIRECT, out var blockRedirect))
+                            {
+                                if ((bool)blockRedirect)
+                                {
+                                    return Task.CompletedTask;
+                                }
+                            }
+                            context.HttpContext.Response.Redirect("/Error/NotAuthorized");
+                            break;
                         case StatusCodes.Status403Forbidden:
                             context.HttpContext.Response.Redirect("/Error/NotAuthorized");
                             break;
@@ -163,7 +173,7 @@ namespace Purchasing.Mvc
             app.UseAuthentication();
 
             app.UseAuthorization();
-            app.UseMiddleware<LogUserNameMiddleware>();            
+            app.UseMiddleware<LogUserNameMiddleware>();
             app.UseSession();
             app.UseEndpoints(endpoints =>
             {
