@@ -75,6 +75,7 @@ namespace Purchasing.Mvc
             // Allow standard Windsor behavior for services injected into controllers...
             .AddControllersAsServices();
 
+
             // add cas auth backed by a cookie signin scheme
             services.AddAuthentication(options =>
             {
@@ -157,6 +158,7 @@ namespace Purchasing.Mvc
             }
 
             app.UseStaticFiles();
+            app.UseHttpsRedirection();
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
