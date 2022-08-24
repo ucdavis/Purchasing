@@ -149,7 +149,7 @@ namespace Purchasing.Jobs.NotificationsCommon
                     message.Append("</p></br>");
                 }
 
-                message.Append(string.Format("<p><em>{0} </em><em><a href=\"{1}\">{2}</a>&nbsp;</em></p>", "You can change your email preferences at any time by", "http://prepurchasing.ucdavis.edu/User/Profile", "updating your profile on the PrePurchasing site"));
+                message.Append(string.Format("<p><em>{0} </em><em><a href=\"{1}\">{2}</a>&nbsp;</em></p>", "You can change your email preferences at any time by", "https://prepurchasing.ucdavis.edu/User/Profile", "updating your profile on the PrePurchasing site"));
 
                 using var client = new SmtpClient("smtp.sparkpostmail.com", 587)
                 {
@@ -187,7 +187,7 @@ namespace Purchasing.Jobs.NotificationsCommon
 
         private static string GenerateLink(string orderRequestNumber)
         {
-            return string.Format("<a href=\"{0}{1}\">{1}</a>", "http://prepurchasing.ucdavis.edu/Order/Lookup/", orderRequestNumber);
+            return string.Format("<a href=\"{0}{1}\">{1}</a>", "https://prepurchasing.ucdavis.edu/Order/Lookup/", orderRequestNumber);
         }
     }
 }

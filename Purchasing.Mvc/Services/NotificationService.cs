@@ -760,7 +760,7 @@ namespace Purchasing.Mvc.Services
 
         private string GenerateLink(string address, string orderRequestNumber)
         {
-            return string.Format("<a href=\"{0}{1}\">{1}</a>", "http://prepurchasing.ucdavis.edu/Order/Lookup/", orderRequestNumber);
+            return string.Format("<a href=\"{0}{1}\">{1}</a>", "https://prepurchasing.ucdavis.edu/Order/Lookup/", orderRequestNumber);
         }
     }
 }
