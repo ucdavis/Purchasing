@@ -158,7 +158,6 @@ namespace Purchasing.Mvc
             }
 
             app.UseStaticFiles();
-            app.UseHttpsRedirection();
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
