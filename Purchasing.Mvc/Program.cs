@@ -22,13 +22,14 @@ namespace Purchasing.Mvc
         public static void Main(string[] args)
         {
             var isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.OrdinalIgnoreCase);
+            var isProductionDebug = !isDevelopment && string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_DEBUG_PRODUCTION"), "true", StringComparison.OrdinalIgnoreCase);
             var builder = new ConfigurationBuilder()
                 .SetBasePath(System.IO.Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .AddEnvironmentVariables();
 
-            //only add secrets in development
-            if (isDevelopment)
+            //only add secrets in development or when debugging in production
+            if (isDevelopment || isProductionDebug)
             {
                 builder.AddUserSecrets<Program>();
             }
@@ -39,7 +40,7 @@ namespace Purchasing.Mvc
             try
             {
                 Log.Information("Building web host");
-                var host = CreateHostBuilder(args).Build();
+                var host = CreateHostBuilder(args, isProductionDebug && !isDevelopment).Build();
 
                 Log.Information("Starting web host");
                 host.Run();
@@ -54,13 +55,18 @@ namespace Purchasing.Mvc
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args, bool addUserSecrets) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog()
                 .UseWindsorContainerServiceProvider()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    if (addUserSecrets)
+                    {
+                        // override builder's default behavior of not adding secrets in prod environment
+                        webBuilder.ConfigureAppConfiguration(builder => builder.AddUserSecrets<Program>());
+                    }
                 })
                 .UseAllElasticApm();
     }
