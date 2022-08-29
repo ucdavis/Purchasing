@@ -38,7 +38,7 @@ namespace Purchasing.Mvc.Logging
             }
 
             // Set HttpContext properties
-            _diagnosticContext.Set("User", httpContext.User.Identity.Name ?? "anonymous");
+            //_diagnosticContext.Set("User", httpContext.User.Identity.Name ?? "anonymous");
             _diagnosticContext.Set("SessionId", httpContext.Session?.Id ?? "no session");
             _diagnosticContext.Set("TraceId", httpContext.TraceIdentifier ?? "no trace");
             _diagnosticContext.Set("EndpointName", httpContext.GetEndpoint()?.DisplayName ?? "no endpoint");

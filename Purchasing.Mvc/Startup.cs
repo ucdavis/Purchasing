@@ -175,7 +175,6 @@ namespace Purchasing.Mvc
             app.UseAuthentication();
 
             app.UseAuthorization();
-            app.UseMiddleware<LogUserNameMiddleware>();
             app.UseSession();
             app.UseEndpoints(endpoints =>
             {
