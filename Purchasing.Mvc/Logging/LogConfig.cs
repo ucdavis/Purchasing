@@ -32,7 +32,7 @@ namespace Purchasing.Mvc.Logging
                 .Enrich.WithProperty("Application", configuration["Stackify.AppName"])
                 .Enrich.WithProperty("AppEnvironment", configuration["Stackify.Environment"])
                 .Enrich.WithElasticApmCorrelationInfo()
-                .Enrich.With<CustomHttpContextEnricher>()
+                .Enrich.With<SerilogHttpContextEnricher>()
                 .Enrich.FromLogContext()
                 //.Filter.ByExcluding(e => e.Exception != null && e.Exception.GetBaseException() is HttpException) //filter out those 404s and headers exceptions
                 .CreateLogger();
