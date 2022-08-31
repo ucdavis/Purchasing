@@ -5,6 +5,7 @@ using Purchasing.Tests.Core;
 using Purchasing.Mvc;
 using Purchasing.Mvc.Controllers;
 using Microsoft.AspNetCore.Authorization;
+using Purchasing.Tests.Extensions;
 
 namespace Purchasing.Tests.ControllerTests
 {
@@ -84,7 +85,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true);
+            var result = controllerClass.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -124,11 +125,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(4, allAttributes.Count());
+            Assert.AreEqual(3, allAttributes.Count());
             #endregion Assert
         }
 
@@ -141,11 +142,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(3, allAttributes.Count());
+            Assert.AreEqual(2, allAttributes.Count());
             #endregion Assert
         }
 
@@ -158,14 +159,14 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var expectedAttribute = controllerMethod.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            var expectedAttribute = controllerMethod.GetFilteredCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), message: "AuthorizeAttribute");
             Assert.AreEqual("EU", expectedAttribute.ElementAt(0).Policy);
-            Assert.AreEqual(3, allAttributes.Count());
+            Assert.AreEqual(2, allAttributes.Count());
             #endregion Assert
         }
 
@@ -178,11 +179,11 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(2, allAttributes.Count());
+            Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
 

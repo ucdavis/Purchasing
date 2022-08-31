@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Purchasing.Tests.Extensions;
 
 namespace Purchasing.Tests.Core
 {
@@ -40,7 +41,7 @@ namespace Purchasing.Tests.Core
                     CompareNewWay(expectedFields[i], propertyInfos[i]);
                 }
 
-                //var foundAttributes = CustomAttributeData.GetCustomAttributes(propertyInfos[i])
+                //var foundAttributes = CustomAttributeData.GetFilteredCustomAttributes(propertyInfos[i])
                 //    .AsQueryable().OrderBy(a => a.ToString()).ToList();
                 //Assert.AreEqual(expectedFields[i].Attributes.Count, foundAttributes.Count(), "For Field: " + propertyInfos[i].Name);
                 //if (foundAttributes.Count() > 0)
@@ -56,7 +57,7 @@ namespace Purchasing.Tests.Core
 
         private static void CompareNewWay(NameAndType expectedField, PropertyInfo propertyInfo)
         {
-            var foundAttributes = CustomAttributeData.GetCustomAttributes(propertyInfo)
+            var foundAttributes = propertyInfo.GetFilteredCustomAttributeData()
                 .AsQueryable().OrderBy(a => a.ToString()).ToList();
             Assert.AreEqual(expectedField.ParameterAttributes.Count, foundAttributes.Count(), "For Field: " + propertyInfo.Name);
             if (foundAttributes.Count() > 0)
@@ -88,7 +89,7 @@ namespace Purchasing.Tests.Core
 
         private static void CompareOldWay(NameAndType expectedField, PropertyInfo propertyInfo)
         {
-            var foundAttributes = CustomAttributeData.GetCustomAttributes(propertyInfo)
+            var foundAttributes = propertyInfo.GetFilteredCustomAttributeData()
                 .AsQueryable().OrderBy(a => a.ToString()).ToList();
             Assert.AreEqual(expectedField.Attributes.Count, foundAttributes.Count(), "For Field: " + propertyInfo.Name);
             if (foundAttributes.Count() > 0)
