@@ -17,6 +17,7 @@ using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using VersionAttribute = Purchasing.Mvc.Attributes.VersionAttribute;
 using Microsoft.AspNetCore.Authorization;
+using Purchasing.Tests.Extensions;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -56,7 +57,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true);
+            var result = controllerClass.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -75,7 +76,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseTransactionsByDefaultAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<UseTransactionsByDefaultAttribute>();
             #endregion Act
 
             #region Assert
@@ -94,7 +95,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
@@ -110,7 +111,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<VersionAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<VersionAttribute>();
             #endregion Act
 
             #region Assert
@@ -126,7 +127,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<AuthorizeAttribute>();
             #endregion Act
 
             #region Assert
@@ -154,7 +155,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<ProfileAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<ProfileAttribute>();
             #endregion Act
 
             #region Assert
@@ -170,7 +171,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<AuthorizeWorkgroupAccessAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<AuthorizeWorkgroupAccessAttribute>();
             #endregion Act
 
             #region Assert
@@ -212,7 +213,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -233,7 +234,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var element = controllerMethod.ElementAt(0);
-            var allAttributes = element.GetCustomAttributes(true);
+            var allAttributes = element.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -254,8 +255,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var element = controllerMethod.ElementAt(1);
-            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
-            var allAttributes = element.GetCustomAttributes(true);
+            var expectedAttribute = element.GetFilteredCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -277,7 +278,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var element = controllerMethod.ElementAt(0);
-            var allAttributes = element.GetCustomAttributes(true);
+            var allAttributes = element.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -298,8 +299,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var element = controllerMethod.ElementAt(1);
-            var expectedAttribute = element.GetCustomAttributes(true).OfType<HttpPostAttribute>();
-            var allAttributes = element.GetCustomAttributes(true);
+            var expectedAttribute = element.GetFilteredCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = element.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -321,7 +322,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 
             #region Act
             var element = controllerMethod.ElementAt(0);
-            var allAttributes = element.GetCustomAttributes(true);
+            var allAttributes = element.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -342,8 +343,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         //    #endregion Arrange
 
         //    #region Act
-        //    //var expectedAttribute = controllerMethod.GetCustomAttributes(true).OfType<UserOnlyAttribute>();
-        //    var allAttributes = controllerMethod.GetCustomAttributes(true);
+        //    //var expectedAttribute = controllerMethod.GetFilteredCustomAttributes(true).OfType<UserOnlyAttribute>();
+        //    var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
         //    #endregion Act
 
         //    #region Assert
@@ -362,8 +363,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         //    #endregion Arrange
 
         //    #region Act
-        //    var expectedAttribute = controllerMethod.ElementAt(0).GetCustomAttributes(true).OfType<UserOnlyAttribute>();
-        //    var allAttributes = controllerMethod.ElementAt(0).GetCustomAttributes(true);
+        //    var expectedAttribute = controllerMethod.ElementAt(0).GetFilteredCustomAttributes(true).OfType<UserOnlyAttribute>();
+        //    var allAttributes = controllerMethod.ElementAt(0).GetFilteredCustomAttributes(true);
         //    #endregion Act
 
         //    #region Assert
@@ -381,8 +382,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         //    #endregion Arrange
 
         //    #region Act
-        //    var expectedAttribute = controllerMethod.ElementAt(1).GetCustomAttributes(true).OfType<HttpPostAttribute>();
-        //    var allAttributes = controllerMethod.ElementAt(1).GetCustomAttributes(true);
+        //    var expectedAttribute = controllerMethod.ElementAt(1).GetFilteredCustomAttributes(true).OfType<HttpPostAttribute>();
+        //    var allAttributes = controllerMethod.ElementAt(1).GetFilteredCustomAttributes(true);
         //    #endregion Act
 
         //    #region Assert
@@ -400,8 +401,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         //    #endregion Arrange
 
         //    #region Act
-        //    var expectedAttribute = controllerMethod.ElementAt(1).GetCustomAttributes(true).OfType<UserOnlyAttribute>();
-        //    var allAttributes = controllerMethod.ElementAt(1).GetCustomAttributes(true);
+        //    var expectedAttribute = controllerMethod.ElementAt(1).GetFilteredCustomAttributes(true).OfType<UserOnlyAttribute>();
+        //    var allAttributes = controllerMethod.ElementAt(1).GetFilteredCustomAttributes(true);
         //    #endregion Act
 
         //    #region Assert

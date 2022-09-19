@@ -11,6 +11,7 @@ using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Purchasing.Tests.Extensions;
 
 namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 {
@@ -50,7 +51,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true);
+            var result = controllerClass.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -69,7 +70,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<UseTransactionsByDefaultAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<UseTransactionsByDefaultAttribute>();
             #endregion Act
 
             #region Assert
@@ -88,7 +89,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<AutoValidateAntiforgeryTokenAttribute>();
             #endregion Act
 
             #region Assert
@@ -104,7 +105,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<Mvc.Attributes.VersionAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<Mvc.Attributes.VersionAttribute>();
             #endregion Act
 
             #region Assert
@@ -120,7 +121,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<AuthorizeAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<AuthorizeAttribute>();
             #endregion Act
 
             #region Assert
@@ -136,7 +137,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var result = controllerClass.GetCustomAttributes(true).OfType<ProfileAttribute>();
+            var result = controllerClass.GetFilteredCustomAttributes(true).OfType<ProfileAttribute>();
             #endregion Act
 
             #region Assert
@@ -173,7 +174,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -190,7 +191,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -207,7 +208,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.GetCustomAttributes(true);
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
