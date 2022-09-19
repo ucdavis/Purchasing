@@ -58,7 +58,6 @@ namespace Purchasing.Mvc
         {
             services.AddMvc(options =>
             {
-                options.Filters.Add<SerilogControllerActionFilter>();
                 // place EntityModelBinderProvider just before the ComplexObjectModelBinderProvider
                 options.ModelBinderProviders.Insert(
                     options.ModelBinderProviders.IndexOf(options.ModelBinderProviders.OfType<ComplexObjectModelBinderProvider>().First()),

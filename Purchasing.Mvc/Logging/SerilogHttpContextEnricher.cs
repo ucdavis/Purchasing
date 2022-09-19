@@ -11,7 +11,6 @@ namespace Purchasing.Mvc.Logging
 {
     public class SerilogHttpContextEnricher : ILogEventEnricher
     {
-        public const string SERILOG_CUSTOM_MODEL_STATE = "SERILOG_CUSTOM_MODEL_STATE";
         private readonly IHttpContextAccessor _contextAccessor;
         private bool _enriching = false;
 
@@ -39,29 +38,8 @@ namespace Purchasing.Mvc.Logging
                 if (httpContext == null)
                     return;
 
-                var endpoint = httpContext.GetEndpoint();
-                var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
-                // Serilog doesn't seem to like IDictionary<TKey, TValue> with a TValue that is not a scalar
-                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "RouteData", () => actionDescriptor?.RouteValues.ToArray(), destructure: false);
-                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "ActionName", () => actionDescriptor?.DisplayName);
-                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "ActionId", () => actionDescriptor?.Id);
-                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "ValidationState", () =>
-                    ((ModelStateDictionary)httpContext.Items[SERILOG_CUSTOM_MODEL_STATE])?.IsValid);
-
-                // // Set all the common properties available for every request
-                var request = httpContext.Request;
-                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "Host", () => request.Host, destructure: false);
-                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "Protocol", () => request.Protocol);
-                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "Scheme", () => request.Scheme);
-
-                // Only set it if available. You're not sending sensitive data in a querystring right?!
-                if (request.QueryString.HasValue)
-                {
-                    AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "QueryString", () => request.QueryString.Value);
-                }
-
                 // Set HttpContext properties
-                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "User", () => httpContext.User.Identity.Name);
+                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "User", () => httpContext.User?.Identity?.Name);
                 AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "SessionId", () => httpContext.SafeSession()?.Id);
                 AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "TraceId", () => httpContext.TraceIdentifier);
                 AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "EndpointName", () => httpContext.GetEndpoint()?.DisplayName);
