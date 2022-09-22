@@ -18,6 +18,7 @@ using Moq;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Purchasing.Core.Services;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -35,6 +36,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public IWorkgroupService WorkgroupService;
         public IConfiguration Configuration;
         public IOptions<SendGridSettings> SendGridSettings;
+        public IAggieEnterpriseService AggieEnterpriseService;
 
 
         #region Init
@@ -56,8 +58,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(Mock.Of<IRepository<WorkgroupPermission>>());
             Configuration = Mock.Of<IConfiguration>();
             SendGridSettings = Mock.Of<IOptions<SendGridSettings>>();
+            AggieEnterpriseService = Mock.Of<IAggieEnterpriseService>();
 
-            Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration);
+            Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration, AggieEnterpriseService);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
