@@ -23,6 +23,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using Microsoft.Extensions.Configuration;
+using Purchasing.Core.Services;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -42,6 +43,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IWorkgroupService _workgroupService;
         private readonly SendGridSettings _sendGridSettings;
         private readonly IConfiguration _configuration;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
         public AdminController(
             IRepositoryWithTypedId<User, string> userRepository,
@@ -53,7 +55,8 @@ namespace Purchasing.Mvc.Controllers
             IRepositoryFactory repositoryFactory,
             IWorkgroupService workgroupService,
             IOptions<SendGridSettings> sendGridSettings,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IAggieEnterpriseService aggieEnterpriseService)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -65,6 +68,7 @@ namespace Purchasing.Mvc.Controllers
             _workgroupService = workgroupService;
             _sendGridSettings = sendGridSettings.Value;
             _configuration = configuration;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
         //
@@ -675,6 +679,15 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult TestException()
         {
             throw new Exception("Test -- Test -- Test");
+        }
+
+        public async Task<ActionResult> TestAe(string id)
+        {
+            var isValid  = await _aggieEnterpriseService.IsAccountValid(id);
+
+
+
+            return Content(isValid.ToString());
         }
 
         public ActionResult TestEmail()
