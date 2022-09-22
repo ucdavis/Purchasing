@@ -7,6 +7,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Models.Configuration;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Purchasing.Core.Services
@@ -15,7 +16,7 @@ namespace Purchasing.Core.Services
     {
         Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true);
 
-        Task<SubmitResult> UploadOrder(Order order);
+        Task<SubmitResult> UploadOrder(Order order, string purchaserEmail);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -58,7 +59,7 @@ namespace Purchasing.Core.Services
             return false;
         }
 
-        public async Task<SubmitResult> UploadOrder(Order order)
+        public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail)
         {
             
 
@@ -78,10 +79,24 @@ namespace Purchasing.Core.Services
                 //TODO: Create an error message that the supplier was missing or not found.
                 return new SubmitResult { Success = false, Messages = new List<string>() { "Supplier missing or not found" } };
             }
+            string bp = string.Empty;
+            if (!string.IsNullOrWhiteSpace(order.BusinessPurpose)){
+                bp = $" -- Business Purpose: {order.BusinessPurpose}";
+            }
+
+            inputOrder.Payload = new ScmPurchaseRequisitionInput
+            {
+                RequisitionSourceName = "UCD SLOTH",
+                SupplierNumber = supplier.SupplierNumber,
+                SupplierSiteCode = supplier.SupplierSiteCode ,
+                RequesterEmailAddress = purchaserEmail,
+                Description = order.ReferenceNumber,
+                Justification = $"{order.Justification}{bp}".SafeTruncate(1000),
+            };
 
 
 
-            throw new System.NotImplementedException();
+            return new SubmitResult { Success = false, Messages = new List<string>() { "AE Code not ready yet." } };
         }
 
         private async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
@@ -90,10 +105,35 @@ namespace Purchasing.Core.Services
             {
                 return null;
             }
+            try
+            {
+                var search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.VendorId.ToString() } };
+                var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
+                var searchData = searchResult.ReadData();
 
-            var search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.VendorId.ToString() } };
-            var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
-            var searchData = searchResult.ReadData();
+                var rtValue = new Supplier();
+                rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.First().SupplierNumber.ToString();
+                rtValue.SupplierSiteCode = searchData.ScmSupplierSearch.Data.First().Sites.Where(a =>  
+                    a.Location.City.Equals(vendor.City, System.StringComparison.OrdinalIgnoreCase) &&
+                    a.Location.State.Equals(vendor.State, System.StringComparison.OrdinalIgnoreCase) &&
+                    (a.Location.AddressLine1.Equals(vendor.Name, System.StringComparison.OrdinalIgnoreCase) && a.Location.AddressLine2.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase)) || 
+                    (a.Location.AddressLine1.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase))
+                    ).First().SupplierSiteCode;                
+                
+                if (!string.IsNullOrWhiteSpace(rtValue.SupplierNumber) && !string.IsNullOrWhiteSpace(rtValue.SupplierSiteCode))
+                {
+                    return rtValue;
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch
+            {
+                return null;
+            }
 
             return null;
         }
