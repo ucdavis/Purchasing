@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Models.Configuration;
+using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,10 +23,12 @@ namespace Purchasing.Core.Services
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
         private readonly IAggieEnterpriseClient _aggieClient;
+        private readonly IRepositoryFactory _repositoryFactory;
 
-        public AggieEnterpriseService(IOptions<AggieEnterpriseOptions> options)
+        public AggieEnterpriseService(IOptions<AggieEnterpriseOptions> options, IRepositoryFactory repositoryFactory)
         {
             _aggieClient = GraphQlClient.Get(options.Value.GraphQlUrl, options.Value.Token);
+            _repositoryFactory = repositoryFactory;
         }
 
         public async Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true)
@@ -68,7 +72,7 @@ namespace Purchasing.Core.Services
                 Header = new ActionRequestHeaderInput
                 {
                     ConsumerTrackingId = order.ConsumerTrackingId.ToString(),
-                    ConsumerReferenceId = order.ReferenceNumber,
+                    ConsumerReferenceId = order.RequestNumber,
                     ConsumerNotes = $"Workgroup: {order.Workgroup.Name}".SafeTruncate(240),
                     BoundaryApplicationName = "PrePurchasing"
                 }
@@ -90,13 +94,108 @@ namespace Purchasing.Core.Services
                 SupplierNumber = supplier.SupplierNumber,
                 SupplierSiteCode = supplier.SupplierSiteCode ,
                 RequesterEmailAddress = purchaserEmail,
-                Description = order.ReferenceNumber,
+                Description = order.RequestNumber,
                 Justification = $"{order.Justification}{bp}".SafeTruncate(1000),
             };
+                
+            var unitCodes = order.LineItems.Select(a => a.Unit).Distinct().ToArray();
 
+            var unitsOfMeasure = _repositoryFactory.UnitOfMeasureRepository.Queryable.Where(a => unitCodes.Contains(a.Id)).ToArray();
 
+            var distributions = CalculateDistributions(order);
+            var lineItems = new List<ScmPurchaseRequisitionLineInput>();
+            foreach(var line in order.LineItems)
+            {
+                var li = new ScmPurchaseRequisitionLineInput
+                {
+                    Amount = line.Total(),
+                    Quantity = line.Quantity,
+                    ItemDescription = line.Description.SafeTruncate(240),
+                    UnitPrice = line.UnitPrice,
+                    UnitOfMeasure = unitsOfMeasure.FirstOrDefault(a => a.Id == line.Unit)?.Name,
+                    PurchasingCategoryName = "15000FAC", //Completely faked TODO: Fix this
+                    NoteToBuyer = line.Notes.SafeTruncate(1000),
+                    RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),
+                };
+
+                lineItems.Add(li);
+            }
+            
+
+            inputOrder.Payload.Lines = lineItems;
+            
+            var jsonPayload = System.Text.Json.JsonSerializer.Serialize(inputOrder);
+            var log = Log.ForContext("jsonPayload", jsonPayload);
+            log.Information("Aggie Enterprise Payload");
 
             return new SubmitResult { Success = false, Messages = new List<string>() { "AE Code not ready yet." } };
+        }
+
+
+        /// <summary>
+        /// Potentially we could cache this lookup, but it should really only be a SIT2 test thing....
+        /// </summary>
+        /// <param name="split"></param>
+        /// <returns></returns>
+        private async Task<KfsToAeCoa> LookupAccount(Split split)
+        {
+            var rtValue = new KfsToAeCoa { Split = split };
+
+            var chart = split.Account.Split('-')[0];
+            var account = split.Account.Split('-')[1];
+
+            var distributionResult = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, account, split.SubAccount);
+            var distributionData = distributionResult.ReadData();
+            if (distributionData.KfsConvertAccount.GlSegments != null)
+            {
+                rtValue.FinincialSegmentString = new GlSegments(distributionData.KfsConvertAccount.GlSegments).ToSegmentString();
+            }
+            return rtValue;
+        }
+
+        /// <summary>
+        /// Calculates the distribution %s for each account
+        /// </summary>
+        /// <remarks>
+        /// Distributions are calculated based on what is displayed on screen.  This ensures a 100% distribution for associated accounts.
+        /// </remarks>
+        /// <param name="order"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private async Task<List<KeyValuePair<KfsToAeCoa, decimal>>> CalculateDistributions(Order order)
+        {
+            var distributions = new List<KeyValuePair<KfsToAeCoa, decimal>>();
+
+            // no split (single account)
+            if (!order.HasLineSplits && order.Splits.Count == 1)
+            {
+                var split = order.Splits.FirstOrDefault();
+                distributions.Add(new KeyValuePair<KfsToAeCoa, decimal>(await LookupAccount(split), 100m));
+            }
+            // order level splits
+            else if (!order.HasLineSplits)
+            {
+                foreach (var sp in order.Splits)
+                {
+
+                    // calculate the distribution percent, over entire order
+                    var dist = (sp.Amount / order.GrandTotalFromDb) * 100m;
+
+                    distributions.Add(new KeyValuePair<KfsToAeCoa, decimal>(await LookupAccount(sp), dist));
+                }
+            }
+            // should be a line level splits
+            else if (order.HasLineSplits)
+            {
+                foreach (var sp in order.Splits)
+                {
+                    // calculate the distribution percent, over the line totals
+                    var dist = (sp.Amount / sp.LineItem.TotalWithTax()) * 100m;
+                    distributions.Add(new KeyValuePair<KfsToAeCoa, decimal>(await LookupAccount(sp), dist));
+                }
+            }
+
+            return distributions;
         }
 
         private async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
@@ -142,6 +241,12 @@ namespace Purchasing.Core.Services
         {
             public string SupplierNumber { get; set; }
             public string SupplierSiteCode { get; set; }
+        }
+
+        private class KfsToAeCoa
+        {
+            public Split Split { get;set;}
+            public string FinincialSegmentString { get;set;}
         }
     }
 
