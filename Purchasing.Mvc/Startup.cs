@@ -33,6 +33,7 @@ using UCDArch.Web.ModelBinder;
 using Purchasing.Mvc.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Purchasing.Mvc.Attributes;
+using Purchasing.Core.Models.Configuration;
 
 namespace Purchasing.Mvc
 {
@@ -125,6 +126,8 @@ namespace Purchasing.Mvc
 
             services.Configure<LDAPSettings>(Configuration);
             services.Configure<SendGridSettings>(Configuration);
+
+            services.Configure<AggieEnterpriseOptions>(Configuration.GetSection("AggieEnterprise"));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
