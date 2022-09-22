@@ -3,7 +3,10 @@ using AggieEnterpriseApi.Extensions;
 using AggieEnterpriseApi.Types;
 using AggieEnterpriseApi.Validation;
 using Microsoft.Extensions.Options;
+using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Models.Configuration;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Purchasing.Core.Services
@@ -11,6 +14,8 @@ namespace Purchasing.Core.Services
     public interface IAggieEnterpriseService
     {
         Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true);
+
+        Task<SubmitResult> UploadOrder(Order order);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -53,5 +58,64 @@ namespace Purchasing.Core.Services
             return false;
         }
 
+        public async Task<SubmitResult> UploadOrder(Order order)
+        {
+            
+
+            var inputOrder = new ScmPurchaseRequisitionRequestInput
+            {
+                Header = new ActionRequestHeaderInput
+                {
+                    ConsumerTrackingId = order.ConsumerTrackingId.ToString(),
+                    ConsumerReferenceId = order.ReferenceNumber,
+                    ConsumerNotes = $"Workgroup: {order.Workgroup.Name}".SafeTruncate(240),
+                    BoundaryApplicationName = "PrePurchasing"
+                }
+            };
+            var supplier = await GetSupplier(order.Vendor);
+            if (supplier == null)
+            {
+                //TODO: Create an error message that the supplier was missing or not found.
+                return new SubmitResult { Success = false, Messages = new List<string>() { "Supplier missing or not found" } };
+            }
+
+
+
+            throw new System.NotImplementedException();
+        }
+
+        private async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
+        {
+            if (vendor == null || vendor.VendorId == null || vendor.VendorAddressTypeCode == null)
+            {
+                return null;
+            }
+
+            var search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.VendorId.ToString() } };
+            var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
+            var searchData = searchResult.ReadData();
+
+            return null;
+        }
+        
+        private class Supplier
+        {
+            public string SupplierNumber { get; set; }
+            public string SupplierSiteCode { get; set; }
+        }
+    }
+
+    //TODO: Replace with something more robust?
+    public class SubmitResult
+    {
+
+        public SubmitResult()
+        {
+
+        }
+
+        public bool Success { get; set; }
+        public string DocNumber { get; set; }
+        public List<string> Messages { get; set; }
     }
 }

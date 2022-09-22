@@ -785,7 +785,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult Approve(int id /*order*/, string action, string comment, string orderType, string kfsDocType)
+        public async Task<ActionResult> Approve(int id /*order*/, string action, string comment, string orderType, string kfsDocType)
         {
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
@@ -858,8 +858,33 @@ namespace Purchasing.Mvc.Controllers
                     //    return RedirectToAction("Review", new { id });
                     //}
                 }
+                if(newOrderType.Id.Trim() == OrderType.Types.AggieEnterprise)
+                {
+                    //Copied from the KFS, these will change, but there will be something similar
+                    if (order.LineItems.Any(a => a.Commodity == null))
+                    {
+                        ErrorMessage = "Must have commodity codes for all line items to complete a KFS order";
+                        return RedirectToAction("Review", new { id });
+                    }
 
-                var errors = _orderService.Complete(order, newOrderType, kfsDocType);
+                    if (order.LineItems.Any(a => a.Commodity != null && !a.Commodity.IsActive))
+                    {
+                        var inactiveCodes = string.Empty;
+                        foreach (var invalidLineItem in order.LineItems.Where(a => a.Commodity != null && !a.Commodity.IsActive))
+                        {
+                            inactiveCodes = string.Format("{0} Commodity Code: {1} ", inactiveCodes, invalidLineItem.Commodity.Id);
+                        }
+                        ErrorMessage = string.Format("Inactive (old) commodity codes detected. Please update to submit to KFS: {0}", inactiveCodes);
+                        return RedirectToAction("Review", new { id });
+                    }
+                    if(order.Vendor == null || order.Vendor.VendorId == null)
+                    {
+                        ErrorMessage = "Must have a vendor (supplier) with an Id";
+                        return RedirectToAction("Review", new { id });
+                    }
+                }
+
+                var errors = await _orderService.Complete(order, newOrderType, kfsDocType);
 
                 if (errors.Any()) //if we have any errors, raise them in ELMAH and redirect back to the review page without saving change
                 {

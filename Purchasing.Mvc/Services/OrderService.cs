@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -66,7 +67,7 @@ namespace Purchasing.Mvc.Services
         /// Complete the last approval for an order, and return any errors that result
         /// </summary>
         /// <returns>String array of error messages, non-empty if completion didn't succeed</returns>
-        string[] Complete(Order order, OrderType newOrderType, string kfsDocType = null);
+        Task<string[]> Complete(Order order, OrderType newOrderType, string kfsDocType = null);
 
         /// <summary>
         /// Get the current user's list of orders.
@@ -125,6 +126,8 @@ namespace Purchasing.Mvc.Services
         //private readonly IRepositoryWithTypedId<User, string> _userRepository; // UserRepository is in the RepositoryFactory
         private readonly IRepository<Order> _orderRepository;
 
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
+
         public OrderService(IRepositoryFactory repositoryFactory, 
                             IEventService eventService, 
                             IUserIdentity userIdentity, 
@@ -138,7 +141,8 @@ namespace Purchasing.Mvc.Services
                             IQueryRepositoryFactory queryRepositoryFactory, 
                             IAccessQueryService accessQueryService,
                             IFinancialSystemService financialSystemService,
-                            IIndexService indexService)
+                            IIndexService indexService,
+                            IAggieEnterpriseService aggieEnterpriseService)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
@@ -154,6 +158,7 @@ namespace Purchasing.Mvc.Services
             _accessQueryService = accessQueryService;
             _financialSystemService = financialSystemService;
             _indexService = indexService;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
         /// <summary>
@@ -543,7 +548,7 @@ namespace Purchasing.Mvc.Services
         /// Complete the last approval for an order, and return any errors that result
         /// </summary>
         /// <returns>String array of error messages, non-empty if completion didn't succeed</returns>
-        public string[] Complete(Order order, OrderType newOrderType, string kfsDocType = null)
+        public async Task<string[]> Complete(Order order, OrderType newOrderType, string kfsDocType = null)
         {
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Complete);
             order.OrderType = newOrderType;
@@ -558,6 +563,19 @@ namespace Purchasing.Mvc.Services
                 if (result.Success)
                 {
                     order.ReferenceNumber = result.DocNumber;    
+                }
+                else
+                {
+                    return result.Messages.ToArray();
+                }
+            }
+
+            if(newOrderType.Id.Trim() == OrderType.Types.AggieEnterprise)
+            {
+                var result = await _aggieEnterpriseService.UploadOrder(order);
+                if (result.Success)
+                {
+                    order.ReferenceNumber = result.DocNumber; //TODO: Replace
                 }
                 else
                 {
