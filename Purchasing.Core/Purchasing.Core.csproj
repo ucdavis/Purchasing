@@ -24,7 +24,7 @@
     <Copyright>Copyright ©  2015</Copyright>
 	</PropertyGroup>
 	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App"/>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
   <PropertyGroup Condition=" '$(Version)' == '' ">
     <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">1.1.0</VersionPrefix>
@@ -32,17 +32,18 @@
     <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
   </PropertyGroup>
   <ItemGroup>
-		<ProjectReference Include="..\UCDArch\UCDArch.csproj"/>
+		<ProjectReference Include="..\UCDArch\UCDArch.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="NEST.JsonNetSerializer" Version="7.13.2"/>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
-		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
-		<PackageReference Include="AutoMapper" Version="11.0.1"/>
-		<PackageReference Include="Dapper" Version="2.0.123"/>
-		<PackageReference Include="FluentNHibernate" Version="3.1.0"/>
+		<PackageReference Include="AggieEnterpriseApi" Version="0.2.79" />
+		<PackageReference Include="NEST.JsonNetSerializer" Version="7.13.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+		<PackageReference Include="AutoMapper" Version="11.0.1" />
+		<PackageReference Include="Dapper" Version="2.0.123" />
+		<PackageReference Include="FluentNHibernate" Version="3.1.0" />
 		<!-- <PackageReference Include="DataAnnotationsExtensions" Version="5.0.1.27" /> -->
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.3"/>
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
 	</ItemGroup>
 </Project>
