@@ -102,13 +102,13 @@ namespace Purchasing.Core.Services
 
             var unitsOfMeasure = _repositoryFactory.UnitOfMeasureRepository.Queryable.Where(a => unitCodes.Contains(a.Id)).ToArray();
 
-            var distributions = CalculateDistributions(order);
+            var distributions = await CalculateDistributions(order);
             var lineItems = new List<ScmPurchaseRequisitionLineInput>();
             foreach(var line in order.LineItems)
             {
                 var li = new ScmPurchaseRequisitionLineInput
                 {
-                    Amount = line.Total(),
+                    Amount = Math.Round(line.Total(), 3),
                     Quantity = line.Quantity,
                     ItemDescription = line.Description.SafeTruncate(240),
                     UnitPrice = line.UnitPrice,
@@ -117,6 +117,36 @@ namespace Purchasing.Core.Services
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
                     RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),
                 };
+
+                var aeDist = new List<ScmPurchaseRequisitionDistributionInput>();
+                // order with line splits
+                if (order.HasLineSplits)
+                {
+                    foreach (var dist in distributions.Where(a => a.Key.Split.LineItem == line))
+                    {
+                        //accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
+                        aeDist.Add(new ScmPurchaseRequisitionDistributionInput()
+                        {
+                            Percent = dist.Value,
+                            GlSegmentString = dist.Key.FinincialSegmentString,
+                        });
+                    }
+                }
+                // order or no splits
+                else
+                {
+                    foreach (var dist in distributions)
+                    {
+                        aeDist.Add(new ScmPurchaseRequisitionDistributionInput()
+                        {
+                            Percent = dist.Value,
+                            GlSegmentString = dist.Key.FinincialSegmentString,
+                        });
+                    }
+                }
+
+                li.Distributions = aeDist.ToArray();
+
 
                 lineItems.Add(li);
             }
@@ -179,7 +209,7 @@ namespace Purchasing.Core.Services
                 {
 
                     // calculate the distribution percent, over entire order
-                    var dist = (sp.Amount / order.GrandTotalFromDb) * 100m;
+                    var dist = Math.Round( (sp.Amount / order.GrandTotalFromDb) * 100m, 3);
 
                     distributions.Add(new KeyValuePair<KfsToAeCoa, decimal>(await LookupAccount(sp), dist));
                 }
@@ -190,7 +220,7 @@ namespace Purchasing.Core.Services
                 foreach (var sp in order.Splits)
                 {
                     // calculate the distribution percent, over the line totals
-                    var dist = (sp.Amount / sp.LineItem.TotalWithTax()) * 100m;
+                    var dist = Math.Round( (sp.Amount / sp.LineItem.TotalWithTax()) * 100m, 3);
                     distributions.Add(new KeyValuePair<KfsToAeCoa, decimal>(await LookupAccount(sp), dist));
                 }
             }
@@ -237,13 +267,13 @@ namespace Purchasing.Core.Services
             return null;
         }
         
-        private class Supplier
+        public class Supplier
         {
             public string SupplierNumber { get; set; }
             public string SupplierSiteCode { get; set; }
         }
 
-        private class KfsToAeCoa
+        public class KfsToAeCoa
         {
             public Split Split { get;set;}
             public string FinincialSegmentString { get;set;}
