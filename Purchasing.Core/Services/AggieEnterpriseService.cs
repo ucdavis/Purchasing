@@ -113,7 +113,7 @@ namespace Purchasing.Core.Services
                     ItemDescription = line.Description.SafeTruncate(240),
                     UnitPrice = line.UnitPrice,
                     UnitOfMeasure = unitsOfMeasure.FirstOrDefault(a => a.Id == line.Unit)?.Name,
-                    PurchasingCategoryName = "15000FAC", //Completely faked TODO: Fix this
+                    PurchasingCategoryName = "Paper products", //Completely faked TODO: Fix this
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
                     RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),
                 };
@@ -157,6 +157,11 @@ namespace Purchasing.Core.Services
             var jsonPayload = System.Text.Json.JsonSerializer.Serialize(inputOrder);
             var log = Log.ForContext("jsonPayload", jsonPayload);
             log.Information("Aggie Enterprise Payload");
+
+            var NewOrderRequsition = await _aggieClient.ScmPurchaseRequisitionCreate.ExecuteAsync(inputOrder);
+            var responseData = NewOrderRequsition.ReadData();
+
+            log.Information("Aggie Enterprise Response {response}", System.Text.Json.JsonSerializer.Serialize(responseData));
 
             return new SubmitResult { Success = false, Messages = new List<string>() { "AE Code not ready yet." } };
         }
