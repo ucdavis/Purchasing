@@ -1,0 +1,33 @@
+﻿@model ReviewOrderViewModel
+<section id="ae-section" class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header showInNav">Aggie Enterprise System Details</header>
+    <div class="section-contents">
+        <div class="col1">
+    
+            <ul>
+                <li><span>Request #:</span><strong id="ae-requestid"></strong></li>
+            </ul>
+
+        </div>
+        <div class="col2">
+            <section class="display-form ui-corner-all" id="ae-additional-info">
+
+                <header class="ui-corner-top ui-widget-header">Additional Information</header>
+
+                <div id="ae-data" class="section-contents" style="display:none;">
+
+                    <ul>
+                        @*<li><span>PO #:</span><strong id="kfs-ponum"></strong></li>*@
+                        <li><span>Status: </span><strong id="ae-request-status"></strong></li>
+                    </ul>
+                </div>
+                <div id="ae-loading" class="section-contents">
+                    <ul>
+                        <li id="ae-loading-status">Loading The Aggie Enterprise Financial Data For This Order</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>

@@ -499,6 +499,14 @@ namespace Purchasing.Core.Domain
 
             return validKfsOrder;
         }
+
+        public virtual bool IsValidAe()
+        {
+            var validKfsOrder = OrderType.Id.Trim() == OrderType.Types.AggieEnterprise
+                                && !string.IsNullOrWhiteSpace(ReferenceNumber);
+
+            return validKfsOrder;
+        }
     }
 
     public class OrderMap : ClassMap<Order>

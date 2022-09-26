@@ -19,6 +19,7 @@ namespace Purchasing.Core.Services
         Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true);
 
         Task<SubmitResult> UploadOrder(Order order, string purchaserEmail);
+        Task<IScmPurchaseRequisitionRequestStatus_ScmPurchaseRequisitionRequestStatus_RequestStatus> LookupOrderStatus(string requestId);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -191,6 +192,22 @@ namespace Purchasing.Core.Services
             rtValue = new SubmitResult { Success = true, DocNumber = responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestId.ToString() };
 
             return rtValue;
+        }
+
+        public async Task<IScmPurchaseRequisitionRequestStatus_ScmPurchaseRequisitionRequestStatus_RequestStatus> LookupOrderStatus(string requestId)
+        {
+            try
+            {
+                var result = await _aggieClient.ScmPurchaseRequisitionRequestStatus.ExecuteAsync(requestId);
+
+                var data = result.ReadData();
+
+                return data.ScmPurchaseRequisitionRequestStatus.RequestStatus;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
 

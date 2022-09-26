@@ -1,4 +1,5 @@
-﻿@model ReviewOrderViewModel
+﻿@using Purchasing.Core.Domain
+@model ReviewOrderViewModel
 
 @{
     ViewBag.Title = "Order Review";
@@ -104,6 +105,11 @@
 {
     @await Html.PartialAsync("_ReviewKfs")
 }
+@if (Model.Order.IsValidAe())
+{
+    @await Html.PartialAsync("_ReviewAe")
+}
+
 
 @if (!string.IsNullOrWhiteSpace(Model.Order.BusinessPurpose))
 {
@@ -150,6 +156,7 @@
             ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new {id = Model.Order.Id})",
             FileUploadUrl: "@Url.Action("UploadFile", "Order", new {orderId = Model.Order.Id})",
             KfsStatusUrl: '@Url.Action("GetKfsStatus", "Order", new {id = Model.Order.Id})',
+            AeStatusUrl: '@Url.Action("GetAeStatus", "Order", new {id = Model.Order.Id})',
             UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
             PeepsUrl: '@Url.Action("GetPeeps", "Order", new {id = Model.Order.Id})',
             AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
@@ -158,6 +165,7 @@
             CanCancelCompletedOrder: '@Model.CanCancelCompletedOrder' === 'True',
             CanComplete: '@Model.IsPurchaser' === 'True',
             IsKfsOrder: '@Model.Order.IsValidKfs()' === 'True',
+            IsAeOrder: '@Model.Order.IsValidAe()' === 'True',
             IsComplete: '@Model.Order.StatusCode.IsComplete' === 'True',
             UpdateAttachmentCategoryUrl: '@Url.Action("UpdateAttachmentCategory", new {id = Model.Order.Id})',
             AttachmentCategorySource: ["Order Confirmation ", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],
