@@ -577,7 +577,7 @@ namespace Purchasing.Mvc.Services
                 var result = await _aggieEnterpriseService.UploadOrder(order, user.Email); //TODO: Get an IAM email with a new field on the user?
                 if (result.Success)
                 {
-                    order.ReferenceNumber = result.DocNumber; //TODO: Replace
+                    order.ReferenceNumber = result.DocNumber; //TODO: Replace?
                 }
                 else
                 {

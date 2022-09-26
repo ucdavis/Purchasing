@@ -95,7 +95,7 @@ namespace Purchasing.Core.Services
                 SupplierSiteCode = supplier.SupplierSiteCode ,
                 RequesterEmailAddress = purchaserEmail,
                 Description = order.RequestNumber,
-                Justification = $"{order.Justification}{bp}".SafeTruncate(1000),
+                Justification = $"{order.Justification}{bp}".SafeTruncate(1000),                
             };
                 
             var unitCodes = order.LineItems.Select(a => a.Unit).Distinct().ToArray();
@@ -115,7 +115,7 @@ namespace Purchasing.Core.Services
                     UnitOfMeasure = unitsOfMeasure.FirstOrDefault(a => a.Id == line.Unit)?.Name,
                     PurchasingCategoryName = "Paper products", //Completely faked TODO: Fix this
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
-                    RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),
+                    RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),                   
                 };
 
                 var aeDist = new List<ScmPurchaseRequisitionDistributionInput>();
@@ -159,11 +159,38 @@ namespace Purchasing.Core.Services
             log.Information("Aggie Enterprise Payload");
 
             var NewOrderRequsition = await _aggieClient.ScmPurchaseRequisitionCreate.ExecuteAsync(inputOrder);
+            
             var responseData = NewOrderRequsition.ReadData();
 
             log.Information("Aggie Enterprise Response {response}", System.Text.Json.JsonSerializer.Serialize(responseData));
+            var rtValue = new SubmitResult { Success = false, Messages = new List<string>() };
 
-            return new SubmitResult { Success = false, Messages = new List<string>() { "AE Code not ready yet." } };
+            if (responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestStatus == RequestStatus.Rejected || responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestStatus == RequestStatus.Error)
+            {
+                
+                if (responseData.ScmPurchaseRequisitionCreate.RequestStatus.Equals(RequestStatus.Error))
+                {
+                    rtValue.Messages.Add("Aggie Enterprise Error");
+                    foreach(var message in responseData.ScmPurchaseRequisitionCreate.RequestStatus.ErrorMessages)
+                    {
+                        rtValue.Messages.Add($"Error: {message}");
+                    }
+                }
+                else
+                {
+                    rtValue.Messages.Add("Aggie Enterprise Rejected");
+                    foreach (var message in responseData.ScmPurchaseRequisitionCreate.ValidationResults.ErrorMessages)
+                    {
+                        rtValue.Messages.Add(message);
+                    }
+                }
+
+                return rtValue;
+            }
+
+            rtValue = new SubmitResult { Success = true, DocNumber = responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestId.ToString() };
+
+            return rtValue;
         }
 
 
@@ -184,6 +211,12 @@ namespace Purchasing.Core.Services
             if (distributionData.KfsConvertAccount.GlSegments != null)
             {
                 rtValue.FinincialSegmentString = new GlSegments(distributionData.KfsConvertAccount.GlSegments).ToSegmentString();
+            }
+            else
+            {
+                //TODO: REMOVE THIS!!!!
+                Log.Warning("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
+                rtValue.FinincialSegmentString = "3110-13U02-ADNO006-000000-43-000-0000000000-000000-0000-000000-000000";
             }
             return rtValue;
         }
