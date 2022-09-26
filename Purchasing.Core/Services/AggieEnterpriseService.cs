@@ -91,7 +91,7 @@ namespace Purchasing.Core.Services
 
             inputOrder.Payload = new ScmPurchaseRequisitionInput
             {
-                RequisitionSourceName = "UCD SLOTH",
+                RequisitionSourceName = "UCD Online Pre Purchasing",
                 SupplierNumber = supplier.SupplierNumber,
                 SupplierSiteCode = supplier.SupplierSiteCode ,
                 RequesterEmailAddress = purchaserEmail,
