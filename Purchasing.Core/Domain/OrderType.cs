@@ -37,6 +37,7 @@ namespace Purchasing.Core.Domain
             public const string UcdBuyOrder = "UCB";
             public const string KfsDocument = "KFS";
             public const string CampusPurchaseOrder = "PO";
+            public const string AggieEnterprise = "AE";
         }
     }
 

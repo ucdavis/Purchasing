@@ -19,6 +19,7 @@ using Purchasing.WS;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
+using Purchasing.Core.Services;
 
 namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 {
@@ -48,6 +49,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
         public IFileService FileService;
         public IMemoryCache MemoryCache;
+        public IAggieEnterpriseService Ae;
 
         #region Init
         /// <summary>
@@ -95,8 +97,10 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             Mock.Get(RepositoryFactory).SetupGet(r => r.SplitRepository).Returns(Mock.Of<IRepository<Split>>());
             Mock.Get(RepositoryFactory).SetupGet(r => r.AccountRepository).Returns(Mock.Of<IRepositoryWithTypedId<Account, string>>());
 
+
             FileService = Mock.Of<IFileService>();
             MemoryCache = Mock.Of<IMemoryCache>();
+            Ae = Mock.Of<IAggieEnterpriseService>();
 
             //QueryRepositoryFactory.OrderPeepRepository = OrderPeepRepository;
 
@@ -110,7 +114,8 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 EventService,
                 BugTrackingService,
                 FileService,
-                MemoryCache);
+                MemoryCache,
+                Ae);
         }
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {

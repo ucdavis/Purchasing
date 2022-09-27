@@ -33,8 +33,9 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
         public IRepositoryWithTypedId<User, string> UserRepository;
         public IRepository<Order> OrderRepository;
-        
-        
+        public IAggieEnterpriseService AggieEnterpriseService;
+
+
         public IOrderService OrderService { get; set; }
 
         public IRepository<WorkgroupAccount> WorkgroupAccountRepository { get; set; }
@@ -67,6 +68,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             OrderStatusCodeRepository = Mock.Of<IRepositoryWithTypedId<OrderStatusCode, string>>();
             AutoAprovalRepository = Mock.Of<IRepository<AutoApproval>>();
             ConditionalApprovalRepository = Mock.Of<IRepository<ConditionalApproval>>();
+            AggieEnterpriseService = Mock.Of<IAggieEnterpriseService>();
 
 
             Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupAccountRepository).Returns(WorkgroupAccountRepository);
@@ -91,10 +93,11 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
                 QueryRepositoryFactory,
                 AccessQueryService,
                 FinancialSystemService,
-                IndexService);
+                IndexService,
+                AggieEnterpriseService);
 
 
-            
+
         }
 
         public void SetupValidOrderStatusCodes()

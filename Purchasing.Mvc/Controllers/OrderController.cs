@@ -25,6 +25,9 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Purchasing.Mvc.Helpers;
+using Purchasing.Core.Services;
+using Purchasing.Core.Models.AggieEnterprise;
+using AggieEnterpriseApi;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -43,6 +46,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IBugTrackingService _bugTrackingService;
         private readonly IFileService _fileService;
         private readonly IMemoryCache _memoryCache;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
         public OrderController(
             IRepositoryFactory repositoryFactory, 
@@ -54,7 +58,8 @@ namespace Purchasing.Mvc.Controllers
             IEventService eventService,
             IBugTrackingService bugTrackingService, 
             IFileService fileService,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IAggieEnterpriseService aggieEnterpriseService)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
@@ -66,6 +71,7 @@ namespace Purchasing.Mvc.Controllers
             _bugTrackingService = bugTrackingService;
             _fileService = fileService;
             _memoryCache = memoryCache;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
         /// <summary>
@@ -785,7 +791,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult Approve(int id /*order*/, string action, string comment, string orderType, string kfsDocType)
+        public async Task<ActionResult> Approve(int id /*order*/, string action, string comment, string orderType, string kfsDocType)
         {
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
@@ -858,8 +864,33 @@ namespace Purchasing.Mvc.Controllers
                     //    return RedirectToAction("Review", new { id });
                     //}
                 }
+                if(newOrderType.Id.Trim() == OrderType.Types.AggieEnterprise)
+                {
+                    //Copied from the KFS, these will change, but there will be something similar
+                    if (order.LineItems.Any(a => a.Commodity == null))
+                    {
+                        ErrorMessage = "Must have commodity codes for all line items to complete a KFS order";
+                        return RedirectToAction("Review", new { id });
+                    }
 
-                var errors = _orderService.Complete(order, newOrderType, kfsDocType);
+                    if (order.LineItems.Any(a => a.Commodity != null && !a.Commodity.IsActive))
+                    {
+                        var inactiveCodes = string.Empty;
+                        foreach (var invalidLineItem in order.LineItems.Where(a => a.Commodity != null && !a.Commodity.IsActive))
+                        {
+                            inactiveCodes = string.Format("{0} Commodity Code: {1} ", inactiveCodes, invalidLineItem.Commodity.Id);
+                        }
+                        ErrorMessage = string.Format("Inactive (old) commodity codes detected. Please update to submit to KFS: {0}", inactiveCodes);
+                        return RedirectToAction("Review", new { id });
+                    }
+                    if(order.Vendor == null || order.Vendor.VendorId == null)
+                    {
+                        ErrorMessage = "Must have a vendor (supplier) with an Id";
+                        return RedirectToAction("Review", new { id });
+                    }
+                }
+
+                var errors = await _orderService.Complete(order, newOrderType, kfsDocType);
 
                 if (errors.Any()) //if we have any errors, raise them in ELMAH and redirect back to the review page without saving change
                 {
@@ -2144,6 +2175,35 @@ namespace Purchasing.Mvc.Controllers
                 return new JsonNetResult(null);
             }
             
+        }
+
+        public async Task<JsonNetResult> GetAeStatus(int id)
+        {
+            // load the order
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(order.ReferenceNumber))
+                {
+                    return new JsonNetResult(null);
+                }
+                var rtValue = new AeResultStatus();
+                rtValue.AeStatus = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
+                try
+                {
+                    rtValue.Status = Enum.GetName(typeof(RequestStatus), rtValue.AeStatus.RequestStatus);
+                }
+                catch
+                {
+                    rtValue.Status = "Unknown";
+                }
+                return new JsonNetResult(rtValue);
+
+            }
+            catch (Exception)
+            {
+                return new JsonNetResult(null);
+            }
         }
 
         /// <summary>
