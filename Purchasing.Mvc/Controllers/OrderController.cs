@@ -26,6 +26,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Core.Services;
+using Purchasing.Core.Models.AggieEnterprise;
+using AggieEnterpriseApi;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -2185,8 +2187,17 @@ namespace Purchasing.Mvc.Controllers
                 {
                     return new JsonNetResult(null);
                 }
-                var result = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
-                return new JsonNetResult(result);
+                var rtValue = new AeResultStatus();
+                rtValue.AeStatus = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
+                try
+                {
+                    rtValue.Status = Enum.GetName(typeof(RequestStatus), rtValue.AeStatus.RequestStatus);
+                }
+                catch
+                {
+                    rtValue.Status = "Unknown";
+                }
+                return new JsonNetResult(rtValue);
 
             }
             catch (Exception)
