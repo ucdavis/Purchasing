@@ -295,6 +295,13 @@
                 } else {
                     $("#ae-requestid").html(result.AeStatus.RequestId);
                     $("#ae-request-status").html(result.Status);
+
+                    $("#ae-request-tracking").html(result.AeStatus.ConsumerTrackingId);
+                    $("#ae-request-reference").html(result.AeStatus.ConsumerReferenceId);
+                    $("#ae-request-notes").html(result.AeStatus.ConsumerNotes);
+                    $("#ae-request-requested").html(result.AeStatus.RequestDateTime);
+                    $("#ae-request-updated").html(result.AeStatus.LastStatusDateTime);
+                    $("#ae-request-processed").html(result.AeStatus.ProcessedDateTime);
                    
                     $("#ae-loading").hide();
                     $("#ae-data").show();
