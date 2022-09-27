@@ -206,6 +206,7 @@ namespace Purchasing.Core.Services
             }
             catch
             {
+                Log.Warning("Aggie Enterprise LookupOrderStatus failed for {requestId}", requestId);
                 return null;
             }
         }
