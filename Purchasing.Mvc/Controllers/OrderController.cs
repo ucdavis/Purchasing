@@ -25,6 +25,9 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Purchasing.Mvc.Helpers;
+using Purchasing.Core.Services;
+using Purchasing.Core.Models.AggieEnterprise;
+using AggieEnterpriseApi;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -43,6 +46,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IBugTrackingService _bugTrackingService;
         private readonly IFileService _fileService;
         private readonly IMemoryCache _memoryCache;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
         public OrderController(
             IRepositoryFactory repositoryFactory, 
@@ -54,7 +58,8 @@ namespace Purchasing.Mvc.Controllers
             IEventService eventService,
             IBugTrackingService bugTrackingService, 
             IFileService fileService,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IAggieEnterpriseService aggieEnterpriseService)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
@@ -66,6 +71,7 @@ namespace Purchasing.Mvc.Controllers
             _bugTrackingService = bugTrackingService;
             _fileService = fileService;
             _memoryCache = memoryCache;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
         /// <summary>
@@ -2169,6 +2175,35 @@ namespace Purchasing.Mvc.Controllers
                 return new JsonNetResult(null);
             }
             
+        }
+
+        public async Task<JsonNetResult> GetAeStatus(int id)
+        {
+            // load the order
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(order.ReferenceNumber))
+                {
+                    return new JsonNetResult(null);
+                }
+                var rtValue = new AeResultStatus();
+                rtValue.AeStatus = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
+                try
+                {
+                    rtValue.Status = Enum.GetName(typeof(RequestStatus), rtValue.AeStatus.RequestStatus);
+                }
+                catch
+                {
+                    rtValue.Status = "Unknown";
+                }
+                return new JsonNetResult(rtValue);
+
+            }
+            catch (Exception)
+            {
+                return new JsonNetResult(null);
+            }
         }
 
         /// <summary>

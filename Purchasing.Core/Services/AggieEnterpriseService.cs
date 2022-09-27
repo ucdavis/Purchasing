@@ -19,6 +19,7 @@ namespace Purchasing.Core.Services
         Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true);
 
         Task<SubmitResult> UploadOrder(Order order, string purchaserEmail);
+        Task<IScmPurchaseRequisitionRequestStatus_ScmPurchaseRequisitionRequestStatus_RequestStatus> LookupOrderStatus(string requestId);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -90,7 +91,7 @@ namespace Purchasing.Core.Services
 
             inputOrder.Payload = new ScmPurchaseRequisitionInput
             {
-                RequisitionSourceName = "UCD SLOTH",
+                RequisitionSourceName = "UCD Online Pre Purchasing",
                 SupplierNumber = supplier.SupplierNumber,
                 SupplierSiteCode = supplier.SupplierSiteCode ,
                 RequesterEmailAddress = purchaserEmail,
@@ -191,6 +192,23 @@ namespace Purchasing.Core.Services
             rtValue = new SubmitResult { Success = true, DocNumber = responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestId.ToString() };
 
             return rtValue;
+        }
+
+        public async Task<IScmPurchaseRequisitionRequestStatus_ScmPurchaseRequisitionRequestStatus_RequestStatus> LookupOrderStatus(string requestId)
+        {
+            try
+            {
+                var result = await _aggieClient.ScmPurchaseRequisitionRequestStatus.ExecuteAsync(requestId);
+
+                var data = result.ReadData();
+
+                return data.ScmPurchaseRequisitionRequestStatus.RequestStatus;
+            }
+            catch
+            {
+                Log.Warning("Aggie Enterprise LookupOrderStatus failed for {requestId}", requestId);
+                return null;
+            }
         }
 
 
