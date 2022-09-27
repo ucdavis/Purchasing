@@ -869,7 +869,7 @@ namespace Purchasing.Mvc.Controllers
                     //Copied from the KFS, these will change, but there will be something similar
                     if (order.LineItems.Any(a => a.Commodity == null))
                     {
-                        ErrorMessage = "Must have commodity codes for all line items to complete a KFS order";
+                        ErrorMessage = "Must have commodity codes (Purchasing Category) for all line items to complete an Aggie Enterprise order";
                         return RedirectToAction("Review", new { id });
                     }
 
@@ -880,7 +880,7 @@ namespace Purchasing.Mvc.Controllers
                         {
                             inactiveCodes = string.Format("{0} Commodity Code: {1} ", inactiveCodes, invalidLineItem.Commodity.Id);
                         }
-                        ErrorMessage = string.Format("Inactive (old) commodity codes detected. Please update to submit to KFS: {0}", inactiveCodes);
+                        ErrorMessage = "Inactive (old) commodity codes (Purchasing Category) detected. Please update";
                         return RedirectToAction("Review", new { id });
                     }
                     if(order.Vendor == null || order.Vendor.VendorId == null)
