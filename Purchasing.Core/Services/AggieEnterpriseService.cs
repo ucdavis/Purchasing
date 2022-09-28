@@ -158,14 +158,14 @@ namespace Purchasing.Core.Services
             inputOrder.Payload.Lines = lineItems;
             
             var jsonPayload = System.Text.Json.JsonSerializer.Serialize(inputOrder);
-            var log = Log.ForContext("jsonPayload", jsonPayload);
-            log.Information("Aggie Enterprise Payload");
+            Log.ForContext("jsonPayload", jsonPayload).Information("Aggie Enterprise Payload");
 
             var NewOrderRequsition = await _aggieClient.ScmPurchaseRequisitionCreate.ExecuteAsync(inputOrder);
             
             var responseData = NewOrderRequsition.ReadData();
 
-            log.Information("Aggie Enterprise Response {response}", System.Text.Json.JsonSerializer.Serialize(responseData));
+            Log.ForContext("response", System.Text.Json.JsonSerializer.Serialize(responseData)).Information("Aggie Enterprise Response");
+            
             var rtValue = new SubmitResult { Success = false, Messages = new List<string>() };
 
             if (responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestStatus == RequestStatus.Rejected || responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestStatus == RequestStatus.Error)
