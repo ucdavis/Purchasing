@@ -24,11 +24,13 @@ namespace Purchasing.Core.Services
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
         private readonly IAggieEnterpriseClient _aggieClient;
+        private readonly AggieEnterpriseOptions _options;
         private readonly IRepositoryFactory _repositoryFactory;
 
         public AggieEnterpriseService(IOptions<AggieEnterpriseOptions> options, IRepositoryFactory repositoryFactory)
         {
             _aggieClient = GraphQlClient.Get(options.Value.GraphQlUrl, options.Value.Token);
+            _options = options.Value;
             _repositoryFactory = repositoryFactory;
         }
 
@@ -91,7 +93,7 @@ namespace Purchasing.Core.Services
 
             inputOrder.Payload = new ScmPurchaseRequisitionInput
             {
-                RequisitionSourceName = "UCD Online Pre Purchasing",
+                RequisitionSourceName = _options.RequisitionSourceName,
                 SupplierNumber = supplier.SupplierNumber,
                 SupplierSiteCode = supplier.SupplierSiteCode ,
                 RequesterEmailAddress = purchaserEmail,
