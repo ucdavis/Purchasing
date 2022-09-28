@@ -293,15 +293,15 @@
                     $("#ae-data").hide();
                     $("#ae-loading-status").html("No Aggie Enterprise Financial Information Was Found For This Order. Please Verify That The Reference # Is Valid");
                 } else {
-                    $("#ae-requestid").html(result.AeStatus.RequestId);
+                    $("#ae-requestid").html(result.RequestId);
                     $("#ae-request-status").html(result.Status);
 
-                    $("#ae-request-tracking").html(result.AeStatus.ConsumerTrackingId);
-                    $("#ae-request-reference").html(result.AeStatus.ConsumerReferenceId);
-                    $("#ae-request-notes").html(result.AeStatus.ConsumerNotes);
-                    $("#ae-request-requested").html(result.AeStatus.RequestDateTime);
-                    $("#ae-request-updated").html(result.AeStatus.LastStatusDateTime);
-                    $("#ae-request-processed").html(result.AeStatus.ProcessedDateTime);
+                    $("#ae-request-tracking").html(result.ConsumerTrackingId);
+                    $("#ae-request-reference").html(result.ConsumerReferenceId);
+                    $("#ae-request-notes").html(result.ConsumerNotes);
+                    $("#ae-request-requested").html(result.RequestDateTime);
+                    $("#ae-request-updated").html(result.LastStatusDateTime);
+                    $("#ae-request-processed").html(result.ProcessedDateTime);
                    
                     $("#ae-loading").hide();
                     $("#ae-data").show();

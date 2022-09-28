@@ -869,7 +869,7 @@ namespace Purchasing.Mvc.Controllers
                     //Copied from the KFS, these will change, but there will be something similar
                     if (order.LineItems.Any(a => a.Commodity == null))
                     {
-                        ErrorMessage = "Must have commodity codes for all line items to complete a KFS order";
+                        ErrorMessage = "Must have commodity codes (Purchasing Category) for all line items to complete an Aggie Enterprise order";
                         return RedirectToAction("Review", new { id });
                     }
 
@@ -880,7 +880,7 @@ namespace Purchasing.Mvc.Controllers
                         {
                             inactiveCodes = string.Format("{0} Commodity Code: {1} ", inactiveCodes, invalidLineItem.Commodity.Id);
                         }
-                        ErrorMessage = string.Format("Inactive (old) commodity codes detected. Please update to submit to KFS: {0}", inactiveCodes);
+                        ErrorMessage = "Inactive (old) commodity codes (Purchasing Category) detected. Please update";
                         return RedirectToAction("Review", new { id });
                     }
                     if(order.Vendor == null || order.Vendor.VendorId == null)
@@ -2187,16 +2187,21 @@ namespace Purchasing.Mvc.Controllers
                 {
                     return new JsonNetResult(null);
                 }
-                var rtValue = new AeResultStatus();
-                rtValue.AeStatus = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
-                try
+                
+                var lookup = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
+                var rtValue = new AeResultStatus
                 {
-                    rtValue.Status = Enum.GetName(typeof(RequestStatus), rtValue.AeStatus.RequestStatus);
-                }
-                catch
-                {
-                    rtValue.Status = "Unknown";
-                }
+                    RequestId           = lookup.RequestId,
+                    ConsumerTrackingId  = lookup.ConsumerTrackingId,
+                    ConsumerReferenceId = lookup.ConsumerReferenceId,
+                    ConsumerNotes       = lookup.ConsumerNotes,
+                    RequestDateTime     = lookup.RequestDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
+                    LastStatusDateTime  = lookup.LastStatusDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
+                    ProcessedDateTime   = lookup.ProcessedDateTime?.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
+                    Status              = Enum.GetName(typeof(RequestStatus), lookup.RequestStatus),
+                };
+     
+
                 return new JsonNetResult(rtValue);
 
             }
