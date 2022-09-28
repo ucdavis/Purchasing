@@ -2195,9 +2195,9 @@ namespace Purchasing.Mvc.Controllers
                     ConsumerTrackingId  = lookup.ConsumerTrackingId,
                     ConsumerReferenceId = lookup.ConsumerReferenceId,
                     ConsumerNotes       = lookup.ConsumerNotes,
-                    RequestDateTime     = lookup.RequestDateTime,
-                    LastStatusDateTime  = lookup.LastStatusDateTime,
-                    ProcessedDateTime   = lookup.ProcessedDateTime,
+                    RequestDateTime     = lookup.RequestDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm:ss tt"),
+                    LastStatusDateTime  = lookup.LastStatusDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm:ss tt"),
+                    ProcessedDateTime   = lookup.ProcessedDateTime?.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm:ss tt"),
                     Status              = Enum.GetName(typeof(RequestStatus), lookup.RequestStatus),
                 };
      
