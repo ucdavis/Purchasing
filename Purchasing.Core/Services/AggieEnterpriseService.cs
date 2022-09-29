@@ -116,7 +116,7 @@ namespace Purchasing.Core.Services
                     ItemDescription = line.Description.SafeTruncate(240),
                     UnitPrice = line.UnitPrice,
                     UnitOfMeasure = unitsOfMeasure.FirstOrDefault(a => a.Id == line.Unit)?.Name,
-                    PurchasingCategoryName = "Paper products", //Completely faked TODO: Fix this
+                    PurchasingCategoryName = await LookupCategoryCode(line.Commodity.Id), //Mostly faked TODO: Fix this
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
                     RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),                   
                 };
@@ -239,6 +239,19 @@ namespace Purchasing.Core.Services
                 rtValue.FinincialSegmentString = "3110-13U02-ADNO006-000000-43-000-0000000000-000000-0000-000000-000000";
             }
             return rtValue;
+        }
+
+        private async Task<string> LookupCategoryCode(string category)
+        {
+            try { 
+            var result = await _aggieClient.ScmPurchasingCategoryByCode.ExecuteAsync(category);
+            var data = result.ReadData();
+            return data.ScmPurchasingCategoryByCode?.Name; }
+            catch
+            {
+                Log.Warning("Aggie Enterprise LookupCategoryCode failed for {category} FAKING IT!!!!", category);
+                return "Paper products";
+            }
         }
 
         /// <summary>
