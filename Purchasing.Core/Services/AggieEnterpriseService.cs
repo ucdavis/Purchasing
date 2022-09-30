@@ -245,7 +245,15 @@ namespace Purchasing.Core.Services
                 Log.Error("Aggie Enterprise GetPurchasingCategories has a NextStartIndex.  This is not expected.  Please check the code.");
             }
 
-            return data.ScmPurchasingCategorySearch.Data.Select(a => new Commodity{ Id = a.Code, Name = a.Name, IsActive = a.Enabled }).ToArray();
+            return data.ScmPurchasingCategorySearch.Data.Select(a => new Commodity
+            {
+                Id = a.Code,
+                Name = a.Name,
+                IsActive =
+                a.Enabled &&
+                (a.StartDateActive == null || a.StartDateActive <= DateTime.UtcNow.ToPacificTime().Date) &&
+                (a.EndDateActive == null || a.EndDateActive >= DateTime.UtcNow.ToPacificTime().Date)
+            }).ToArray();
         }
 
         

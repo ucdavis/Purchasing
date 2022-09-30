@@ -42,7 +42,7 @@ namespace Purchasing.Core.Services
                 }
             }
 
-            var categories = await _aggieEnterpriseService.GetPurchasingCategories()); 
+            var categories = await _aggieEnterpriseService.GetPurchasingCategories(); 
 
             var activeCategories = categories.Where(x => x.IsActive).ToArray();
             if (activeCategories.Any())
@@ -56,14 +56,15 @@ namespace Purchasing.Core.Services
                         newCatgory.Id = category.Id;
                         newCatgory.Name = category.Name;
                         newCatgory.IsActive = category.IsActive;
+                        _repositoryFactory.CommodityRepository.EnsurePersistent(newCatgory);
                     }
-                    else
+                    else if(newCatgory.Name != category.Name || newCatgory.IsActive != category.IsActive)
                     {
                         newCatgory.Name = category.Name;
                         newCatgory.IsActive = category.IsActive;
-
+                        _repositoryFactory.CommodityRepository.EnsurePersistent(newCatgory);
                     }
-                    _repositoryFactory.CommodityRepository.EnsurePersistent(newCatgory);
+                    
                 }
             }
             var inactiveCategories = categories.Where(x => !x.IsActive).ToArray();
@@ -72,7 +73,7 @@ namespace Purchasing.Core.Services
                 foreach (var category in inactiveCategories)
                 {
                     var newCatgory = _repositoryFactory.CommodityRepository.Queryable.Where(x => x.Id == category.Id).SingleOrDefault();
-                    if (newCatgory != null)
+                    if (newCatgory != null && newCatgory.IsActive != category.IsActive)
                     {
                         newCatgory.Name = category.Name;
                         newCatgory.IsActive = category.IsActive;
