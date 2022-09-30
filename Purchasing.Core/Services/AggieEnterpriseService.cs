@@ -5,6 +5,7 @@ using AggieEnterpriseApi.Validation;
 using Microsoft.Extensions.Options;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
+using Purchasing.Core.Models.AggieEnterprise;
 using Purchasing.Core.Models.Configuration;
 using Serilog;
 using System;
@@ -19,7 +20,7 @@ namespace Purchasing.Core.Services
         Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true);
 
         Task<SubmitResult> UploadOrder(Order order, string purchaserEmail);
-        Task<IScmPurchaseRequisitionRequestStatus_ScmPurchaseRequisitionRequestStatus_RequestStatus> LookupOrderStatus(string requestId);
+        Task<AeResultStatus> LookupOrderStatus(string requestId);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -196,7 +197,7 @@ namespace Purchasing.Core.Services
             return rtValue;
         }
 
-        public async Task<IScmPurchaseRequisitionRequestStatus_ScmPurchaseRequisitionRequestStatus_RequestStatus> LookupOrderStatus(string requestId)
+        public async Task<AeResultStatus> LookupOrderStatus(string requestId)
         {
             try
             {
@@ -204,7 +205,19 @@ namespace Purchasing.Core.Services
 
                 var data = result.ReadData();
 
-                return data.ScmPurchaseRequisitionRequestStatus.RequestStatus;
+                var rtValue = new AeResultStatus
+                {
+                    RequestId = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.RequestId,
+                    ConsumerTrackingId = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.ConsumerTrackingId,
+                    ConsumerReferenceId = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.ConsumerReferenceId,
+                    ConsumerNotes = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.ConsumerNotes,
+                    RequestDateTime = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.RequestDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
+                    LastStatusDateTime = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.LastStatusDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
+                    ProcessedDateTime = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.ProcessedDateTime?.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
+                    Status = Enum.GetName(typeof(RequestStatus), data.ScmPurchaseRequisitionRequestStatus.RequestStatus.RequestStatus),
+                };
+
+                return rtValue;
             }
             catch
             {
