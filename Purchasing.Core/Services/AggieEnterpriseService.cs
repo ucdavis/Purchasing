@@ -21,6 +21,8 @@ namespace Purchasing.Core.Services
 
         Task<SubmitResult> UploadOrder(Order order, string purchaserEmail);
         Task<AeResultStatus> LookupOrderStatus(string requestId);
+
+        Task<Commodity[]> GetPurchasingCategories();
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -226,7 +228,27 @@ namespace Purchasing.Core.Services
             }
         }
 
+        public async Task<Commodity[]> GetPurchasingCategories()
+        {
+            var filter = new ScmPurchasingCategoryFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 5000; //Should only be a few hundred
+            filter.LastUpdateDateTime = new DateFilterInput { Gt = new DateTime(2000, 01, 01) }; //2022-07-14 should return a smaller number
 
+
+            var result = await _aggieClient.ScmPurchasingCategorySearch.ExecuteAsync(filter);
+
+            var data = result.ReadData();
+
+            if(data.ScmPurchasingCategorySearch.Metadata.NextStartIndex != null)
+            {
+                Log.Error("Aggie Enterprise GetPurchasingCategories has a NextStartIndex.  This is not expected.  Please check the code.");
+            }
+
+            return data.ScmPurchasingCategorySearch.Data.Select(a => new Commodity{ Id = a.Code, Name = a.Name, IsActive = a.Enabled }).ToArray();
+        }
+
+        
         /// <summary>
         /// Potentially we could cache this lookup, but it should really only be a SIT2 test thing....
         /// </summary>
@@ -350,7 +372,9 @@ namespace Purchasing.Core.Services
 
             return null;
         }
-        
+
+
+
         public class Supplier
         {
             public string SupplierNumber { get; set; }
