@@ -2188,19 +2188,7 @@ namespace Purchasing.Mvc.Controllers
                     return new JsonNetResult(null);
                 }
                 
-                var lookup = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
-                var rtValue = new AeResultStatus
-                {
-                    RequestId           = lookup.RequestId,
-                    ConsumerTrackingId  = lookup.ConsumerTrackingId,
-                    ConsumerReferenceId = lookup.ConsumerReferenceId,
-                    ConsumerNotes       = lookup.ConsumerNotes,
-                    RequestDateTime     = lookup.RequestDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
-                    LastStatusDateTime  = lookup.LastStatusDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
-                    ProcessedDateTime   = lookup.ProcessedDateTime?.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
-                    Status              = Enum.GetName(typeof(RequestStatus), lookup.RequestStatus),
-                };
-     
+                var rtValue = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim()); 
 
                 return new JsonNetResult(rtValue);
 
