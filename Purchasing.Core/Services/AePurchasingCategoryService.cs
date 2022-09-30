@@ -11,7 +11,7 @@ namespace Purchasing.Core.Services
 {
     public interface IAePurchasingCategoryService
     {
-        Task ResetCategories();
+        Task UpdateCategories(bool resetAll = false);
     }
 
     public class AePurchasingCategoryService : IAePurchasingCategoryService
@@ -27,21 +27,22 @@ namespace Purchasing.Core.Services
             _aggieEnterpriseService = aggieEnterpriseService;
         }
 
-        public async Task ResetCategories()
+        public async Task UpdateCategories(bool resetAll = false)
         {
-            //throw new NotImplementedException();
 
-            //Inactivate all categories
-            using (var connection = _dbService.GetConnection())
+            if (resetAll)
             {
-                using (var ts = connection.BeginTransaction())
+                //Inactivate all categories
+                using (var connection = _dbService.GetConnection())
                 {
-                    //Testing just one.
-                    connection.Execute("update vCommodities set IsActive = 0 where IsActive = 1", null, ts);
-                    ts.Commit();
+                    using (var ts = connection.BeginTransaction())
+                    {
+                        //Testing just one.
+                        connection.Execute("update vCommodities set IsActive = 0 where IsActive = 1", null, ts);
+                        ts.Commit();
+                    }
                 }
             }
-
             var categories = await _aggieEnterpriseService.GetPurchasingCategories(); 
 
             var activeCategories = categories.Where(x => x.IsActive).ToArray();
