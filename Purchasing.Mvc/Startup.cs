@@ -130,6 +130,7 @@ namespace Purchasing.Mvc
 
             services.Configure<AggieEnterpriseOptions>(Configuration.GetSection("AggieEnterprise"));
             services.AddSingleton<IAggieEnterpriseService, AggieEnterpriseService>();
+            services.AddSingleton<IAePurchasingCategoryService, AePurchasingCategoryService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
