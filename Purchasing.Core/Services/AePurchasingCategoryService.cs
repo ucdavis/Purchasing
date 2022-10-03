@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace Purchasing.Core.Services
                 }
             }
             var categories = await _aggieEnterpriseService.GetPurchasingCategories(); 
-
+            var count = 0;
             var activeCategories = categories.Where(x => x.IsActive).ToArray();
             if (activeCategories.Any())
             {
@@ -58,16 +59,21 @@ namespace Purchasing.Core.Services
                         newCatgory.Name = category.Name;
                         newCatgory.IsActive = category.IsActive;
                         _repositoryFactory.CommodityRepository.EnsurePersistent(newCatgory);
+                        count++;
                     }
                     else if(newCatgory.Name != category.Name || newCatgory.IsActive != category.IsActive)
                     {
                         newCatgory.Name = category.Name;
                         newCatgory.IsActive = category.IsActive;
                         _repositoryFactory.CommodityRepository.EnsurePersistent(newCatgory);
+                        count++;
                     }
                     
                 }
             }
+            Log.Information("Updated or new Categories: {count}", count);
+            
+            count = 0;
             var inactiveCategories = categories.Where(x => !x.IsActive).ToArray();
             if (inactiveCategories.Any())
             {
@@ -82,6 +88,7 @@ namespace Purchasing.Core.Services
                     }                    
                 }
             }
+            Log.Information("Deactivated Categories: {count}", count);
 
             return;
         }

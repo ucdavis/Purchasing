@@ -122,7 +122,7 @@
                     @*@Html.ActionLink("Administration", "Index", "Admin", new {}, new {@class="navigation-button"})*@
 
                     <a href=#>Admin</a>
-
+                    
                     <ul>
                         @if (roles.Contains(Role.Codes.Approver))
                         {
@@ -142,6 +142,7 @@
                             <li>@Html.ActionLink("Service Messages", "Index", "ServiceMessage", new {}, new {@class="navigation-button"})</li> 
                             <li>@Html.ActionLink("Update Child Workgroups", "UpdateChildWorkgroups", "Admin", new { }, new { @class = "navigation-button" })</li>
                             <li>@Html.ActionLink("Validate Child Workgroups", "ValidateChildWorkgroups", "Admin", new { }, new { @class = "navigation-button" })</li>
+                            <li>@Html.ActionLink("System", "Index", "System", new { }, new { @class = "navigation-button"})</li>
                         }                        
                         
                         
