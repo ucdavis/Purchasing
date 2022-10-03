@@ -232,7 +232,7 @@ namespace Purchasing.Core.Services
         {
             var filter = new ScmPurchasingCategoryFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
-            filter.SearchCommon.Limit = 5000; //Should only be a few hundred
+            filter.SearchCommon.Limit = 5000; //Should only be a few hundred eventually, AE may cap this at 500
             filter.LastUpdateDateTime = new DateFilterInput { Gt = new DateTime(2000, 01, 01) }; //2022-07-14 should return a smaller number
 
 
@@ -243,6 +243,8 @@ namespace Purchasing.Core.Services
             if(data.ScmPurchasingCategorySearch.Metadata.NextStartIndex != null)
             {
                 Log.Error("Aggie Enterprise GetPurchasingCategories has a NextStartIndex.  This is not expected.  Please check the code.");
+                throw new Exception("Aggie Enterprise GetPurchasingCategories has a NextStartIndex.  This is not expected.  Please check the code.");
+                //Ok, if this exception ever happens, we just need to do paging and join the results together.
             }
 
             return data.ScmPurchasingCategorySearch.Data.Select(a => new Commodity

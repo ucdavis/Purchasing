@@ -30,6 +30,7 @@ namespace Purchasing.Core.Services
 
         public async Task UpdateCategories(bool resetAll = false)
         {
+            var categories = await _aggieEnterpriseService.GetPurchasingCategories(); // get any categories before any reset. This way if this throws an exception at least we have the old categories
 
             if (resetAll)
             {
@@ -44,7 +45,7 @@ namespace Purchasing.Core.Services
                     }
                 }
             }
-            var categories = await _aggieEnterpriseService.GetPurchasingCategories(); 
+            
             var count = 0;
             var activeCategories = categories.Where(x => x.IsActive).ToArray();
             if (activeCategories.Any())
