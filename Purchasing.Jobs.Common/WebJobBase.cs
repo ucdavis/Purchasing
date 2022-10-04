@@ -11,7 +11,7 @@ namespace Purchasing.Jobs.Common
 {
     public abstract class WebJobBase
     {
-        IConfigurationRoot configuration;
+        public static IConfigurationRoot configuration;
         
         protected static IKernel ConfigureServices()
         {
