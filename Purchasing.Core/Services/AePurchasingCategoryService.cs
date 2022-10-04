@@ -38,7 +38,7 @@ namespace Purchasing.Core.Services
                         ts.Commit();
                     }
                 }
-            }
+            } 
 
             using (var connection = _dbService.GetConnection())
             {
