@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Purchasing.Jobs.AggieEnterprise": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "development"
+      }
+    }
+  }
+}
