@@ -10,35 +10,37 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1EFCD7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jobs", "Jobs", "{3201A95E-A908-42BC-9363-D8B5720F6881}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Core", "Purchasing.Core\Purchasing.Core.csproj", "{B1C96724-966E-4481-89A7-DF4B1C26069D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Core", "Purchasing.Core\Purchasing.Core.csproj", "{B1C96724-966E-4481-89A7-DF4B1C26069D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.WS", "Purchasing.WS\Purchasing.WS.csproj", "{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.WS", "Purchasing.WS\Purchasing.WS.csproj", "{8BEC9B9F-DF26-4072-9C84-EAB76E1484A6}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PurchasingTP.AzureDb", "PurchasingTP.AzureDb\PurchasingTP.AzureDb.sqlproj", "{869BEB7A-7E1C-40D2-B8F5-8FAD6F049A1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Mvc", "Purchasing.Mvc\Purchasing.Mvc.csproj", "{AD6F87B5-3E46-45C7-94E1-3625D8E44F33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Mvc", "Purchasing.Mvc\Purchasing.Mvc.csproj", "{AD6F87B5-3E46-45C7-94E1-3625D8E44F33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.UpdateOrderIndexes", "Purchasing.Jobs.UpdateOrderIndexes\Purchasing.Jobs.UpdateOrderIndexes.csproj", "{32D38E9E-2FC1-45CB-9067-87BB8D71057A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.UpdateOrderIndexes", "Purchasing.Jobs.UpdateOrderIndexes\Purchasing.Jobs.UpdateOrderIndexes.csproj", "{32D38E9E-2FC1-45CB-9067-87BB8D71057A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.Common", "Purchasing.Jobs.Common\Purchasing.Jobs.Common.csproj", "{CD0959A5-72D6-4F58-A730-24251C0F95FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.Common", "Purchasing.Jobs.Common\Purchasing.Jobs.Common.csproj", "{CD0959A5-72D6-4F58-A730-24251C0F95FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.UpdateLookupIndexes", "Purchasing.Jobs.UpdateLookupIndexes\Purchasing.Jobs.UpdateLookupIndexes.csproj", "{BBFDC157-DC74-4261-8783-20EBF8DBC250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.UpdateLookupIndexes", "Purchasing.Jobs.UpdateLookupIndexes\Purchasing.Jobs.UpdateLookupIndexes.csproj", "{BBFDC157-DC74-4261-8783-20EBF8DBC250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.CreateOrderIndexes", "Purchasing.Jobs.CreateOrderIndexes\Purchasing.Jobs.CreateOrderIndexes.csproj", "{59F67891-02FB-48D9-AF00-55DB86208272}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.CreateOrderIndexes", "Purchasing.Jobs.CreateOrderIndexes\Purchasing.Jobs.CreateOrderIndexes.csproj", "{59F67891-02FB-48D9-AF00-55DB86208272}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.NightlySync", "Purchasing.Jobs.NightlySync\Purchasing.Jobs.NightlySync.csproj", "{7072D6B1-F8E8-4354-AC61-05ED0B301D6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.NightlySync", "Purchasing.Jobs.NightlySync\Purchasing.Jobs.NightlySync.csproj", "{7072D6B1-F8E8-4354-AC61-05ED0B301D6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.EmailNotifications", "Purchasing.Jobs.EmailNotifications\Purchasing.Jobs.EmailNotifications.csproj", "{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.EmailNotifications", "Purchasing.Jobs.EmailNotifications\Purchasing.Jobs.EmailNotifications.csproj", "{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.DailyEmailNotifications", "Purchasing.Jobs.DailyEmailNotifications\Purchasing.Jobs.DailyEmailNotifications.csproj", "{EB5963E9-1384-4F11-B4BD-F5835B2C75D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.DailyEmailNotifications", "Purchasing.Jobs.DailyEmailNotifications\Purchasing.Jobs.DailyEmailNotifications.csproj", "{EB5963E9-1384-4F11-B4BD-F5835B2C75D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.NotificationsCommon", "Purchasing.Jobs.NotificationsCommon\Purchasing.Jobs.NotificationsCommon.csproj", "{029BA1FC-A03F-490D-AF92-FA69E6565ABA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.NotificationsCommon", "Purchasing.Jobs.NotificationsCommon\Purchasing.Jobs.NotificationsCommon.csproj", "{029BA1FC-A03F-490D-AF92-FA69E6565ABA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCDArch", "UCDArch\UCDArch.csproj", "{1CB10538-1934-4C0B-97CB-A440A31FA384}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UCDArch", "UCDArch\UCDArch.csproj", "{1CB10538-1934-4C0B-97CB-A440A31FA384}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Tests", "Purchasing.Tests\Purchasing.Tests.csproj", "{4741AA67-04E3-4E90-A701-BA9419526209}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Tests", "Purchasing.Tests\Purchasing.Tests.csproj", "{4741AA67-04E3-4E90-A701-BA9419526209}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCDARch.testing", "UCDArch.Testing\UCDARch.testing.csproj", "{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UCDARch.testing", "UCDArch.Testing\UCDARch.testing.csproj", "{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.AggieEnterprise", "Purchasing.Jobs.AggieEnterprise\Purchasing.Jobs.AggieEnterprise.csproj", "{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -197,6 +199,16 @@ Global
 		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.ReleaseCAES|Any CPU.Build.0 = Debug|Any CPU
 		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.ReleaseAzure|Any CPU.ActiveCfg = Release|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.ReleaseAzure|Any CPU.Build.0 = Release|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.ReleaseCAES|Any CPU.ActiveCfg = Release|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -210,5 +222,9 @@ Global
 		{64E9077C-0AAB-4D67-B5AC-4A392C9A7D7E} = {3201A95E-A908-42BC-9363-D8B5720F6881}
 		{EB5963E9-1384-4F11-B4BD-F5835B2C75D8} = {3201A95E-A908-42BC-9363-D8B5720F6881}
 		{029BA1FC-A03F-490D-AF92-FA69E6565ABA} = {3201A95E-A908-42BC-9363-D8B5720F6881}
+		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25} = {3201A95E-A908-42BC-9363-D8B5720F6881}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C077A53B-0A87-4893-8871-9BAC27025C11}
 	EndGlobalSection
 EndGlobal
