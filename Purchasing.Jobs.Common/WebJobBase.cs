@@ -11,6 +11,8 @@ namespace Purchasing.Jobs.Common
 {
     public abstract class WebJobBase
     {
+        IConfigurationRoot configuration;
+        
         protected static IKernel ConfigureServices()
         {
             var isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.OrdinalIgnoreCase);
@@ -24,7 +26,7 @@ namespace Purchasing.Jobs.Common
             {
                 builder.AddUserSecrets<WebJobBase>();
             }
-            var configuration = builder.Build();
+            configuration = builder.Build();
 
             LogHelper.ConfigureLogging(configuration);
 
