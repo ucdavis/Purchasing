@@ -1,11 +1,7 @@
 ﻿using Dapper;
 using Purchasing.Core.Domain;
-using Purchasing.Core.Helpers;
 using Serilog;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Purchasing.Core.Services
@@ -18,13 +14,11 @@ namespace Purchasing.Core.Services
     public class AePurchasingCategoryService : IAePurchasingCategoryService
     {
         private readonly IDbService _dbService ;
-        private readonly IRepositoryFactory _repositoryFactory;
         private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
-        public AePurchasingCategoryService(IDbService dbService, IRepositoryFactory repositoryFactory, IAggieEnterpriseService aggieEnterpriseService)
+        public AePurchasingCategoryService(IDbService dbService, IAggieEnterpriseService aggieEnterpriseService)
         {
             _dbService = dbService;
-            _repositoryFactory = repositoryFactory;
             _aggieEnterpriseService = aggieEnterpriseService;
         }
 
@@ -40,56 +34,62 @@ namespace Purchasing.Core.Services
                     using (var ts = connection.BeginTransaction())
                     {
                         //Testing just one.
-                        connection.Execute("update vCommodities set IsActive = 0 where IsActive = 1", null, ts);
+                        await connection.ExecuteAsync("update vCommodities set IsActive = 0 where IsActive = 1", null, ts);
                         ts.Commit();
                     }
                 }
             }
-            
-            var count = 0;
-            var activeCategories = categories.Where(x => x.IsActive).ToArray();
-            if (activeCategories.Any())
+
+            using (var connection = _dbService.GetConnection())
             {
-                foreach (var category in activeCategories)
+                using (var ts = connection.BeginTransaction())
                 {
-                    var newCatgory = _repositoryFactory.CommodityRepository.Queryable.Where(x => x.Id == category.Id).SingleOrDefault();
-                    if (newCatgory == null)
+                    var updated = 0;
+                    var added = 0;
+                    var activeCategories = categories.Where(x => x.IsActive).ToArray();
+                    if (activeCategories.Any())
                     {
-                        newCatgory = new Commodity();
-                        newCatgory.Id = category.Id;
-                        newCatgory.Name = category.Name;
-                        newCatgory.IsActive = category.IsActive;
-                        _repositoryFactory.CommodityRepository.EnsurePersistent(newCatgory);
-                        count++;
+                        foreach (var category in activeCategories)
+                        {
+                            var newCatgory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id", new { category.Id }, ts);
+
+                            if (newCatgory == null)
+                            {
+                                await connection.ExecuteAsync("insert into vCommodities (Id, Name, IsActive) values (@id, @name, @isactive)", new { category.Id, category.Name, category.IsActive }, ts);
+
+                                added++;
+                            }
+                            else if (newCatgory.Name != category.Name || newCatgory.IsActive != category.IsActive)
+                            {
+                                await connection.ExecuteAsync("update vCommodities set Name = @name, IsActive = @isactive where Id = @id", new { category.Id, category.Name, category.IsActive }, ts);
+                                updated++;
+                            }
+                        }
+                        await ts.CommitAsync();
                     }
-                    else if(newCatgory.Name != category.Name || newCatgory.IsActive != category.IsActive)
+                    Log.Information("Categories: Updated {updatedCount} Added: {addedCount}", updated, added);
+                }
+
+                using (var ts = connection.BeginTransaction())
+                {
+                    var count = 0;
+                    var inactiveCategories = categories.Where(x => !x.IsActive).ToArray();
+                    if (inactiveCategories.Any())
                     {
-                        newCatgory.Name = category.Name;
-                        newCatgory.IsActive = category.IsActive;
-                        _repositoryFactory.CommodityRepository.EnsurePersistent(newCatgory);
-                        count++;
+                        foreach (var category in inactiveCategories)
+                        {
+                            var newCatgory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id", new { category.Id }, ts);
+                            if (newCatgory != null && newCatgory.IsActive != category.IsActive)
+                            {
+                                await connection.ExecuteAsync("update vCommodities set Name = @name, IsActive = @isactive where Id = @id", new { category.Id, category.Name, category.IsActive }, ts);
+                                count++;
+                            }
+                        }
+                        await ts.CommitAsync();
                     }
-                    
+                    Log.Information("Deactivated Categories: {count}", count);
                 }
             }
-            Log.Information("Updated or new Categories: {count}", count);
-            
-            count = 0;
-            var inactiveCategories = categories.Where(x => !x.IsActive).ToArray();
-            if (inactiveCategories.Any())
-            {
-                foreach (var category in inactiveCategories)
-                {
-                    var newCatgory = _repositoryFactory.CommodityRepository.Queryable.Where(x => x.Id == category.Id).SingleOrDefault();
-                    if (newCatgory != null && newCatgory.IsActive != category.IsActive)
-                    {
-                        newCatgory.Name = category.Name;
-                        newCatgory.IsActive = category.IsActive;
-                        _repositoryFactory.CommodityRepository.EnsurePersistent(newCatgory);
-                    }                    
-                }
-            }
-            Log.Information("Deactivated Categories: {count}", count);
 
             return;
         }
