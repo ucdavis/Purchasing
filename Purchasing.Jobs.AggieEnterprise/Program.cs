@@ -8,7 +8,7 @@ using Serilog;
 
 class Program : WebJobBase
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         var kernel = ConfigureServices();
 
@@ -18,8 +18,12 @@ class Program : WebJobBase
         {
             Log.Information("Updating Aggie Enterprise Purchasing Categories (Commodities)");
             var aeCommodityCodeService = provider.GetService<IAePurchasingCategoryService>();
+            if(aeCommodityCodeService == null)
+            {
+                throw new Exception("Could not get the aeCommodityCodeService service");
+            }
 
-            aeCommodityCodeService?.UpdateCategories().GetAwaiter().GetResult();
+            await aeCommodityCodeService.UpdateCategories();
 
             Log.Information("Aggie Enterprise Purchasing Categories updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
         }
