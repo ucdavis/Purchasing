@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace Purchasing.Core.Services
 {
-    public interface IAePurchasingCategoryService
+    public interface IAeLookupsService
     {
         Task UpdateCategories(bool resetAll = false);
+        Task UpdateUnitOfMeasure();
     }
 
-    public class AePurchasingCategoryService : IAePurchasingCategoryService
+    public class AeLookupsService : IAeLookupsService
     {
         private readonly IDbService _dbService ;
         private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
-        public AePurchasingCategoryService(IDbService dbService, IAggieEnterpriseService aggieEnterpriseService)
+        public AeLookupsService(IDbService dbService, IAggieEnterpriseService aggieEnterpriseService)
         {
             _dbService = dbService;
             _aggieEnterpriseService = aggieEnterpriseService;
@@ -94,10 +95,43 @@ namespace Purchasing.Core.Services
             return;
         }
 
-        //Set all vCommodity records to inactive.
-        //Read all Purchasing categories
-        //see if it exists, if it does, activate it and update the name
-        //if it doesn't exist, create it and activate it
-        //query graphQl for ones that the end date has just past to deactivate them?
+        public async Task UpdateUnitOfMeasure()
+        {
+            //Get new unit of measure values
+            //Confirm there are more than 10
+
+            //Clear out the unit of measure table
+
+            var units = await _aggieEnterpriseService.GetUnitOfMeasures();
+            if (units == null || units.Count() < 10)
+            {
+                Log.Error("Unit of measure count is less than 10. Not updating");
+                throw new System.Exception("Unit of measure count is less than 10. Not updating");
+            }
+
+            using (var connection = _dbService.GetConnection())
+            {
+                using (var ts = connection.BeginTransaction())
+                {
+                    await connection.ExecuteAsync("delete from UnitOfMeasures", null, ts);
+                    await ts.CommitAsync();
+                    Log.Information("Unit of measure table cleared");
+                }
+                //Add all the new units
+                var count = 0;
+                using (var ts = connection.BeginTransaction())
+                {
+                    foreach (var unit in units)
+                    {
+                        await connection.ExecuteAsync("insert into UnitOfMeasures (Id, Name) values (@id, @name)", new { unit.Id, unit.Name }, ts);
+                        count++;
+                    }
+                    await ts.CommitAsync();
+                    Log.Information("Unit of measure table updated with {count} units", count);
+                }
+            }
+            return;
+        }
+
     }
 }

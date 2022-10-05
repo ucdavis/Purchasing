@@ -23,6 +23,7 @@ namespace Purchasing.Core.Services
         Task<AeResultStatus> LookupOrderStatus(string requestId);
 
         Task<Commodity[]> GetPurchasingCategories();
+        Task<UnitOfMeasure[]> GetUnitOfMeasures();
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -383,7 +384,31 @@ namespace Purchasing.Core.Services
             return null;
         }
 
+        public async Task<UnitOfMeasure[]> GetUnitOfMeasures()
+        {
+            var filter = new ErpUnitOfMeasureFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 300; //Should only be a few hundred eventually, AE may cap this at 500
+            filter.Name = new StringFilterInput { Contains = "%" }; 
 
+
+            var result = await _aggieClient.ErpUnitOfMeasureSearch.ExecuteAsync(filter);
+
+            var data = result.ReadData();
+
+            if (data.ErpUnitOfMeasureSearch.Metadata.NextStartIndex != null)
+            {
+                Log.Error("Aggie Enterprise GetUnitOfMeasures has a NextStartIndex.  This is not expected.  Please check the code.");
+                throw new Exception("Aggie Enterprise GetUnitOfMeasures has a NextStartIndex.  This is not expected.  Please check the code.");
+                //Ok, if this exception ever happens, we just need to do paging and join the results together.
+            }
+
+            return data.ErpUnitOfMeasureSearch.Data.Select(a => new UnitOfMeasure
+            {
+                Name = a.Name,
+                Id = a.UomCode,
+            }).ToArray();
+        }
 
         public class Supplier
         {
