@@ -48,6 +48,14 @@ namespace Purchasing.Mvc.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateUnitOfMeasures()
+        {
+            await _aeLookupService.UpdateUnitOfMeasure();
+            Message = "Unit of measures updated";
+            return RedirectToAction("Index");
+        }
+
         public ActionResult Indexes()
         {
             ViewBag.ModifiedDates = new Dictionary<string, DateTime>
