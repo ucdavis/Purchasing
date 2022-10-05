@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Purchasing.Core.Services
 {
-    public interface IAePurchasingCategoryService
+    public interface IAeLookupsService
     {
         Task UpdateCategories(bool resetAll = false);
     }
 
-    public class AePurchasingCategoryService : IAePurchasingCategoryService
+    public class AeLookupsService : IAeLookupsService
     {
         private readonly IDbService _dbService ;
         private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
-        public AePurchasingCategoryService(IDbService dbService, IAggieEnterpriseService aggieEnterpriseService)
+        public AeLookupsService(IDbService dbService, IAggieEnterpriseService aggieEnterpriseService)
         {
             _dbService = dbService;
             _aggieEnterpriseService = aggieEnterpriseService;

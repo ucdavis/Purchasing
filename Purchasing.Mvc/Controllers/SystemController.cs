@@ -22,16 +22,16 @@ namespace Purchasing.Mvc.Controllers
         private readonly IIndexService _indexService;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IRepositoryWithTypedId<EmailQueue, Guid> _emailQueueRepository;
-        private readonly IAePurchasingCategoryService _aePurchasingCategoryService;
+        private readonly IAeLookupsService _aeLookupService;
 
         //private readonly INotificationSender _notificationSender;
 
-        public SystemController(IIndexService indexService, IRepositoryFactory repositoryFactory, IRepositoryWithTypedId<EmailQueue, Guid> emailQueueRepository, IAePurchasingCategoryService aePurchasingCategoryService)//, INotificationSender notificationSender)
+        public SystemController(IIndexService indexService, IRepositoryFactory repositoryFactory, IRepositoryWithTypedId<EmailQueue, Guid> emailQueueRepository, IAeLookupsService aeLookupService)//, INotificationSender notificationSender)
         {
             _indexService = indexService;
             _repositoryFactory = repositoryFactory;
             _emailQueueRepository = emailQueueRepository;
-            _aePurchasingCategoryService = aePurchasingCategoryService;
+            _aeLookupService = aeLookupService;
             //_notificationSender = notificationSender;
         }
 
@@ -43,7 +43,7 @@ namespace Purchasing.Mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateCategories()
         {           
-            await _aePurchasingCategoryService.UpdateCategories(true);
+            await _aeLookupService.UpdateCategories(true);
             Message = "Categories Updated";
             return RedirectToAction("Index");
         }

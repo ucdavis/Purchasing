@@ -17,13 +17,13 @@ class Program : WebJobBase
         try
         {
             Log.Information("Updating Aggie Enterprise Purchasing Categories (Commodities)");
-            var aeCommodityCodeService = provider.GetService<IAePurchasingCategoryService>();
-            if(aeCommodityCodeService == null)
+            var aeLookupService = provider.GetService<IAeLookupsService>();
+            if(aeLookupService == null)
             {
                 throw new Exception("Could not get the aeCommodityCodeService service");
             }
 
-            await aeCommodityCodeService.UpdateCategories();
+            await aeLookupService.UpdateCategories();
 
             Log.Information("Aggie Enterprise Purchasing Categories updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
         }
@@ -42,7 +42,7 @@ class Program : WebJobBase
         services.AddSingleton<IDbService, DbService>();
         services.AddSingleton<IRepositoryFactory, RepositoryFactory>(); //Can't really use this here, but it's required for the service
         services.AddSingleton<IAggieEnterpriseService, AggieEnterpriseService>();
-        services.AddSingleton<IAePurchasingCategoryService, AePurchasingCategoryService>();
+        services.AddSingleton<IAeLookupsService, AeLookupsService>();
 
 
 
