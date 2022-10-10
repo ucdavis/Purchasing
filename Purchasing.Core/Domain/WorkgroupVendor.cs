@@ -104,6 +104,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.Fax);
             Map(x => x.Email);
             Map(x => x.Url);
+            Map(x => x.AeSupplierNumber);
+            Map(x => x.AeSupplierSiteCode);
 
             References(x => x.Workgroup);
         }

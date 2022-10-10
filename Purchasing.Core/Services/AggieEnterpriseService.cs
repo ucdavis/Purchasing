@@ -347,27 +347,64 @@ namespace Purchasing.Core.Services
 
         private async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
         {
-            if (vendor == null || vendor.VendorId == null || vendor.VendorAddressTypeCode == null)
+            if ((string.IsNullOrWhiteSpace(vendor.AeSupplierNumber) || string.IsNullOrWhiteSpace(vendor.AeSupplierSiteCode)) && (vendor == null || vendor.VendorId == null || vendor.VendorAddressTypeCode == null))
             {
+                //We have neither new or old values to lookup, can't continue. This should probably be caught earlier.
                 return null;
             }
             try
             {
-                var search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.VendorId.ToString() } };
-                var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
-                var searchData = searchResult.ReadData();
-
                 var rtValue = new Supplier();
-                rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.First().SupplierNumber.ToString();
-                rtValue.SupplierSiteCode = searchData.ScmSupplierSearch.Data.First().Sites.Where(a =>  
-                    a.Location.City.Equals(vendor.City, System.StringComparison.OrdinalIgnoreCase) &&
-                    a.Location.State.Equals(vendor.State, System.StringComparison.OrdinalIgnoreCase) &&
-                    (a.Location.AddressLine1.Equals(vendor.Name, System.StringComparison.OrdinalIgnoreCase) && a.Location.AddressLine2.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase)) || 
-                    (a.Location.AddressLine1.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase))
-                    ).First().SupplierSiteCode;                
+                ScmSupplierFilterInput search;
+                var updateWorkgroupVendor = false;
+                
+                if (!string.IsNullOrWhiteSpace(vendor.AeSupplierNumber) && !string.IsNullOrWhiteSpace(vendor.AeSupplierSiteCode))
+                {
+                    //We only need to do this if we need to validate that it is still eligible for use. We will need to check that
+                    //TODO: Validate still good to use.
+                    search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.AeSupplierNumber } };
+                    var searchResult1 = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
+                    var searchData1 = searchResult1.ReadData();
+                    rtValue.SupplierNumber = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.SupplierNumber.ToString();
+                    rtValue.SupplierSiteCode = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.Sites.Where(a => a.SupplierSiteCode.Equals(vendor.AeSupplierSiteCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.SupplierSiteCode;
+                }
+                else
+                {
+                    search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.VendorId.ToString() } };
+                    var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
+                    var searchData = searchResult.ReadData();
+
+                    rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.First().SupplierNumber.ToString();
+                    rtValue.SupplierSiteCode = searchData.ScmSupplierSearch.Data.First().Sites.Where(a =>
+                        a.Location.City.Equals(vendor.City, System.StringComparison.OrdinalIgnoreCase) &&
+                        a.Location.State.Equals(vendor.State, System.StringComparison.OrdinalIgnoreCase) &&
+                        (a.Location.AddressLine1.Equals(vendor.Name, System.StringComparison.OrdinalIgnoreCase) && a.Location.AddressLine2.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase)) ||
+                        (a.Location.AddressLine1.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase))
+                        ).First().SupplierSiteCode;
+
+                    updateWorkgroupVendor = true;
+                }
+
+             
                 
                 if (!string.IsNullOrWhiteSpace(rtValue.SupplierNumber) && !string.IsNullOrWhiteSpace(rtValue.SupplierSiteCode))
                 {
+                    if (updateWorkgroupVendor)
+                    {
+                        try
+                        {
+                            var vendorToUpdate = _repositoryFactory.WorkgroupVendorRepository.GetById(vendor.Id);
+
+                            vendorToUpdate.AeSupplierNumber = rtValue.SupplierNumber;
+                            vendorToUpdate.AeSupplierSiteCode = rtValue.SupplierSiteCode;
+                            _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(vendorToUpdate);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Error updating WorkgroupVendor {vendorId} with Aggie Enterprise Supplier Number {supplierNumber} and Site Code {siteCode}", vendor.VendorId, rtValue.SupplierNumber, rtValue.SupplierSiteCode);
+                        }
+                    }
+
                     return rtValue;
                 }
                 else
