@@ -24,6 +24,8 @@ namespace Purchasing.Core.Services
 
         Task<Commodity[]> GetPurchasingCategories();
         Task<UnitOfMeasure[]> GetUnitOfMeasures();
+
+        Task<List<IdAndName>> SearchSupplier(string query);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -445,6 +447,44 @@ namespace Purchasing.Core.Services
                 Name = a.Name,
                 Id = a.UomCode,
             }).ToArray();
+        }
+
+        public async Task<List<IdAndName>> SearchSupplier(string query)
+        {
+            var rtValue = new List<IdAndName>();
+            if (String.IsNullOrWhiteSpace(query) || query.Trim().Length < 3)
+            {
+                return rtValue;
+            }
+            var filter = new ScmSupplierFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 20;
+            filter.Name = new StringFilterInput { Contains = query.Trim().Replace(" ", "%") };
+
+            var result = await _aggieClient.SupplierNameAndNumberSupplierSearch.ExecuteAsync(filter, query.Trim());
+            var data = result.ReadData();
+
+            if (data.ScmSupplierByNumber != null)
+            {
+                rtValue.Add(new IdAndName(
+                
+                    data.ScmSupplierByNumber.SupplierNumber.ToString(),
+                    data.ScmSupplierByNumber.Name
+                ));
+
+            }
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0)
+            {
+                rtValue.AddRange(data.ScmSupplierSearch.Data.Select(a => new IdAndName(a.SupplierNumber.ToString(), a.Name)));
+
+            }
+
+            if(rtValue.Count > 0)
+            {
+                rtValue = rtValue.Distinct().ToList();
+            }
+
+            return rtValue;
         }
 
         public class Supplier
