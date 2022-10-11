@@ -2714,6 +2714,14 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
+            expectedFields.Add(new NameAndType("AeSupplierNumber", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)30)]"
+            }));
+            expectedFields.Add(new NameAndType("AeSupplierSiteCode", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
+            }));
             expectedFields.Add(new NameAndType("City", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]",
