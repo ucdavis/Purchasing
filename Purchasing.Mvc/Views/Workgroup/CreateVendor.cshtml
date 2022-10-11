@@ -43,7 +43,7 @@
                             $addressSelect.removeAttr("disabled");
 
                         } else {
-                            $addressSelect.prop("disabled", true);
+                            $addressSelect.attr("disabled", "disabled"); //Doesn't seem to work
                         }
                     });
                 }
