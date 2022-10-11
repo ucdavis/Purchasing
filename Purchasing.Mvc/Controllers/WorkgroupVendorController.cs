@@ -51,11 +51,13 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(results.Select(a => new {a.Id, Name = string.Format("{0} ({1})", a.Name, a.Id)}));
         }
 
-        public JsonNetResult SearchVendorAddress(string vendorId)
+        public async Task<JsonNetResult> SearchVendorAddress(string vendorId)
         {
-            var results = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).OrderByDescending(b=> b.IsDefault).ToList();
+            //var results = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).OrderByDescending(b=> b.IsDefault).ToList();
 
-            return new JsonNetResult(results.Select(a => new { Id = a.TypeCode, Name = a.DisplayNameWithDefault }));
+            var results = await _aggieEnterpriseService.SearchSupplierAddress(vendorId);
+
+            return new JsonNetResult(results.Select(a => new { Id = a.Id, Name = a.Name }));
         }
 
         [HttpPost]

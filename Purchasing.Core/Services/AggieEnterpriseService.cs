@@ -26,6 +26,7 @@ namespace Purchasing.Core.Services
         Task<UnitOfMeasure[]> GetUnitOfMeasures();
 
         Task<List<IdAndName>> SearchSupplier(string query);
+        Task<List<IdAndName>> SearchSupplierAddress(string query);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -482,6 +483,27 @@ namespace Purchasing.Core.Services
             if(rtValue.Count > 0)
             {
                 rtValue = rtValue.Distinct().ToList();
+            }
+
+            return rtValue;
+        }
+
+        public async Task<List<IdAndName>> SearchSupplierAddress(string query)
+        {
+            var filter = new ScmSupplierFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 5; //Shouldn't really matter, only expect one or two depending if the new eligible field for use gets implemented
+            filter.SupplierNumber = new StringFilterInput { Eq = query.Trim() };
+
+            var result = await _aggieClient.ScmSupplierSearch.ExecuteAsync(filter);
+            var data = result.ReadData();
+
+            var rtValue = new List<IdAndName>();
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0 && data.ScmSupplierSearch.Data.First().Sites != null)
+            {
+                var temp = data.ScmSupplierSearch.Data.First().Sites;
+
+                rtValue.AddRange(temp.Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode}")));
             }
 
             return rtValue;
