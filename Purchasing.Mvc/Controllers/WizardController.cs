@@ -544,6 +544,10 @@ namespace Purchasing.Mvc.Controllers
             }
             if(workgroupAccount != null && workgroupAccount.Account == null)
             {
+                if (account_search == null) //Hacky fix so the call below doesn't throw an exception. Ideally, this would bind as an empty string value not a null
+                {
+                    account_search = string.Empty;
+                }
                 workgroupAccount.Account = _repositoryFactory.AccountRepository.GetNullableById(account_search);
             }
 
