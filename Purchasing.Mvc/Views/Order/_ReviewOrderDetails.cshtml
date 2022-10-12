@@ -127,16 +127,26 @@
                         <div class="vcard">
     
                             <div class="fn">@Model.Vendor.Name
-                                @if (!string.IsNullOrEmpty(Model.Vendor.VendorId))
+                                @if (!string.IsNullOrEmpty(Model.Vendor.AeSupplierNumber))
+                                {
+                                    <div>(AE Supplier #: @Model.Vendor.AeSupplierNumber SiteCode: @Model.Vendor.AeSupplierSiteCode)</div>
+                                }else if (!string.IsNullOrEmpty(Model.Vendor.VendorId))
                                 {
                                     //TODO: Change /kfs-prd/ to /fin/
                                     //I can't test it now to see if it works, but hopefully moving that part to the config setting will be enough
                                     var kfsLookup = string.Format("{0}/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={1}", configuration["AfsLookupUrl"],Model.Vendor.VendorId);                                    
                                     <span>(KFS Id: <a href="@kfsLookup" target="_blank"> @Model.Vendor.VendorId</a>)</span>
                                 }
+                                else{
+                                    <span>(Generic Vendor)</span>
+                                }
+
+
                             </div>
                             <div class="adr">
                                 <span class="street-address">@Model.Vendor.Line1</span>
+                                <span class="street-address">@Model.Vendor.Line2</span>
+                                <span class="street-address">@Model.Vendor.Line3</span>
                                 <span class="locality">@Model.Vendor.City</span>
                                 <span class="region" title="State">@Model.Vendor.State</span>
                                 <span class="postal-code">@Model.Vendor.Zip</span>
