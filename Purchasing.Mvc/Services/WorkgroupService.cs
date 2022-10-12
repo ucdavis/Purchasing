@@ -150,7 +150,13 @@ namespace Purchasing.Mvc.Services
             if (!string.IsNullOrWhiteSpace(source.AeSupplierNumber) && !string.IsNullOrWhiteSpace(source.AeSupplierSiteCode))
             {
                 source =  _aggieEnterpriseService.GetSupplierForWorkgroup(source).GetAwaiter().GetResult(); //Async doesn't allow ref params above, so do it like this?
+                var saveId = destination.Id;
+                var saveWorkgroup = destination.Workgroup;
                 destination = source;
+                
+                //It shouldn't matter, but just in case
+                destination.Id = saveId; 
+                destination.Workgroup = saveWorkgroup;
             }
         }
 

@@ -884,6 +884,23 @@ namespace Purchasing.Mvc.Controllers
                         return this.RedirectToAction(nameof(VendorList), new { id = id });
                     }
                 }
+                if(!string.IsNullOrWhiteSpace(workgroupVendorToCreate.AeSupplierNumber) && !string.IsNullOrWhiteSpace(workgroupVendorToCreate.AeSupplierSiteCode))
+                {
+                    //Possibly do a check to see if it is still valid/active
+                    var inactiveAeVendor = _workgroupVendorRepository.Queryable
+                        .FirstOrDefault(a => a.Workgroup.Id == id &&
+                            a.AeSupplierNumber == workgroupVendorToCreate.AeSupplierNumber &&
+                            a.AeSupplierSiteCode == workgroupVendorToCreate.AeSupplierSiteCode &&
+                            !a.IsActive);
+                    if(inactiveAeVendor != null)
+                    {
+                        inactiveAeVendor.IsActive = true;
+                        _workgroupVendorRepository.EnsurePersistent(inactiveAeVendor);
+                        Message = "Aggie Enterprise vendor added back. It was previously deleted from this workgroup.";
+                        return this.RedirectToAction(nameof(VendorList), new { id = id });
+                    }
+
+                }
                 _workgroupVendorRepository.EnsurePersistent(workgroupVendorToCreate);
 
                 Message = "WorkgroupVendor Created Successfully";
