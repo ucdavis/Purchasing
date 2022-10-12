@@ -27,6 +27,7 @@ namespace Purchasing.Core.Services
 
         Task<List<IdAndName>> SearchSupplier(string query);
         Task<List<IdAndName>> SearchSupplierAddress(string query);
+        Task<WorkgroupVendor> GetSupplierForWorkgroup(WorkgroupVendor workgroupVendor);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -507,6 +508,36 @@ namespace Purchasing.Core.Services
             }
 
             return rtValue;
+        }
+
+        public async Task<WorkgroupVendor> GetSupplierForWorkgroup(WorkgroupVendor workgroupVendor)
+        {
+            //TODO add validation here to see if it is still active?
+            var filter = new ScmSupplierFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 5;
+            filter.SupplierNumber = new StringFilterInput { Eq = workgroupVendor.AeSupplierNumber };
+
+            var result = await _aggieClient.ScmSupplierSearch.ExecuteAsync(filter);
+            var data = result.ReadData();
+
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0)
+            {
+                var supplier = data.ScmSupplierSearch.Data.First();
+
+                var address = supplier.Sites.Where(a => a.SupplierSiteCode == workgroupVendor.AeSupplierSiteCode).FirstOrDefault().Location;
+
+                workgroupVendor.Name        = supplier.Name.SafeTruncate(45);
+                workgroupVendor.Line1       = address.AddressLine1.SafeTruncate(40);
+                workgroupVendor.Line2       = address.AddressLine2.SafeTruncate(40);
+                workgroupVendor.Line3       = address.AddressLine3.SafeTruncate(40);
+                workgroupVendor.City        = address.City.SafeTruncate(40);
+                workgroupVendor.State       = address.State.SafeTruncate(2);
+                workgroupVendor.Zip         = address.PostalCode.SafeTruncate(11);
+                workgroupVendor.CountryCode = address.CountryCode.SafeTruncate(2);
+            }
+
+            return workgroupVendor;
         }
 
         public class Supplier

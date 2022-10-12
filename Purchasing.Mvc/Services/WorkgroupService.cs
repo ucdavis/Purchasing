@@ -13,6 +13,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 using UCDArch.Core;
 using Microsoft.AspNetCore.Http;
+using Purchasing.Core.Services;
 
 namespace Purchasing.Mvc.Services
 {
@@ -52,7 +53,7 @@ namespace Purchasing.Mvc.Services
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IUserIdentity _userIdentity;
         private readonly IMapper _mapper;
-        
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
         public WorkgroupService(IRepositoryWithTypedId<Vendor, string> vendorRepository, 
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository, 
@@ -62,7 +63,8 @@ namespace Purchasing.Mvc.Services
             IRepository<Workgroup> workgroupRepository,
             IRepositoryWithTypedId<Organization, string> organizationRepository,
             IDirectorySearchService searchService, IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity,
-            IMapper mapper)
+            IMapper mapper,
+            IAggieEnterpriseService aggieEnterpriseService)
         {
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
@@ -76,6 +78,7 @@ namespace Purchasing.Mvc.Services
             _queryRepositoryFactory = queryRepositoryFactory;
             _userIdentity = userIdentity;
             _mapper = mapper;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
         public void UpdateDefaultAccountApprover(Workgroup workgroup, bool isDefault, string selectedApprover, string roleId)
@@ -143,6 +146,11 @@ namespace Purchasing.Mvc.Services
                     destination.Email = vendorAddress.Email;
                     destination.Url = vendorAddress.Url;
                 }
+            }
+            if (!string.IsNullOrWhiteSpace(source.AeSupplierNumber) && !string.IsNullOrWhiteSpace(source.AeSupplierSiteCode))
+            {
+                source =  _aggieEnterpriseService.GetSupplierForWorkgroup(source).GetAwaiter().GetResult(); //Async doesn't allow ref params above, so do it like this?
+                destination = source;
             }
         }
 
