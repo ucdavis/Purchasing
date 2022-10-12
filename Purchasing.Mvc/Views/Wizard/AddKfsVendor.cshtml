@@ -129,10 +129,11 @@
                
                 $.each(results, function (index, item) {
                 
-                    var option = $("<option>").val(item.TypeCode).html(item.Name);
+                    var option = $("<option>").val(item.Id).html(item.Name);
                     select.append(option);
 
                 });
+
                 
                 // activate control
                 select.removeAttr("disabled");

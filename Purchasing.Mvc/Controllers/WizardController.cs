@@ -659,13 +659,13 @@ namespace Purchasing.Mvc.Controllers
 
             ModelState.Clear();
             //workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
-            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorId))
+            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.AeSupplierNumber))
             {
-                ModelState.AddModelError("WorkgroupVendor.VendorId", "Please select a Kfs Vendor");
+                ModelState.AddModelError("WorkgroupVendor.AeSupplierNumber", "Please select a Campus Vendor");
             }
-            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorAddressTypeCode))
+            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.AeSupplierSiteCode))
             {
-                ModelState.AddModelError("WorkgroupVendor.VendorAddressTypeCode", "Please select a Vendor Address");
+                ModelState.AddModelError("WorkgroupVendor.AeSupplierSiteCode", "Please select a Vendor Address");
             }
             if (ModelState.IsValid)
             {
@@ -682,25 +682,49 @@ namespace Purchasing.Mvc.Controllers
 
             if(ModelState.IsValid)
             {
-                if(_workgroupVendorRepository.Queryable
+                //if(_workgroupVendorRepository.Queryable
+                //    .Any(a => a.Workgroup.Id == id &&
+                //        a.VendorId == workgroupVendorToCreate.VendorId &&
+                //        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                //        a.IsActive))
+                //{
+                //    Message = "KFS vendor has already been added";
+                //    return this.RedirectToAction(nameof(Vendors), new { id = id });
+                //}
+                //var inactiveKfsVendor = _workgroupVendorRepository.Queryable
+                //    .FirstOrDefault(a => a.Workgroup.Id == id &&
+                //        a.VendorId == workgroupVendorToCreate.VendorId &&
+                //        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                //        !a.IsActive);
+                //if(inactiveKfsVendor != null)
+                //{
+                //    inactiveKfsVendor.IsActive = true;
+                //    _workgroupVendorRepository.EnsurePersistent(inactiveKfsVendor);
+                //    Message = "KFS vendor added back. It was previously deleted from this workgroup.";
+                //    return this.RedirectToAction(nameof(Vendors), new { id = id });
+                //}
+
+                if (_workgroupVendorRepository.Queryable
                     .Any(a => a.Workgroup.Id == id &&
-                        a.VendorId == workgroupVendorToCreate.VendorId &&
-                        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                        a.AeSupplierNumber == workgroupVendorToCreate.AeSupplierNumber &&
+                        a.AeSupplierSiteCode == workgroupVendorToCreate.AeSupplierSiteCode &&
                         a.IsActive))
                 {
                     Message = "KFS vendor has already been added";
                     return this.RedirectToAction(nameof(Vendors), new { id = id });
                 }
-                var inactiveKfsVendor = _workgroupVendorRepository.Queryable
+
+                //Possibly do a check to see if it is still valid/active
+                var inactiveAeVendor = _workgroupVendorRepository.Queryable
                     .FirstOrDefault(a => a.Workgroup.Id == id &&
-                        a.VendorId == workgroupVendorToCreate.VendorId &&
-                        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                        a.AeSupplierNumber == workgroupVendorToCreate.AeSupplierNumber &&
+                        a.AeSupplierSiteCode == workgroupVendorToCreate.AeSupplierSiteCode &&
                         !a.IsActive);
-                if(inactiveKfsVendor != null)
+                if (inactiveAeVendor != null)
                 {
-                    inactiveKfsVendor.IsActive = true;
-                    _workgroupVendorRepository.EnsurePersistent(inactiveKfsVendor);
-                    Message = "KFS vendor added back. It was previously deleted from this workgroup.";
+                    inactiveAeVendor.IsActive = true;
+                    _workgroupVendorRepository.EnsurePersistent(inactiveAeVendor);
+                    Message = "Aggie Enterprise vendor added back. It was previously deleted from this workgroup.";
                     return this.RedirectToAction(nameof(Vendors), new { id = id });
                 }
 

@@ -886,6 +886,15 @@ namespace Purchasing.Mvc.Controllers
                 }
                 if(!string.IsNullOrWhiteSpace(workgroupVendorToCreate.AeSupplierNumber) && !string.IsNullOrWhiteSpace(workgroupVendorToCreate.AeSupplierSiteCode))
                 {
+                    if (_workgroupVendorRepository.Queryable
+                        .Any(a => a.Workgroup.Id == id &&
+                            a.AeSupplierNumber == workgroupVendorToCreate.AeSupplierNumber &&
+                            a.AeSupplierSiteCode == workgroupVendorToCreate.AeSupplierSiteCode &&
+                            a.IsActive))
+                    {
+                        Message = "Campus vendor has already been added";
+                        return this.RedirectToAction(nameof(VendorList), new { id = id });
+                    }
                     //Possibly do a check to see if it is still valid/active
                     var inactiveAeVendor = _workgroupVendorRepository.Queryable
                         .FirstOrDefault(a => a.Workgroup.Id == id &&
@@ -1872,7 +1881,7 @@ namespace Purchasing.Mvc.Controllers
             return View(model);
 
         }
-        
+
         #region Ajax Helpers
 
         /// <summary>
@@ -1880,6 +1889,7 @@ namespace Purchasing.Mvc.Controllers
         /// Ajax action for retrieving kfs vendor addresses
         /// </summary>
         /// <returns></returns>
+        [Obsolete("This is no longer used. Use the new worgroupVendorController instead.")]
         public JsonNetResult GetVendorAddresses(string vendorId)
         {
             var vendorAddresses = _vendorAddressRepository.Queryable.Where(a => a.Vendor.Id == vendorId).OrderByDescending(b => b.IsDefault).ToList();
