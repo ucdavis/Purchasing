@@ -948,6 +948,12 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(VendorList), new { id = workgroupVendor.Workgroup.Id });
             }
 
+            if (!string.IsNullOrWhiteSpace(workgroupVendor.AeSupplierNumber) && !string.IsNullOrWhiteSpace(workgroupVendor.AeSupplierSiteCode))
+            {
+                ErrorMessage = "Cannot edit Aggie Enterprise Vendors (Suppliers).  Please delete the vendor and add a new vendor.";
+                return this.RedirectToAction(nameof(VendorList), new { id = workgroupVendor.Workgroup.Id });
+            }
+
             var viewModel = WorkgroupVendorViewModel.Create(_vendorRepository, workgroupVendor);
             return View(viewModel);
         }
