@@ -60,12 +60,24 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Name = a.Name }));
         }
 
+        /// <summary>
+        /// Previously, the values passed to this were KFS. They have been updated to pass Aggie Enterprise values.
+        /// </summary>
+        /// <param name="workgroupId"></param>
+        /// <param name="vendorId">Supplier</param>
+        /// <param name="addressTypeCode">Supplier site code</param>
+        /// <returns></returns>
         [HttpPost]
-        public JsonNetResult AddKfsVendor(int workgroupId, string vendorId, string addressTypeCode)
+        public async Task<JsonNetResult> AddKfsVendor(int workgroupId, string vendorId, string addressTypeCode)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
-            var vendor = _vendorRepository.Queryable.Single(a => a.Id == vendorId);
-            var vendorAddress = _vendorAddressRepository.Queryable.First(a => a.Vendor == vendor && a.TypeCode == addressTypeCode);
+
+            var workgroupVendor = await _aggieEnterpriseService.GetSupplierForWorkgroup(new WorkgroupVendor { AeSupplierNumber = vendorId, AeSupplierSiteCode = addressTypeCode });
+            workgroupVendor.Workgroup = workgroup;
+            //var vendor = _vendorRepository.Queryable.Single(a => a.Id == vendorId);
+            //var vendorAddress = _vendorAddressRepository.Queryable.First(a => a.Vendor == vendor && a.TypeCode == addressTypeCode);
+
+
             var added = true;
             var duplicate = false;
             var wasInactive = false;
@@ -74,21 +86,21 @@ namespace Purchasing.Mvc.Controllers
             // just make sure user has access to the workgroup
             Check.Require(_securityService.HasWorkgroupAccess(workgroup), Resources.NoAccess_Workgroup);
 
-            var workgroupVendor = new WorkgroupVendor
-                                      {
-                                          Workgroup = workgroup,
-                                          VendorId = vendor.Id,
-                                          VendorAddressTypeCode = vendorAddress.TypeCode
-                                          //,
-                                          //Name = vendor.Name,
-                                          //Line1 = vendorAddress.Line1,
-                                          //Line2 = vendorAddress.Line2,
-                                          //Line3 = vendorAddress.Line3,
-                                          //City = vendorAddress.City,
-                                          //State = vendorAddress.State,
-                                          //Zip = vendorAddress.Zip,
-                                          //CountryCode = vendorAddress.CountryCode
-                                      };
+            //var workgroupVendor = new WorkgroupVendor
+            //                          {
+            //                              Workgroup = workgroup,
+            //                              VendorId = vendor.Id,
+            //                              VendorAddressTypeCode = vendorAddress.TypeCode
+            //                              //,
+            //                              //Name = vendor.Name,
+            //                              //Line1 = vendorAddress.Line1,
+            //                              //Line2 = vendorAddress.Line2,
+            //                              //Line3 = vendorAddress.Line3,
+            //                              //City = vendorAddress.City,
+            //                              //State = vendorAddress.State,
+            //                              //Zip = vendorAddress.Zip,
+            //                              //CountryCode = vendorAddress.CountryCode
+            //                          };
             var workgroupVendorToCreate = new WorkgroupVendor();
             _workgroupService.TransferValues(workgroupVendor, ref workgroupVendorToCreate); //Central location for values that get transferred (Fax, state, etc.)
             workgroupVendorToCreate.Workgroup = workgroup;
@@ -96,8 +108,8 @@ namespace Purchasing.Mvc.Controllers
 
             if(!_repositoryFactory.WorkgroupVendorRepository.Queryable
                 .Any(a => a.Workgroup.Id == workgroupId &&
-                    a.VendorId == workgroupVendorToCreate.VendorId &&
-                    a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode))
+                    a.AeSupplierNumber == workgroupVendorToCreate.AeSupplierNumber &&
+                    a.AeSupplierSiteCode == workgroupVendorToCreate.AeSupplierSiteCode))
             {
                 //doesn't find any
                 workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
