@@ -504,7 +504,9 @@ namespace Purchasing.Core.Services
             {
                 var temp = data.ScmSupplierSearch.Data.First().Sites;
 
-                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("PUR")).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode}")));
+                //We need both PUR and PAY addresses. But only PUR can be used with AE
+                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => !a.SupplierSiteCode.StartsWith("PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
             }
 
             return rtValue;
