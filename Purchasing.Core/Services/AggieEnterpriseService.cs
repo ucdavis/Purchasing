@@ -97,7 +97,7 @@ namespace Purchasing.Core.Services
             if (supplier == null)
             {
                 //TODO: Create an error message that the supplier was missing or not found.
-                return new SubmitResult { Success = false, Messages = new List<string>() { "Supplier missing or not found" } };
+                return new SubmitResult { Success = false, Messages = new List<string>() { "Vendor/Supplier missing or not found" } };
             }
             string bp = string.Empty;
             if (!string.IsNullOrWhiteSpace(order.BusinessPurpose)){
@@ -397,7 +397,7 @@ namespace Purchasing.Core.Services
                         }
                         catch (Exception ex)
                         {
-                            Log.Error(ex, "Error updating WorkgroupVendor {vendorId} with Aggie Enterprise Supplier Number {supplierNumber} and Site Code {siteCode}", vendor.VendorId, rtValue.SupplierNumber, rtValue.SupplierSiteCode);
+                            Log.Error(ex, "Error updating WorkgroupVendor {vendorId} with Aggie Enterprise Vendor/Supplier Number {supplierNumber} and Site Code {siteCode}", vendor.VendorId, rtValue.SupplierNumber, rtValue.SupplierSiteCode);
                         }
                     }
 
