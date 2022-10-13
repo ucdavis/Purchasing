@@ -27,12 +27,21 @@
 			<th>
 				CountryCode
 			</th>
-            <th>Kfs Vendor</th>
+            <th>Type</th>
 		</tr>
 	</thead>
 	<tbody>
 @{ var odd = false; }
 @foreach (var item in Model) {
+			var itemType = "Generic";
+			if (!string.IsNullOrWhiteSpace(item.AeSupplierNumber))
+			{
+				itemType = "Aggie Enterprise";
+			}
+			else if (!string.IsNullOrWhiteSpace(item.VendorId))
+			{
+				itemType = "KFS";
+			}
 		<tr class="@(odd ? "odd": "even")">
 			
 			<td>
@@ -60,7 +69,7 @@
 				@item.CountryCode
 			</td>
             <td>
-                @(string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) ? "No" : "Yes")
+                @itemType
             </td>
 			
 		</tr>
