@@ -22,7 +22,8 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Vendor Address")]
         [StringLength(4)]
         public virtual string VendorAddressTypeCode { get; set; }
-        
+
+        [Display(Name = "Campus Vendor")]
         [StringLength(30)] //Docs say 30, so we either need to increase vendorId size, or just use it here... 
         public virtual string AeSupplierNumber { get;set;}
 

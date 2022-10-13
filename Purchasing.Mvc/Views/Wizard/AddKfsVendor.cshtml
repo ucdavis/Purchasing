@@ -14,7 +14,7 @@
     @await Html.PartialAsync("_StatusBar", Model.WorkgroupVendor.Workgroup.Id)
     
     @{
-        var helpText = "To add a existing KFS Vendor to this workgroup, type part of the vendor name in the Kfs vendor field. After at least 3 characters are entered a list of matches will appear. Select one of these.</br></br>" +
+        var helpText = "To add a existing Campus Vendor to this workgroup, type part of the vendor name or vendor Id in the Campus vendor field. After at least 3 characters are entered a list of matches will appear. Select one of these.</br></br>" +
             "After the vendor is selected, choose the appropriate Vendor Address.</br></br>" +
             "The Next button will save the vendor and return you to the list of vendors added so far.";
     }
@@ -37,8 +37,7 @@
 
 		    <ul>
 				<li>
-				    <div class="editor-label required">Campus Vendor</div>
-				    <div class="editor-field required">
+                    <div class="editor-label required">@Html.LabelFor(a => a.WorkgroupVendor.AeSupplierNumber)
                         @*@Html.Select("WorkgroupVendor.VendorId", o => o.Options(Model.Vendors, x => x.Id, x => x.Name).FirstOption("--Select Vendor--").Selected(Model.WorkgroupVendor.VendorId))*@
 
                         <input type="text" id="VendorSearch" class="wide500" />
