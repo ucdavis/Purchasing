@@ -894,7 +894,7 @@ namespace Purchasing.Mvc.Controllers
                         var supplierInfo = await _aggieEnterpriseService.GetSupplier(order.Vendor); //This may update the Vendor to AE...
                         if (supplierInfo == null || string.IsNullOrWhiteSpace(supplierInfo.SupplierNumber) || string.IsNullOrWhiteSpace(supplierInfo.SupplierSiteCode))
                         {
-                            ErrorMessage = "unable to automatically convert KFS vendor to Campus Vendor. Please edit the order to add a new Campus Vendor";
+                            ErrorMessage = "Unable to automatically convert KFS vendor to Campus Vendor. Please edit the order to add (Search) a new Campus Vendor to the order.";
                             return RedirectToAction("Review", new { id });
                         }
                         else
