@@ -1024,13 +1024,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             var controllerClass = ControllerClass;
             var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "GetVendorAddresses");
             #endregion Arrange
-
+            
             #region Act
             var allAttributes = controllerMethod.ElementAt(0).GetFilteredCustomAttributes(true);
+            var expectedAttribute = controllerMethod.ElementAt(0).GetFilteredCustomAttributes(true).OfType<System.ObsoleteAttribute> ();
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(1, allAttributes.Count());
+            Assert.AreEqual(1, expectedAttribute.Count(), "ObsoleteAttribute not found");
             #endregion Assert
         }
 
