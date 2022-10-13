@@ -16,38 +16,8 @@
 {
     <script type="text/javascript">
 
-        var addressUrl = '@Url.Action("GetVendorAddresses")';
 
         $(function () {
-
-            // what to do when a kfs vendor is selected
-            $("#VendorSearch").change(function () {
-
-
-                var $addressSelect = $("#WorkgroupVendor_AeSupplierSiteCode");
-                $addressSelect.find("option:gt(0)").remove();
-
-                if ($(this).val() != "") {
-
-                    $.getJSON(addressUrl, { vendorId: $("#WorkgroupVendor_AeSupplierNumber").val() }, function (result) {
-
-                        // perform work if any results come back
-                        if (result.length > 0) {
-
-                            $.each(result, function (index, item) {
-
-                                var option = $("<option>").val(item.TypeCode).html(item.Name);
-                                $addressSelect.append(option);
-
-                            });
-                            $addressSelect.removeAttr("disabled");
-
-                        } else {
-                            $addressSelect.attr("disabled", "disabled"); //Doesn't seem to work
-                        }
-                    });
-                }
-            });
 
             // selecting a type of vendor
             $(".vendorType").click(function () {
