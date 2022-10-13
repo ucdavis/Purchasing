@@ -28,6 +28,26 @@ namespace Purchasing.Core.Helpers
             return TimeZoneInfo.ConvertTimeToUtc(dateTime, Pacific);
         }
 
+        public static bool IsActiveDate(this DateTime dateTime, DateTime? startDate, DateTime? endDate)
+        {
+            if (startDate == null && endDate == null)
+            {
+                return true;
+            }
+
+            var compareDate = dateTime.Date;
+            if (startDate == null)
+            {
+                return compareDate <= endDate;
+            }
+            if (endDate == null)
+            {
+                return compareDate >= startDate;
+            }
+            return compareDate >= startDate && compareDate <= endDate;
+        }
+
+
         /// <summary>
         /// Compares the date against 1 (after) or 2 (between) dates.
         /// </summary>

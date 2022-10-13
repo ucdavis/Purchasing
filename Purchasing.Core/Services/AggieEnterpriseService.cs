@@ -33,6 +33,9 @@ namespace Purchasing.Core.Services
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
+        //If there is any validation that uses nullable start and end dates, use this helper method: DateTime.UtcNow.ToPacificTime().IsActiveDate(a.StartDateActive, a.EndDateActive)
+
+
         private readonly IAggieEnterpriseClient _aggieClient;
         private readonly AggieEnterpriseOptions _options;
         private readonly IRepositoryFactory _repositoryFactory;
@@ -259,9 +262,7 @@ namespace Purchasing.Core.Services
                 Id = a.Code,
                 Name = a.Name,
                 IsActive =
-                a.Enabled &&
-                (a.StartDateActive == null || a.StartDateActive <= DateTime.UtcNow.ToPacificTime().Date) &&
-                (a.EndDateActive == null || a.EndDateActive >= DateTime.UtcNow.ToPacificTime().Date)
+                a.Enabled && DateTime.UtcNow.ToPacificTime().IsActiveDate(a.StartDateActive, a.EndDateActive)
             }).ToArray();
         }
 
@@ -293,18 +294,6 @@ namespace Purchasing.Core.Services
             return rtValue;
         }
 
-        //private async Task<string> LookupCategoryCode(string category)
-        //{
-        //    try { 
-        //    var result = await _aggieClient.ScmPurchasingCategoryByCode.ExecuteAsync(category);
-        //    var data = result.ReadData();
-        //    return data.ScmPurchasingCategoryByCode?.Name; }
-        //    catch
-        //    {
-        //        Log.Warning("Aggie Enterprise LookupCategoryCode failed for {category} FAKING IT!!!!", category);
-        //        return "Paper products";
-        //    }
-        //}
 
         /// <summary>
         /// Calculates the distribution %s for each account
