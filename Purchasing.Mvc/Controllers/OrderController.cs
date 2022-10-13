@@ -872,7 +872,6 @@ namespace Purchasing.Mvc.Controllers
                         ErrorMessage = "Must have commodity codes (Purchasing Category) for all line items to complete an Aggie Enterprise order";
                         return RedirectToAction("Review", new { id });
                     }
-
                     if (order.LineItems.Any(a => a.Commodity != null && !a.Commodity.IsActive))
                     {
                         var inactiveCodes = string.Empty;
@@ -883,11 +882,40 @@ namespace Purchasing.Mvc.Controllers
                         ErrorMessage = "Inactive (old) commodity codes (Purchasing Category) detected. Please update";
                         return RedirectToAction("Review", new { id });
                     }
-                    if(order.Vendor == null || order.Vendor.VendorId == null)
+
+                    if (string.IsNullOrWhiteSpace(order.Vendor.AeSupplierNumber) || string.IsNullOrWhiteSpace(order.Vendor.AeSupplierSiteCode))
                     {
-                        ErrorMessage = "Must have a vendor (supplier) with an Id";
-                        return RedirectToAction("Review", new { id });
+                        //Do more checks...
+                        if (order.Vendor == null || order.Vendor.VendorId == null)
+                        {
+                            ErrorMessage = "Must have a Campus vendor (supplier) to complete an Aggie Enterprise order";
+                            return RedirectToAction("Review", new { id });
+                        }
+                        var supplierInfo = await _aggieEnterpriseService.GetSupplier(order.Vendor); //This may update the Vendor to AE...
+                        if (supplierInfo == null || string.IsNullOrWhiteSpace(supplierInfo.SupplierNumber) || string.IsNullOrWhiteSpace(supplierInfo.SupplierSiteCode))
+                        {
+                            ErrorMessage = "unable to automatically convert KFS vendor to Campus Vendor. Please edit the order to add a new Campus Vendor";
+                            return RedirectToAction("Review", new { id });
+                        }
+                        else
+                        {
+                            if(!supplierInfo.SupplierSiteCode.StartsWith("PUR", StringComparison.OrdinalIgnoreCase))
+                            {
+                                ErrorMessage = "Vendor (supplier) address site code must start PUR to complete an Aggie Enterprise order";
+                                return RedirectToAction("Review", new { id });
+                            }
+                        }
+
                     }
+                    else
+                    {
+                        if (!order.Vendor.AeSupplierSiteCode.StartsWith("PUR", StringComparison.OrdinalIgnoreCase))
+                        {
+                            ErrorMessage = "Vendor (supplier) address site code must start PUR to complete an Aggie Enterprise order";
+                            return RedirectToAction("Review", new { id });
+                        }
+                    }
+
                 }
 
                 var errors = await _orderService.Complete(order, newOrderType, kfsDocType);

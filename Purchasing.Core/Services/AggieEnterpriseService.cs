@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Purchasing.Core.Services.AggieEnterpriseService;
 
 namespace Purchasing.Core.Services
 {
@@ -27,6 +28,7 @@ namespace Purchasing.Core.Services
 
         Task<List<IdAndName>> SearchSupplier(string query);
         Task<List<IdAndName>> SearchSupplierAddress(string query);
+        Task<Supplier> GetSupplier(WorkgroupVendor vendor);
         Task<WorkgroupVendor> GetSupplierForWorkgroup(WorkgroupVendor workgroupVendor);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
@@ -349,7 +351,7 @@ namespace Purchasing.Core.Services
             return distributions;
         }
 
-        private async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
+        public async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
         {
             if ((string.IsNullOrWhiteSpace(vendor.AeSupplierNumber) || string.IsNullOrWhiteSpace(vendor.AeSupplierSiteCode)) && (vendor == null || vendor.VendorId == null || vendor.VendorAddressTypeCode == null))
             {
@@ -379,6 +381,7 @@ namespace Purchasing.Core.Services
                     var searchData = searchResult.ReadData();
 
                     rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.First().SupplierNumber.ToString();
+
                     rtValue.SupplierSiteCode = searchData.ScmSupplierSearch.Data.First().Sites.Where(a =>
                         a.Location.City.Equals(vendor.City, System.StringComparison.OrdinalIgnoreCase) &&
                         a.Location.State.Equals(vendor.State, System.StringComparison.OrdinalIgnoreCase) &&
