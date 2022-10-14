@@ -37,7 +37,8 @@
 
 		    <ul>
 				<li>
-                    <div class="editor-label required">@Html.LabelFor(a => a.WorkgroupVendor.AeSupplierNumber)
+                    <div class="editor-label required">@Html.LabelFor(a => a.WorkgroupVendor.AeSupplierNumber)</div>
+                    <div class="editor-field required wide500">
                         @*@Html.Select("WorkgroupVendor.VendorId", o => o.Options(Model.Vendors, x => x.Id, x => x.Name).FirstOption("--Select Vendor--").Selected(Model.WorkgroupVendor.VendorId))*@
 
                         <input type="text" id="VendorSearch" class="wide500" />
