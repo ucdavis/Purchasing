@@ -196,14 +196,11 @@
     <Build Include="dbo\Tables\__RefactorLog.sql" />
     <Build Include="dbo\Views\PendingEmails_1.sql" />
     <Build Include="dbo\Views\Get_NEWID_1.sql" />
-    <Build Include="Security\unex.sql" />
     <Build Include="dbo\Functions\udf_GetReadAndEditAccessRecentOrdersForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetReadAccessRecentOrdersForLogin_1.sql" />
     <Build Include="dbo\Functions\udf_GetOpenOrdersForLogin_Old_1.sql" />
     <Build Include="dbo\Functions\udf_GetOpenOrdersForLogin_New_1.sql" />
     <Build Include="dbo\Functions\udf_GetEditAccessRecentOrdersForLogin_1.sql" />
-    <Build Include="dbo\Functions\udf_GetOrderInformationForUnex_1.sql" />
-    <Build Include="dbo\Stored Procedures\AzureSQLMaintenance.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />
