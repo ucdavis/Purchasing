@@ -140,12 +140,23 @@ namespace Purchasing.Core.Services
                 {
                     foreach (var dist in distributions.Where(a => a.Key.Split.LineItem == line))
                     {
-                        //accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
-                        aeDist.Add(new ScmPurchaseRequisitionDistributionInput()
+                        if (dist.Key.IsPPm)
                         {
-                            Percent = dist.Value,
-                            GlSegmentString = dist.Key.FinincialSegmentString,
-                        });
+                            aeDist.Add(new ScmPurchaseRequisitionDistributionInput()
+                            {
+                                Percent = dist.Value,
+                                PpmSegmentString = dist.Key.FinincialSegmentString,
+                            });
+                        }
+                        else
+                        {
+                            //accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
+                            aeDist.Add(new ScmPurchaseRequisitionDistributionInput()
+                            {
+                                Percent = dist.Value,
+                                GlSegmentString = dist.Key.FinincialSegmentString,
+                            });
+                        }
                     }
                 }
                 // order or no splits
@@ -153,11 +164,23 @@ namespace Purchasing.Core.Services
                 {
                     foreach (var dist in distributions)
                     {
-                        aeDist.Add(new ScmPurchaseRequisitionDistributionInput()
+                        if (dist.Key.IsPPm)
                         {
-                            Percent = dist.Value,
-                            GlSegmentString = dist.Key.FinincialSegmentString,
-                        });
+                            aeDist.Add(new ScmPurchaseRequisitionDistributionInput()
+                            {
+                                Percent = dist.Value,
+                                PpmSegmentString = dist.Key.FinincialSegmentString,
+                            });
+                        }
+                        else
+                        {
+                            //accountingLines.Add(CreateAccountInfo(dist.Key, dist.Value));
+                            aeDist.Add(new ScmPurchaseRequisitionDistributionInput()
+                            {
+                                Percent = dist.Value,
+                                GlSegmentString = dist.Key.FinincialSegmentString,
+                            });
+                        }
                     }
                 }
 
@@ -287,9 +310,17 @@ namespace Purchasing.Core.Services
             }
             else
             {
-                //TODO: REMOVE THIS!!!!
-                Log.Warning("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
-                rtValue.FinincialSegmentString = "3110-13U02-ADNO006-000000-43-000-0000000000-000000-0000-000000-000000";
+                if (distributionData.KfsConvertAccount.PpmSegments != null)
+                {
+                    rtValue.IsPPm = true;
+                    rtValue.FinincialSegmentString = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments).ToSegmentString();
+                }
+                else
+                {
+                    //TODO: REMOVE THIS!!!!
+                    Log.Error("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
+                    rtValue.FinincialSegmentString = "3110-13U02-ADNO006-000000-43-000-0000000000-000000-0000-000000-000000";
+                }
             }
             return rtValue;
         }
@@ -544,6 +575,7 @@ namespace Purchasing.Core.Services
         {
             public Split Split { get;set;}
             public string FinincialSegmentString { get;set;}
+            public bool IsPPm { get; set; } = false;
         }
     }
 
