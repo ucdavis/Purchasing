@@ -19,6 +19,7 @@ using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using AutoMapper;
 using Moq;
+using Purchasing.Core.Services;
 
 namespace Purchasing.Tests.ServiceTests
 {
@@ -38,6 +39,7 @@ namespace Purchasing.Tests.ServiceTests
         public IQueryRepositoryFactory QueryRepositoryFactory;
         public IUserIdentity UserIdentity;
         public IMapper Mapper;
+        public IAggieEnterpriseService AggieEnterpriseService;
 
         #region Init
         public WorkgroupServiceTests()
@@ -63,6 +65,7 @@ namespace Purchasing.Tests.ServiceTests
 
             QueryRepositoryFactory.RelatatedWorkgroupsRepository =
                 Mock.Of<IRepository<RelatedWorkgroups>>();
+            AggieEnterpriseService = Mock.Of<IAggieEnterpriseService>();
 
             WorkgroupService = new WorkgroupService(VendorRepository,
                 VendorAddressRepository,
@@ -75,7 +78,8 @@ namespace Purchasing.Tests.ServiceTests
                 RepositoryFactory,
                 QueryRepositoryFactory,
                 UserIdentity,
-                Mapper);
+                Mapper,
+                AggieEnterpriseService);
         }
         #endregion Init
 

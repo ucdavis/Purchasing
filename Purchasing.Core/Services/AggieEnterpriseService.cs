@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Purchasing.Core.Services.AggieEnterpriseService;
 
 namespace Purchasing.Core.Services
 {
@@ -24,9 +25,17 @@ namespace Purchasing.Core.Services
 
         Task<Commodity[]> GetPurchasingCategories();
         Task<UnitOfMeasure[]> GetUnitOfMeasures();
+
+        Task<List<IdAndName>> SearchSupplier(string query);
+        Task<List<IdAndName>> SearchSupplierAddress(string query);
+        Task<Supplier> GetSupplier(WorkgroupVendor vendor);
+        Task<WorkgroupVendor> GetSupplierForWorkgroup(WorkgroupVendor workgroupVendor);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
+        //If there is any validation that uses nullable start and end dates, use this helper method: DateTime.UtcNow.ToPacificTime().IsActiveDate(a.StartDateActive, a.EndDateActive)
+
+
         private readonly IAggieEnterpriseClient _aggieClient;
         private readonly AggieEnterpriseOptions _options;
         private readonly IRepositoryFactory _repositoryFactory;
@@ -88,7 +97,7 @@ namespace Purchasing.Core.Services
             if (supplier == null)
             {
                 //TODO: Create an error message that the supplier was missing or not found.
-                return new SubmitResult { Success = false, Messages = new List<string>() { "Supplier missing or not found" } };
+                return new SubmitResult { Success = false, Messages = new List<string>() { "Vendor/Supplier missing or not found" } };
             }
             string bp = string.Empty;
             if (!string.IsNullOrWhiteSpace(order.BusinessPurpose)){
@@ -253,9 +262,7 @@ namespace Purchasing.Core.Services
                 Id = a.Code,
                 Name = a.Name,
                 IsActive =
-                a.Enabled &&
-                (a.StartDateActive == null || a.StartDateActive <= DateTime.UtcNow.ToPacificTime().Date) &&
-                (a.EndDateActive == null || a.EndDateActive >= DateTime.UtcNow.ToPacificTime().Date)
+                a.Enabled && DateTime.UtcNow.ToPacificTime().IsActiveDate(a.StartDateActive, a.EndDateActive)
             }).ToArray();
         }
 
@@ -287,18 +294,6 @@ namespace Purchasing.Core.Services
             return rtValue;
         }
 
-        //private async Task<string> LookupCategoryCode(string category)
-        //{
-        //    try { 
-        //    var result = await _aggieClient.ScmPurchasingCategoryByCode.ExecuteAsync(category);
-        //    var data = result.ReadData();
-        //    return data.ScmPurchasingCategoryByCode?.Name; }
-        //    catch
-        //    {
-        //        Log.Warning("Aggie Enterprise LookupCategoryCode failed for {category} FAKING IT!!!!", category);
-        //        return "Paper products";
-        //    }
-        //}
 
         /// <summary>
         /// Calculates the distribution %s for each account
@@ -345,29 +340,67 @@ namespace Purchasing.Core.Services
             return distributions;
         }
 
-        private async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
+        public async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
         {
-            if (vendor == null || vendor.VendorId == null || vendor.VendorAddressTypeCode == null)
+            if ((string.IsNullOrWhiteSpace(vendor.AeSupplierNumber) || string.IsNullOrWhiteSpace(vendor.AeSupplierSiteCode)) && (vendor == null || vendor.VendorId == null || vendor.VendorAddressTypeCode == null))
             {
+                //We have neither new or old values to lookup, can't continue. This should probably be caught earlier.
                 return null;
             }
             try
             {
-                var search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.VendorId.ToString() } };
-                var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
-                var searchData = searchResult.ReadData();
-
                 var rtValue = new Supplier();
-                rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.First().SupplierNumber.ToString();
-                rtValue.SupplierSiteCode = searchData.ScmSupplierSearch.Data.First().Sites.Where(a =>  
-                    a.Location.City.Equals(vendor.City, System.StringComparison.OrdinalIgnoreCase) &&
-                    a.Location.State.Equals(vendor.State, System.StringComparison.OrdinalIgnoreCase) &&
-                    (a.Location.AddressLine1.Equals(vendor.Name, System.StringComparison.OrdinalIgnoreCase) && a.Location.AddressLine2.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase)) || 
-                    (a.Location.AddressLine1.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase))
-                    ).First().SupplierSiteCode;                
+                ScmSupplierFilterInput search;
+                var updateWorkgroupVendor = false;
+                
+                if (!string.IsNullOrWhiteSpace(vendor.AeSupplierNumber) && !string.IsNullOrWhiteSpace(vendor.AeSupplierSiteCode))
+                {
+                    //We only need to do this if we need to validate that it is still eligible for use. We will need to check that
+                    //TODO: Validate still good to use.
+                    search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.AeSupplierNumber } };
+                    var searchResult1 = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
+                    var searchData1 = searchResult1.ReadData();
+                    rtValue.SupplierNumber = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.SupplierNumber.ToString();
+                    rtValue.SupplierSiteCode = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.Sites.Where(a => a.SupplierSiteCode.Equals(vendor.AeSupplierSiteCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.SupplierSiteCode;
+                }
+                else
+                {
+                    search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.VendorId.ToString() } };
+                    var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
+                    var searchData = searchResult.ReadData();
+
+                    rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.First().SupplierNumber.ToString();
+
+                    rtValue.SupplierSiteCode = searchData.ScmSupplierSearch.Data.First().Sites.Where(a =>
+                        a.Location.City.Equals(vendor.City, System.StringComparison.OrdinalIgnoreCase) &&
+                        a.Location.State.Equals(vendor.State, System.StringComparison.OrdinalIgnoreCase) &&
+                        (a.Location.AddressLine1.Equals(vendor.Name, System.StringComparison.OrdinalIgnoreCase) && a.Location.AddressLine2.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase)) ||
+                        (a.Location.AddressLine1.Equals(vendor.Line1, System.StringComparison.OrdinalIgnoreCase))
+                        ).First().SupplierSiteCode;
+
+                    updateWorkgroupVendor = true;
+                }
+
+             
                 
                 if (!string.IsNullOrWhiteSpace(rtValue.SupplierNumber) && !string.IsNullOrWhiteSpace(rtValue.SupplierSiteCode))
                 {
+                    if (updateWorkgroupVendor)
+                    {
+                        try
+                        {
+                            var vendorToUpdate = _repositoryFactory.WorkgroupVendorRepository.GetById(vendor.Id);
+
+                            vendorToUpdate.AeSupplierNumber = rtValue.SupplierNumber;
+                            vendorToUpdate.AeSupplierSiteCode = rtValue.SupplierSiteCode;
+                            _repositoryFactory.WorkgroupVendorRepository.EnsurePersistent(vendorToUpdate);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Error updating WorkgroupVendor {vendorId} with Aggie Enterprise Vendor/Supplier Number {supplierNumber} and Site Code {siteCode}", vendor.VendorId, rtValue.SupplierNumber, rtValue.SupplierSiteCode);
+                        }
+                    }
+
                     return rtValue;
                 }
                 else
@@ -408,6 +441,97 @@ namespace Purchasing.Core.Services
                 Name = a.Name,
                 Id = a.UomCode,
             }).ToArray();
+        }
+
+        public async Task<List<IdAndName>> SearchSupplier(string query)
+        {
+            var rtValue = new List<IdAndName>();
+            if (String.IsNullOrWhiteSpace(query) || query.Trim().Length < 3)
+            {
+                return rtValue;
+            }
+            var filter = new ScmSupplierFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 20;
+            filter.Name = new StringFilterInput { Contains = query.Trim().Replace(" ", "%") };
+
+            var result = await _aggieClient.SupplierNameAndNumberSupplierSearch.ExecuteAsync(filter, query.Trim());
+            var data = result.ReadData();
+
+            if (data.ScmSupplierByNumber != null)
+            {
+                rtValue.Add(new IdAndName(
+                
+                    data.ScmSupplierByNumber.SupplierNumber.ToString(),
+                    data.ScmSupplierByNumber.Name
+                ));
+
+            }
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0)
+            {
+                rtValue.AddRange(data.ScmSupplierSearch.Data.Select(a => new IdAndName(a.SupplierNumber.ToString(), a.Name)));
+
+            }
+
+            if(rtValue.Count > 0)
+            {
+                rtValue = rtValue.Distinct().ToList();
+            }
+
+            return rtValue;
+        }
+
+        public async Task<List<IdAndName>> SearchSupplierAddress(string query)
+        {
+            var filter = new ScmSupplierFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 5; //Shouldn't really matter, only expect one or two depending if the new eligible field for use gets implemented
+            filter.SupplierNumber = new StringFilterInput { Eq = query.Trim() };
+
+            var result = await _aggieClient.ScmSupplierSearch.ExecuteAsync(filter);
+            var data = result.ReadData();
+
+            var rtValue = new List<IdAndName>();
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0 && data.ScmSupplierSearch.Data.First().Sites != null)
+            {
+                var temp = data.ScmSupplierSearch.Data.First().Sites;
+
+                //We need both PUR and PAY addresses. But only PUR can be used with AE
+                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => !a.SupplierSiteCode.StartsWith("PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+            }
+
+            return rtValue;
+        }
+
+        public async Task<WorkgroupVendor> GetSupplierForWorkgroup(WorkgroupVendor workgroupVendor)
+        {
+            //TODO add validation here to see if it is still active?
+            var filter = new ScmSupplierFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 5;
+            filter.SupplierNumber = new StringFilterInput { Eq = workgroupVendor.AeSupplierNumber };
+
+            var result = await _aggieClient.ScmSupplierSearch.ExecuteAsync(filter);
+            var data = result.ReadData();
+
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0)
+            {
+                var supplier = data.ScmSupplierSearch.Data.First();
+
+                var address = supplier.Sites.Where(a => a.SupplierSiteCode == workgroupVendor.AeSupplierSiteCode).FirstOrDefault().Location;
+
+                workgroupVendor.Name        = supplier.Name.SafeTruncate(45);
+                workgroupVendor.Line1       = address.AddressLine1.SafeTruncate(40);
+                workgroupVendor.Line2       = address.AddressLine2.SafeTruncate(40);
+                workgroupVendor.Line3       = address.AddressLine3.SafeTruncate(40);
+                workgroupVendor.City        = address.City.SafeTruncate(40);
+                workgroupVendor.State       = address.State.SafeTruncate(2);
+                workgroupVendor.Zip         = address.PostalCode.SafeTruncate(11);
+                workgroupVendor.CountryCode = address.CountryCode.SafeTruncate(2);
+            }
+
+            return workgroupVendor;
         }
 
         public class Supplier

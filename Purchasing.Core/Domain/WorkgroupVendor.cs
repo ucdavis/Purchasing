@@ -23,6 +23,13 @@ namespace Purchasing.Core.Domain
         [StringLength(4)]
         public virtual string VendorAddressTypeCode { get; set; }
 
+        [Display(Name = "Campus Vendor")]
+        [StringLength(30)] //Docs say 30, so we either need to increase vendorId size, or just use it here... 
+        public virtual string AeSupplierNumber { get;set;}
+
+        [StringLength(15)] //Length confirmed in Slack.
+        public virtual string AeSupplierSiteCode { get; set; }
+
         [Required]
         [StringLength(45)]
         public virtual string Name { get; set; }
@@ -98,6 +105,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.Fax);
             Map(x => x.Email);
             Map(x => x.Url);
+            Map(x => x.AeSupplierNumber);
+            Map(x => x.AeSupplierSiteCode);
 
             References(x => x.Workgroup);
         }

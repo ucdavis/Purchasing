@@ -12,24 +12,24 @@
     @Html.Hidden("WorkgroupVendor.Workgroup", Model.WorkgroupVendor.Workgroup.Id)
     
     <section class="ui-corner-all">
-	    <header class="ui-corner-top ui-widget-header">Kfs Vendor</header>
+	    <header class="ui-corner-top ui-widget-header">Campus Vendor</header>
         
 
 		    <div class="section-text">
-			    <p>Selecting from the below drop downs will associate this vendor with KFS records and will automatically associate orders with KFS vendors when submitted to KFS.</p>
+			    <p>Selecting from the below drop downs will associate this vendor with Campus records and will automatically associate orders with Campus vendors when submitted to Aggie Enterprise.</p>
 		    </div>
 
 	    <div class="section-contents">
 		    <ul>
 				<li>
-				    <div class="editor-label">@Html.LabelFor(a => a.WorkgroupVendor.VendorId)</div>
+                    <div class="editor-label">@Html.LabelFor(a => a.WorkgroupVendor.AeSupplierNumber)</div>
 				    <div class="editor-field">
                         @*@Html.Select("WorkgroupVendor.VendorId", o => o.Options(Model.Vendors, x => x.Id, x => x.Name).FirstOption("--Select Vendor--").Selected(Model.WorkgroupVendor.VendorId))*@
 
                         <input type="text" id="VendorSearch"/>
-                        @Html.Hidden("WorkgroupVendor.VendorId")
+                        @Html.Hidden("WorkgroupVendor.AeSupplierNumber")
 
-                        @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorId)
+                        @Html.ValidationMessageFor(a => a.WorkgroupVendor.AeSupplierNumber)
                         <span id="loader-image" style="display: none;"><img src='@Url.Image("ajax-loader.gif")'/></span>
 				    </div>
 			    </li>
@@ -37,8 +37,8 @@
                 <li>
                     <div class="editor-label">@Html.LabelFor(a => a.WorkgroupVendor.VendorAddressTypeCode)</div>
                     <div class="editor-field">
-                        @Html.Select("WorkgroupVendor.VendorAddressTypeCode", o => o.FirstOption("--Select Address--").Options(Model.VendorAddresses).Selected(Model.WorkgroupVendor.VendorAddressTypeCode).Disabled(true))
-                        @Html.ValidationMessageFor(a => a.WorkgroupVendor.VendorAddressTypeCode)
+                        @Html.Select("WorkgroupVendor.AeSupplierSiteCode", o => o.FirstOption("--Select Address--").Options(Model.VendorAddresses).Selected(Model.WorkgroupVendor.AeSupplierSiteCode).Disabled(true))
+                        @Html.ValidationMessageFor(a => a.WorkgroupVendor.AeSupplierSiteCode)
                     </div>
                 </li>
 
@@ -85,7 +85,8 @@
             select: function (event, ui) {
 
                 // set the selected vendor
-                $("#WorkgroupVendor_VendorId").val(ui.item.value);
+                //$("#WorkgroupVendor_VendorId").val(ui.item.value);
+                $("#WorkgroupVendor_AeSupplierNumber").val(ui.item.value);
 
                 // display the vendor's name
                 $(this).val(ui.item.label);
@@ -107,22 +108,22 @@
         $.getJSON(vendorAddressUrl, { vendorId: vendorId }, function (results) {
            
             // clear the current options
-            $("#WorkgroupVendor_VendorAddressTypeCode option:not(:first)").remove();
+            $("#WorkgroupVendor_AeSupplierSiteCode option:not(:first)").remove();
 
-            var select = $("#WorkgroupVendor_VendorAddressTypeCode");
+            var select = $("#WorkgroupVendor_AeSupplierSiteCode");
 
             if (results.length > 0) {
                 
                 var data = $.map(results, function (n, i) { return { id: n.Id, name: n.Name }; });
 
-                $.tmpl($("#select-option-template"), data).appendTo("#WorkgroupVendor_VendorAddressTypeCode");
+                $.tmpl($("#select-option-template"), data).appendTo("#WorkgroupVendor_AeSupplierSiteCode");
                
                 // activate control
                 select.removeAttr("disabled");
             }
             else {
                 // deactivate select
-                select.attr("disabled", "disabled");
+                select.attr("disabled", "disabled"); //Doesn't seem to work
             }
 
         });
