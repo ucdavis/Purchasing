@@ -10,6 +10,7 @@
     [Zip]          VARCHAR (10)  NOT NULL,
     [Phone]        VARCHAR (15)  NULL,
     [WorkgroupId]  INT           NOT NULL,
+    [AeLocationCode] VARCHAR(60) NULL, 
     [IsActive]     BIT           CONSTRAINT [DF_WorkgroupAddresses_IsActive] DEFAULT ((1)) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_WorkgroupAddresses_States] FOREIGN KEY ([StateId]) REFERENCES [dbo].[States] ([Id]),
