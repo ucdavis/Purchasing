@@ -191,9 +191,6 @@
     <Build Include="dbo\Functions\udf_GetRecentActivityForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetReadAndEditAccessOrderIdsForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetCommentHistoryForLogin.sql" />
-    <Build Include="dbo\Tables\statsBefore.sql" />
-    <Build Include="dbo\Tables\idxBefore.sql" />
-    <Build Include="dbo\Tables\__RefactorLog.sql" />
     <Build Include="dbo\Views\PendingEmails_1.sql" />
     <Build Include="dbo\Views\Get_NEWID_1.sql" />
     <Build Include="dbo\Functions\udf_GetReadAndEditAccessRecentOrdersForLogin.sql" />
