@@ -32,13 +32,14 @@ namespace Purchasing.Core.Domain
         [StringLength(2)]
         public virtual string State { get; set; }
         [Required]
-        [StringLength(10)] //95616-5270
+        [StringLength(10)]
         [RegularExpression(@"^\d{5}$|^\d{5}-\d{4}$", ErrorMessage = "Zip must be ##### or #####-####")]
         public virtual string Zip { get; set; }
         [StringLength(15)]
         public virtual string Phone { get; set; }
         public virtual bool IsActive { get; set; }
 
+        [Display(Name = "Campus Location Code")]
         [StringLength(60)]
         public virtual string AeLocationCode {get;set;}
 

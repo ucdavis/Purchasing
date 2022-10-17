@@ -1,5 +1,8 @@
 ﻿@model Purchasing.Mvc.Models.WorkgroupAddressViewModel
 
+@{
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryTmpl")
+}
 
 @using (Html.BeginForm())
 {
@@ -16,7 +19,7 @@ Example: Dinosaur 1  *@
             @*<h4>Form Header</h4>*@
             @*<p>Be specific so the user understands what exactly you are looking for.  Example: After Dinosaur 1 moves out of his/her parents' den what will Dinosaur 1 do?  We need to know his employment plan, feeding area, as well as living situation.  This information will not be sold or given to carnivores.</p>*@
             <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
-
+            <p><strong>NEW!!!</strong> All deliveries to campus locations should use the Campus Address Search to populate the fields. Aggie enterprise uses this for requisitions. All other fields are informational only.</p>
         </div>
 
         <div class="section-contents">
@@ -32,26 +35,36 @@ Example: Dinosaur 1  *@
                         @Html.ValidationMessageFor(model => model.WorkgroupAddress.Name)
                     </div>
                 </li>
+
+                <li>
+                    <div class="editor-label">
+                        Campus Address Search
+                    </div>
+                    <div class="editor-field">
+                        <input type="text" id="AddressSearch" />
+                        @Html.Hidden("WorkgroupAddress.AeLocationCode")                        
+
+                        @Html.ValidationMessageFor(a => a.WorkgroupAddress.AeLocationCode)
+                        <span id="loader-image" style="display: none;"><img src='@Url.Image("ajax-loader.gif")' /></span>                        
+                    </div>                    
+                </li>
+
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.WorkgroupAddress.AeLocationCode)
+                    </div>
+                    <div class="editor-field">
+                        <span id="AeLocationCode_Selected" style="margin-left: 10px;">@Model.WorkgroupAddress.AeLocationCode</span>
+                    </div>
+                </li>
+                
                 <li>
                     <div class="editor-label">
                         @Html.LabelFor(model => model.WorkgroupAddress.Building) 
                     </div>
                     <div class="editor-field">
                         @Html.EditorFor(model => model.WorkgroupAddress.Building)
-                        @Html.Hidden("WorkgroupAddress.BuildingCode", Model.WorkgroupAddress.BuildingCode != null ? Model.WorkgroupAddress.BuildingCode.Id : string.Empty)
                         @Html.ValidationMessageFor(model => model.WorkgroupAddress.Building)
-                    </div>
-                </li>
-                <li>
-                    <div style="margin-left: 126px;">
-                        @if (Model.WorkgroupAddress.BuildingCode != null)
-                        {
-                            <span id="building-code-display" class="display-details green">@Html.Encode("Building Code: " + Model.WorkgroupAddress.BuildingCode.Id)</span>
-                        }
-                        else
-                        {
-                            <span id="building-code-display" class="display-details red">Warning Not a Valid Building</span>
-                        }
                     </div>
                 </li>
     
@@ -129,6 +142,62 @@ Example: Dinosaur 1  *@
 
 <script type="text/javascript">
     $(function () {
+
+        $("#AddressSearch").autocomplete({
+            source: function (request, response) {
+                var searchUrl = '@Url.Action("SearchAddress", "Workgroup")';
+                $("#loader-image").toggle();
+                $.getJSON(searchUrl, { searchTerm: request.term }, function (results) {
+
+                    response($.map(results, function (item) {
+                        return {
+                            label: item.Name,
+                            value: item.Id
+                        };
+                    }));
+                    $("#loader-image").toggle();
+                });
+            },
+            minLength: 3,
+            select: function (event, ui) {
+
+                // set the selected vendor
+                //$("#WorkgroupVendor_VendorId").val(ui.item.value);
+                $("#WorkgroupAddress_AeLocationCode").val(ui.item.value);
+                $("#AeLocationCode_Selected").html(ui.item.value);
+
+                getSelectedAddress(ui.item.value);
+
+                return false;
+
+            }
+        });
+
+    });
+    
+    function getSelectedAddress(locationCode) {
+
+        var getAddressUrl = '@Url.Action("GetAddress", "Workgroup")';
+
+        $.getJSON(getAddressUrl, { searchTerm: locationCode }, function (results) {
+            $("#WorkgroupAddress_Building").val(results.Building);
+            $("#WorkgroupAddress_Room").val(results.Room);
+            $("#WorkgroupAddress_Address").val(results.Address);
+            $("#WorkgroupAddress_City").val(results.City);
+            $("#WorkgroupAddress_State").val(results.State);
+            $("#WorkgroupAddress_Zip").val(results.Zip);
+
+        });
+    }
+
+</script>
+
+<script type="text/javascript">
+    $(function () {
         $(".showTip").qtip({ position: { my: 'left middle', at: 'right middle' } });
     });
+</script>
+
+<script id="select-option-template" type="text/x-jquery-tmpl">
+    <option value="${id}">${name}</option>
 </script>

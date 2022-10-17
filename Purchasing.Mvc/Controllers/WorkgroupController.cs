@@ -21,6 +21,8 @@ using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
 using IdAndName = Purchasing.Core.Services.IdAndName;
 using Microsoft.AspNetCore.Http;
+using Purchasing.Core.Services;
+using System.Threading.Tasks;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -48,23 +50,25 @@ namespace Purchasing.Mvc.Controllers
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
         private readonly IMapper _mapper;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
         public WorkgroupController(IRepository<Workgroup> workgroupRepository, 
-            IRepositoryWithTypedId<User, string> userRepository, 
-            IRepositoryWithTypedId<Role, string> roleRepository, 
+            IRepositoryWithTypedId<User, string> userRepository,
+            IRepositoryWithTypedId<Role, string> roleRepository,
             IRepository<WorkgroupPermission> workgroupPermissionRepository,
             ISecurityService securityService, IDirectorySearchService searchService,
-            IRepository<WorkgroupVendor> workgroupVendorRepository, 
-            IRepositoryWithTypedId<Vendor, string> vendorRepository, 
+            IRepository<WorkgroupVendor> workgroupVendorRepository,
+            IRepositoryWithTypedId<Vendor, string> vendorRepository,
             IRepositoryWithTypedId<VendorAddress, Guid> vendorAddressRepository,
             IRepositoryWithTypedId<State, string> stateRepository,
-            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository, 
+            IRepositoryWithTypedId<EmailPreferences, string> emailPreferencesRepository,
             IRepository<WorkgroupAccount> workgroupAccountRepository,
             IQueryRepositoryFactory queryRepositoryFactory,
             IRepositoryFactory repositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
             IWorkgroupService workgroupService,
-            IMapper mapper)
+            IMapper mapper, 
+            IAggieEnterpriseService aggieEnterpriseService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -83,9 +87,10 @@ namespace Purchasing.Mvc.Controllers
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
             _mapper = mapper;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
-        
+
 
         #region Workgroup Actions
         /// <summary>
@@ -1897,6 +1902,24 @@ namespace Purchasing.Mvc.Controllers
             var results = vendorAddresses.Select(a => new { TypeCode = a.TypeCode, Name = a.DisplayNameWithDefault }).ToList();
 
             return new JsonNetResult(results);
+        }
+
+        public async Task<JsonNetResult> SearchAddress(string searchTerm)
+        {
+
+            var results = await _aggieEnterpriseService.SearchShippingAddress(searchTerm);
+
+            return new JsonNetResult(results.Select(a => new { a.Id, a.Name }));
+        }
+
+        public async Task<JsonNetResult> GetAddress(string searchTerm)
+        {
+            var workgroupAddress = new WorkgroupAddress();
+            workgroupAddress.AeLocationCode = searchTerm;
+            var results = await _aggieEnterpriseService.GetShippingAddress(workgroupAddress);
+
+            return new JsonNetResult(new {results.Room,  results.Building, results.City, results.State, results.Zip, results.Address});
+
         }
 
         /// <summary>
