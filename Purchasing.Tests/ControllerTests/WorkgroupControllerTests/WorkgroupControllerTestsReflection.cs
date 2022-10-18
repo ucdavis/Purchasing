@@ -193,7 +193,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(45, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(47, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -518,9 +518,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
+
             #endregion Assert
         }
+
 
         /// <summary>
         /// Address #4 (18)
@@ -624,7 +626,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
         }
         #endregion Address Methods
