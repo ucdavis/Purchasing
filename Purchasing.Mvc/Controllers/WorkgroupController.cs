@@ -1281,7 +1281,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="workgroupAddress"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult AddAddress(int id, WorkgroupAddress workgroupAddress)
+        public async Task<ActionResult> AddAddress(int id, WorkgroupAddress workgroupAddress)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -1295,6 +1295,24 @@ namespace Purchasing.Mvc.Controllers
                 ErrorMessage = "Addresses may not be added to an administrative workgroup.";
                 return this.RedirectToAction(nameof(Details), new { id = workgroup.Id });
             }
+
+            if(!string.IsNullOrWhiteSpace(workgroupAddress.AeLocationCode))
+            {
+                var location = await _aggieEnterpriseService.GetShippingAddress(workgroupAddress);
+                if(location == null)
+                {
+                    ErrorMessage = "Active Campus Location Code not found.";
+                    return this.RedirectToAction(nameof(Details), new { id = workgroup.Id });
+                }
+
+                workgroupAddress.Address     = location.Address;
+                workgroupAddress.City        = location.City;
+                workgroupAddress.State       = location.State;
+                workgroupAddress.Zip         = location.Zip;
+                workgroupAddress.Building    = location.Building;
+                workgroupAddress.Room        = location.Room;
+            }
+            
             workgroupAddress.Workgroup = workgroup;
             ModelState.Clear();
             workgroupAddress.TransferValidationMessagesTo(ModelState);
@@ -1471,7 +1489,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="workgroupAddress">address's new values</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditAddress(int id, int addressId, WorkgroupAddress workgroupAddress)
+        public async Task<ActionResult> EditAddress(int id, int addressId, WorkgroupAddress workgroupAddress)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -1490,6 +1508,24 @@ namespace Purchasing.Mvc.Controllers
                 ErrorMessage = "Address not part of this workgroup";
                 return this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
             }
+
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.AeLocationCode))
+            {
+                var location = await _aggieEnterpriseService.GetShippingAddress(workgroupAddress);
+                if (location == null)
+                {
+                    ErrorMessage = "Active Campus Location Code not found.";
+                    return this.RedirectToAction(nameof(Details), new { id = workgroup.Id });
+                }
+
+                workgroupAddress.Address = location.Address;
+                workgroupAddress.City = location.City;
+                workgroupAddress.State = location.State;
+                workgroupAddress.Zip = location.Zip;
+                workgroupAddress.Building = location.Building;
+                workgroupAddress.Room = location.Room;
+            }
+
             workgroupAddress.Workgroup = workgroup;
             ModelState.Clear();
             workgroupAddress.TransferValidationMessagesTo(ModelState);

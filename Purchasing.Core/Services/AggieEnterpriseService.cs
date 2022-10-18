@@ -597,7 +597,7 @@ namespace Purchasing.Core.Services
             {
                 rtValue.AddRange(data.ErpInstitutionLocationSearch.Data.Where(a => a.Enabled).Select(a => new IdAndName(
                     a.LocationCode,
-                    $"({a.LocationCode}) {a.AddressLine1} {a.AddressLine2} {a.AddressLine3} {a.City}"
+                    $"({a.LocationCode}) {a.AddressLine1} {a.AddressLine2} {a.AddressLine3} {a.City} {a.State}"
                 )));
             }
             rtValue = rtValue.Distinct().ToList();
@@ -613,7 +613,7 @@ namespace Purchasing.Core.Services
             }
             var result = await _aggieClient.ErpInstitutionLocationByCode.ExecuteAsync(workgroupAddress.AeLocationCode);
             var data = result.ReadData();
-            if( data != null && data.ErpInstitutionLocationByCode != null)
+            if( data != null && data.ErpInstitutionLocationByCode != null && data.ErpInstitutionLocationByCode.Enabled)
             {
                 var address = data.ErpInstitutionLocationByCode;
                 workgroupAddress.Address = address.AddressLine1.SafeTruncate(100);
@@ -637,10 +637,13 @@ namespace Purchasing.Core.Services
                 else
                 {
                     workgroupAddress.Building = address.LocationCode.SafeTruncate(50);
+                    workgroupAddress.Room = null;
                 }
+
+                return workgroupAddress;
             }
 
-            return workgroupAddress;
+            return null;
         }
 
         public class Supplier
