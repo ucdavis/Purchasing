@@ -19,6 +19,7 @@ using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Purchasing.Core.Services;
 
 namespace Purchasing.Tests.ControllerTests.WizardControllerTests
 {
@@ -45,6 +46,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
         protected IQueryRepositoryFactory QueryRepositoryFactory;
         protected IRepository<OrganizationDescendant> OrganizationDescendantRepository;
         protected IRepositoryFactory RepositoryFactory;
+        protected IAggieEnterpriseService AggieEnterpriseService;
 
         #region Init
         /// <summary>
@@ -69,6 +71,7 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
             OrganizationDescendantRepository = Mock.Of<IRepository<OrganizationDescendant>>();
             Mock.Get(QueryRepositoryFactory).SetupGet(r => r.OrganizationDescendantRepository).Returns(OrganizationDescendantRepository);
             RepositoryFactory = Mock.Of<IRepositoryFactory>();
+            AggieEnterpriseService = Mock.Of<IAggieEnterpriseService>();
 
             Controller = new WizardController(WorkgroupRepository,
                 UserRepository,
@@ -84,7 +87,8 @@ namespace Purchasing.Tests.ControllerTests.WizardControllerTests
                 QueryRepositoryFactory,
                 WorkgroupAddressService,
                 WorkgroupService,
-                RepositoryFactory);
+                RepositoryFactory,
+                AggieEnterpriseService);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
