@@ -232,7 +232,8 @@
                             }
                             else
                             {
-                                <span class="green locality">Campus Location: @Model.Address.AeLocationCode</span>
+                                <span class="locality"><strong>Campus Location:</strong> </span>
+                                <span class="green locality">@Model.Address.AeLocationCode</span>
                             }
                             @if (!string.IsNullOrEmpty(Model.Order.DeliverToPhone) || !string.IsNullOrEmpty(Model.Address.Phone))
                             {
