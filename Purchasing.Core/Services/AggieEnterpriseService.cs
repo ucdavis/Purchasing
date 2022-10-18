@@ -99,7 +99,6 @@ namespace Purchasing.Core.Services
             var supplier = await GetSupplier(order.Vendor);
             if (supplier == null)
             {
-                //TODO: Create an error message that the supplier was missing or not found.
                 return new SubmitResult { Success = false, Messages = new List<string>() { "Vendor/Supplier missing or not found" } };
             }
             string bp = string.Empty;
@@ -121,6 +120,8 @@ namespace Purchasing.Core.Services
 
             var unitsOfMeasure = _repositoryFactory.UnitOfMeasureRepository.Queryable.Where(a => unitCodes.Contains(a.Id)).ToArray();
 
+            var shippingLocation = await GetShippingAddress(order.Address); //Verify still good.
+
             var distributions = await CalculateDistributions(order);
             var lineItems = new List<ScmPurchaseRequisitionLineInput>();
             foreach(var line in order.LineItems)
@@ -136,6 +137,10 @@ namespace Purchasing.Core.Services
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
                     RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),                   
                 };
+                if (shippingLocation != null && !string.IsNullOrWhiteSpace(shippingLocation.AeLocationCode))
+                {
+                    li.DeliveryToLocationCode = shippingLocation.AeLocationCode;
+                }
 
                 var aeDist = new List<ScmPurchaseRequisitionDistributionInput>();
                 // order with line splits
