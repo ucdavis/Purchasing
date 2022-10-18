@@ -28,6 +28,7 @@ using Purchasing.Mvc.Helpers;
 using Purchasing.Core.Services;
 using Purchasing.Core.Models.AggieEnterprise;
 using AggieEnterpriseApi;
+using static NHibernate.Engine.Query.CallableParser;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -1280,12 +1281,27 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
+        public async Task<ActionResult> AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
         {
             //TODO: Consider using same logic as workgroup: _workgroupAddressService.CompareAddress
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
 
             Check.Require(_securityService.HasWorkgroupAccess(workgroup));
+
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.AeLocationCode))
+            {
+                var location = await _aggieEnterpriseService.GetShippingAddress(workgroupAddress);
+                if (location != null)
+                {
+
+                    workgroupAddress.Address = location.Address;
+                    workgroupAddress.City = location.City;
+                    workgroupAddress.State = location.State;
+                    workgroupAddress.Zip = location.Zip;
+                    workgroupAddress.Building = location.Building;
+                    workgroupAddress.Room = location.Room;
+                }
+            }
 
             workgroup.AddAddress(workgroupAddress);
 

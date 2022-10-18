@@ -1367,29 +1367,52 @@
             }
         });
 
-        $("#address-building").autocomplete({
-            source: options.SearchBuildingUrl,
-            minLength: 2,
-            select: function (event, ui) {
-                $("#address-buildingcode").val(ui.item.id);
-                $("#building-code-display").html("Building Code: " + ui.item.id);
-                $("#building-code-display").removeClass("red");
-                $("#building-code-display").addClass("green");
+        
+
+        $("#address-search").autocomplete({
+            source: function (request, response) {
+                var el = this.element[0]; //grab the element that caused the autocomplete
+                var searchTerm = el.value;
+
+                $.getJSON(options.SearchCampusLocationUrl, { searchTerm: searchTerm }, function (results) {
+                    if (!results.length) {
+                        response([{ label: "No results found", value: "" }]);
+                    } else {
+                        response($.map(results, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Id
+                            };
+                        }));
+                    }
+                });
             },
-            change: function (event, ui) {
+            minLength: 3,
+            select: function (event, ui) {
+                event.preventDefault();
+
                 if (ui.item === null) {
-                    $("#address-buildingcode").val("");
-                    $("#building-code-display").html("Warning Not a Valid Building");
-                    $("#building-code-display").removeClass("green");
-                    $("#building-code-display").addClass("red");
+                    $("#location-code-display").html("");
                 } else {
-                    $("#building-code-display").html("Building Code: " + ui.item.id);
-                    $("#building-code-display").removeClass("red");
-                    $("#building-code-display").addClass("green");
+                    getSelectedAddress(ui.item.value);
                 }
-                
             }
+           
         });
+
+        function getSelectedAddress(locationCode) {
+
+            $.getJSON(options.GetCampusLocationUrl, { searchTerm: locationCode }, function (results) {
+                $("#address-building").val(results.Building);
+                $("#address-room").val(results.Room);
+                $("#address-address").val(results.Address);
+                $("#address-city").val(results.City);
+                $("#address-state").val(results.State);
+                $("#address-zip").val(results.Zip);            
+                $("#address-aeLocationCode").val(locationCode);
+                $("#location-code-display").html(locationCode);
+            });
+        }
 
         $("#shipAddress").chosen({search_contains: true});
 
@@ -1420,6 +1443,7 @@
                 state: form.find("#address-state").val(),
                 zip: form.find(("#address-zip")).val(),
                 phone: form.find(("#address-phone")).val(),
+                AeLocationCode: form.find("#address-aeLocationCode").val(),
                 __RequestVerificationToken: options.AntiForgeryToken
             };
 

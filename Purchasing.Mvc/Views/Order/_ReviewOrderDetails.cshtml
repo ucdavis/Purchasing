@@ -226,9 +226,13 @@
                                 <span class="region" title="California">@Model.Address.State</span>
                                 <span class="postal-code">@Model.Address.Zip</span>
                             </div>
-                             @if (Model.Address.BuildingCode == null)
+                             @if (string.IsNullOrWhiteSpace(Model.Address.AeLocationCode))
                             {
-                                <div class="red" title="Eventually, a building code will be required for KFS completed orders.">Warning. No Building Code.</div>
+                                <div class="red" title="If a location Code is not used, a shipping address will need to be manually added to Aggie Enterprise orders.">Warning. No Campus Location Code.</div>
+                            }
+                            else
+                            {
+                                <span class="green locality">Campus Location: @Model.Address.AeLocationCode</span>
                             }
                             @if (!string.IsNullOrEmpty(Model.Order.DeliverToPhone) || !string.IsNullOrEmpty(Model.Address.Phone))
                             {
