@@ -1,6 +1,10 @@
 ﻿@model Purchasing.Mvc.Models.WorkgroupAddressViewModel
 
 @{
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryTmpl")
+}
+
+@{
     ViewBag.Title = Model.Workgroup.Name;
     ViewBag.StepName = "Add Shipping Addresses";
     ViewBag.Previous = Url.Action("Vendors", "Wizard", new { id = Model.Workgroup.Id });
@@ -12,41 +16,67 @@
 @section AdditionalScripts
 {
 
-	<script type="text/javascript">
+    <script type="text/javascript">
+        $(function () {
 
-	    var url = '@Url.Action("SearchBuilding", "Ajax")';
+            $("#AddressSearch").autocomplete({
+                source: function (request, response) {
+                    var searchUrl = '@Url.Action("SearchAddress", "Workgroup")';
+                    $("#loader-image").toggle();
+                    $.getJSON(searchUrl, { searchTerm: request.term }, function (results) {
 
-	    $(function () {
+                        response($.map(results, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Id
+                            };
+                        }));
+                        $("#loader-image").toggle();
+                    });
+                },
+                minLength: 3,
+                select: function (event, ui) {
 
-	        $("#WorkgroupAddress_Building").autocomplete({
-	            source: url,
-	            minLength: 2,
-	            select: function (event, ui) {
+                    // set the selected vendor
+                    //$("#WorkgroupVendor_VendorId").val(ui.item.value);
+                    $("#WorkgroupAddress_AeLocationCode").val(ui.item.value);
+                    $("#AeLocationCode_Selected").html(ui.item.value);
 
-	                $("#WorkgroupAddress_BuildingCode").val(ui.item.id);
-	                $("#building-code-display").html("Building Code: " + ui.item.id);
-	                $("#building-code-display").removeClass("red");
-	                $("#building-code-display").addClass("green");
+                    getSelectedAddress(ui.item.value);
 
-	            },
-	            change: function (event, ui) {
+                    return false;
 
-	                if (ui.item == null) {
-	                    $("#WorkgroupAddress_BuildingCode").val("");
-	                    $("#building-code-display").html("Warning Not a Valid Building");
-	                    $("#building-code-display").removeClass("green");
-	                    $("#building-code-display").addClass("red");
-	                } else {
-	                    $("#building-code-display").html("Building Code: " + ui.item.id);
-	                    $("#building-code-display").removeClass("red");
-	                    $("#building-code-display").addClass("green");
-	                }
-	            }
-	        });
+                }
+            });
 
-	    });
+        });
 
-	</script>
+        function getSelectedAddress(locationCode) {
+
+            var getAddressUrl = '@Url.Action("GetAddress", "Workgroup")';
+
+            $.getJSON(getAddressUrl, { searchTerm: locationCode }, function (results) {
+                $("#WorkgroupAddress_Building").val(results.Building);
+                $("#WorkgroupAddress_Room").val(results.Room);
+                $("#WorkgroupAddress_Address").val(results.Address);
+                $("#WorkgroupAddress_City").val(results.City);
+                $("#WorkgroupAddress_State").val(results.State);
+                $("#WorkgroupAddress_Zip").val(results.Zip);
+
+            });
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $(".showTip").qtip({ position: { my: 'left middle', at: 'right middle' } });
+        });
+    </script>
+
+    <script id="select-option-template" type="text/x-jquery-tmpl">
+        <option value="${id}">${name}</option>
+    </script>
 
 }
 
@@ -90,28 +120,36 @@ Example: Dinosaur 1  *@
                     @Html.ValidationMessageFor(model => model.WorkgroupAddress.Name)
                 </div>
             </li>
+                <li>
+                    <div class="editor-label">
+                        Campus Address Search
+                    </div>
+                    <div class="editor-field">
+                        <input type="text" id="AddressSearch" />
+                        @Html.Hidden("WorkgroupAddress.AeLocationCode")
+
+                        @Html.ValidationMessageFor(a => a.WorkgroupAddress.AeLocationCode)
+                        <span id="loader-image" style="display: none;"><img src='@Url.Image("ajax-loader.gif")' /></span>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.WorkgroupAddress.AeLocationCode)
+                    </div>
+                    <div class="editor-field">
+                        <span id="AeLocationCode_Selected" style="margin-left: 10px;">@Model.WorkgroupAddress.AeLocationCode</span>
+                    </div>
+                </li>
             <li>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.WorkgroupAddress.Building) 
                 </div>
                 <div class="editor-field">
                     @Html.EditorFor(model => model.WorkgroupAddress.Building)
-                    @Html.Hidden("WorkgroupAddress.BuildingCode", Model.WorkgroupAddress.BuildingCode != null ? Model.WorkgroupAddress.BuildingCode.Id : string.Empty)
                     @Html.ValidationMessageFor(model => model.WorkgroupAddress.Building)
                 </div>
             </li>
-                <li>
-                    <div style="margin-left: 126px;">
-                        @if (Model.WorkgroupAddress.BuildingCode != null)
-                        {
-                            <span id="building-code-display" class="display-details green">@Html.Encode("Building Code: " + Model.WorkgroupAddress.BuildingCode.Id)</span>
-                        }
-                        else
-                        {
-                            <span id="building-code-display" class="display-details red">Warning Not a Valid Building</span>
-                        }
-                    </div>
-                </li>
             <li>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.WorkgroupAddress.Room) 

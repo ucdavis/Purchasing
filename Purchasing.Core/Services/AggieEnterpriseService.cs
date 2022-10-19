@@ -30,6 +30,9 @@ namespace Purchasing.Core.Services
         Task<List<IdAndName>> SearchSupplierAddress(string query);
         Task<Supplier> GetSupplier(WorkgroupVendor vendor);
         Task<WorkgroupVendor> GetSupplierForWorkgroup(WorkgroupVendor workgroupVendor);
+
+        Task<List<IdAndName>> SearchShippingAddress(string query);
+        Task<WorkgroupAddress> GetShippingAddress(WorkgroupAddress workgroupAddress);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -96,7 +99,6 @@ namespace Purchasing.Core.Services
             var supplier = await GetSupplier(order.Vendor);
             if (supplier == null)
             {
-                //TODO: Create an error message that the supplier was missing or not found.
                 return new SubmitResult { Success = false, Messages = new List<string>() { "Vendor/Supplier missing or not found" } };
             }
             string bp = string.Empty;
@@ -118,6 +120,8 @@ namespace Purchasing.Core.Services
 
             var unitsOfMeasure = _repositoryFactory.UnitOfMeasureRepository.Queryable.Where(a => unitCodes.Contains(a.Id)).ToArray();
 
+            var shippingLocation = await GetShippingAddress(order.Address); //Verify still good.
+
             var distributions = await CalculateDistributions(order);
             var lineItems = new List<ScmPurchaseRequisitionLineInput>();
             foreach(var line in order.LineItems)
@@ -133,6 +137,10 @@ namespace Purchasing.Core.Services
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
                     RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),                   
                 };
+                if (shippingLocation != null && !string.IsNullOrWhiteSpace(shippingLocation.AeLocationCode))
+                {
+                    li.DeliveryToLocationCode = shippingLocation.AeLocationCode;
+                }
 
                 var aeDist = new List<ScmPurchaseRequisitionDistributionInput>();
                 // order with line splits
@@ -563,6 +571,84 @@ namespace Purchasing.Core.Services
             }
 
             return workgroupVendor;
+        }
+
+        public async Task<List<IdAndName>> SearchShippingAddress(string query)
+        {
+            if (String.IsNullOrWhiteSpace(query) || query.Trim().Length < 3)
+            {
+                return new List<IdAndName>();
+            }
+            
+            var filter = new ErpInstitutionLocationFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 25; //More? Less?
+            filter.LocationCode = new StringFilterInput { Contains = query.Trim().Replace(" ", "%") };
+
+            var result = await _aggieClient.ErpInstitutionLocationSearch.ExecuteAsync(filter, query.Trim());
+
+            var rtValue = new List<IdAndName>();
+            
+            var data = result.ReadData();
+            if (data.ErpInstitutionLocationByCode != null && data.ErpInstitutionLocationByCode.Enabled)
+            {
+                //Exact Match first.
+                rtValue.Add(new IdAndName(
+                    data.ErpInstitutionLocationByCode.LocationCode,
+                    $"({data.ErpInstitutionLocationByCode.LocationCode}) {data.ErpInstitutionLocationByCode.AddressLine1} {data.ErpInstitutionLocationByCode.AddressLine2} {data.ErpInstitutionLocationByCode.AddressLine3} {data.ErpInstitutionLocationByCode.City}"
+                ));
+            }
+            if (data.ErpInstitutionLocationSearch != null && data.ErpInstitutionLocationSearch.Data != null && data.ErpInstitutionLocationSearch.Data.Count > 0)
+            {
+                rtValue.AddRange(data.ErpInstitutionLocationSearch.Data.Where(a => a.Enabled).Select(a => new IdAndName(
+                    a.LocationCode,
+                    $"({a.LocationCode}) {a.AddressLine1} {a.AddressLine2} {a.AddressLine3} {a.City} {a.State}"
+                )));
+            }
+            rtValue = rtValue.Distinct().ToList();
+
+            return rtValue;
+        }
+
+        public async Task<WorkgroupAddress> GetShippingAddress(WorkgroupAddress workgroupAddress)
+        {
+            if (workgroupAddress == null || String.IsNullOrWhiteSpace(workgroupAddress.AeLocationCode))
+            {
+                return null;
+            }
+            var result = await _aggieClient.ErpInstitutionLocationByCode.ExecuteAsync(workgroupAddress.AeLocationCode);
+            var data = result.ReadData();
+            if( data != null && data.ErpInstitutionLocationByCode != null && data.ErpInstitutionLocationByCode.Enabled)
+            {
+                var address = data.ErpInstitutionLocationByCode;
+                workgroupAddress.Address = address.AddressLine1.SafeTruncate(100);
+                workgroupAddress.State   = address.State.SafeTruncate(2);
+                workgroupAddress.City    = address.City.SafeTruncate(100);
+                workgroupAddress.Zip     = address.PostalCode?.SafeTruncate(10) ?? "95616-5270"; // if they supply it, use it, otherwise use the campus default.
+
+                //Ok, try to parse the locationcode to get a building name and room.
+                if (address.LocationCode.Contains("Room", StringComparison.OrdinalIgnoreCase))
+                {
+                    var parts = address.LocationCode.Split(new string[] { "Room" }, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length > 0)
+                    {
+                        workgroupAddress.Building = parts[0]?.Trim()?.TrimEnd(',').SafeTruncate(50);
+                    }
+                    if (parts.Length > 1)
+                    {
+                        workgroupAddress.Room = parts[1].SafeTruncate(50);
+                    }
+                }
+                else
+                {
+                    workgroupAddress.Building = address.LocationCode.SafeTruncate(50);
+                    workgroupAddress.Room = null;
+                }
+
+                return workgroupAddress;
+            }
+
+            return null;
         }
 
         public class Supplier

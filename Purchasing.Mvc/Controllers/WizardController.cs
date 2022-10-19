@@ -16,6 +16,8 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
 using IdAndName = Purchasing.Core.Services.IdAndName;
+using Purchasing.Core.Services;
+using System.Threading.Tasks;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -41,6 +43,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
@@ -59,7 +62,8 @@ namespace Purchasing.Mvc.Controllers
             IQueryRepositoryFactory queryRepositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
             IWorkgroupService workgroupService,
-            IRepositoryFactory repositoryFactory)
+            IRepositoryFactory repositoryFactory,
+            IAggieEnterpriseService aggieEnterpriseService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -76,6 +80,7 @@ namespace Purchasing.Mvc.Controllers
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
             _repositoryFactory = repositoryFactory;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
 
@@ -867,7 +872,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddAddresses(int id, WorkgroupAddress workgroupAddress)
+        public async Task<ActionResult> AddAddresses(int id, WorkgroupAddress workgroupAddress)
         {
             ViewBag.StepNumber = 10;
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -875,6 +880,26 @@ namespace Purchasing.Mvc.Controllers
             {
                 Message = "Workgroup not found.";
                 this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
+            }
+
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.AeLocationCode))
+            {
+                var location = await _aggieEnterpriseService.GetShippingAddress(workgroupAddress);
+                if (location == null)
+                {
+                    ErrorMessage = "Active Campus Location Code not found.";
+                    var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+                    viewModel.WorkgroupAddress = workgroupAddress;
+                    viewModel.WorkgroupAddress.Workgroup = workgroup;
+                    return View(viewModel);
+                }
+
+                workgroupAddress.Address = location.Address;
+                workgroupAddress.City = location.City;
+                workgroupAddress.State = location.State;
+                workgroupAddress.Zip = location.Zip;
+                workgroupAddress.Building = location.Building;
+                workgroupAddress.Room = location.Room;
             }
 
             workgroupAddress.Workgroup = workgroup;

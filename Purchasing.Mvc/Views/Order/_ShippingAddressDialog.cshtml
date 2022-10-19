@@ -4,8 +4,9 @@
         <div class="section-text">
             <p>
                 Please fill out the information for a new shipping address and then click 'Create Shipping Address'. 
-                Fields decorated with <span style="color: red;">*</span> are required.
-            </p>  
+                Fields decorated with <span style="color: red;">*</span> are required.                
+            </p>
+            <p><span style="color: red;">NEW!!!</span> If this is a campus address, please search for a valid address.</p>
         </div>
         <ul>
             <li>
@@ -15,6 +16,21 @@
                     <input id="address-name" name="address-name" type="text" placeholder="Address Name"
                         class="required" maxlength="50" />
                     <span data-valmsg-for="address-name" data-valmsg-replace="true"></span>
+                </div>
+            </li>
+            <li>
+                <div class="editor-label">
+                    Campus Address:
+                </div>
+                <div class="editor-field">
+                    <input id="address-search" name="address-search" type="text" placeholder="Search" maxlength="60" />
+                        <input id="address-aeLocationCode" name="address-aeLocationCode" type="hidden" />
+                        <span data-valmsg-for="address-search" data-valmsg-replace="true"></span>
+                </div>
+            </li>
+            <li>
+                <div style="margin-left: 126px;">
+                    <span id="location-code-display" class="display-details"></span>
                 </div>
             </li>
             <li>
