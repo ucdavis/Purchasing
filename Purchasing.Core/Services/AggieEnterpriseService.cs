@@ -135,7 +135,8 @@ namespace Purchasing.Core.Services
                     UnitOfMeasure = unitsOfMeasure.FirstOrDefault(a => a.Id == line.Unit)?.Name,
                     PurchasingCategoryName = line.Commodity.Name, 
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
-                    RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),                   
+                    RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),     
+                    LineType = ScmPurchaseRequisitionLineType.Quantity,
                 };
                 if (shippingLocation != null && !string.IsNullOrWhiteSpace(shippingLocation.AeLocationCode))
                 {
