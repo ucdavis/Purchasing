@@ -314,20 +314,34 @@ namespace Purchasing.Core.Services
             var distributionData = distributionResult.ReadData();
             if (distributionData.KfsConvertAccount.GlSegments != null)
             {
-                rtValue.FinincialSegmentString = new GlSegments(distributionData.KfsConvertAccount.GlSegments).ToSegmentString();
+                var tempGlSegments = new GlSegments(distributionData.KfsConvertAccount.GlSegments);
+                if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
+                {
+                    //770000
+                    Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                    tempGlSegments.Account = _options.DefaultNaturalAccount;
+                }
+                rtValue.FinincialSegmentString = tempGlSegments.ToSegmentString();
             }
             else
             {
                 if (distributionData.KfsConvertAccount.PpmSegments != null)
                 {
                     rtValue.IsPPm = true;
-                    rtValue.FinincialSegmentString = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments).ToSegmentString();
+                    var tempPpmSegments = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments);
+                    if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
+                    {
+                        //770000
+                        Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                        tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                    }
+                    rtValue.FinincialSegmentString = tempPpmSegments.ToSegmentString();
                 }
                 else
                 {
                     //TODO: REMOVE THIS!!!!
                     Log.Error("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
-                    rtValue.FinincialSegmentString = "3110-13U02-ADNO006-000000-43-000-0000000000-000000-0000-000000-000000";
+                    rtValue.FinincialSegmentString = $"3110-13U02-ADNO006-{_options.DefaultNaturalAccount}-43-000-0000000000-000000-0000-000000-000000";
                 }
             }
             return rtValue;

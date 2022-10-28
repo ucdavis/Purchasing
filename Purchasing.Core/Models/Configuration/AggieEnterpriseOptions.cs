@@ -13,5 +13,7 @@ namespace Purchasing.Core.Models.Configuration
 
         public string RequisitionSourceName { get; set; }
 
+        public string DefaultNaturalAccount { get; set; }
+
     }
 }
