@@ -128,7 +128,7 @@ namespace Purchasing.Core.Services
             {
                 var li = new ScmPurchaseRequisitionLineInput
                 {
-                    Amount = Math.Round(line.Total(), 3),
+                    //Amount = Math.Round(line.Total(), 3),
                     Quantity = line.Quantity,
                     ItemDescription = line.Description.SafeTruncate(240),
                     UnitPrice = line.UnitPrice,
