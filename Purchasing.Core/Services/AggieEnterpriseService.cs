@@ -311,6 +311,45 @@ namespace Purchasing.Core.Services
             var chart = split.Account.Split('-')[0];
             var account = split.Account.Split('-')[1];
 
+            if (_options.FakeSit.Equals("Yes", StringComparison.OrdinalIgnoreCase))
+            {
+
+                var lookupInAe = false;
+
+                Log.Error("Faking AE CCOA for specific account. Remove before Go Live");
+
+                //TODO: Remove
+                switch (split.Account)
+                {
+                    case "3-CRU9033":
+                        rtValue.FinincialSegmentString = "3110-13U00-ADNO006-534101-40-000-0000000000-200504-0000-000000-000000";
+                        break;
+                    case "3-ADOIGAA":
+                        rtValue.FinincialSegmentString = "3110-13U00-ADNO003-534101-40-000-0000000000-200504-0000-000000-000000";
+                        break;
+                    case "3-CRUCECP":
+                        rtValue.FinincialSegmentString = "K30CRUCECP-TASK01-ADNO006-522400";
+                        rtValue.IsPPm = true;
+                        break;
+                    case "3-IPFFPR3":
+                        rtValue.FinincialSegmentString = "K30IPFFPR3-TASK01-ADNO006-522400";
+                        rtValue.IsPPm = true;
+                        break;
+                    case "P-9530101":
+                        rtValue.FinincialSegmentString = "KP0953010U-301001-ADNO001-525900";
+                        rtValue.IsPPm = true;
+                        break;
+                    default:
+                        lookupInAe = true;
+                        break;
+                }
+
+                if (!lookupInAe)
+                {
+                    return rtValue;
+                }
+            }
+            
             var distributionResult = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, account, split.SubAccount);
             var distributionData = distributionResult.ReadData();
             if (distributionData.KfsConvertAccount.GlSegments != null)
