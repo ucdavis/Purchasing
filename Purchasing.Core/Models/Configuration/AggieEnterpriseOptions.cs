@@ -15,5 +15,7 @@ namespace Purchasing.Core.Models.Configuration
 
         public string DefaultNaturalAccount { get; set; }
 
+        public string FakeSit { get; set; } = "No";
+
     }
 }
