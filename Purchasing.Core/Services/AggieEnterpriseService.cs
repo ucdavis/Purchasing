@@ -112,7 +112,7 @@ namespace Purchasing.Core.Services
                 SupplierNumber = supplier.SupplierNumber,
                 SupplierSiteCode = supplier.SupplierSiteCode ,
                 RequesterEmailAddress = purchaserEmail,
-                Description = $"{order.RequestNumber} {order.Justification?.Trim()} {bp}".SafeTruncate(240),
+                Description = $"{order.RequestNumber} {order.Justification?.Trim()}{bp}".SafeTruncate(240),
                 Justification = $"{order.Justification}{bp}".SafeTruncate(1000),                
             };
                 
