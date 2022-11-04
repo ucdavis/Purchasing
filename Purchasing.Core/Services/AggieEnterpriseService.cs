@@ -135,7 +135,7 @@ namespace Purchasing.Core.Services
                     UnitOfMeasure = unitsOfMeasure.FirstOrDefault(a => a.Id == line.Unit)?.Name,
                     PurchasingCategoryName = line.Commodity.Name, 
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
-                    RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),     
+                    //RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),  //Don't pass. Oracle will default to 7 days in the future.   
                     LineType = ScmPurchaseRequisitionLineType.Quantity,
                 };
                 if (shippingLocation != null && !string.IsNullOrWhiteSpace(shippingLocation.AeLocationCode))
