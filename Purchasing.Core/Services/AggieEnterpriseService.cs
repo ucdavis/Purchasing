@@ -20,7 +20,7 @@ namespace Purchasing.Core.Services
     {
         Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true);
 
-        Task<SubmitResult> UploadOrder(Order order, string purchaserEmail);
+        Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb);
         Task<AeResultStatus> LookupOrderStatus(string requestId);
 
         Task<Commodity[]> GetPurchasingCategories();
@@ -82,7 +82,7 @@ namespace Purchasing.Core.Services
             return false;
         }
 
-        public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail)
+        public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb)
         {
             
 
@@ -111,9 +111,9 @@ namespace Purchasing.Core.Services
                 RequisitionSourceName = _options.RequisitionSourceName,
                 SupplierNumber = supplier.SupplierNumber,
                 SupplierSiteCode = supplier.SupplierSiteCode ,
-                RequesterEmailAddress = purchaserEmail,
+                RequesterEmailAddress = await GetAggieEnterpriseUserEmail(purchaserKerb, purchaserEmail),
                 Description = $"{order.RequestNumber} {order.Justification?.Trim()}{bp}".SafeTruncate(240),
-                Justification = $"{order.Justification}{bp}".SafeTruncate(1000),                
+                //Justification has been deprecated, we will just pass in the description above
             };
                 
             var unitCodes = order.LineItems.Select(a => a.Unit).Distinct().ToArray();
@@ -239,6 +239,29 @@ namespace Purchasing.Core.Services
             rtValue = new SubmitResult { Success = true, DocNumber = responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestId.ToString() };
 
             return rtValue;
+        }
+
+        private async Task<string> GetAggieEnterpriseUserEmail(string purchaserKerb, string purchaserEmail)
+        {
+            var filter = new ErpUserFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 5;
+            filter.UserId =  new StringFilterInput { Eq = purchaserKerb.Trim() };
+
+            var result = await _aggieClient.ErpUserSearch.ExecuteAsync(filter);
+            var data = result.ReadData();
+            var users = data.ErpUserSearch.Data.Where(a => a.Active == true).ToArray();
+            if(users.Length > 1)
+            {
+                throw new Exception($"Multiple Active Aggie Enterprise users found for {purchaserKerb}");
+            }
+            var user = users.Single(a => a.Active == true);
+            if(!user.Email.Equals(purchaserEmail, StringComparison.OrdinalIgnoreCase))
+            {
+                //Maybe we don't care?
+                Log.Information($"Aggie Enterprise user email does not match email on order. {purchaserEmail} != {user.Email}");
+            }
+            return user.Email;
         }
 
         public async Task<AeResultStatus> LookupOrderStatus(string requestId)
