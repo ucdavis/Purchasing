@@ -574,7 +574,7 @@ namespace Purchasing.Mvc.Services
             {
                 var user = _repositoryFactory.UserRepository.Queryable.Single(x => x.Id == _userIdentity.Current);
 
-                var result = await _aggieEnterpriseService.UploadOrder(order, user.Email); //TODO: Get an IAM email with a new field on the user?
+                var result = await _aggieEnterpriseService.UploadOrder(order, user.Email, user.Id); //TODO: Get an IAM email with a new field on the user?
                 if (result.Success)
                 {
                     order.ReferenceNumber = result.DocNumber; //TODO: Replace?
