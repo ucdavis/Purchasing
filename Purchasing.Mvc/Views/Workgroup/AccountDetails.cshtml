@@ -13,7 +13,7 @@
 }
 
 <section class="display-form ui-corner-all">
-    <header class="ui-corner-top ui-widget-header">Account: @Model.Account.Name (@Model.Account.Id)</header>
+    <header class="ui-corner-top ui-widget-header">Account: @Model.GetName (@Model.GetAccount)</header>
 	<ul>
         <li>
             <div class="display-label">@Html.LabelFor(x => x.Approver)</div>

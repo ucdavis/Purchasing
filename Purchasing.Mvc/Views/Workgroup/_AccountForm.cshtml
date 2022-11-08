@@ -16,10 +16,27 @@
             </div>
 
             <ul>
+                 <li>
+		            <div class="editor-label">
+                        @Html.LabelFor(x => x.WorkgroupAccount.Name)
+					</div>
+					<div class="editor-field">
+						@Html.TextBox("WorkgroupAccount.Name", Model.WorkgroupAccount.Name != null ? Model.WorkgroupAccount.Name : string.Empty, new {placeholder="Account name"})
+                        @Html.ValidationMessageFor(x => x.WorkgroupAccount.Name)
+					</div>
+				</li>
+				<li>
+					<div class="editor-label">
+						@Html.LabelFor(x => x.WorkgroupAccount.FinancialSegmentString)
+					</div>
+					<div class="editor-field">
+						@Html.TextBox("WorkgroupAccount.FinancialSegmentString", Model.WorkgroupAccount.FinancialSegmentString != null ? Model.WorkgroupAccount.FinancialSegmentString : string.Empty, new {placeholder="Financial Segment String"})
+						@Html.ValidationMessageFor(x => x.WorkgroupAccount.FinancialSegmentString)
+					</div>
+				</li>
                 <li>
-		            <div class="editor-label required">
-                        @Html.LabelFor(x => x.WorkgroupAccount.Account)
-                        <span>*</span>
+		            <div class="editor-label">
+                        KFS Account
 					</div>
 					<div class="editor-field">
 						@*@Html.HiddenFor(x => x.WorkgroupAccount.Account, Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)*@
