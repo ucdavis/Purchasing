@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[WorkgroupAccounts] (
     [Id]                   INT          IDENTITY (1, 1) NOT NULL,
-    [AccountId]            VARCHAR (10) NOT NULL,
+    [AccountId]            VARCHAR (10) NULL,
     [WorkgroupId]          INT          NOT NULL,
     [ApproverUserId]       VARCHAR (10) NULL,
     [AccountManagerUserId] VARCHAR (10) NULL,

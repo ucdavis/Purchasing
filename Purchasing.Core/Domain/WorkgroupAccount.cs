@@ -9,7 +9,8 @@ namespace Purchasing.Core.Domain
     {
         [Required]
         public virtual Workgroup Workgroup { get; set; }
-        [Required]
+        
+        //Can't be required any more - Aggie Enterprise
         public virtual Account Account { get; set; }
 
         public virtual User Approver { get; set; }
@@ -35,7 +36,7 @@ namespace Purchasing.Core.Domain
                 return Account?.Name ?? "Not Set";
             }
         }
-
+    }
     public class WorkgroupAccountMap : ClassMap<WorkgroupAccount>
     {
         public WorkgroupAccountMap()
