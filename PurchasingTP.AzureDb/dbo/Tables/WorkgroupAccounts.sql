@@ -5,8 +5,8 @@
     [ApproverUserId]       VARCHAR (10) NULL,
     [AccountManagerUserId] VARCHAR (10) NULL,
     [PurchaserUserId]      VARCHAR (10) NULL,
-    [Name] NVARCHAR(64) NULL, 
-    [FinancialSegmentString] NVARCHAR(128) NULL, 
+    [Name] VARCHAR(64) NULL, 
+    [FinancialSegmentString] VARCHAR(128) NULL, 
     PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_WorkgroupAccounts_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id])
 );

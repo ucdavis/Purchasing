@@ -6,8 +6,8 @@
     [Account]    VARCHAR (10) NULL,
     [SubAccount] VARCHAR (5)  NULL,
     [Project]    VARCHAR (10) NULL,
-    [Name] NVARCHAR(64) NULL, 
-    [FinancialSegmentString] NVARCHAR(128) NULL, 
+    [Name] VARCHAR(64) NULL, 
+    [FinancialSegmentString] VARCHAR(128) NULL, 
     PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_Splits_LineItems] FOREIGN KEY ([LineItemId]) REFERENCES [dbo].[LineItems] ([Id]),
     CONSTRAINT [FK_Splits_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([Id])
