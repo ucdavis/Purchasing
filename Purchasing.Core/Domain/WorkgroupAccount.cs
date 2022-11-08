@@ -36,6 +36,17 @@ namespace Purchasing.Core.Domain
                 return Account?.Name ?? "Not Set";
             }
         }
+        
+        public virtual string GetAccount {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(FinancialSegmentString))
+                {
+                    return FinancialSegmentString;
+                }
+                return Account?.Id ?? "Not Set";
+            }
+        }
     }
     public class WorkgroupAccountMap : ClassMap<WorkgroupAccount>
     {
