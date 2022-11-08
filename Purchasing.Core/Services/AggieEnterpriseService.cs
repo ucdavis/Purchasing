@@ -33,6 +33,8 @@ namespace Purchasing.Core.Services
 
         Task<List<IdAndName>> SearchShippingAddress(string query);
         Task<WorkgroupAddress> GetShippingAddress(WorkgroupAddress workgroupAddress);
+
+        Task<string> ConvertKfsAccount(Account account);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -726,6 +728,45 @@ namespace Purchasing.Core.Services
             }
 
             return null;
+        }
+
+        public async Task<string> ConvertKfsAccount(Account account)
+        {
+            var chart = account.Id.Split('-')[0];
+            var accountPart = account.Id.Split('-')[1];
+
+            var result = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, accountPart, null);
+            var data = result.ReadData();
+            if (data.KfsConvertAccount.GlSegments != null)
+            {
+                var tempGlSegments = new GlSegments(data.KfsConvertAccount.GlSegments);
+                if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
+                {
+                    //770000
+                    Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                    tempGlSegments.Account = _options.DefaultNaturalAccount;
+                }
+                return tempGlSegments.ToSegmentString();
+            }
+            else
+            {
+                if (data.KfsConvertAccount.PpmSegments != null)
+                {
+                    //rtValue.IsPPm = true; //Maybe want to return and store this?
+                    var tempPpmSegments = new PpmSegments(data.KfsConvertAccount.PpmSegments);
+                    if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
+                    {
+                        //770000
+                        Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                        tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                    }
+                    return tempPpmSegments.ToSegmentString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
         }
 
         public class Supplier
