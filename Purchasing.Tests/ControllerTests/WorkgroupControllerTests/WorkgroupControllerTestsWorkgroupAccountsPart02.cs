@@ -203,54 +203,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
 
-        [TestMethod]
-        public void TestEditAccountPostWhenNotValidReturnsView()
-        {
-            #region Arrange
-            SetupDataForAccounts1(true);
-            var accounts = new List<WorkgroupAccount>();
-            for(var i = 0; i < 3; i++)
-            {
-                accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-            }
-            accounts[2].Workgroup = WorkgroupRepository.GetNullableById(3);
-            accounts[2].Account = null;
-            accounts[2].AccountManager.Id = "myAccMan";
-            accounts[2].Approver.Id = "myApp";
-            accounts[2].Purchaser.Id = "myPur";
-            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
-
-            var accountToEdit = CreateValidEntities.WorkgroupAccount(8);
-            accountToEdit.Id = 8;
-            accountToEdit.Workgroup = CreateValidEntities.Workgroup(7);
-            accountToEdit.Workgroup.Id = 7;
-            //accountToEdit.Account.Id = "Eblah";
-            accountToEdit.Account = null;
-            //accountToEdit.AccountManager.Id = "EmyAccMan";
-            accountToEdit.AccountManager = null;
-            accountToEdit.Approver.Id = "EmyApp";
-            accountToEdit.Purchaser.Id = "EmyPur";
-            #endregion Arrange
-
-            #region Act
-            var result = Controller.EditAccount(3, 3, accountToEdit)
-                .AssertViewRendered()
-                .WithViewData<WorkgroupAccountModel>();
-            #endregion Act
-
-            #region Assert
-            Controller.ModelState.AssertErrorsAre("The Account field is required.");
-            Assert.IsNotNull(result);
-            Assert.AreEqual(10, result.Accounts.Count());
-            Assert.AreEqual(12, result.WorkGroupPermissions.Count());
-            Assert.AreEqual(1, result.Approvers.Count());
-            Assert.AreEqual(1, result.AccountManagers.Count());
-            Assert.AreEqual(1, result.Purchasers.Count());
-
-            Assert.IsNull(result.WorkgroupAccount.Account);
-            Assert.IsNull(result.WorkgroupAccount.AccountManager);
-            #endregion Assert		
-        }
         #endregion EditAccount Post Tests
 
         #region AccountDelete Get Tests
