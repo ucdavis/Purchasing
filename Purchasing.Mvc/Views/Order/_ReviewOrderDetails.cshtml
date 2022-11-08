@@ -129,7 +129,7 @@
                             <div class="fn">@Model.Vendor.Name
                                 @if (!string.IsNullOrEmpty(Model.Vendor.AeSupplierNumber))
                                 {
-                                    <div>(Supplier #: @Model.Vendor.AeSupplierNumber Site Code: @Model.Vendor.AeSupplierSiteCode)</div>
+                                    <div class="green" >(Supplier #: @Model.Vendor.AeSupplierNumber Site Code: @Model.Vendor.AeSupplierSiteCode)</div>
                                 }else if (!string.IsNullOrEmpty(Model.Vendor.VendorId))
                                 {
                                     //TODO: Change /kfs-prd/ to /fin/

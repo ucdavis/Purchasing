@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Tests", "Purchas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UCDARch.testing", "UCDArch.Testing\UCDARch.testing.csproj", "{9008A268-7BFC-4446-A44A-BBBEA7BE3F93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Purchasing.Jobs.AggieEnterprise", "Purchasing.Jobs.AggieEnterprise\Purchasing.Jobs.AggieEnterprise.csproj", "{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.AggieEnterprise", "Purchasing.Jobs.AggieEnterprise\Purchasing.Jobs.AggieEnterprise.csproj", "{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

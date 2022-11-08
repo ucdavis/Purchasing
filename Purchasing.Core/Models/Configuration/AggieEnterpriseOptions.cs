@@ -13,5 +13,9 @@ namespace Purchasing.Core.Models.Configuration
 
         public string RequisitionSourceName { get; set; }
 
+        public string DefaultNaturalAccount { get; set; }
+
+        public string FakeSit { get; set; } = "No";
+
     }
 }

@@ -20,7 +20,7 @@ namespace Purchasing.Core.Services
     {
         Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true);
 
-        Task<SubmitResult> UploadOrder(Order order, string purchaserEmail);
+        Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb);
         Task<AeResultStatus> LookupOrderStatus(string requestId);
 
         Task<Commodity[]> GetPurchasingCategories();
@@ -82,7 +82,7 @@ namespace Purchasing.Core.Services
             return false;
         }
 
-        public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail)
+        public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb)
         {
             
 
@@ -111,9 +111,9 @@ namespace Purchasing.Core.Services
                 RequisitionSourceName = _options.RequisitionSourceName,
                 SupplierNumber = supplier.SupplierNumber,
                 SupplierSiteCode = supplier.SupplierSiteCode ,
-                RequesterEmailAddress = purchaserEmail,
-                Description = order.RequestNumber,
-                Justification = $"{order.Justification}{bp}".SafeTruncate(1000),                
+                RequesterEmailAddress = await GetAggieEnterpriseUserEmail(purchaserKerb, purchaserEmail),
+                Description = $"{order.RequestNumber} {order.Justification?.Trim()}{bp}".SafeTruncate(240),
+                //Justification has been deprecated, we will just pass in the description above
             };
                 
             var unitCodes = order.LineItems.Select(a => a.Unit).Distinct().ToArray();
@@ -128,14 +128,15 @@ namespace Purchasing.Core.Services
             {
                 var li = new ScmPurchaseRequisitionLineInput
                 {
-                    Amount = Math.Round(line.Total(), 3),
+                    //Amount = Math.Round(line.Total(), 3),
                     Quantity = line.Quantity,
                     ItemDescription = line.Description.SafeTruncate(240),
                     UnitPrice = line.UnitPrice,
                     UnitOfMeasure = unitsOfMeasure.FirstOrDefault(a => a.Id == line.Unit)?.Name,
                     PurchasingCategoryName = line.Commodity.Name, 
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
-                    RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),                   
+                    //RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),  //Don't pass. Oracle will default to 7 days in the future.   
+                    LineType = ScmPurchaseRequisitionLineType.Quantity,
                 };
                 if (shippingLocation != null && !string.IsNullOrWhiteSpace(shippingLocation.AeLocationCode))
                 {
@@ -240,6 +241,29 @@ namespace Purchasing.Core.Services
             return rtValue;
         }
 
+        private async Task<string> GetAggieEnterpriseUserEmail(string purchaserKerb, string purchaserEmail)
+        {
+            var filter = new ErpUserFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 5;
+            filter.UserId =  new StringFilterInput { Eq = purchaserKerb.Trim() };
+
+            var result = await _aggieClient.ErpUserSearch.ExecuteAsync(filter);
+            var data = result.ReadData();
+            var users = data.ErpUserSearch.Data.Where(a => a.Active == true).ToArray();
+            if(users.Length > 1)
+            {
+                throw new Exception($"Multiple Active Aggie Enterprise users found for {purchaserKerb}");
+            }
+            var user = users.Single(a => a.Active == true);
+            if(!user.Email.Equals(purchaserEmail, StringComparison.OrdinalIgnoreCase))
+            {
+                //Maybe we don't care?
+                Log.Information($"Aggie Enterprise user email does not match email on order. {purchaserEmail} != {user.Email}");
+            }
+            return user.Email;
+        }
+
         public async Task<AeResultStatus> LookupOrderStatus(string requestId)
         {
             try
@@ -310,24 +334,77 @@ namespace Purchasing.Core.Services
             var chart = split.Account.Split('-')[0];
             var account = split.Account.Split('-')[1];
 
+            if (_options.FakeSit.Equals("Yes", StringComparison.OrdinalIgnoreCase))
+            {
+
+                var lookupInAe = false;
+
+                Log.Error("Faking AE CCOA for specific account. Remove before Go Live");
+
+                //TODO: Remove
+                switch (split.Account)
+                {
+                    case "3-CRU9033":
+                        rtValue.FinincialSegmentString = "3110-13U00-ADNO006-534101-40-000-0000000000-200504-0000-000000-000000";
+                        break;
+                    case "3-ADOIGAA":
+                        rtValue.FinincialSegmentString = "3110-13U00-ADNO003-534101-40-000-0000000000-200504-0000-000000-000000";
+                        break;
+                    case "3-CRUCECP":
+                        rtValue.FinincialSegmentString = "K30CRUCECP-TASK01-ADNO006-522400";
+                        rtValue.IsPPm = true;
+                        break;
+                    case "3-IPFFPR3":
+                        rtValue.FinincialSegmentString = "K30IPFFPR3-TASK01-ADNO006-522400";
+                        rtValue.IsPPm = true;
+                        break;
+                    case "P-9530101":
+                        rtValue.FinincialSegmentString = "KP0953010U-301001-ADNO001-525900";
+                        rtValue.IsPPm = true;
+                        break;
+                    default:
+                        lookupInAe = true;
+                        break;
+                }
+
+                if (!lookupInAe)
+                {
+                    return rtValue;
+                }
+            }
+            
             var distributionResult = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, account, split.SubAccount);
             var distributionData = distributionResult.ReadData();
             if (distributionData.KfsConvertAccount.GlSegments != null)
             {
-                rtValue.FinincialSegmentString = new GlSegments(distributionData.KfsConvertAccount.GlSegments).ToSegmentString();
+                var tempGlSegments = new GlSegments(distributionData.KfsConvertAccount.GlSegments);
+                if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
+                {
+                    //770000
+                    Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                    tempGlSegments.Account = _options.DefaultNaturalAccount;
+                }
+                rtValue.FinincialSegmentString = tempGlSegments.ToSegmentString();
             }
             else
             {
                 if (distributionData.KfsConvertAccount.PpmSegments != null)
                 {
                     rtValue.IsPPm = true;
-                    rtValue.FinincialSegmentString = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments).ToSegmentString();
+                    var tempPpmSegments = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments);
+                    if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
+                    {
+                        //770000
+                        Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                        tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                    }
+                    rtValue.FinincialSegmentString = tempPpmSegments.ToSegmentString();
                 }
                 else
                 {
                     //TODO: REMOVE THIS!!!!
                     Log.Error("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
-                    rtValue.FinincialSegmentString = "3110-13U02-ADNO006-000000-43-000-0000000000-000000-0000-000000-000000";
+                    rtValue.FinincialSegmentString = $"3110-13U02-ADNO006-{_options.DefaultNaturalAccount}-43-000-0000000000-000000-0000-000000-000000";
                 }
             }
             return rtValue;

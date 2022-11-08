@@ -30,6 +30,8 @@ class Program : WebJobBase
         catch (Exception ex)
         {
             Log.Error(ex, "FAILED: Aggie Enterprise Purchasing Categories failed because {0}", ex.Message);
+
+            throw; // rethrow the exception so the job fails
         }
     }
 
