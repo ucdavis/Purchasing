@@ -23,6 +23,8 @@ using IdAndName = Purchasing.Core.Services.IdAndName;
 using Microsoft.AspNetCore.Http;
 using Purchasing.Core.Services;
 using System.Threading.Tasks;
+using Serilog;
+using Purchasing.Core.Helpers;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -392,10 +394,12 @@ namespace Purchasing.Mvc.Controllers
 
             var workgroupAccountToCreate = new WorkgroupAccount() {Workgroup = workgroup};
             //_mapper.Map(workgroupAccount, workgroupAccountToCreate); //Mapper was causing me an exception JCS
-            workgroupAccountToCreate.Account        = workgroupAccount.Account;
-            workgroupAccountToCreate.AccountManager = workgroupAccount.AccountManager;
-            workgroupAccountToCreate.Approver       = workgroupAccount.Approver;
-            workgroupAccountToCreate.Purchaser      = workgroupAccount.Purchaser;
+            workgroupAccountToCreate.Account                = workgroupAccount.Account;
+            workgroupAccountToCreate.AccountManager         = workgroupAccount.AccountManager;
+            workgroupAccountToCreate.Approver               = workgroupAccount.Approver;
+            workgroupAccountToCreate.Purchaser              = workgroupAccount.Purchaser;
+            workgroupAccountToCreate.Name                   = workgroupAccount.Name;
+            workgroupAccountToCreate.FinancialSegmentString = workgroupAccount.FinancialSegmentString;
 
 
             ModelState.Clear();
@@ -467,7 +471,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="accountId"> Workgroup Account Id</param>
         /// <returns></returns>
-        public ActionResult EditAccount(int id, int accountId)
+        public async Task<ActionResult> EditAccount(int id, int accountId)
         {
             var account = _workgroupAccountRepository.GetNullableById(accountId);
 
@@ -484,6 +488,24 @@ namespace Purchasing.Mvc.Controllers
             }
 
             var viewModel = WorkgroupAccountModel.Create(Repository, account.Workgroup, account);
+            if (string.IsNullOrWhiteSpace(viewModel.WorkgroupAccount.Name))
+            {
+                viewModel.WorkgroupAccount.Name = $"{viewModel.WorkgroupAccount.GetName} ({viewModel.WorkgroupAccount.GetAccount})".SafeTruncate(64);
+            }
+            
+            if (string.IsNullOrWhiteSpace(viewModel.WorkgroupAccount.FinancialSegmentString))
+            {
+                //Lookup.
+                try
+                {
+                    viewModel.WorkgroupAccount.FinancialSegmentString = await _aggieEnterpriseService.ConvertKfsAccount(viewModel.WorkgroupAccount.Account);
+                    Message = "CCOA was defaulted from KFS. Please review, edit, and save.";
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error getting financial segment string from Aggie Enterprise Service");
+                }
+            }
             return View(viewModel);
         }
 
@@ -515,17 +537,41 @@ namespace Purchasing.Mvc.Controllers
             //accountToEdit.Account = workgroupAccount.Account;
             accountToEdit.AccountManager = workgroupAccount.AccountManager;
             accountToEdit.Approver = workgroupAccount.Approver;
-            accountToEdit.Purchaser = workgroupAccount.Purchaser;            
+            accountToEdit.Purchaser = workgroupAccount.Purchaser;
+            accountToEdit.Name = workgroupAccount.Name;
+            accountToEdit.FinancialSegmentString = workgroupAccount.FinancialSegmentString;
 
-           // _mapper.Map(workgroupAccount, accountToEdit); //I was getting an exception on test, planet express workgroup when using the mapper. JCS
+            // _mapper.Map(workgroupAccount, accountToEdit); //I was getting an exception on test, planet express workgroup when using the mapper. JCS
 
             ModelState.Clear();
             accountToEdit.TransferValidationMessagesTo(ModelState);
 
-            if(_workgroupAccountRepository.Queryable.Any(a => a.Id != accountToEdit.Id &&  a.Workgroup.Id == accountToEdit.Workgroup.Id && a.Account.Id == accountToEdit.Account.Id ))
+            //If we need to support both this and AE, we will need a flag here
+            //if(_workgroupAccountRepository.Queryable.Any(a => a.Id != accountToEdit.Id &&  a.Workgroup.Id == accountToEdit.Workgroup.Id && a.Account.Id == accountToEdit.Account.Id ))
+            //{
+            //    ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
+            //}
+
+            if (string.IsNullOrWhiteSpace(workgroupAccount.FinancialSegmentString))
+            {
+                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CCOA is required");
+            }
+            if (string.IsNullOrWhiteSpace(workgroupAccount.Name))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Name", "Name is required");
+            }
+
+            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray();
+
+            if (workgroupAccounts.Any(a => a.Id != accountToEdit.Id && a.Account != null && a.Account.Id == accountToEdit.Account.Id))
             {
                 ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
             }
+            if (workgroupAccounts.Any(a => a.Id != accountToEdit.Id && a.Name != null && a.Account.Name.Equals(accountToEdit.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
+            }
+
 
             if (ModelState.IsValid)
             {

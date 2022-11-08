@@ -13,24 +13,30 @@
 
             <div class="section-text">
                 <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+                <p>Note! The natural account portion of the CCOA needs to be non-zeros, but this part of the CCOA will be overridden in Oracle based on the Purchasing Category (Commodity) selected.  </p>
             </div>
 
             <ul>
                  <li>
-		            <div class="editor-label">
+		            <div class="editor-label required">
                         @Html.LabelFor(x => x.WorkgroupAccount.Name)
+						<span>*</span>
 					</div>
 					<div class="editor-field">
-						@Html.TextBox("WorkgroupAccount.Name", Model.WorkgroupAccount.Name != null ? Model.WorkgroupAccount.Name : string.Empty, new {placeholder="Account name"})
+						@Html.TextBox("WorkgroupAccount.Name", Model.WorkgroupAccount.Name != null ? Model.WorkgroupAccount.Name : string.Empty, new {@class="wide600", placeholder="Account name"})
                         @Html.ValidationMessageFor(x => x.WorkgroupAccount.Name)
 					</div>
 				</li>
 				<li>
-					<div class="editor-label">
+					<div class="editor-label required">
 						@Html.LabelFor(x => x.WorkgroupAccount.FinancialSegmentString)
+						<span>*</span>
 					</div>
-					<div class="editor-field">
-						@Html.TextBox("WorkgroupAccount.FinancialSegmentString", Model.WorkgroupAccount.FinancialSegmentString != null ? Model.WorkgroupAccount.FinancialSegmentString : string.Empty, new {placeholder="Financial Segment String"})
+					<div class="editor-field input-group">
+						@Html.TextBox("WorkgroupAccount.FinancialSegmentString", Model.WorkgroupAccount.FinancialSegmentString != null ? Model.WorkgroupAccount.FinancialSegmentString : string.Empty, new {@class="wide500", placeholder="Financial Segment String"})
+						<span class="input-group-btn">
+							<button id="ccoa-picker" class="btn" type="button">CCOA Picker</button>
+						</span>
 						@Html.ValidationMessageFor(x => x.WorkgroupAccount.FinancialSegmentString)
 					</div>
 				</li>
