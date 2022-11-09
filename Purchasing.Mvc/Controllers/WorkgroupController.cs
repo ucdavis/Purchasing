@@ -411,7 +411,10 @@ namespace Purchasing.Mvc.Controllers
 
             if(workgroupAccountToCreate.Account == null)
             {
-                workgroupAccountToCreate.Account = _repositoryFactory.AccountRepository.GetNullableById(account_search);
+                if (!string.IsNullOrWhiteSpace(account_search))
+                {
+                    workgroupAccountToCreate.Account = _repositoryFactory.AccountRepository.GetNullableById(account_search);
+                }
             }
 
             if(workgroupAccountToCreate.Account == null)
@@ -421,7 +424,7 @@ namespace Purchasing.Mvc.Controllers
             }
             else
             {
-                if (_workgroupAccountRepository.Queryable.Any(a => a.Workgroup.Id == workgroup.Id && a.Account.Id == workgroupAccountToCreate.Account.Id))
+                if (workgroupAccounts.Any(a => a.Account != null && a.Account.Id == workgroupAccountToCreate.Account.Id))
                 {
                     ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
                 }
@@ -445,7 +448,7 @@ namespace Purchasing.Mvc.Controllers
             }
             else
             {
-                if (workgroupAccounts.Any(a => a.Account.Name.Equals(workgroupAccountToCreate.Name, StringComparison.OrdinalIgnoreCase)))
+                if (workgroupAccounts.Any(a => a.Name != null && a.Name.Equals(workgroupAccountToCreate.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
                 }
@@ -460,7 +463,7 @@ namespace Purchasing.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 Message = "Workgroup account saved.";
-                if (workgroupAccounts.Any(a => a.FinancialSegmentString.Equals(workgroupAccountToCreate.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
+                if (workgroupAccounts.Any(a => a.FinancialSegmentString != null &&  a.FinancialSegmentString.Equals(workgroupAccountToCreate.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
                 {
                     Message = $"{Message} -- Warning!!! CCOA already exists for this workgroup";
                 }
@@ -608,7 +611,7 @@ namespace Purchasing.Mvc.Controllers
             }
             else
             {
-                if (workgroupAccounts.Any(a => a.Account.Name.Equals(accountToEdit.Name, StringComparison.OrdinalIgnoreCase)))
+                if (workgroupAccounts.Any(a => a.Name != null && a.Name.Equals(accountToEdit.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
                 }
@@ -626,7 +629,7 @@ namespace Purchasing.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 Message = "Workgroup account has been updated.";
-                if (workgroupAccounts.Any(a => a.FinancialSegmentString.Equals(accountToEdit.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
+                if (workgroupAccounts.Any(a => a.FinancialSegmentString != null && a.FinancialSegmentString.Equals(accountToEdit.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
                 {
                     Message = $"{Message} -- Warning!!! CCOA already exists for this workgroup";
                 }
