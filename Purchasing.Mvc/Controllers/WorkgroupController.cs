@@ -363,7 +363,7 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(Details), new { id = id });
             }
 
-            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
+            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup); //TODO: Remove accounts and just have CCOA?
 
             return View(viewModel);
         }
@@ -376,7 +376,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="workgroupAccount">Workgroup Account Model</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult AddAccount(int id, WorkgroupAccount workgroupAccount, string account_search)
+        public async Task<ActionResult> AddAccount(int id, WorkgroupAccount workgroupAccount, string account_search)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -391,6 +391,8 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(Details), new { id = id });
             }
 
+            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray(); //All workgroup accounts
+
 
             var workgroupAccountToCreate = new WorkgroupAccount() {Workgroup = workgroup};
             //_mapper.Map(workgroupAccount, workgroupAccountToCreate); //Mapper was causing me an exception JCS
@@ -398,12 +400,14 @@ namespace Purchasing.Mvc.Controllers
             workgroupAccountToCreate.AccountManager         = workgroupAccount.AccountManager;
             workgroupAccountToCreate.Approver               = workgroupAccount.Approver;
             workgroupAccountToCreate.Purchaser              = workgroupAccount.Purchaser;
-            workgroupAccountToCreate.Name                   = workgroupAccount.Name;
-            workgroupAccountToCreate.FinancialSegmentString = workgroupAccount.FinancialSegmentString;
+            workgroupAccountToCreate.Name                   = workgroupAccount.Name?.Trim();
+            workgroupAccountToCreate.FinancialSegmentString = workgroupAccount.FinancialSegmentString?.Trim()?.ToUpper();
 
 
             ModelState.Clear();
             //workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
+
+            
 
             if(workgroupAccountToCreate.Account == null)
             {
@@ -412,7 +416,8 @@ namespace Purchasing.Mvc.Controllers
 
             if(workgroupAccountToCreate.Account == null)
             {
-                ModelState.AddModelError("WorkgroupAccount.Account", "Account not found");
+                //ModelState.AddModelError("WorkgroupAccount.Account", "Account not found");
+                // Ok, not required
             }
             else
             {
@@ -422,15 +427,45 @@ namespace Purchasing.Mvc.Controllers
                 }
             }
 
-            if(ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(workgroupAccountToCreate.FinancialSegmentString))
+            {
+                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CCOA is required");
+            }
+            else
+            {
+                var accountValid = await _aggieEnterpriseService.ValidateAccount(workgroupAccountToCreate.FinancialSegmentString);
+                if (!accountValid.IsValid)
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", accountValid.Message);
+                }
+            }
+            if (string.IsNullOrWhiteSpace(workgroupAccountToCreate.Name))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Name", "Name is required");
+            }
+            else
+            {
+                if (workgroupAccounts.Any(a => a.Account.Name.Equals(workgroupAccountToCreate.Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
+                }
+            }
+
+
+            if (ModelState.IsValid)
             {
                 workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
             }
 
             if (ModelState.IsValid)
             {
-                _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
                 Message = "Workgroup account saved.";
+                if (workgroupAccounts.Any(a => a.FinancialSegmentString.Equals(workgroupAccountToCreate.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Message = $"{Message} -- Warning!!! CCOA already exists for this workgroup";
+                }
+                _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
+                
                 //return this.RedirectToAction("Accounts", new {id = id});
                 return this.RedirectToAction(nameof(Accounts), new { id = id });
             }
@@ -547,8 +582,8 @@ namespace Purchasing.Mvc.Controllers
             accountToEdit.TransferValidationMessagesTo(ModelState);
 
 
-            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray();
-            
+            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id && a.Id != accountToEdit.Id).ToArray(); //All wg accounts except the one being edited
+
             //If we need to support both this and AE, we will need a flag here
             //if(_workgroupAccountRepository.Queryable.Any(a => a.Id != accountToEdit.Id &&  a.Workgroup.Id == accountToEdit.Workgroup.Id && a.Account.Id == accountToEdit.Account.Id ))
             //{
@@ -573,7 +608,7 @@ namespace Purchasing.Mvc.Controllers
             }
             else
             {
-                if (workgroupAccounts.Any(a => a.Id != accountToEdit.Id && a.Account.Name.Equals(accountToEdit.Name, StringComparison.OrdinalIgnoreCase)))
+                if (workgroupAccounts.Any(a => a.Account.Name.Equals(accountToEdit.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
                 }
@@ -581,7 +616,7 @@ namespace Purchasing.Mvc.Controllers
 
             
 
-            if (workgroupAccounts.Any(a => a.Id != accountToEdit.Id && a.Account != null && a.Account.Id == accountToEdit.Account.Id))
+            if (workgroupAccounts.Any(a => a.Account != null && a.Account.Id == accountToEdit.Account.Id))
             {
                 ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
             }
@@ -590,8 +625,14 @@ namespace Purchasing.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                _workgroupAccountRepository.EnsurePersistent(accountToEdit);
                 Message = "Workgroup account has been updated.";
+                if (workgroupAccounts.Any(a => a.FinancialSegmentString.Equals(accountToEdit.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Message = $"{Message} -- Warning!!! CCOA already exists for this workgroup";
+                }
+
+                _workgroupAccountRepository.EnsurePersistent(accountToEdit);
+                
                 //return RedirectToAction("Accounts", new { id = accountToEdit.Workgroup.Id });
                 return this.RedirectToAction(nameof(Accounts), new { id = accountToEdit.Workgroup.Id });
             }
