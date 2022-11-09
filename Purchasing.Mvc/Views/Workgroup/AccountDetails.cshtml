@@ -28,7 +28,14 @@
             <div class=display-details>@(Model.WorkgroupAccount.Purchaser != null ? Model.WorkgroupAccount.Purchaser.FullName : "n/a")</div>
         </li>
 	</ul>
-    @if(Model.AccountValidationModel.Details.Any()){
+
+</section>
+
+@if (Model.AccountValidationModel.Details.Any())
+{
+    <section class="display-form ui-corner-all">
+        <header class="ui-corner-top ui-widget-header">@(Model.AccountValidationModel.IsPpm ? "PPM/POET Account" : "General Ledger Account")</header>
+
         <ul>
             @foreach (var detail in Model.AccountValidationModel.Details)
             {
@@ -38,10 +45,7 @@
                 </li>
             }
         </ul>
-    }
-
-	
-
-</section>
+    </section>
+}
 
 
