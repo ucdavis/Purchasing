@@ -36,9 +36,9 @@
 						@Html.TextBox("WorkgroupAccount.FinancialSegmentString", Model.WorkgroupAccount.FinancialSegmentString != null ? Model.WorkgroupAccount.FinancialSegmentString : string.Empty, new {@class="wide500", placeholder="Financial Segment String"})
 						<span class="input-group-btn">
 							<button id="ccoa-picker" class="btn" type="button">CCOA Picker</button>
-						</span>
-						@Html.ValidationMessageFor(x => x.WorkgroupAccount.FinancialSegmentString)
+						</span>						
 					</div>
+                    @Html.ValidationMessageFor(x => x.WorkgroupAccount.FinancialSegmentString)
 				</li>
                 <li>
 		            <div class="editor-label">

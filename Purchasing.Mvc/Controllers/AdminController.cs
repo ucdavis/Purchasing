@@ -683,11 +683,11 @@ namespace Purchasing.Mvc.Controllers
 
         public async Task<ActionResult> TestAe(string id)
         {
-            var isValid  = await _aggieEnterpriseService.IsAccountValid(id);
+            var isValid  = await _aggieEnterpriseService.ValidateAccount(id);
 
 
 
-            return Content(isValid.ToString());
+            return Content(isValid.IsValid.ToString());
         }
 
         public ActionResult TestEmail()

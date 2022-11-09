@@ -518,7 +518,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="workgroupAccount"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditAccount(int id, int accountId, WorkgroupAccount workgroupAccount)
+        public async Task<ActionResult> EditAccount(int id, int accountId, WorkgroupAccount workgroupAccount)
         {
             var accountToEdit = _workgroupAccountRepository.GetNullableById(accountId);
 
@@ -538,39 +538,54 @@ namespace Purchasing.Mvc.Controllers
             accountToEdit.AccountManager = workgroupAccount.AccountManager;
             accountToEdit.Approver = workgroupAccount.Approver;
             accountToEdit.Purchaser = workgroupAccount.Purchaser;
-            accountToEdit.Name = workgroupAccount.Name;
-            accountToEdit.FinancialSegmentString = workgroupAccount.FinancialSegmentString;
+            accountToEdit.Name = workgroupAccount.Name?.Trim();
+            accountToEdit.FinancialSegmentString = workgroupAccount.FinancialSegmentString?.Trim()?.ToUpper();
 
             // _mapper.Map(workgroupAccount, accountToEdit); //I was getting an exception on test, planet express workgroup when using the mapper. JCS
 
             ModelState.Clear();
             accountToEdit.TransferValidationMessagesTo(ModelState);
 
+
+            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray();
+            
             //If we need to support both this and AE, we will need a flag here
             //if(_workgroupAccountRepository.Queryable.Any(a => a.Id != accountToEdit.Id &&  a.Workgroup.Id == accountToEdit.Workgroup.Id && a.Account.Id == accountToEdit.Account.Id ))
             //{
             //    ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
             //}
 
-            if (string.IsNullOrWhiteSpace(workgroupAccount.FinancialSegmentString))
+            if (string.IsNullOrWhiteSpace(accountToEdit.FinancialSegmentString))
             {
                 ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CCOA is required");
             }
-            if (string.IsNullOrWhiteSpace(workgroupAccount.Name))
+            else
+            {
+                var accountValid = await _aggieEnterpriseService.ValidateAccount(accountToEdit.FinancialSegmentString);
+                if (!accountValid.IsValid)
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", accountValid.Message);
+                }
+            }
+            if (string.IsNullOrWhiteSpace(accountToEdit.Name))
             {
                 ModelState.AddModelError("WorkgroupAccount.Name", "Name is required");
             }
+            else
+            {
+                if (workgroupAccounts.Any(a => a.Id != accountToEdit.Id && a.Account.Name.Equals(accountToEdit.Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
+                }
+            }
 
-            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray();
+            
 
             if (workgroupAccounts.Any(a => a.Id != accountToEdit.Id && a.Account != null && a.Account.Id == accountToEdit.Account.Id))
             {
                 ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
             }
-            if (workgroupAccounts.Any(a => a.Id != accountToEdit.Id && a.Name != null && a.Account.Name.Equals(accountToEdit.Name, StringComparison.OrdinalIgnoreCase)))
-            {
-                ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
-            }
+
 
 
             if (ModelState.IsValid)

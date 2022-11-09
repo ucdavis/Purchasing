@@ -12,13 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using static Purchasing.Core.Services.AggieEnterpriseService;
 
 namespace Purchasing.Core.Services
 {
     public interface IAggieEnterpriseService
     {
-        Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true);
+        Task<AccountValidationModel> ValidateAccount(string financialSegmentString, bool validateCVRs = true);
 
         Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb);
         Task<AeResultStatus> LookupOrderStatus(string requestId);
@@ -52,8 +53,9 @@ namespace Purchasing.Core.Services
             _repositoryFactory = repositoryFactory;
         }
 
-        public async Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true)
+        public async Task<AccountValidationModel> ValidateAccount(string financialSegmentString, bool validateCVRs = true)
         {
+            var rtValue = new AccountValidationModel();
             var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(financialSegmentString);
 
             if (segmentStringType == FinancialChartStringType.Gl)
@@ -62,10 +64,17 @@ namespace Purchasing.Core.Services
 
                 var data = result.ReadData();
 
-                var isValid = data.GlValidateChartstring.ValidationResponse.Valid;
+                rtValue.IsValid = data.GlValidateChartstring.ValidationResponse.Valid;
 
+                if (!rtValue.IsValid)
+                {
+                    foreach (var err in data.GlValidateChartstring.ValidationResponse.ErrorMessages)
+                    {
+                        rtValue.Messages.Add(err);
+                    }
+                }
 
-                return isValid;
+                return rtValue;
             }
 
             if (segmentStringType == FinancialChartStringType.Ppm)
@@ -74,14 +83,29 @@ namespace Purchasing.Core.Services
 
                 var data = result.ReadData();
 
-                var isValid = data.PpmStringSegmentsValidate.ValidationResponse.Valid;
+                rtValue.IsValid = data.PpmStringSegmentsValidate.ValidationResponse.Valid;
+                if (!rtValue.IsValid)
+                {
+                    foreach (var err in data.PpmStringSegmentsValidate.ValidationResponse.ErrorMessages)
+                    {
+                        rtValue.Messages.Add(err);
+                    }
+                }
 
-                return isValid;
+                return rtValue;
+            }
+
+            if(segmentStringType == FinancialChartStringType.Invalid)
+            {
+                {
+                    rtValue.Messages.Add("Invalid Financial Chart String format");
+                    rtValue.IsValid = false;
+                }
             }
 
 
-
-            return false;
+            rtValue.IsValid = false;
+            return rtValue; //It isn't a GL or PPM string, so it's not valid
         }
 
         public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb)
