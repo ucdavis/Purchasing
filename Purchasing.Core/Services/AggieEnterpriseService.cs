@@ -65,6 +65,7 @@ namespace Purchasing.Core.Services
                 var data = result.ReadData();
 
                 rtValue.IsValid = data.GlValidateChartstring.ValidationResponse.Valid;
+                rtValue.IsPpm = false;
 
                 if (!rtValue.IsValid)
                 {
@@ -73,6 +74,16 @@ namespace Purchasing.Core.Services
                         rtValue.Messages.Add(err);
                     }
                 }
+                rtValue.Details.Add(new KeyValuePair<string, string>("Entity", $"{data.GlValidateChartstring.SegmentNames.EntityName} ({data.GlValidateChartstring.Segments.Entity})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Fund", $"{data.GlValidateChartstring.SegmentNames.FundName} ({data.GlValidateChartstring.Segments.Fund})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Department", $"{data.GlValidateChartstring.SegmentNames.DepartmentName} ({data.GlValidateChartstring.Segments.Department})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Account", $"{data.GlValidateChartstring.SegmentNames.AccountName} ({data.GlValidateChartstring.Segments.Account})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Purpose", $"{data.GlValidateChartstring.SegmentNames.PurposeName} ({data.GlValidateChartstring.Segments.Purpose})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Project", $"{data.GlValidateChartstring.SegmentNames.ProjectName} ({data.GlValidateChartstring.Segments.Project})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Program", $"{data.GlValidateChartstring.SegmentNames.ProgramName} ({data.GlValidateChartstring.Segments.Program})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Activity", $"{data.GlValidateChartstring.SegmentNames.ActivityName} ({data.GlValidateChartstring.Segments.Activity})"));
+                
+                
 
                 return rtValue;
             }
@@ -84,6 +95,7 @@ namespace Purchasing.Core.Services
                 var data = result.ReadData();
 
                 rtValue.IsValid = data.PpmStringSegmentsValidate.ValidationResponse.Valid;
+                rtValue.IsPpm = true;
                 if (!rtValue.IsValid)
                 {
                     foreach (var err in data.PpmStringSegmentsValidate.ValidationResponse.ErrorMessages)

@@ -25,6 +25,7 @@ using Purchasing.Core.Services;
 using System.Threading.Tasks;
 using Serilog;
 using Purchasing.Core.Helpers;
+using Purchasing.Core.Models.AggieEnterprise;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -484,8 +485,11 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="accountId">Workgroup Account Id</param>
         /// <returns></returns>
-        public ActionResult AccountDetails(int id, int accountId)
+        public async Task<ActionResult> AccountDetails(int id, int accountId)
         {
+            var model = new WorkgroupAccountDetails();
+            model.AccountValidationModel = new AccountValidationModel();
+            
             var account = _workgroupAccountRepository.GetNullableById(accountId);
 
             if (account == null)
@@ -499,7 +503,13 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
             }
 
-            return View(account);
+            model.WorkgroupAccount = account;
+            if (!string.IsNullOrWhiteSpace(account.FinancialSegmentString))
+            {
+                model.AccountValidationModel = await _aggieEnterpriseService.ValidateAccount(account.FinancialSegmentString);
+            }
+
+            return View(model);
         }
 
         /// <summary>

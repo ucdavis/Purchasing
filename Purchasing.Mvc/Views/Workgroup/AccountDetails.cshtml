@@ -1,4 +1,4 @@
-﻿@model Purchasing.Core.Domain.WorkgroupAccount
+﻿@model Purchasing.Mvc.Models.WorkgroupAccountDetails
 
 @{
     ViewBag.Title = "Account Details";
@@ -7,27 +7,38 @@
 @section SubNav
 {
 	<ul class="navigation">
-			<li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.Workgroup.Id, accountid = Model.Id }, new { @class = "button" }) </li>
-			<li>@Html.ActionLink("Back to List", "Accounts", new { id = Model.Workgroup.Id }, new { @class = "button" })</li>
+        <li>@Html.ActionLink("Edit", "EditAccount", new { id = Model.WorkgroupAccount.Workgroup.Id, accountid = Model.WorkgroupAccount.Id }, new { @class = "button" }) </li>
+        <li>@Html.ActionLink("Back to List", "Accounts", new { id = Model.WorkgroupAccount.Workgroup.Id }, new { @class = "button" })</li>
 		</ul>
 }
 
 <section class="display-form ui-corner-all">
-    <header class="ui-corner-top ui-widget-header">Account: @Model.GetName (@Model.GetAccount)</header>
+        <header class="ui-corner-top ui-widget-header">Account: @Model.WorkgroupAccount.GetName (@Model.WorkgroupAccount.GetAccount)</header>
 	<ul>
         <li>
-            <div class="display-label">@Html.LabelFor(x => x.Approver)</div>
-            <div class="display-details">@(Model.Approver != null ? Model.Approver.FullName : "n/a")</div>
+            <div class="display-label">@Html.LabelFor(x => x.WorkgroupAccount.Approver)</div>
+            <div class="display-details">@(Model.WorkgroupAccount.Approver != null ? Model.WorkgroupAccount.Approver.FullName : "n/a")</div>
         </li>
         <li>
-            <div class="display-label">@Html.LabelFor(x => x.AccountManager)</div>
-            <div class="display-details">@(Model.AccountManager != null ? Model.AccountManager.FullName : "n/a")</div>
+            <div class="display-label">@Html.LabelFor(x => x.WorkgroupAccount.AccountManager)</div>
+            <div class="display-details">@(Model.WorkgroupAccount.AccountManager != null ? Model.WorkgroupAccount.AccountManager.FullName : "n/a")</div>
         </li>
         <li>
-            <div class="display-label">@Html.LabelFor(x => x.Purchaser)</div>
-            <div class=display-details>@(Model.Purchaser != null ? Model.Purchaser.FullName : "n/a")</div>
+            <div class="display-label">@Html.LabelFor(x => x.WorkgroupAccount.Purchaser)</div>
+            <div class=display-details>@(Model.WorkgroupAccount.Purchaser != null ? Model.WorkgroupAccount.Purchaser.FullName : "n/a")</div>
         </li>
 	</ul>
+    @if(Model.AccountValidationModel.Details.Any()){
+        <ul>
+            @foreach (var detail in Model.AccountValidationModel.Details)
+            {
+                <li>
+                    <div class="display-label">@detail.Key</div>
+                    <div class=display-details>@(detail.Value != null ? detail.Value : "n/a")</div>
+                </li>
+            }
+        </ul>
+    }
 
 	
 
