@@ -619,7 +619,7 @@ namespace Purchasing.Mvc.Controllers
 
             
 
-            if (workgroupAccounts.Any(a => a.Account != null && a.Account.Id == accountToEdit.Account.Id))
+            if (accountToEdit.Account != null && workgroupAccounts.Any(a => a.Account != null && a.Account.Id == accountToEdit.Account.Id))
             {
                 ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
             }
