@@ -23,9 +23,9 @@
 						<span>*</span>
 					</div>
 					<div class="editor-field">
-						@Html.TextBox("WorkgroupAccount.Name", Model.WorkgroupAccount.Name != null ? Model.WorkgroupAccount.Name : string.Empty, new {@class="wide600", placeholder="Account name"})
-                        @Html.ValidationMessageFor(x => x.WorkgroupAccount.Name)
+						@Html.TextBox("WorkgroupAccount.Name", Model.WorkgroupAccount.Name != null ? Model.WorkgroupAccount.Name : string.Empty, new {@class="wide600", placeholder="Account name"})                        
 					</div>
+                    @Html.ValidationMessageFor(x => x.WorkgroupAccount.Name)
 				</li>
 				<li>
 					<div class="editor-label required">
