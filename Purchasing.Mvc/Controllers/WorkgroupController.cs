@@ -433,7 +433,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (string.IsNullOrWhiteSpace(workgroupAccountToCreate.FinancialSegmentString))
             {
-                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CCOA is required");
+                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA is required");
             }
             else
             {
@@ -466,7 +466,7 @@ namespace Purchasing.Mvc.Controllers
                 Message = "Workgroup account saved.";
                 if (workgroupAccounts.Any(a => a.FinancialSegmentString != null &&  a.FinancialSegmentString.Equals(workgroupAccountToCreate.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
                 {
-                    Message = $"{Message} -- Warning!!! CCOA already exists for this workgroup";
+                    Message = $"{Message} -- Warning!!! CoA already exists for this workgroup";
                 }
                 _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
 
@@ -547,7 +547,7 @@ namespace Purchasing.Mvc.Controllers
                 try
                 {
                     viewModel.WorkgroupAccount.FinancialSegmentString = await _aggieEnterpriseService.ConvertKfsAccount(viewModel.WorkgroupAccount.Account);
-                    Message = "CCOA was defaulted from KFS. Please review, edit, and save.";
+                    Message = "CoA was defaulted from KFS. Please review, edit, and save.";
                 }
                 catch (Exception ex)
                 {
@@ -605,7 +605,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (string.IsNullOrWhiteSpace(accountToEdit.FinancialSegmentString))
             {
-                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CCOA is required");
+                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA is required");
             }
             else
             {
@@ -641,7 +641,7 @@ namespace Purchasing.Mvc.Controllers
                 Message = "Workgroup account has been updated.";
                 if (workgroupAccounts.Any(a => a.FinancialSegmentString != null && a.FinancialSegmentString.Equals(accountToEdit.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
                 {
-                    Message = $"{Message} -- Warning!!! CCOA already exists for this workgroup";
+                    Message = $"{Message} -- Warning!!! CoA already exists for this workgroup";
                 }
 
                 _workgroupAccountRepository.EnsurePersistent(accountToEdit);
