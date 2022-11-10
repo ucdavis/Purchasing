@@ -469,9 +469,9 @@ namespace Purchasing.Mvc.Controllers
                     Message = $"{Message} -- Warning!!! CCOA already exists for this workgroup";
                 }
                 _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
-                
+
                 //return this.RedirectToAction("Accounts", new {id = id});
-                return this.RedirectToAction(nameof(Accounts), new { id = id });
+                return this.RedirectToAction(nameof(AccountDetails), new { id = id, accountId = workgroupAccountToCreate.Id });
             }
 
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccountToCreate);
@@ -645,9 +645,9 @@ namespace Purchasing.Mvc.Controllers
                 }
 
                 _workgroupAccountRepository.EnsurePersistent(accountToEdit);
-                
+
                 //return RedirectToAction("Accounts", new { id = accountToEdit.Workgroup.Id });
-                return this.RedirectToAction(nameof(Accounts), new { id = accountToEdit.Workgroup.Id });
+                return this.RedirectToAction(nameof(AccountDetails), new { id = accountToEdit.Workgroup.Id, accountId = accountToEdit.Id });
             }
 
             var viewModel = WorkgroupAccountModel.Create(Repository, accountToEdit.Workgroup, accountToEdit);

@@ -82,8 +82,14 @@ namespace Purchasing.Core.Services
                 rtValue.Details.Add(new KeyValuePair<string, string>("Project", $"{data.GlValidateChartstring.SegmentNames.ProjectName} ({data.GlValidateChartstring.Segments.Project})"));
                 rtValue.Details.Add(new KeyValuePair<string, string>("Program", $"{data.GlValidateChartstring.SegmentNames.ProgramName} ({data.GlValidateChartstring.Segments.Program})"));
                 rtValue.Details.Add(new KeyValuePair<string, string>("Activity", $"{data.GlValidateChartstring.SegmentNames.ActivityName} ({data.GlValidateChartstring.Segments.Activity})"));
-                
-                
+
+                if (data.GlValidateChartstring.Warnings != null)
+                {
+                    foreach (var warn in data.GlValidateChartstring.Warnings)
+                    {
+                        rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
+                    }
+                }
 
                 return rtValue;
             }
@@ -110,8 +116,14 @@ namespace Purchasing.Core.Services
                 rtValue.Details.Add(new KeyValuePair<string, string>("Expenditure Type", data.PpmStringSegmentsValidate.Segments.ExpenditureType));
                 rtValue.Details.Add(new KeyValuePair<string, string>("Award", data.PpmStringSegmentsValidate.Segments.Award));
                 rtValue.Details.Add(new KeyValuePair<string, string>("Funding Source", data.PpmStringSegmentsValidate.Segments.FundingSource));
-                
-               
+
+                if (data.PpmStringSegmentsValidate.Warnings != null)
+                {
+                    foreach (var warn in data.PpmStringSegmentsValidate.Warnings)
+                    {
+                        rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
+                    }
+                }
 
                 return rtValue;
             }

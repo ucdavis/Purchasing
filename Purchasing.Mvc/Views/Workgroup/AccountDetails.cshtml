@@ -48,4 +48,20 @@
     </section>
 }
 
+@if (Model.AccountValidationModel.Warnings.Any())
+{
+    <section class="display-form ui-corner-all">
+        <header class="ui-corner-top ui-widget-header" style="color: red">WARNINGS!!!</header>
+
+        <ul>
+            @foreach (var detail in Model.AccountValidationModel.Warnings)
+            {
+                <li>
+                    <div class="display-label">@detail.Key</div>
+                    <div class=display-details>@(detail.Value != null ? detail.Value : "n/a")</div>
+                </li>
+            }
+        </ul>
+    </section>
+}
 
