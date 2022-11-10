@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
@@ -598,7 +598,7 @@ namespace Purchasing.Mvc.Controllers
 
             if (string.IsNullOrWhiteSpace(workgroupAccountToCreate.FinancialSegmentString))
             {
-                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA is required");
+                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA is required"); 
             }
             else
             {
