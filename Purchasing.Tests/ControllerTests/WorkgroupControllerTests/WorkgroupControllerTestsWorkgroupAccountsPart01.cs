@@ -8,6 +8,7 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Threading.Tasks;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -154,14 +155,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         #region AddAccount Post Tests
 
         [TestMethod]
-        public void TestAddAccountPostRedirectsIfWorkgroupNotFound()
+        public async Task TestAddAccountPostRedirectsIfWorkgroupNotFound()
         {
             #region Arrange
             new FakeWorkgroups(3, WorkgroupRepository);
             #endregion Arrange
 
             #region Act
-            Controller.AddAccount(4, new WorkgroupAccount(), null)
+            (await Controller.AddAccount(4, new WorkgroupAccount(), null))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -172,7 +173,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
 
         [TestMethod]
-        public void TestAddAccountPostRedirectsToAccountsWhenValid()
+        public async Task TestAddAccountPostRedirectsToAccountsWhenValid()
         {
             #region Arrange
             SetupDataForAccounts1();
@@ -183,12 +184,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupAccountToCreate.Approver.Id = "App";
             workgroupAccountToCreate.Purchaser.Id = "Purchase";
             WorkgroupAccount args = default;
-            Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()))
+            Mock.Get(WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()))
                 .Callback<WorkgroupAccount>(x => args = x);
             #endregion Arrange
 
             #region Act
-            var result = Controller.AddAccount(3, workgroupAccountToCreate, null)
+            var result = ( await Controller.AddAccount(3, workgroupAccountToCreate, null))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -198,7 +199,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Workgroup account saved.", Controller.Message);
 
             Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()));
- 
+
             Assert.IsNotNull(args);
             Assert.AreEqual(3, args.Workgroup.Id);
             Assert.AreEqual("Blah", args.Account.Id);
@@ -209,7 +210,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
         [TestMethod]
-        public void TestAddAccountPostReturnsViewWhenInvalid()
+        public async Task TestAddAccountPostReturnsViewWhenInvalid()
         {
             #region Arrange
             SetupDataForAccounts1();
@@ -220,18 +221,19 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             workgroupAccountToCreate.AccountManager.Id = "AccMan";
             workgroupAccountToCreate.Approver.Id = "App";
             workgroupAccountToCreate.Purchaser.Id = "Purchase";
+            workgroupAccountToCreate.Name = null; //This will cause error as account is now nullable and name is required
 
             new FakeAccounts(0, AccountRepository);
             #endregion Arrange
 
             #region Act
-            var result = Controller.AddAccount(3, workgroupAccountToCreate, null)
+            var result = (await Controller.AddAccount(3, workgroupAccountToCreate, null))
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccountModel>();
             #endregion Act
 
             #region Assert
-            Controller.ModelState.AssertErrorsAre("Account not found");
+            Controller.ModelState.AssertErrorsAre("Name is required");
             Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()), Times.Never());
 
             Assert.IsNotNull(result);

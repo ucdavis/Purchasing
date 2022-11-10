@@ -7,6 +7,7 @@ using Purchasing.Mvc.Helpers;
 using UCDArch.Web.Attributes;
 using VersionAttribute = Purchasing.Mvc.Attributes.VersionAttribute;
 using Purchasing.Tests.Extensions;
+using System.Runtime.CompilerServices;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -686,12 +687,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Act
             var element = controllerMethod.ElementAt(1);
             var expectedAttribute = element.GetFilteredCustomAttributes(true).OfType<HttpPostAttribute>();
+            var exp2 = element.GetFilteredCustomAttributes(true).OfType<AsyncStateMachineAttribute>();
             var allAttributes = element.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            Assert.AreEqual(1, exp2.Count(), "AsyncStateMachineAttribute not found");
+            Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
         }
 
@@ -711,7 +714,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(1, allAttributes.Count()); //Async
             #endregion Assert
         }
 
@@ -732,7 +735,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
 
@@ -752,7 +755,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(0, allAttributes.Count());
+            Assert.AreEqual(1, allAttributes.Count());
             #endregion Assert
         }
 

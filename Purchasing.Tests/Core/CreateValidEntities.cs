@@ -121,6 +121,8 @@ namespace Purchasing.Tests.Core
                 rtValue.Purchaser = new User();
             }
             rtValue.Account = new Account();
+            rtValue.Name = "Name" + counter.Extra();
+            rtValue.FinancialSegmentString = "3110-12100-ADNO034-522201-43-000-AR06046801-000000-0000-000000-000000";
             rtValue.Workgroup = new Workgroup();
 
             return rtValue;

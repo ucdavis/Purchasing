@@ -495,6 +495,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]",
                 "[System.ComponentModel.DisplayNameAttribute(\"CoA\")]"
             }));
+            expectedFields.Add(new NameAndType("GetAccount", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("GetName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
             {
