@@ -20,7 +20,7 @@ namespace Purchasing.Core.Domain
 
         [StringLength(64)] // 64 to hold account id and name (3-CRU9033: Account Name)
         public virtual string Name { get;set;}
-        [DisplayName("CCOA")]
+        [DisplayName("CoA")]
         [StringLength(128)]
         public virtual string FinancialSegmentString { get; set; }
 

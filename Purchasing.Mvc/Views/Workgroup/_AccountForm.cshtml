@@ -13,7 +13,7 @@
 
             <div class="section-text">
                 <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
-                <p>Note! The natural account portion of the CCOA needs to be non-zeros, but this part of the CCOA will be overridden in Oracle based on the Purchasing Category (Commodity) selected.  </p>
+                <p>Note! The natural account portion of the CoA needs to be non-zeros, but this part of the CoA will be overridden in Oracle based on the Purchasing Category (Commodity) selected.  </p>
             </div>
 
             <ul>
@@ -35,7 +35,7 @@
 					<div class="editor-field input-group">
 						@Html.TextBox("WorkgroupAccount.FinancialSegmentString", Model.WorkgroupAccount.FinancialSegmentString != null ? Model.WorkgroupAccount.FinancialSegmentString : string.Empty, new {@class="wide500", placeholder="Financial Segment String"})
 						<span class="input-group-btn">
-							<button id="ccoa-picker" class="btn" type="button">CCOA Picker</button>
+							<button id="ccoa-picker" class="btn" type="button">CoA Picker</button>
 						</span>						
 					</div>
                     @Html.ValidationMessageFor(x => x.WorkgroupAccount.FinancialSegmentString)

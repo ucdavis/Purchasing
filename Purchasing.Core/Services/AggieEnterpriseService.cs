@@ -398,7 +398,7 @@ namespace Purchasing.Core.Services
 
                 var lookupInAe = false;
 
-                Log.Error("Faking AE CCOA for specific account. Remove before Go Live");
+                Log.Error("Faking AE CoA for specific account. Remove before Go Live");
 
                 //TODO: Remove
                 switch (split.Account)

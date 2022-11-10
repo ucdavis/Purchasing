@@ -35,7 +35,7 @@ namespace Purchasing.Core.Domain
 
         [StringLength(64)]
         public virtual string Name { get; set; } //Have the name here?
-        [DisplayName("CCOA")]
+        [DisplayName("CoA")]
         [StringLength(128)]
         public virtual string FinancialSegmentString { get; set; }
 
