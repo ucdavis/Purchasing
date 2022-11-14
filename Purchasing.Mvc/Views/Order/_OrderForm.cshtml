@@ -7,9 +7,9 @@
 @Html.Hidden("formSaveId", @Guid.NewGuid().ToString())
 
 <select id="defaultAccounts" style="display:none;">
-    @foreach(var account in @Model.Accounts)
+    @foreach(var account in @Model.WorkgroupAccounts)
     {
-        <option value="@account.Id" title="@account.Name">@account.Id</option>
+        <option value="@account.Id" title="@account.GetAccount">@account.GetName</option>
     }
 </select>
 @await Html.PartialAsync("_Justification")

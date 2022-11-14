@@ -2018,6 +2018,7 @@ namespace Purchasing.Mvc.Controllers
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(model.Workgroup);
+            var allWorkgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == workgroup.Id).ToList();
 
             //TODO: automapper?
             order.Vendor = model.Vendor == 0 ? null : _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor);
@@ -2164,7 +2165,31 @@ namespace Purchasing.Mvc.Controllers
                 }
                 else if (model.SplitType == OrderViewModel.SplitTypes.None)
                 {
-                    order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                    //Try to cast the model.Account to an int to see if it is a workgroup account id
+                    //TODO: Do this logic other places (Splits/line splits)
+                    int workgroupAccountId = 0;
+                    int.TryParse(model.Account, out workgroupAccountId);
+                    if(workgroupAccountId != 0)
+                    {
+                        var wga = _repositoryFactory.WorkgroupAccountRepository.Queryable.Single(a => a.Id == workgroupAccountId);
+                        if (!string.IsNullOrWhiteSpace(wga.FinancialSegmentString))
+                        {
+                            order.AddSplit(new Split { Amount = order.Total(), FinancialSegmentString = wga.FinancialSegmentString, Name = wga.GetName });
+                        }
+                        else
+                        {
+                            order.AddSplit(new Split { Amount = order.Total(), Account = wga.Account.Id, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                        }
+                    }
+                    else
+                    {
+                        //Then this is probably a CoA
+                        //TODO: Test!!! no idea if this will really work.
+                        //TODO: Check if the CoA is in the workgroup accounts. If it isn't then we need to check about external account routing if that ever gets implemented.
+                        order.AddSplit(new Split { Amount = order.Total(), FinancialSegmentString = model.Account }); //Order with "no" splits get one split for the full amount
+                    }
+                    
+                    
                 }
 
                 order.TotalFromDb = order.Total();
@@ -2180,6 +2205,7 @@ namespace Purchasing.Mvc.Controllers
                 Workgroup = workgroup,
                 Units = _repositoryFactory.UnitOfMeasureRepository.Queryable.Cache().ToList(),
                 Accounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).Select(x => x.Account).ToList(),
+                WorkgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToList(),
                 Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).OrderBy(a => a.Name).ToList(),
                 Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).ToList(),
                 ShippingTypes = _repositoryFactory.ShippingTypeRepository.Queryable.Cache().ToList(),

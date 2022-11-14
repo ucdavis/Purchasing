@@ -182,9 +182,26 @@ namespace Purchasing.Mvc.Services
 
                 if (!string.IsNullOrWhiteSpace(accountId)) //if we route by account, use that for info
                 {
-                    //TODO: move this code to a private methods as very similar code is used elsewhere here.
-                    var workgroupAccount =
-                        _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId && x.Workgroup.Id == order.Workgroup.Id);
+                    WorkgroupAccount workgroupAccount;
+                    int workgroupAccountId = 0;
+                    int.TryParse(accountId, out workgroupAccountId);
+                    if (workgroupAccountId != 0)
+                    {
+                        workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.SingleOrDefault(a => a.Id == workgroupAccountId && a.Workgroup.Id == order.Workgroup.Id);                        
+                    }
+                    else
+                    {
+                        //TODO: move this code to a private methods as very similar code is used elsewhere here?
+                        workgroupAccount =
+                            _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId && x.Workgroup.Id == order.Workgroup.Id);
+                    }
+                    if(workgroupAccount == null)
+                    {
+                        //Not sure if this will work with the CoA picker logic yet to be done...
+                        workgroupAccount =
+                            _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Workgroup.Id == order.Workgroup.Id && x.FinancialSegmentString == accountId);
+                    }
+                    
 
                     approvalInfo.AccountId = accountId;
                     approvalInfo.IsExternal = (workgroupAccount == null); //if we can't find the account in the workgroup it is external
@@ -197,6 +214,7 @@ namespace Purchasing.Mvc.Services
                     }
                     else //account is not in the workgroup, even if we don't find the account, we will still use it
                     { 
+                        //TODO: Fix this to work with CoA
                         var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
 
                         approvalInfo.Approver = null;
@@ -206,7 +224,8 @@ namespace Purchasing.Mvc.Services
                         approvalInfo.Purchaser = null;
                     }
                     
-                    split.Account = accountId; //Assign the account to the split
+                    //Don't think we want to do this
+                    //split.Account = accountId; //Assign the account to the split
                 }
                 else //else stick with user provided values
                 {
@@ -218,6 +237,7 @@ namespace Purchasing.Mvc.Services
             }
             else //else order has multiple splits and each one needs an account
             {
+                //TODO: !!!!
                 foreach (var split in order.Splits)
                 {
                     //Try to find the account in the workgroup so we can route it by users
