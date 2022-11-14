@@ -2088,6 +2088,7 @@ namespace Purchasing.Mvc.Controllers
             if (includeLineItemsAndSplits)
             {
                 _bugTrackingService.CheckForClearedOutSubAccounts(order, model.Splits, model);
+                
 
                 decimal number;
                 order.EstimatedTax = decimal.TryParse(model.Tax != null ? model.Tax.TrimEnd('%') : null, out number) ? number : order.EstimatedTax;
@@ -2132,14 +2133,42 @@ namespace Purchasing.Mvc.Controllers
                             {
                                 if (split.IsValid())
                                 {
-                                    order.AddSplit(new Split
+                                    int workgroupAccountId = 0;
+                                    int.TryParse(split.Account, out workgroupAccountId);
+                                    if (workgroupAccountId != 0)
                                     {
-                                        Account = split.Account,
-                                        Amount = decimal.Parse(split.Amount),
-                                        LineItem = orderLineItem,
-                                        SubAccount = split.SubAccount,
-                                        Project = split.Project
-                                    });
+                                        var wga = allWorkgroupAccounts.Single(a => a.Id == workgroupAccountId);
+                                        if (!string.IsNullOrWhiteSpace(wga.FinancialSegmentString))
+                                        {
+                                            order.AddSplit(new Split
+                                            {
+                                                FinancialSegmentString = wga.FinancialSegmentString,
+                                                Name = wga.Name,
+                                                Amount = decimal.Parse(split.Amount),
+                                                LineItem = orderLineItem
+                                            });
+                                        }
+                                        else
+                                        {
+                                            order.AddSplit(new Split
+                                            {
+                                                Account = wga.Account.Id,
+                                                Amount = decimal.Parse(split.Amount),
+                                                LineItem = orderLineItem,
+                                                SubAccount = split.SubAccount,
+                                                Project = split.Project
+                                            });                                            
+                                        }
+
+                                    }
+                                    //order.AddSplit(new Split
+                                    //{
+                                    //    Account = split.Account,
+                                    //    Amount = decimal.Parse(split.Amount),
+                                    //    LineItem = orderLineItem,
+                                    //    SubAccount = split.SubAccount,
+                                    //    Project = split.Project
+                                    //});
                                 }
                             }
                         }
@@ -2153,13 +2182,39 @@ namespace Purchasing.Mvc.Controllers
                     {
                         if (split.IsValid())
                         {
-                            order.AddSplit(new Split
+                            int workgroupAccountId = 0;
+                            int.TryParse(split.Account, out workgroupAccountId);
+                            if (workgroupAccountId != 0)
                             {
-                                Account = split.Account,
-                                Amount = decimal.Parse(split.Amount),
-                                SubAccount = split.SubAccount,
-                                Project = split.Project
-                            });
+                                var wga = allWorkgroupAccounts.Single(a => a.Id == workgroupAccountId);
+                                if (!string.IsNullOrWhiteSpace(wga.FinancialSegmentString))
+                                {
+                                    order.AddSplit(new Split
+                                    {
+                                        FinancialSegmentString = wga.FinancialSegmentString,
+                                        Name = wga.Name,
+                                        Amount = decimal.Parse(split.Amount)
+                                    });
+                                }
+                                else
+                                {
+                                    order.AddSplit(new Split
+                                    {
+                                        Account = wga.Account.Id,
+                                        Amount = decimal.Parse(split.Amount),
+                                        SubAccount = split.SubAccount,
+                                        Project = split.Project
+                                    });
+                                }
+
+                            }
+                            //order.AddSplit(new Split
+                            //{
+                            //    Account = split.Account,
+                            //    Amount = decimal.Parse(split.Amount),
+                            //    SubAccount = split.SubAccount,
+                            //    Project = split.Project
+                            //});
                         }
                     }
                 }
@@ -2171,7 +2226,7 @@ namespace Purchasing.Mvc.Controllers
                     int.TryParse(model.Account, out workgroupAccountId);
                     if(workgroupAccountId != 0)
                     {
-                        var wga = _repositoryFactory.WorkgroupAccountRepository.Queryable.Single(a => a.Id == workgroupAccountId);
+                        var wga = allWorkgroupAccounts.Single(a => a.Id == workgroupAccountId);
                         if (!string.IsNullOrWhiteSpace(wga.FinancialSegmentString))
                         {
                             order.AddSplit(new Split { Amount = order.Total(), FinancialSegmentString = wga.FinancialSegmentString, Name = wga.GetName });

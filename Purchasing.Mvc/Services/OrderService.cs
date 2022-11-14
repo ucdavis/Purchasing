@@ -240,10 +240,21 @@ namespace Purchasing.Mvc.Services
                 //TODO: !!!!
                 foreach (var split in order.Splits)
                 {
-                    //Try to find the account in the workgroup so we can route it by users
-                    var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
+                    WorkgroupAccount workgroupAccount;
 
-                    approvalInfo.AccountId = split.Account; 
+                    //Try to find the account in the workgroup so we can route it by users
+                    if (!string.IsNullOrWhiteSpace(split.FinancialSegmentString))
+                    {
+                        workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.SingleOrDefault(a => a.FinancialSegmentString == split.FinancialSegmentString && a.Workgroup.Id == order.Workgroup.Id);
+                        approvalInfo.AccountId = split.FinancialSegmentString;
+                    }
+                    else 
+                    {
+                        workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.SingleOrDefault(a => a.Account.Id == split.Account && a.Workgroup.Id == order.Workgroup.Id);
+                        approvalInfo.AccountId = split.Account;
+                    }
+                    
+                    
                     approvalInfo.IsExternal = workgroupAccount == null; //if we can't find the account in the workgroup it is external
 
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
@@ -257,9 +268,14 @@ namespace Purchasing.Mvc.Services
                         var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
 
                         approvalInfo.Approver = null;
-                        approvalInfo.AcctManager = externalAccount != null
-                                                       ? _securityService.GetUser(externalAccount.AccountManagerId)
-                                                       : null;
+                        approvalInfo.AcctManager = null;
+                        approvalInfo.IsExternal = false; //Force to not external until and if we can deal with it.
+
+                        //TODO: If AE gives us an approver for external accounts...
+
+                        //approvalInfo.AcctManager = externalAccount != null
+                        //                               ? _securityService.GetUser(externalAccount.AccountManagerId)
+                        //                               : null;
                         approvalInfo.Purchaser = null;
                     }
                     
