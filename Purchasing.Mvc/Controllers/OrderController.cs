@@ -883,15 +883,15 @@ namespace Purchasing.Mvc.Controllers
                         ErrorMessage = "Inactive (old) commodity codes (Purchasing Category) detected. Please update";
                         return RedirectToAction("Review", new { id });
                     }
+                    if (order.Vendor == null)
+                    {
+                        ErrorMessage = "Must have a Campus vendor (supplier) to complete an Aggie Enterprise order";
+                        return RedirectToAction("Review", new { id });
+                    }
 
                     if (string.IsNullOrWhiteSpace(order.Vendor.AeSupplierNumber) || string.IsNullOrWhiteSpace(order.Vendor.AeSupplierSiteCode))
                     {
-                        //Do more checks...
-                        if (order.Vendor == null || order.Vendor.VendorId == null)
-                        {
-                            ErrorMessage = "Must have a Campus vendor (supplier) to complete an Aggie Enterprise order";
-                            return RedirectToAction("Review", new { id });
-                        }
+                        //Do more checks...                    
                         var supplierInfo = await _aggieEnterpriseService.GetSupplier(order.Vendor); //This may update the Vendor to AE...
                         if (supplierInfo == null || string.IsNullOrWhiteSpace(supplierInfo.SupplierNumber) || string.IsNullOrWhiteSpace(supplierInfo.SupplierSiteCode))
                         {
@@ -2003,9 +2003,10 @@ namespace Purchasing.Mvc.Controllers
                
             return new JsonNetResult(new { success, history = history.Select(a => new {a.User.FullName, updateDate = a.UpdateDate.ToString("MMM dd, yyyy - h:mm tt"), whatWasUpdated = a.CommentsUpdated ? "Comments" : "Quantity"})});
         }
-
+        
         private List<string> GetInactiveAccountsForOrder(int id)
         {
+            //TODO:fix this (Duplicate order)
             var orderAccounts = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id && x.Account != null).Select(x => x.Account).ToArray();
 
             var inactiveAccounts =
