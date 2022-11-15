@@ -521,6 +521,22 @@ namespace Purchasing.Core.Services
                 }
             }
 
+            //Make sure distributions add up to 100%
+            var lineItems = distributions.GroupBy(a => a.Key.Split.LineItem).ToList();
+            foreach (var line in lineItems)
+            {
+                var total = line.Sum(a => a.Value);
+                if (total != 100m)
+                {
+                    var diff = 100m - total;
+                    var first = line.First();
+                    first = new KeyValuePair<KfsToAeCoa, decimal>(first.Key, first.Value + diff);
+                    distributions.Remove(line.First());
+                    distributions.Add(first);
+                    Log.Warning("Distribution percent fixed {RequestNumber}", order.RequestNumber);
+                }
+            }
+
             return distributions;
         }
 
