@@ -8,5 +8,6 @@ namespace Purchasing.Mvc.Models
         public string Name { get; set; }
         public string ClassName { get; set; }
         public IEnumerable<Account> Accounts { get; set; }
+        public IEnumerable<WorkgroupAccount> WorkgroupAccounts { get; set; }
     }
 }
