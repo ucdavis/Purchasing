@@ -76,6 +76,7 @@
             if (model.splitType() === "Order") {
                 $.each(result.splits, function (i, split) {
                     //Create a new split, index starting at 0, and the model is the order/$root
+                    debugger;
                     var newSplit = new purchasing.OrderSplit(i, model);
 
                     addAccountIfNeeded(split.Account, split.AccountName);
@@ -83,6 +84,7 @@
 
                     newSplit.amountComputed(split.Amount);
                     newSplit.account(split.Account);
+
                     newSplit.subAccount(split.SubAccount);
                     newSplit.project(split.Project);
 
@@ -116,9 +118,13 @@
 
     //If the account is not in list of accounts, add it
     function addAccountIfNeeded(account, accountName) {
+        debugger;
+        var xxx = purchasing.OrderModel.accounts();
+
+        //Ok, swapping this from item.id to item.text means it gets found and not added twice, but now it isn't populating the value on the edit page.
         if (account) {
             var accountIfFound = ko.utils.arrayFirst(purchasing.OrderModel.accounts(), function (item) {
-                return item.id === account;
+                return item.text === account;
             });
 
             if (accountIfFound === null) { //not found, add to list

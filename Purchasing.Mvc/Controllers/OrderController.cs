@@ -1191,6 +1191,8 @@ namespace Purchasing.Mvc.Controllers
                 .Single();
 
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
+            
+            var workgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray();
 
             var lineItems = _repositoryFactory.LineItemRepository
                 .Queryable
@@ -1211,18 +1213,36 @@ namespace Purchasing.Mvc.Controllers
                     })
                 .ToList();
 
+            //All the new Aggie Enterprise Accounts
+            var AeAccountSplits = _repositoryFactory.SplitRepository.Queryable.Where(a => a.Order.Id == id && a.Account == null).Select(x =>
+                new OrderViewModel.Split
+                {
+                    Account = x.Name,
+                    AccountName = x.FinancialSegmentString,
+                    Amount = x.Amount.ToString(CultureInfo.InvariantCulture),
+                    LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                    Project = x.Project, //Will always be null
+                    SubAccount = x.SubAccount //Will always be null
+                }).ToList();
+
+
+            //swapped name and id to get it to match how I'm now displaying
             var splits = (from s in _repositoryFactory.SplitRepository.Queryable
                           join a in _repositoryFactory.AccountRepository.Queryable on s.Account equals a.Id
-                          where s.Order.Id == id
+                          where s.Order.Id == id && s.Account != null
                           select new OrderViewModel.Split
-                                     {
-                                         Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Id,
-                                         AccountName = a.Name,
-                                         Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
-                                         LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
-                                         Project = s.Project,
-                                         SubAccount = s.SubAccount
-                                     }).ToList();
+                          {
+                              Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Name,
+                              AccountName = a.Id,
+                              Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
+                              LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
+                              Project = s.Project,
+                              SubAccount = s.SubAccount
+                          }).ToList();
+            if (AeAccountSplits.Any())
+            {
+                splits.AddRange(AeAccountSplits);
+            }
 
             OrderViewModel.SplitTypes splitType;
 
@@ -2006,7 +2026,6 @@ namespace Purchasing.Mvc.Controllers
         
         private List<string> GetInactiveAccountsForOrder(int id)
         {
-            //TODO:fix this (Duplicate order)
             var orderAccounts = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id && x.Account != null).Select(x => x.Account).ToArray();
 
             var inactiveAccounts =
