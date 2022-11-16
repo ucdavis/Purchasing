@@ -182,6 +182,7 @@ namespace Purchasing.Core.Services
             var shippingLocation = await GetShippingAddress(order.Address); //Verify still good.
 
             var distributions = await CalculateDistributions(order);
+            //TODO: Get a unique list of CoA values from the distributions and validate that they are ok to use? Or just let the error happen?
             var lineItems = new List<ScmPurchaseRequisitionLineInput>();
             foreach(var line in order.LineItems)
             {
@@ -380,7 +381,7 @@ namespace Purchasing.Core.Services
             }).ToArray();
         }
 
-        
+
         /// <summary>
         /// Potentially we could cache this lookup, but it should really only be a SIT2 test thing....
         /// </summary>
@@ -389,82 +390,50 @@ namespace Purchasing.Core.Services
         private async Task<KfsToAeCoa> LookupAccount(Split split)
         {
             var rtValue = new KfsToAeCoa { Split = split };
-
-            var chart = split.Account.Split('-')[0];
-            var account = split.Account.Split('-')[1];
-
-            if (_options.FakeSit.Equals("Yes", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(split.FinancialSegmentString))
             {
+                var chart = split.Account.Split('-')[0];
+                var account = split.Account.Split('-')[1];
+               
 
-                var lookupInAe = false;
-
-                Log.Error("Faking AE CoA for specific account. Remove before Go Live");
-
-                //TODO: Remove
-                switch (split.Account)
+                var distributionResult = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, account, split.SubAccount);
+                var distributionData = distributionResult.ReadData();
+                if (distributionData.KfsConvertAccount.GlSegments != null)
                 {
-                    case "3-CRU9033":
-                        rtValue.FinincialSegmentString = "3110-13U00-ADNO006-534101-40-000-0000000000-200504-0000-000000-000000";
-                        break;
-                    case "3-ADOIGAA":
-                        rtValue.FinincialSegmentString = "3110-13U00-ADNO003-534101-40-000-0000000000-200504-0000-000000-000000";
-                        break;
-                    case "3-CRUCECP":
-                        rtValue.FinincialSegmentString = "K30CRUCECP-TASK01-ADNO006-522400";
-                        rtValue.IsPPm = true;
-                        break;
-                    case "3-IPFFPR3":
-                        rtValue.FinincialSegmentString = "K30IPFFPR3-TASK01-ADNO006-522400";
-                        rtValue.IsPPm = true;
-                        break;
-                    case "P-9530101":
-                        rtValue.FinincialSegmentString = "KP0953010U-301001-ADNO001-525900";
-                        rtValue.IsPPm = true;
-                        break;
-                    default:
-                        lookupInAe = true;
-                        break;
-                }
-
-                if (!lookupInAe)
-                {
-                    return rtValue;
-                }
-            }
-            
-            var distributionResult = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, account, split.SubAccount);
-            var distributionData = distributionResult.ReadData();
-            if (distributionData.KfsConvertAccount.GlSegments != null)
-            {
-                var tempGlSegments = new GlSegments(distributionData.KfsConvertAccount.GlSegments);
-                if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
-                {
-                    //770000
-                    Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                    tempGlSegments.Account = _options.DefaultNaturalAccount;
-                }
-                rtValue.FinincialSegmentString = tempGlSegments.ToSegmentString();
-            }
-            else
-            {
-                if (distributionData.KfsConvertAccount.PpmSegments != null)
-                {
-                    rtValue.IsPPm = true;
-                    var tempPpmSegments = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments);
-                    if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
+                    var tempGlSegments = new GlSegments(distributionData.KfsConvertAccount.GlSegments);
+                    if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
                     {
                         //770000
-                        Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                        tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                        Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                        tempGlSegments.Account = _options.DefaultNaturalAccount;
                     }
-                    rtValue.FinincialSegmentString = tempPpmSegments.ToSegmentString();
+                    rtValue.FinincialSegmentString = tempGlSegments.ToSegmentString();
                 }
                 else
                 {
-                    //TODO: REMOVE THIS!!!!
-                    Log.Error("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
-                    rtValue.FinincialSegmentString = $"3110-13U02-ADNO006-{_options.DefaultNaturalAccount}-43-000-0000000000-000000-0000-000000-000000";
+                    if (distributionData.KfsConvertAccount.PpmSegments != null)
+                    {
+                        rtValue.IsPPm = true;
+                        var tempPpmSegments = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments);
+                        if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
+                        {
+                            //770000
+                            Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                            tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                        }
+                        rtValue.FinincialSegmentString = tempPpmSegments.ToSegmentString();
+                    }
+                    else
+                    {
+                        //TODO: REMOVE THIS!!!!
+                        Log.Error("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
+                        rtValue.FinincialSegmentString = $"3110-13U02-ADNO006-{_options.DefaultNaturalAccount}-43-000-0000000000-000000-0000-000000-000000";
+                    }
                 }
+            }
+            else
+            {
+                rtValue.FinincialSegmentString = split.FinancialSegmentString; //TODO: Validate?
             }
             return rtValue;
         }
@@ -509,6 +478,22 @@ namespace Purchasing.Core.Services
                     // calculate the distribution percent, over the line totals
                     var dist = Math.Round( (sp.Amount / sp.LineItem.TotalWithTax()) * 100m, 3);
                     distributions.Add(new KeyValuePair<KfsToAeCoa, decimal>(await LookupAccount(sp), dist));
+                }
+            }
+
+            //Make sure distributions add up to 100%
+            var lineItems = distributions.GroupBy(a => a.Key.Split.LineItem).ToList();
+            foreach (var line in lineItems)
+            {
+                var total = line.Sum(a => a.Value);
+                if (total != 100m)
+                {
+                    var diff = 100m - total;
+                    var first = line.First();
+                    first = new KeyValuePair<KfsToAeCoa, decimal>(first.Key, first.Value + diff);
+                    distributions.Remove(line.First());
+                    distributions.Add(first);
+                    Log.Warning("Distribution percent fixed {RequestNumber}", order.RequestNumber);
                 }
             }
 
