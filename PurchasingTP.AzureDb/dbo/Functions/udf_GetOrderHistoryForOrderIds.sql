@@ -18,6 +18,7 @@
 -- Modifications:
 --	2014-02-18 by kjt: Revised final inner join to return only one order lastusername if there
 --		were multiple max(datecreated) for the same order.
+--  2022-11-16 by jsylvest Revised AccountSummary as Account is now nullable and added two columns for splits for FinancialSegmentString and Name.
 -- =============================================
 CREATE FUNCTION [dbo].[udf_GetOrderHistoryForOrderIds]
 (
@@ -127,7 +128,7 @@ BEGIN
 			select orderid
 				, STUFF(
 					(
-						select ', ' + ins.Account + isnull('[' + ins.subaccount + ']', '')
+						select ', ' + isnull(ins.Account, '') + isnull('[' + ins.subaccount + ']', '') + ISNULL(ins.[Name], '') + ISNULL('(' + ins.FinancialSegmentString + ')', '')
 						from splits ins
 						where os.OrderId = ins.OrderId
 						order by ins.id
