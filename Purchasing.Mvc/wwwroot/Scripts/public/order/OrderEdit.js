@@ -92,6 +92,7 @@
 
             //Add the basic account info if there are no splits (aka just one split)
             if (model.splitType() === "None") {
+                //debugger;
                 var singleSplit = result.splits[0];
 
                 if (singleSplit) {
@@ -116,13 +117,18 @@
 
     //If the account is not in list of accounts, add it
     function addAccountIfNeeded(account, accountName) {
+        //debugger;
+        //var xxx = purchasing.OrderModel.accounts();
         if (account) {
             var accountIfFound = ko.utils.arrayFirst(purchasing.OrderModel.accounts(), function (item) {
                 return item.id === account;
             });
 
+            
             if (accountIfFound === null) { //not found, add to list
-                purchasing.OrderModel.addAccount(account, account, accountName);
+                //TODO: Test this when I get to that point.
+                //This used to be purchasing.OrderModel.addAccount(account, account, accountName);
+                purchasing.OrderModel.addAccount(accountName, account, account);
             }
         }
     }

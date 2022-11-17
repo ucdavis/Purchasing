@@ -545,7 +545,7 @@ namespace Purchasing.Mvc.Controllers
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
             order.Tag = order.Workgroup.DefaultTag;
-
+            
             _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             Check.Require(order.LineItems.Count > 0, "line count");
@@ -1218,8 +1218,8 @@ namespace Purchasing.Mvc.Controllers
             var AeAccountSplits = _repositoryFactory.SplitRepository.Queryable.Where(a => a.Order.Id == id && a.Account == null).Select(x =>
                 new OrderViewModel.Split
                 {
-                    Account = x.Name,
-                    AccountName = x.FinancialSegmentString,
+                    Account = x.FinancialSegmentString,
+                    AccountName = x.Name,
                     Amount = x.Amount.ToString(CultureInfo.InvariantCulture),
                     LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
                     Project = x.Project, //Will always be null
