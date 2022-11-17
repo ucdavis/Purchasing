@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AggieEnterpriseApi.Validation;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -184,7 +185,7 @@ namespace Purchasing.Mvc.Services
                 {
                     //TODO: move this code to a private methods as very similar code is used elsewhere here.
                     var workgroupAccount =
-                        _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId && x.Workgroup.Id == order.Workgroup.Id);
+                        _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Workgroup.Id == order.Workgroup.Id && ((x.Account != null && x.Account.Id == accountId) || x.FinancialSegmentString == accountId) );
 
                     approvalInfo.AccountId = accountId;
                     approvalInfo.IsExternal = (workgroupAccount == null); //if we can't find the account in the workgroup it is external
@@ -205,8 +206,19 @@ namespace Purchasing.Mvc.Services
                                                        : null;
                         approvalInfo.Purchaser = null;
                     }
-                    
-                    split.Account = accountId; //Assign the account to the split
+
+                    //Ok this is causing issues... May need more debugging
+                    //split.Account = accountId; //Assign the account to the split
+                    //Try doing this instead:
+                    var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(accountId);
+                    if(segmentStringType == FinancialChartStringType.Invalid)
+                    {
+                        split.Account = accountId;
+                    }
+                    else if(string.IsNullOrWhiteSpace(split.FinancialSegmentString))
+                    {
+                        split.FinancialSegmentString = accountId;
+                    }
                 }
                 else //else stick with user provided values
                 {

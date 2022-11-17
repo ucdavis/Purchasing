@@ -2157,10 +2157,10 @@ namespace Purchasing.Mvc.Controllers
                                     order.AddSplit(new Split
                                     {
                                         Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
-                                        FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString ?? split.Account,
+                                        FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString,
                                         Amount = decimal.Parse(split.Amount),
                                         LineItem = orderLineItem,
-                                        Name = foundWorkgroupAccount?.Name ?? split.Account
+                                        Name = foundWorkgroupAccount?.Name
                                     });
                                 }
                             }
@@ -2180,9 +2180,9 @@ namespace Purchasing.Mvc.Controllers
                             order.AddSplit(new Split
                             {
                                 Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
-                                FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString ?? split.Account,
+                                FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString,
                                 Amount = decimal.Parse(split.Amount),
-                                Name = foundWorkgroupAccount?.Name ?? split.Account
+                                Name = foundWorkgroupAccount?.Name
                                 //SubAccount = split.SubAccount,
                                 //Project = split.Project
                             });
@@ -2192,12 +2192,13 @@ namespace Purchasing.Mvc.Controllers
                 else if (model.SplitType == OrderViewModel.SplitTypes.None)
                 {
                     var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.GetAccount == model.Account);
+                    order.Splits = new List<Split>();
                     order.AddSplit(new Split
                     { 
                         Amount = order.Total(),
                         Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
-                        FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString ?? model.Account,
-                        Name = foundWorkgroupAccount?.Name ?? model.Account
+                        FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString,
+                        Name = foundWorkgroupAccount?.Name 
                     }); //Order with "no" splits get one split for the full amount
                 }
 
