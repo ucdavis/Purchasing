@@ -1191,6 +1191,9 @@ namespace Purchasing.Mvc.Controllers
                 .Single();
 
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
+            //TODO: Do a CoA validation that is similar the the call above
+
+            //var workgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray();
 
             var lineItems = _repositoryFactory.LineItemRepository
                 .Queryable
@@ -1211,18 +1214,35 @@ namespace Purchasing.Mvc.Controllers
                     })
                 .ToList();
 
+            //All the new Aggie Enterprise Accounts
+            var AeAccountSplits = _repositoryFactory.SplitRepository.Queryable.Where(a => a.Order.Id == id && a.Account == null).Select(x =>
+                new OrderViewModel.Split
+                {
+                    Account = x.Name,
+                    AccountName = x.FinancialSegmentString,
+                    Amount = x.Amount.ToString(CultureInfo.InvariantCulture),
+                    LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                    Project = x.Project, //Will always be null
+                    SubAccount = x.SubAccount //Will always be null
+                }).ToList();
+
             var splits = (from s in _repositoryFactory.SplitRepository.Queryable
                           join a in _repositoryFactory.AccountRepository.Queryable on s.Account equals a.Id
-                          where s.Order.Id == id
+                          where s.Order.Id == id && s.Account != null
                           select new OrderViewModel.Split
-                                     {
-                                         Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Id,
-                                         AccountName = a.Name,
-                                         Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
-                                         LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
-                                         Project = s.Project,
-                                         SubAccount = s.SubAccount
-                                     }).ToList();
+                          {
+                              Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Id,
+                              AccountName = a.Name,
+                              Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
+                              LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
+                              Project = s.Project,
+                              SubAccount = s.SubAccount
+                          }).ToList();
+
+            if (AeAccountSplits.Any())
+            {
+                splits.AddRange(AeAccountSplits);
+            }
 
             OrderViewModel.SplitTypes splitType;
 
@@ -2018,6 +2038,7 @@ namespace Purchasing.Mvc.Controllers
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(model.Workgroup);
+            var workgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == workgroup.Id).ToArray();
 
             //TODO: automapper?
             order.Vendor = model.Vendor == 0 ? null : _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor);
@@ -2131,13 +2152,15 @@ namespace Purchasing.Mvc.Controllers
                             {
                                 if (split.IsValid())
                                 {
+                                    //Ok, so check if the CoA or Account is in the workgroup. If it isn't use the split.Account for the CoA and Name
+                                    var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.GetAccount == split.Account);
                                     order.AddSplit(new Split
                                     {
-                                        Account = split.Account,
+                                        Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
+                                        FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString ?? split.Account,
                                         Amount = decimal.Parse(split.Amount),
                                         LineItem = orderLineItem,
-                                        SubAccount = split.SubAccount,
-                                        Project = split.Project
+                                        Name = foundWorkgroupAccount?.Name ?? split.Account
                                     });
                                 }
                             }
@@ -2152,19 +2175,30 @@ namespace Purchasing.Mvc.Controllers
                     {
                         if (split.IsValid())
                         {
+                            //Ok, so check if the CoA or Account is in the workgroup. If it isn't use the split.Account for the CoA and Name
+                            var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.GetAccount == split.Account);
                             order.AddSplit(new Split
                             {
-                                Account = split.Account,
+                                Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
+                                FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString ?? split.Account,
                                 Amount = decimal.Parse(split.Amount),
-                                SubAccount = split.SubAccount,
-                                Project = split.Project
+                                Name = foundWorkgroupAccount?.Name ?? split.Account
+                                //SubAccount = split.SubAccount,
+                                //Project = split.Project
                             });
                         }
                     }
                 }
                 else if (model.SplitType == OrderViewModel.SplitTypes.None)
                 {
-                    order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                    var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.GetAccount == model.Account);
+                    order.AddSplit(new Split
+                    { 
+                        Amount = order.Total(),
+                        Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
+                        FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString ?? model.Account,
+                        Name = foundWorkgroupAccount?.Name ?? model.Account
+                    }); //Order with "no" splits get one split for the full amount
                 }
 
                 order.TotalFromDb = order.Total();
