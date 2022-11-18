@@ -2192,7 +2192,6 @@ namespace Purchasing.Mvc.Controllers
                 else if (model.SplitType == OrderViewModel.SplitTypes.None)
                 {
                     var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.GetAccount == model.Account);
-                    order.Splits = new List<Split>();
                     order.AddSplit(new Split
                     { 
                         Amount = order.Total(),
