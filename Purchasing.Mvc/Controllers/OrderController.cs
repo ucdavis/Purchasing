@@ -610,7 +610,7 @@ namespace Purchasing.Mvc.Controllers
             model.LineItems =
                 _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToList();
             model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToList();
-
+            
             var splitsWithSubAccounts = model.Splits.Where(a => a.Account != null && a.SubAccount != null).ToList();
 
             if (splitsWithSubAccounts.Any())
@@ -674,7 +674,7 @@ namespace Purchasing.Mvc.Controllers
                 {
                     model.HasAssociatedAccounts =
                         _repositoryFactory.SplitRepository.Queryable
-                            .Any(s => s.Order.Id == model.Order.Id && s.Account != null);
+                            .Any(s => s.Order.Id == model.Order.Id && (s.Account != null || s.FinancialSegmentString != null));
                 }
 
                 if (model.IsAccountManager) //TODO: Get Scott to review this to make sure things like toFuture or other performance things are ok.
