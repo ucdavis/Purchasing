@@ -172,7 +172,6 @@ namespace Purchasing.Core.Services
                 SupplierSiteCode = supplier.SupplierSiteCode ,
                 RequesterEmailAddress = await GetAggieEnterpriseUserEmail(purchaserKerb, purchaserEmail),
                 Description = $"{order.RequestNumber} {order.Justification?.Trim()}{bp}".SafeTruncate(240),
-                //Justification has been deprecated, we will just pass in the description above
             };
                 
             var unitCodes = order.LineItems.Select(a => a.Unit).Distinct().ToArray();
