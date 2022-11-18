@@ -2452,7 +2452,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Assert
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void TestRequestPostIncludeLineItemsAndSplits9()
         {
             #region Arrange
@@ -2529,7 +2529,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
         #endregion includeLineItemsAndSplits (BindOrderModel) Tests
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void TestRequestPostOrderSplits1()
         {
             #region Arrange
@@ -2605,7 +2605,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Assert
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void TestRequestPostOrderSplits2()
         {
             #region Arrange
