@@ -853,6 +853,54 @@
             }
         });
 
+        $("#order-form").on("click", ".coa-picker", async function (e) {
+            //debugger;
+            e.preventDefault();
+
+            //async function coapicker () {
+            //    const chart = await window.Finjector.findChartSegmentString();
+            //    if (chart && chart.status === "success") {
+            //        $("#FinancialSegmentString").val(chart.data);
+            //        alert(chart.data);
+            //    }
+            //    else {
+            //        alert("Something went wrong with the CCOA picker");
+            //    }
+            //    return false;
+            //}
+
+            //TODO: Call Finjector
+            //TODO: Validate selected COA is valid
+            //TODO: Push it
+            if (purchasing.OrderModel.adjustRouting() === "True") {
+                var chart = await window.Finjector.findChartSegmentString();
+                if (chart && chart.status === "success") {
+                    debugger;
+                    //clear out inputs and empty the results table
+                    var container = $(this).parents(".account-container");
+                    var account = chart.data
+                    var name = "Externally Set";
+                    var context = ko.contextFor(container[0]);
+                    context.$root.addAccount(account, name, account);
+
+                    //select it
+                    context.$data.account(account);
+
+                    container.find(".account-number").change(); //notify the UI that we change the account
+                }
+                else {
+                    alert("Something went wrong with the CoA picker");
+                }
+                if (chart.closed) {
+                    alert("closed");
+                }
+
+                
+            } else {
+                alert("You must Enable Modification before changing the account information.");
+            }
+        });
+
         $("#accounts-search-dialog-searchbox-btn").click(function (e) {
             e.preventDefault();
             searchKfsAccounts();
@@ -875,6 +923,7 @@
             //debugger;
             //account = "3110-13U20-ADNO003-238533-00-000-0000000000-000000-0000-000000-000001";
             //title = "Test External Account";
+
 
             var context = ko.contextFor($container[0]);
 
