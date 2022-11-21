@@ -875,7 +875,7 @@
             if (purchasing.OrderModel.adjustRouting() === "True") {
                 var chart = await window.Finjector.findChartSegmentString();
                 if (chart && chart.status === "success") {
-                    debugger;
+                    //debugger;
                     //clear out inputs and empty the results table
                     var container = $(this).parents(".account-container");
                     var account = chart.data
@@ -890,9 +890,6 @@
                 }
                 else {
                     alert("Something went wrong with the CoA picker");
-                }
-                if (chart.closed) {
-                    alert("closed");
                 }
 
                 
