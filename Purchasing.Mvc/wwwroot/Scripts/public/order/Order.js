@@ -856,42 +856,36 @@
         $("#order-form").on("click", ".coa-picker", async function (e) {
             //debugger;
             e.preventDefault();
-
-            //async function coapicker () {
-            //    const chart = await window.Finjector.findChartSegmentString();
-            //    if (chart && chart.status === "success") {
-            //        $("#FinancialSegmentString").val(chart.data);
-            //        alert(chart.data);
-            //    }
-            //    else {
-            //        alert("Something went wrong with the CCOA picker");
-            //    }
-            //    return false;
-            //}
-
-            //TODO: Call Finjector
-            //TODO: Validate selected COA is valid
-            //TODO: Push it
             if (purchasing.OrderModel.adjustRouting() === "True") {
                 var chart = await window.Finjector.findChartSegmentString();
                 if (chart && chart.status === "success") {
                     //debugger;
-                    //clear out inputs and empty the results table
-                    var container = $(this).parents(".account-container");
                     var account = chart.data
                     var name = "Externally Set";
-                    var context = ko.contextFor(container[0]);
-                    context.$root.addAccount(account, name, account);
+                    var isValid = false;
 
-                    //select it
-                    context.$data.account(account);
+                    await $.getJSON(options.CoaValidateUrl, { financialSegmentString: account }, function (results) {
+                        if (results.success !== true) {
+                            alert("CoA:" + account + " is not valid.\rDetails:\r" + results.message);
+                        }
+                        isValid = results.success;
+                    });
 
-                    container.find(".account-number").change(); //notify the UI that we change the account
+                    if (isValid) {
+                        var container = $(this).parents(".account-container");
+
+                        var context = ko.contextFor(container[0]);
+                        context.$root.addAccount(account, name, account);
+
+                        //select it
+                        context.$data.account(account);
+
+                        container.find(".account-number").change(); //notify the UI that we change the account
+                    }
                 }
                 else {
                     alert("Something went wrong with the CoA picker");
-                }
-
+                }            
                 
             } else {
                 alert("You must Enable Modification before changing the account information.");

@@ -1278,6 +1278,22 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(groupedSubAccounts);
         }
 
+        public async Task<ActionResult> ValidateCoA(string financialSegmentString)
+        {
+            var rtValue = await _aggieEnterpriseService.ValidateAccount(financialSegmentString);
+            if (rtValue?.IsValid == true)
+            {
+                return Json(new { success = true });
+            }
+            if(rtValue == null)
+            {
+                return Json(new { success = false, message = "Invalid Account" });
+            }
+
+            return Json(new { success = false, message = rtValue.Message});
+
+        }
+        
         [HttpPost]
         public ActionResult AddVendor(int workgroupId, WorkgroupVendor vendor)
         {
