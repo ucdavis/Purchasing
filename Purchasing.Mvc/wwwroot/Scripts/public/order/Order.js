@@ -872,10 +872,15 @@
             var account = row.find(".result-account").html();
             var title = row.find(".result-name").html();
 
+            //debugger;
+            //account = "3110-13U20-ADNO003-238533-00-000-0000000000-000000-0000-000000-000001";
+            //title = "Test External Account";
+
             var context = ko.contextFor($container[0]);
 
             //push the new choice into the accounts array
-            context.$root.addAccount(account, account, title);
+            //context.$root.addAccount("CoA - ID", "Name - display in dropdown", "CoA - popup title" );
+            context.$root.addAccount(account, title, account );
 
             //select it
             context.$data.account(account);
