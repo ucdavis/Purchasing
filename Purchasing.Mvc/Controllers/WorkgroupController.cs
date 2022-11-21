@@ -442,6 +442,10 @@ namespace Purchasing.Mvc.Controllers
                 {
                     ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", accountValid.Message);
                 }
+                if (workgroupAccounts.Any(a => a.FinancialSegmentString != null && a.FinancialSegmentString.Equals(workgroupAccountToCreate.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA already exists for this workgroup");
+                }
             }
             if (string.IsNullOrWhiteSpace(workgroupAccountToCreate.Name))
             {
@@ -464,10 +468,7 @@ namespace Purchasing.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 Message = "Workgroup account saved.";
-                if (workgroupAccounts.Any(a => a.FinancialSegmentString != null &&  a.FinancialSegmentString.Equals(workgroupAccountToCreate.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
-                {
-                    Message = $"{Message} -- Warning!!! CoA already exists for this workgroup";
-                }
+
                 _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
 
                 //return this.RedirectToAction("Accounts", new {id = id});
@@ -614,6 +615,10 @@ namespace Purchasing.Mvc.Controllers
                 {
                     ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", accountValid.Message);
                 }
+                if (workgroupAccounts.Any(a => a.FinancialSegmentString != null && a.FinancialSegmentString.Equals(accountToEdit.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA already exists for this workgroup");
+                }
             }
             if (string.IsNullOrWhiteSpace(accountToEdit.Name))
             {
@@ -639,10 +644,6 @@ namespace Purchasing.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 Message = "Workgroup account has been updated.";
-                if (workgroupAccounts.Any(a => a.FinancialSegmentString != null && a.FinancialSegmentString.Equals(accountToEdit.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
-                {
-                    Message = $"{Message} -- Warning!!! CoA already exists for this workgroup";
-                }
 
                 _workgroupAccountRepository.EnsurePersistent(accountToEdit);
 
