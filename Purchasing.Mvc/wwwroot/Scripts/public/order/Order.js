@@ -829,6 +829,8 @@
         });
     }
 
+
+
     function attachAccountSearchEvents() {
         $("#accounts-search-dialog").dialog({
             autoOpen: false,
@@ -854,12 +856,10 @@
         });
 
         $("#order-form").on("click", ".coa-picker", async function (e) {
-            //debugger;
             e.preventDefault();
             if (purchasing.OrderModel.adjustRouting() === "True") {
                 var chart = await window.Finjector.findChartSegmentString();
                 if (chart && chart.status === "success") {
-                    //debugger;
                     var account = chart.data
                     var name = "Externally Set";
                     var isValid = false;
@@ -875,8 +875,14 @@
                         var container = $(this).parents(".account-container");
 
                         var context = ko.contextFor(container[0]);
-                        context.$root.addAccount(account, name, account);
-
+                        //Check if the account is already in the dropdown
+                        var accountIfFound = ko.utils.arrayFirst(context.$root.accounts(), function (item) {
+                            return item.id === account;
+                        });
+                        //If it isn't, add it
+                        if (accountIfFound === null) {
+                            context.$root.addAccount(account, name, account);
+                        }
                         //select it
                         context.$data.account(account);
 
