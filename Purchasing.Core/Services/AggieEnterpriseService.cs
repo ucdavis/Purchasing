@@ -36,6 +36,8 @@ namespace Purchasing.Core.Services
         Task<WorkgroupAddress> GetShippingAddress(WorkgroupAddress workgroupAddress);
 
         Task<string> ConvertKfsAccount(Account account);
+
+        Task<ExternalRoutingModel> GetFinancialOfficer(string financialSegmentString);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -51,6 +53,16 @@ namespace Purchasing.Core.Services
             _aggieClient = GraphQlClient.Get(options.Value.GraphQlUrl, options.Value.Token);
             _options = options.Value;
             _repositoryFactory = repositoryFactory;
+        }
+
+        public async Task<ExternalRoutingModel> GetFinancialOfficer(string financialSegmentString)
+        {
+            //TODO: If AE can supply the query....
+            var rtValue = new ExternalRoutingModel();
+            rtValue.IsExternal = false; //Set to true if we can get the info
+            rtValue.FinancialOfficerId = null; 
+
+            return rtValue;
         }
 
         public async Task<AccountValidationModel> ValidateAccount(string financialSegmentString, bool validateCVRs = true)

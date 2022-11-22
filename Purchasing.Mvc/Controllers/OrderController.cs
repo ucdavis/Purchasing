@@ -356,7 +356,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public new ActionResult Request(OrderViewModel model)
+        public new async Task<ActionResult> Request(OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
@@ -369,7 +369,7 @@ namespace Purchasing.Mvc.Controllers
 
             order.Tag = order.Workgroup.DefaultTag;
 
-            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+            await _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             _orderService.HandleSavedForm(order, model.FormSaveId);
 
@@ -419,7 +419,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult Edit(int id, OrderViewModel model)
+        public async Task<ActionResult> Edit(int id, OrderViewModel model)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
@@ -462,7 +462,7 @@ namespace Purchasing.Mvc.Controllers
             //TODO: Add expense validation
                 //order.ValidateExpenses().ToArray();
 
-                _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
+                await _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
             }
             else
             {
@@ -533,7 +533,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
-        public ActionResult Copy(int id, OrderViewModel model)
+        public async Task<ActionResult> Copy(int id, OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
@@ -546,7 +546,7 @@ namespace Purchasing.Mvc.Controllers
 
             order.Tag = order.Workgroup.DefaultTag;
             
-            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+            await _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             Check.Require(order.LineItems.Count > 0, "line count");
 
@@ -2176,7 +2176,7 @@ namespace Purchasing.Mvc.Controllers
                                         FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString,
                                         Amount = decimal.Parse(split.Amount),
                                         LineItem = orderLineItem,
-                                        Name = foundWorkgroupAccount?.Name
+                                        Name = foundWorkgroupAccount == null ? "Externally Set" : foundWorkgroupAccount?.Name
                                     });
                                 }
                             }
@@ -2198,7 +2198,7 @@ namespace Purchasing.Mvc.Controllers
                                 Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
                                 FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString,
                                 Amount = decimal.Parse(split.Amount),
-                                Name = foundWorkgroupAccount?.Name
+                                Name = foundWorkgroupAccount == null ? "Externally Set" : foundWorkgroupAccount?.Name
                                 //SubAccount = split.SubAccount,
                                 //Project = split.Project
                             });
@@ -2213,7 +2213,7 @@ namespace Purchasing.Mvc.Controllers
                         Amount = order.Total(),
                         Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
                         FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString,
-                        Name = foundWorkgroupAccount?.Name 
+                        Name = foundWorkgroupAccount == null ? "Externally Set" : foundWorkgroupAccount?.Name
                     }); //Order with "no" splits get one split for the full amount
                 }
 

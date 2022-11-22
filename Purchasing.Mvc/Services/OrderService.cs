@@ -26,13 +26,13 @@ namespace Purchasing.Mvc.Services
         /// <param name="accountId">Optional id of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null);
+        Task CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null);
         
         /// <summary>
         /// Recreates approvals for the given order, removing all approvals at or above the current order level
         /// Should not affect conditional approvals?
         /// </summary>
-        void ReRouteApprovalsForExistingOrder(Order order, string approverId, string accountManagerId);
+        Task ReRouteApprovalsForExistingOrder(Order order, string approverId, string accountManagerId);
 
         /// <summary>
         /// Returns all of the approvals that need to be completed for the current approval status level
@@ -171,7 +171,7 @@ namespace Purchasing.Mvc.Services
         /// <param name="accountId">Optional id of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        public void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null)
+        public async Task CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null)
         {
             var approvalInfo = new ApprovalInfo();
 
@@ -212,10 +212,11 @@ namespace Purchasing.Mvc.Services
                         }
                         else
                         {
+                            var aggieApproval = await _aggieEnterpriseService.GetFinancialOfficer(accountId);
                             //TODO: Fix if we can get info from AE
-                            approvalInfo.IsExternal = false;
+                            approvalInfo.IsExternal = aggieApproval.IsExternal;
                             approvalInfo.Approver = null;
-                            approvalInfo.AcctManager = null;
+                            approvalInfo.AcctManager = aggieApproval.FinancialOfficerId != null ? _securityService.GetUser(aggieApproval.FinancialOfficerId) : null;
                             approvalInfo.Purchaser = null;
                         }
                     }
@@ -271,10 +272,11 @@ namespace Purchasing.Mvc.Services
                         }
                         else
                         {
+                            var aggieApproval = await _aggieEnterpriseService.GetFinancialOfficer(split.FinancialSegmentString);
                             //TODO: Fix if we can get info from AE
-                            approvalInfo.IsExternal = false;
+                            approvalInfo.IsExternal = aggieApproval.IsExternal;
                             approvalInfo.Approver = null;
-                            approvalInfo.AcctManager = null;
+                            approvalInfo.AcctManager = aggieApproval.FinancialOfficerId != null ? _securityService.GetUser(aggieApproval.FinancialOfficerId) : null;
                             approvalInfo.Purchaser = null;
                         }
                     }
@@ -335,7 +337,7 @@ namespace Purchasing.Mvc.Services
         /// Recreates approvals for the given order, removing all approvals at or above the current order level
         /// Should not affect conditional approvals?
         /// </summary>
-        public void ReRouteApprovalsForExistingOrder(Order order, string approverId = null, string accountManagerId = null)
+        public async Task ReRouteApprovalsForExistingOrder(Order order, string approverId = null, string accountManagerId = null)
         {
             var currentLevel = order.StatusCode.Level;
 
@@ -385,8 +387,11 @@ namespace Purchasing.Mvc.Services
                     { //account is not in the workgroup
                         if(split.Account == null) //Workaround for CoA
                         {
+                            var aggieApproval = await _aggieEnterpriseService.GetFinancialOfficer(split.FinancialSegmentString);
+                            //TODO: Fix if we can get info from AE
+                            approvalInfo.IsExternal = aggieApproval.IsExternal;
                             approvalInfo.Approver = null;
-                            approvalInfo.AcctManager = null;
+                            approvalInfo.AcctManager = aggieApproval.FinancialOfficerId != null ? _securityService.GetUser(aggieApproval.FinancialOfficerId) : null;
                             approvalInfo.Purchaser = null;
                         }
                         else 
