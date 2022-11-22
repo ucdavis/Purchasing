@@ -2173,7 +2173,7 @@ namespace Purchasing.Mvc.Controllers
                                     order.AddSplit(new Split
                                     {
                                         Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
-                                        FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString,
+                                        FinancialSegmentString = foundWorkgroupAccount != null ? foundWorkgroupAccount?.FinancialSegmentString : split.Account,
                                         Amount = decimal.Parse(split.Amount),
                                         LineItem = orderLineItem,
                                         Name = foundWorkgroupAccount == null ? "Externally Set" : foundWorkgroupAccount?.Name
@@ -2196,7 +2196,7 @@ namespace Purchasing.Mvc.Controllers
                             order.AddSplit(new Split
                             {
                                 Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
-                                FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString,
+                                FinancialSegmentString = foundWorkgroupAccount != null ? foundWorkgroupAccount?.FinancialSegmentString : split.Account,
                                 Amount = decimal.Parse(split.Amount),
                                 Name = foundWorkgroupAccount == null ? "Externally Set" : foundWorkgroupAccount?.Name
                                 //SubAccount = split.SubAccount,
@@ -2212,7 +2212,7 @@ namespace Purchasing.Mvc.Controllers
                     { 
                         Amount = order.Total(),
                         Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
-                        FinancialSegmentString = foundWorkgroupAccount?.FinancialSegmentString,
+                        FinancialSegmentString = foundWorkgroupAccount != null ? foundWorkgroupAccount?.FinancialSegmentString : model.Account,
                         Name = foundWorkgroupAccount == null ? "Externally Set" : foundWorkgroupAccount?.Name
                     }); //Order with "no" splits get one split for the full amount
                 }
