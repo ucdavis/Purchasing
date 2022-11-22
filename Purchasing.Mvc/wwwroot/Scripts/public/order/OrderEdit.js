@@ -128,7 +128,7 @@
             if (accountIfFound === null) { //not found, add to list
                 //TODO: Test this when I get to that point.
                 //This used to be purchasing.OrderModel.addAccount(account, account, accountName);
-                purchasing.OrderModel.addAccount(accountName, account, account);
+                purchasing.OrderModel.addAccount(account, accountName, account);
             }
         }
     }
