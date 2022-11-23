@@ -539,7 +539,7 @@ namespace Purchasing.Mvc.Controllers
             var viewModel = WorkgroupAccountModel.Create(Repository, account.Workgroup, account);
             if (string.IsNullOrWhiteSpace(viewModel.WorkgroupAccount.Name))
             {
-                viewModel.WorkgroupAccount.Name = $"{viewModel.WorkgroupAccount.GetName} ({viewModel.WorkgroupAccount.GetAccount})".SafeTruncate(64);
+                viewModel.WorkgroupAccount.Name = $"{viewModel.WorkgroupAccount.GetName} [{viewModel.WorkgroupAccount.GetAccount}]".SafeTruncate(64);
             }
             
             if (string.IsNullOrWhiteSpace(viewModel.WorkgroupAccount.FinancialSegmentString))
