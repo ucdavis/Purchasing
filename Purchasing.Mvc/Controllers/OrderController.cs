@@ -29,6 +29,8 @@ using Purchasing.Core.Services;
 using Purchasing.Core.Models.AggieEnterprise;
 using AggieEnterpriseApi;
 using static NHibernate.Engine.Query.CallableParser;
+using AggieEnterpriseApi.Validation;
+
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -1191,7 +1193,7 @@ namespace Purchasing.Mvc.Controllers
                 .Single();
 
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
-            //TODO: Do a CoA validation that is similar the the call above
+            //TODO: Do a CoA validation that is similar the call above
 
             //var workgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray();
 
@@ -2168,16 +2170,7 @@ namespace Purchasing.Mvc.Controllers
                             {
                                 if (split.IsValid())
                                 {
-                                    //Ok, so check if the CoA or Account is in the workgroup. If it isn't use the split.Account for the CoA and Name
-                                    var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.GetAccount == split.Account);
-                                    order.AddSplit(new Split
-                                    {
-                                        Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
-                                        FinancialSegmentString = foundWorkgroupAccount != null ? foundWorkgroupAccount?.FinancialSegmentString : split.Account,
-                                        Amount = decimal.Parse(split.Amount),
-                                        LineItem = orderLineItem,
-                                        Name = foundWorkgroupAccount == null ? "Externally Set" : foundWorkgroupAccount?.Name
-                                    });
+                                    order.AddSplit(BuildSplit(workgroupAccounts, split.Account, decimal.Parse(split.Amount), orderLineItem));
                                 }
                             }
                         }
@@ -2191,35 +2184,82 @@ namespace Purchasing.Mvc.Controllers
                     {
                         if (split.IsValid())
                         {
-                            //Ok, so check if the CoA or Account is in the workgroup. If it isn't use the split.Account for the CoA and Name
-                            var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.GetAccount == split.Account);
-                            order.AddSplit(new Split
-                            {
-                                Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
-                                FinancialSegmentString = foundWorkgroupAccount != null ? foundWorkgroupAccount?.FinancialSegmentString : split.Account,
-                                Amount = decimal.Parse(split.Amount),
-                                Name = foundWorkgroupAccount == null ? "Externally Set" : foundWorkgroupAccount?.Name
-                                //SubAccount = split.SubAccount,
-                                //Project = split.Project
-                            });
+                            order.AddSplit(BuildSplit(workgroupAccounts, split.Account, decimal.Parse(split.Amount), null));
                         }
                     }
                 }
                 else if (model.SplitType == OrderViewModel.SplitTypes.None)
                 {
-                    var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.GetAccount == model.Account);
-                    order.AddSplit(new Split
-                    { 
-                        Amount = order.Total(),
-                        Account = foundWorkgroupAccount != null && foundWorkgroupAccount.FinancialSegmentString == null ? foundWorkgroupAccount.Account?.Id : null,
-                        FinancialSegmentString = foundWorkgroupAccount != null ? foundWorkgroupAccount?.FinancialSegmentString : model.Account,
-                        Name = foundWorkgroupAccount == null ? "Externally Set" : foundWorkgroupAccount?.Name
-                    }); //Order with "no" splits get one split for the full amount
+                    //This one is using the model, not a split
+                    order.AddSplit(BuildSplit(workgroupAccounts, model.Account, order.Total(), null));
                 }
 
                 order.TotalFromDb = order.Total();
                 order.LineItemSummary = order.GenerateLineItemSummary();
             }
+        }
+
+        /// <summary>
+        /// Ok, so this tries to find either the Financial Segment String *OR* the account in the workgroup accounts
+        /// If it finds it. regardless if it is by CoA or Account it tries to use the CoA if that is set.
+        /// This means it should work if a KFS account is used, and that has been updated to a CoA in the workgroup Account.
+        /// </summary>
+        /// <param name="workgroupAccounts">Array of workgroup account for the order</param>
+        /// <param name="split">The view model split</param>
+        /// <param name="orderLineItem"></param>
+        /// <returns>Split to add to the order</returns>
+        private Split BuildSplit(WorkgroupAccount[] workgroupAccounts, string account, decimal amount, LineItem orderLineItem)
+        {
+            var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.FinancialSegmentString == account || (a.Account != null && a.Account.Id == account));
+
+            if(foundWorkgroupAccount != null)
+            {
+                //Ok, we found a wga, check if it is a CoA
+                if (!string.IsNullOrWhiteSpace(foundWorkgroupAccount.FinancialSegmentString))
+                {
+                    return new Split
+                    {
+                        Account = null,
+                        FinancialSegmentString = foundWorkgroupAccount.FinancialSegmentString,
+                        Amount = amount,
+                        LineItem = orderLineItem,
+                        Name = foundWorkgroupAccount?.Name
+                    };
+                }
+                //We found one, but it is an old account
+                return new Split
+                {
+                    Account = foundWorkgroupAccount.Account?.Id,
+                    FinancialSegmentString = null,
+                    Amount = amount,
+                    LineItem = orderLineItem,
+                    Name = foundWorkgroupAccount.GetName
+                };
+            }
+
+            //We didn't find the wga, so check if split.account is a CoA or KFS account
+            if(FinancialChartValidation.GetFinancialChartStringType(account) == FinancialChartStringType.Invalid)
+            {
+                //KFS
+                return new Split
+                {
+                    Account =  account,
+                    FinancialSegmentString = null,
+                    Amount = amount,
+                    LineItem = orderLineItem,
+                    Name = "Externally Set"
+                };
+            }
+
+            //CoA
+            return new Split
+            {
+                Account = null,
+                FinancialSegmentString = account,
+                Amount = amount,
+                LineItem = orderLineItem,
+                Name = "Externally Set"
+            };
         }
 
         private OrderModifyModel CreateOrderModifyModel(Workgroup workgroup)
