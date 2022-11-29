@@ -194,7 +194,7 @@
 
             if (accountIfFound === null) { //not found, add to list          
                 if (accountName === undefined) {
-                    accountName = "Externally Set";
+                    accountName = "Externally Set (" + account + ")";
                 }
                 purchasing.OrderModel.addAccount(account, accountName, account);
             }
