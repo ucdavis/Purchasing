@@ -321,9 +321,10 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(1, allAttributes.Count());
+            Assert.AreEqual(2, allAttributes.Count());
             #endregion Assert
         }
+
 
         //Examples
 

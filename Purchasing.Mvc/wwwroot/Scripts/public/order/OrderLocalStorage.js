@@ -131,7 +131,7 @@
                     $.each(item.splits, function (i, split) {
                         var newSplit = new purchasing.LineSplit(lineSplitCount++, lineItem);
 
-                        addAccountIfNeeded(split.account, split.account);
+                        addAccountIfNeeded(split.account, split.accountName);
                         addSubAccountIfNeeded(split.subAccount, newSplit.subAccounts);
 
                         newSplit.amountComputed(split.amount);
@@ -151,11 +151,12 @@
 
             //Lines are in, now add Order splits if needed
             if (model.splitType() === "Order") {
+                //debugger;
                 $.each(data.splits, function (i, split) {
                     //Create a new split, index starting at 0, and the model is the order/$root
                     var newSplit = new purchasing.OrderSplit(i, model);
-
-                    addAccountIfNeeded(split.account, split.account);
+                    //debugger;
+                    addAccountIfNeeded(split.account, split.accountName);
                     addSubAccountIfNeeded(split.subAccount, newSplit.subAccounts);
 
                     newSplit.amountComputed(split.amount);
@@ -169,7 +170,7 @@
 
             //Add the basic account info if there are no splits (aka just one split)
             if (model.splitType() === "None") {
-                addAccountIfNeeded(data.account, data.account);
+                addAccountIfNeeded(data.account, data.accountName);
                 addSubAccountIfNeeded(data.subAccount, model.subAccounts);
 
                 model.account(data.account);
@@ -182,6 +183,7 @@
 
         //If the account is not in list of accounts, add it
         function addAccountIfNeeded(account, accountName) {
+            //debugger;
             if (account === undefined) {
                 return;
             }
@@ -190,8 +192,11 @@
                 return item.id === account;
             });
 
-            if (accountIfFound === null) { //not found, add to list
-                purchasing.OrderModel.addAccount(account, account, accountName);
+            if (accountIfFound === null) { //not found, add to list          
+                if (accountName === undefined) {
+                    accountName = "Externally Set (" + account + ")";
+                }
+                purchasing.OrderModel.addAccount(account, accountName, account);
             }
         }
 

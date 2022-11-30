@@ -17,6 +17,7 @@ using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Threading.Tasks;
 
 namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 {
@@ -635,7 +636,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
         [TestMethod]
         [ExpectedException(typeof (PreconditionException))]
-        public void TestRequestPostWhenNotAuthorizedForWorkgroup()
+        public async Task TestRequestPostWhenNotAuthorizedForWorkgroup()
         {
             var thisFar = false;
             try
@@ -648,7 +649,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 #endregion Arrange
 
                 #region Act
-                Controller.Request(new OrderViewModel{Workgroup = 2});
+                await Controller.Request(new OrderViewModel{Workgroup = 2});
                 #endregion Act
             }
             catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
@@ -663,7 +664,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
 
         [TestMethod]
-        public void TestRequestPostRedirectsToReview()
+        public async Task TestRequestPostRedirectsToReview()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] {""}, "Me");
@@ -707,7 +708,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
 
             #region Act
-            var result = Controller.Request(orderViewModel)
+            var result = (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -737,7 +738,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
 
         [TestMethod]
-        public void TestRequestPostWorkgroupBinding()
+        public async Task TestRequestPostWorkgroupBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -762,7 +763,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -775,7 +776,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostVendorBinding1()
+        public async Task TestRequestPostVendorBinding1()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -802,7 +803,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -816,7 +817,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
 
         [TestMethod]
-        public void TestRequestPostVendorBinding2()
+        public async Task TestRequestPostVendorBinding2()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -846,7 +847,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -859,7 +860,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostAddressBinding()
+        public async Task TestRequestPostAddressBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -889,7 +890,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -902,7 +903,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostShippingTypeBinding()
+        public async Task TestRequestPostShippingTypeBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -932,7 +933,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -945,7 +946,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostDateNeededBinding()
+        public async Task TestRequestPostDateNeededBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -972,7 +973,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -985,7 +986,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostAllowBackorderBinding1()
+        public async Task TestRequestPostAllowBackorderBinding1()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1012,7 +1013,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1025,7 +1026,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostAllowBackorderBinding2()
+        public async Task TestRequestPostAllowBackorderBinding2()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1052,7 +1053,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1065,7 +1066,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostOrganizationBinding()
+        public async Task TestRequestPostOrganizationBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1096,7 +1097,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1110,7 +1111,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
 
         [TestMethod]
-        public void TestRequestPostDeliverToBinding()
+        public async Task TestRequestPostDeliverToBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1137,7 +1138,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1150,7 +1151,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostDeliverToEmailBinding()
+        public async Task TestRequestPostDeliverToEmailBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1177,7 +1178,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1190,7 +1191,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostDeliverToPhoneBinding()
+        public async Task TestRequestPostDeliverToPhoneBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1217,7 +1218,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1230,7 +1231,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostOrderTypeBinding()
+        public async Task TestRequestPostOrderTypeBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1265,7 +1266,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1278,7 +1279,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostCreatedByBinding()
+        public async Task TestRequestPostCreatedByBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
@@ -1307,7 +1308,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1320,7 +1321,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostJustificationBinding()
+        public async Task TestRequestPostJustificationBinding()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1349,7 +1350,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1362,7 +1363,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostCommentsBinding1()
+        public async Task TestRequestPostCommentsBinding1()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
@@ -1393,7 +1394,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1409,7 +1410,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostCommentsBinding2()
+        public async Task TestRequestPostCommentsBinding2()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
@@ -1440,7 +1441,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1455,7 +1456,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Assert
         }
         [TestMethod]
-        public void TestRequestPostCommentsBinding3()
+        public async Task TestRequestPostCommentsBinding3()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
@@ -1486,7 +1487,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1502,7 +1503,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostCommentsBinding4()
+        public async Task TestRequestPostCommentsBinding4()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
@@ -1533,7 +1534,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1549,7 +1550,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostAttachmentsBinding1()
+        public async Task TestRequestPostAttachmentsBinding1()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1579,7 +1580,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1592,7 +1593,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostAttachmentsBinding2()
+        public async Task TestRequestPostAttachmentsBinding2()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1624,7 +1625,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1638,7 +1639,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostAttachmentsBinding3()
+        public async Task TestRequestPostAttachmentsBinding3()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1668,7 +1669,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1684,7 +1685,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostCustomFieldAnswersBinding1()
+        public async Task TestRequestPostCustomFieldAnswersBinding1()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1722,7 +1723,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1739,7 +1740,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostCustomFieldAnswersBinding2()
+        public async Task TestRequestPostCustomFieldAnswersBinding2()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1777,7 +1778,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1794,7 +1795,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostCustomFieldAnswersBinding3()
+        public async Task TestRequestPostCustomFieldAnswersBinding3()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1832,7 +1833,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1850,7 +1851,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
 
         [TestMethod]
-        public void TestRequestPostRestrictedBinding1()
+        public async Task TestRequestPostRestrictedBinding1()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1885,7 +1886,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1903,7 +1904,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostRestrictedBinding2()
+        public async Task TestRequestPostRestrictedBinding2()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1938,7 +1939,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -1957,7 +1958,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostRestrictedBinding3()
+        public async Task TestRequestPostRestrictedBinding3()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -1992,7 +1993,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2011,7 +2012,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostRestrictedBinding4()
+        public async Task TestRequestPostRestrictedBinding4()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2046,7 +2047,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2067,7 +2068,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         #region includeLineItemsAndSplits (BindOrderModel) Tests
 
         [TestMethod]
-        public void TestRequestPostIncludeLineItemsAndSplits1()
+        public async Task TestRequestPostIncludeLineItemsAndSplits1()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2095,7 +2096,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2112,7 +2113,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostIncludeLineItemsAndSplits2()
+        public async Task TestRequestPostIncludeLineItemsAndSplits2()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2145,7 +2146,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2164,7 +2165,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostIncludeLineItemsAndSplits3()
+        public async Task TestRequestPostIncludeLineItemsAndSplits3()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2192,7 +2193,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2207,7 +2208,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostIncludeLineItemsAndSplits4()
+        public async Task TestRequestPostIncludeLineItemsAndSplits4()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2235,7 +2236,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2250,7 +2251,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostIncludeLineItemsAndSplits5()
+        public async Task TestRequestPostIncludeLineItemsAndSplits5()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2278,7 +2279,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2293,7 +2294,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostIncludeLineItemsAndSplits6()
+        public async Task TestRequestPostIncludeLineItemsAndSplits6()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2324,7 +2325,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2341,7 +2342,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostIncludeLineItemsAndSplits7()
+        public async Task TestRequestPostIncludeLineItemsAndSplits7()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2375,7 +2376,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2397,7 +2398,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod]
-        public void TestRequestPostIncludeLineItemsAndSplits8()
+        public async Task TestRequestPostIncludeLineItemsAndSplits8()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2431,7 +2432,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2453,7 +2454,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod, Ignore]
-        public void TestRequestPostIncludeLineItemsAndSplits9()
+        public async Task TestRequestPostIncludeLineItemsAndSplits9()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2503,7 +2504,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2530,7 +2531,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         #endregion includeLineItemsAndSplits (BindOrderModel) Tests
 
         [TestMethod, Ignore]
-        public void TestRequestPostOrderSplits1()
+        public async Task TestRequestPostOrderSplits1()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2580,7 +2581,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -2606,7 +2607,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
 
         [TestMethod, Ignore]
-        public void TestRequestPostOrderSplits2()
+        public async Task TestRequestPostOrderSplits2()
         {
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "Me");
@@ -2659,7 +2660,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.Request(orderViewModel)
+            (await Controller.Request(orderViewModel))
                 .AssertActionRedirect();
             #endregion Act
 
