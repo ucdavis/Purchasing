@@ -1217,7 +1217,7 @@ namespace Purchasing.Mvc.Controllers
                 .ToList();
 
             //All the new Aggie Enterprise Accounts
-            var AeAccountSplits = _repositoryFactory.SplitRepository.Queryable.Where(a => a.Order.Id == id && a.Account == null).Select(x =>
+            var AeAccountSplits = _repositoryFactory.SplitRepository.Queryable.Where(a => a.Order.Id == id && a.Account == null && a.FinancialSegmentString != null).Select(x =>
                 new OrderViewModel.Split
                 {
                     Account = x.FinancialSegmentString,
