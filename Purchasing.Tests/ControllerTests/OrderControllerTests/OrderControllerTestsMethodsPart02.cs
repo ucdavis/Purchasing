@@ -636,7 +636,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
         [TestMethod]
         [ExpectedException(typeof (PreconditionException))]
-        public void TestRequestPostWhenNotAuthorizedForWorkgroup()
+        public async Task TestRequestPostWhenNotAuthorizedForWorkgroup()
         {
             var thisFar = false;
             try
@@ -649,7 +649,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 #endregion Arrange
 
                 #region Act
-                Controller.Request(new OrderViewModel{Workgroup = 2});
+                await Controller.Request(new OrderViewModel{Workgroup = 2});
                 #endregion Act
             }
             catch(Exception exOuter) when (exOuter.InnerException is Exception ex)
