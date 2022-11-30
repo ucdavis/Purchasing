@@ -2210,6 +2210,19 @@ namespace Purchasing.Mvc.Controllers
         /// <returns>Split to add to the order</returns>
         private Split BuildSplit(WorkgroupAccount[] workgroupAccounts, string account, decimal amount, LineItem orderLineItem)
         {
+            //Ok, this should be if no accounts are entered. Just approvers
+            if(account == null && orderLineItem == null)
+            {
+                return new Split
+                {
+                    Account = null,
+                    FinancialSegmentString = null,
+                    Amount = amount,
+                    LineItem = null,
+                    Name = null
+                };
+            }
+
             var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => (a.FinancialSegmentString != null && a.FinancialSegmentString == account) || (a.Account != null && a.Account.Id == account));
 
             if(foundWorkgroupAccount != null)
