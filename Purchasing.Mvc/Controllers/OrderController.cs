@@ -2210,7 +2210,7 @@ namespace Purchasing.Mvc.Controllers
         /// <returns>Split to add to the order</returns>
         private Split BuildSplit(WorkgroupAccount[] workgroupAccounts, string account, decimal amount, LineItem orderLineItem)
         {
-            var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => a.FinancialSegmentString == account || (a.Account != null && a.Account.Id == account));
+            var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => (a.FinancialSegmentString != null && a.FinancialSegmentString == account) || (a.Account != null && a.Account.Id == account));
 
             if(foundWorkgroupAccount != null)
             {
