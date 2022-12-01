@@ -44,7 +44,6 @@ namespace Purchasing.Core.Domain
             get {
                 if (!string.IsNullOrWhiteSpace(FinancialSegmentString))
                 {
-                    //return $"{FinancialSegmentString} ({Name})";
                     return $"{Name} ({FinancialSegmentString})";
                 }
                 return DbAccount == null ? Account : DbAccount.NameAndId;
