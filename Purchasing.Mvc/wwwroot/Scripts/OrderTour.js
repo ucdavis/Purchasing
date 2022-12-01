@@ -1,6 +1,6 @@
 ﻿//Self-Executing Anonymous Function
 (function (tour, $, undefined) {
-    debugger;
+    //debugger;
     var closeButton = { name: "Quit Tour", onclick: function () { tour.complete(); } };
     var hasApprovers = $("#approvers").length !== 0;
 
@@ -1117,8 +1117,8 @@
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#Account",
-            description: "If you know the account this order should be charged against, select it from the account drop down.  If there are any subaccounts related to the selected account, they will appear in the '--Sub Account--' drop down."
-            + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to lookup any account",
+            description: "If you know the account this order should be charged against, select it from the account drop down.  Subaccounts and Projects are no longer available for new orders with Aggie Enterprise."
+            + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to open Finjector to select or build a CoA.",
             onShow: function () {
                 var model = purchasing.OrderModel;
                 if (model.accounts().length > 1) {
