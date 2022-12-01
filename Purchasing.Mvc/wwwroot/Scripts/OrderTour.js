@@ -1,5 +1,6 @@
 ﻿//Self-Executing Anonymous Function
 (function (tour, $, undefined) {
+    debugger;
     var closeButton = { name: "Quit Tour", onclick: function () { tour.complete(); } };
     var hasApprovers = $("#approvers").length !== 0;
 
@@ -29,7 +30,7 @@
         loadOverviewTour();
         loadLineItemTour();
         loadLineItemSplitTour();
-        loadOrderDetailsTour();
+        //loadOrderDetailsTour();
     }
 
     function loadLineItemTour() {
@@ -841,7 +842,7 @@
 
     function loadOverviewTour() {
         var intro = tour.isOriginalRequest() === true
-            ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
+            ? "Don't panic! Your current form will be saved and restored whenever you choose to quit the tour"
             : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
 
         guiders.createGuider({
@@ -960,7 +961,7 @@
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#search-vendor",
-            description: "Now let's look at searching for an existing vendor (from KFS)<br/><br/>Clicking on the 'Search Vendor' button will bring up the Search Vendor dialog",
+            description: "Now let's look at searching for an existing vendor (the animation is from KFS, but the basic idea is the same for Aggie Enterprise)<br/><br/>Clicking on the 'Search Vendor' button will bring up the Search Vendor dialog",
             id: "searchvendorbutton",
             next: "searchvendor",
             overlay: true,
@@ -1025,11 +1026,38 @@
             + "This will create a new address and automatically select it for you in the address list"
             + "<br/><br/>Click cancel if you want to close the dialog without saving your changes",
             id: "addaddress",
-            next: "lineitemsoverview",
+            next: "addaddressSearch",
             overlay: true,
             highlight: ".ui-dialog",
             position: 3,
             title: "Add A New Address"
+        });
+
+        guiders.createGuider({
+            buttons: [closeButton, { name: "Next" }],
+            attachTo: "#address-search",
+            onShow: function (guider) {
+                $("#add-address").click(); //TODO: either turn off animation or wait until complete
+                $("#address-name").val("New Address Name");
+                $("#address-search").val("Mrak 38");
+                $("#address-building").val("Mrak Hall");
+                $("#address-room").val("38");
+                $("#address-address").val("One Shields Ave");
+                $("#address-city").val("Davis");
+                $("#address-state").val("CA");
+                $("#address-zip").val("95616");
+                $("#address-phone").val("754-5555");
+            },
+            onHide: function () {
+                $(".ui-dialog-titlebar-close").click();
+            },
+            description: "If the address is a campus address, search for a valid address by typing here. If an address is selected it will populate the rest of the fields and be usable by Aggie Enterprise completed orders.",
+            id: "addaddressSearch",
+            next: "lineitemsoverview",
+            overlay: true,
+            highlight: ".ui-dialog",
+            position: 3,
+            title: "Search for a Valid Campus Address"
         });
 
         guiders.createGuider({
