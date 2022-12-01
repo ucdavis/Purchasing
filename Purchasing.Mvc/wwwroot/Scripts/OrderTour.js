@@ -81,7 +81,7 @@
             buttons: [closeButton, { name: "Next"}],
             description: "Select a unit: the default is 'Each'. In our case we are going to select 'Dozen'",
             onShow: function (guider) {
-                $(guider.actualSelect).val("DZ").trigger("liszt:updated"); ;
+                $(guider.actualSelect).val("DZN").trigger("liszt:updated"); ;
             },
             id: "lineitem-unit",
             next: "lineitem-description",
@@ -191,9 +191,9 @@
         guiders.createGuider({
             attachTo: "input[name='items[0].commodityCode']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Optionally, you may enter a Commodity code. A lookup against KFS Commodity Codes and Names will be performed, and you can select the correct match if it appears.  You will be notified if no match is found. If you do not know the commodity code, leave it blank and it will be completed at the purchase stage.",
+            description: "Optionally, you may enter a Commodity code. A lookup against Aggie Enterprise Purchasing Categories will be performed, and you can select the correct match if it appears.  You will be notified if no match is found. If you do not know the commodity code/Purchasing Category, leave it blank and it will be completed at the purchase stage.",
             onShow: function (guider) {
-                $(guider.attachTo).val("13165").change();
+                $(guider.attachTo).val("44000000").change();
             },
             id: "lineitem-commodity",
             next: "lineitem-url",
