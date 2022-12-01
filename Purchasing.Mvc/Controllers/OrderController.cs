@@ -674,6 +674,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 if (model.IsAccountManager || model.IsApprover) //need to check if there are associated accounts
                 {
+                    //I don't think this is used anywhere?
                     model.HasAssociatedAccounts =
                         _repositoryFactory.SplitRepository.Queryable
                             .Any(s => s.Order.Id == model.Order.Id && (s.Account != null || s.FinancialSegmentString != null));
