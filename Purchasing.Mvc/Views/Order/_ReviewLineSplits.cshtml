@@ -15,8 +15,11 @@
 
                 <div class="acct-info">
                     <strong>Account:</strong> <span class="account">@split.AccountDisplay</span>
-                    <strong>SubAccount:</strong> <span class="subaccount">@Model.GetSubAccountDisplayForSplit(@split)</span>
-                    <strong>Project:</strong> <span class="project">@split.Project</span>
+                    @if (string.IsNullOrWhiteSpace(split.FinancialSegmentString))
+                    {
+                        <strong>SubAccount:</strong><span class="subaccount">@Model.GetSubAccountDisplayForSplit(@split)</span>
+                        <strong>Project:</strong> <span class="project">@split.Project</span>
+                    }
                 </div>
             }
             @* Order split over multiple accounts *@

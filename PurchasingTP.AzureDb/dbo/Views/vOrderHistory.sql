@@ -56,7 +56,7 @@ from orders o
 		select orderid
 			, STUFF(
 				(
-					select ', ' + ins.Account + isnull('[' + ins.subaccount + ']', '')
+					select ', ' + isnull(ins.Account, '') + isnull('[' + ins.subaccount + ']', '') + ISNULL(ins.[Name], '') + ISNULL('(' + ins.FinancialSegmentString + ')', '')
 					from splits ins
 					where os.OrderId = ins.OrderId
 					order by ins.id

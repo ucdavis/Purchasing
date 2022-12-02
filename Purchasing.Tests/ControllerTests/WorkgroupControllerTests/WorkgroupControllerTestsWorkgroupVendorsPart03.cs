@@ -164,7 +164,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
         #region GetVendorAddresses Tests
 
-        [TestMethod]
+        [TestMethod, Ignore("Obsolete")]
         public void TestGetVendorAddressesReturnsExpectedResults1()
         {
             #region Arrange
@@ -196,7 +196,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert		
         }
 
-        [TestMethod]
+        [TestMethod, Ignore("Obsolete")]
         public void TestGetVendorAddressesReturnsExpectedResults2()
         {
             #region Arrange
@@ -228,7 +228,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Assert
         }
 
-        [TestMethod]
+        [TestMethod, Ignore("Obsolete")]
         public void TestGetVendorAddressesReturnsExpectedResults3()
         {
             #region Arrange

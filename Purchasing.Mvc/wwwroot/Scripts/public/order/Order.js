@@ -829,6 +829,8 @@
         });
     }
 
+
+
     function attachAccountSearchEvents() {
         $("#accounts-search-dialog").dialog({
             autoOpen: false,
@@ -853,6 +855,49 @@
             }
         });
 
+        $("#order-form").on("click", ".coa-picker", async function (e) {
+            e.preventDefault();
+            if (purchasing.OrderModel.adjustRouting() === "True") {
+                var chart = await window.Finjector.findChartSegmentString();
+                if (chart && chart.status === "success") {
+                    var account = chart.data
+                    var name = "Externally Set";
+                    var isValid = false;
+
+                    await $.getJSON(options.CoaValidateUrl, { financialSegmentString: account }, function (results) {
+                        if (results.success !== true) {
+                            alert("CoA:" + account + " is not valid.\rDetails:\r" + results.message);
+                        }
+                        isValid = results.success;
+                    });
+
+                    if (isValid) {
+                        var container = $(this).parents(".account-container");
+
+                        var context = ko.contextFor(container[0]);
+                        //Check if the account is already in the dropdown
+                        var accountIfFound = ko.utils.arrayFirst(context.$root.accounts(), function (item) {
+                            return item.id === account;
+                        });
+                        //If it isn't, add it
+                        if (accountIfFound === null) {
+                            context.$root.addAccount(account, name, account);
+                        }
+                        //select it
+                        context.$data.account(account);
+
+                        container.find(".account-number").change(); //notify the UI that we change the account
+                    }
+                }
+                else {
+                    alert("Something went wrong with the CoA picker");
+                }            
+                
+            } else {
+                alert("You must Enable Modification before changing the account information.");
+            }
+        });
+
         $("#accounts-search-dialog-searchbox-btn").click(function (e) {
             e.preventDefault();
             searchKfsAccounts();
@@ -872,10 +917,16 @@
             var account = row.find(".result-account").html();
             var title = row.find(".result-name").html();
 
+            //debugger;
+            //account = "3110-13U20-ADNO003-238533-00-000-0000000000-000000-0000-000000-000001";
+            //title = "Test External Account";
+
+
             var context = ko.contextFor($container[0]);
 
             //push the new choice into the accounts array
-            context.$root.addAccount(account, account, title);
+            //context.$root.addAccount("CoA - ID", "Name - display in dropdown", "CoA - popup title" );
+            context.$root.addAccount(account, title, account );
 
             //select it
             context.$data.account(account);

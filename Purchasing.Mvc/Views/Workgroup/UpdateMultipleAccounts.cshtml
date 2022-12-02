@@ -193,7 +193,7 @@
                 {
                     <tr id="@item.Id" class="@(odd ? "odd" : "even") update-row">
         
-                        <td>@item.Account.NameAndId</td>
+                        <td>@item.GetAccount</td>
                         <td class="update-approver">
                             @(item.Approver != null ? @item.Approver.FullNameAndId : string.Empty)
                         </td>
