@@ -13,13 +13,36 @@
 
             <div class="section-text">
                 <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+                <p>Note! The natural account portion of the CoA needs to be non-zeros, but this part of the CoA will be overridden in Oracle based on the Purchasing Category (Commodity) selected.  </p>
             </div>
 
             <ul>
-                <li>
+                 <li>
 		            <div class="editor-label required">
-                        @Html.LabelFor(x => x.WorkgroupAccount.Account)
-                        <span>*</span>
+                        @Html.LabelFor(x => x.WorkgroupAccount.Name)
+						<span>*</span>
+					</div>
+					<div class="editor-field">
+						@Html.TextBox("WorkgroupAccount.Name", Model.WorkgroupAccount.Name != null ? Model.WorkgroupAccount.Name : string.Empty, new {@class="wide600", placeholder="Account name"})                        
+					</div>
+                    @Html.ValidationMessageFor(x => x.WorkgroupAccount.Name)
+				</li>
+				<li>
+					<div class="editor-label required">
+						@Html.LabelFor(x => x.WorkgroupAccount.FinancialSegmentString)
+						<span>*</span>
+					</div>
+					<div class="editor-field input-group">
+						@Html.TextBox("WorkgroupAccount.FinancialSegmentString", Model.WorkgroupAccount.FinancialSegmentString != null ? Model.WorkgroupAccount.FinancialSegmentString : string.Empty, new {@class="wide500", placeholder="Financial Segment String"})
+						<span class="input-group-btn">
+							<button id="ccoa-picker" class="btn" type="button">CoA Picker</button>
+						</span>						
+					</div>
+                    @Html.ValidationMessageFor(x => x.WorkgroupAccount.FinancialSegmentString)
+				</li>
+                <li>
+		            <div class="editor-label">
+                        KFS Account
 					</div>
 					<div class="editor-field">
 						@*@Html.HiddenFor(x => x.WorkgroupAccount.Account, Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)*@

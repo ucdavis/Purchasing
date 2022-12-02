@@ -8,6 +8,7 @@ using UCDArch.Core.Utils;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Moq;
+using System.Threading.Tasks;
 
 namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 {
@@ -16,7 +17,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
 
         [TestMethod]
         [ExpectedException(typeof (PreconditionException))]
-        public void TestCreateApprovalsForNewOrderRequiresAccountIdOrManager()
+        public async Task TestCreateApprovalsForNewOrderRequiresAccountIdOrManager()
         {
             var thisFar = false;
             try
@@ -30,7 +31,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
                 #endregion Arrange
 
                 #region Act
-                OrderService.CreateApprovalsForNewOrder(order, null, null, null, null);
+                await OrderService.CreateApprovalsForNewOrder(order, null, null, null, null);
                 #endregion Act
             }
             catch(Exception exOuter) when (exOuter.InnerException is Exception ex)

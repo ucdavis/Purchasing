@@ -11,6 +11,7 @@ namespace Purchasing.Mvc.Models
         public IList<Split> Splits { get; set; }
         public IEnumerable<UnitOfMeasure> Units { get; set; }
         public IEnumerable<Account> Accounts { get; set; }
+        public IEnumerable<WorkgroupAccount> WorkgroupAccounts { get; set; } //Should replace Accounts above eventually
         public IEnumerable<WorkgroupVendor> Vendors { get; set; }
         public IEnumerable<WorkgroupAddress> Addresses { get; set; }
         public IEnumerable<ShippingType> ShippingTypes { get; set; }

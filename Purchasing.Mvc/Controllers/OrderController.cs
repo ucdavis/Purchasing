@@ -29,6 +29,8 @@ using Purchasing.Core.Services;
 using Purchasing.Core.Models.AggieEnterprise;
 using AggieEnterpriseApi;
 using static NHibernate.Engine.Query.CallableParser;
+using AggieEnterpriseApi.Validation;
+
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -356,7 +358,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public new ActionResult Request(OrderViewModel model)
+        public new async Task<ActionResult> Request(OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
@@ -369,7 +371,7 @@ namespace Purchasing.Mvc.Controllers
 
             order.Tag = order.Workgroup.DefaultTag;
 
-            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+            await _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             _orderService.HandleSavedForm(order, model.FormSaveId);
 
@@ -419,7 +421,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult Edit(int id, OrderViewModel model)
+        public async Task<ActionResult> Edit(int id, OrderViewModel model)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
@@ -462,7 +464,7 @@ namespace Purchasing.Mvc.Controllers
             //TODO: Add expense validation
                 //order.ValidateExpenses().ToArray();
 
-                _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
+                await _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
             }
             else
             {
@@ -533,7 +535,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
-        public ActionResult Copy(int id, OrderViewModel model)
+        public async Task<ActionResult> Copy(int id, OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
@@ -545,8 +547,8 @@ namespace Purchasing.Mvc.Controllers
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
             order.Tag = order.Workgroup.DefaultTag;
-
-            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+            
+            await _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             Check.Require(order.LineItems.Count > 0, "line count");
 
@@ -610,7 +612,7 @@ namespace Purchasing.Mvc.Controllers
             model.LineItems =
                 _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToList();
             model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToList();
-
+            
             var splitsWithSubAccounts = model.Splits.Where(a => a.Account != null && a.SubAccount != null).ToList();
 
             if (splitsWithSubAccounts.Any())
@@ -672,9 +674,10 @@ namespace Purchasing.Mvc.Controllers
             {
                 if (model.IsAccountManager || model.IsApprover) //need to check if there are associated accounts
                 {
+                    //I don't think this is used anywhere?
                     model.HasAssociatedAccounts =
                         _repositoryFactory.SplitRepository.Queryable
-                            .Any(s => s.Order.Id == model.Order.Id && s.Account != null);
+                            .Any(s => s.Order.Id == model.Order.Id && (s.Account != null || s.FinancialSegmentString != null));
                 }
 
                 if (model.IsAccountManager) //TODO: Get Scott to review this to make sure things like toFuture or other performance things are ok.
@@ -1191,6 +1194,9 @@ namespace Purchasing.Mvc.Controllers
                 .Single();
 
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
+            //TODO: Do a CoA validation that is similar the call above
+
+            //var workgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray();
 
             var lineItems = _repositoryFactory.LineItemRepository
                 .Queryable
@@ -1211,18 +1217,35 @@ namespace Purchasing.Mvc.Controllers
                     })
                 .ToList();
 
+            //All the new Aggie Enterprise Accounts
+            var AeAccountSplits = _repositoryFactory.SplitRepository.Queryable.Where(a => a.Order.Id == id && a.Account == null && a.FinancialSegmentString != null).Select(x =>
+                new OrderViewModel.Split
+                {
+                    Account = x.FinancialSegmentString,
+                    AccountName = x.Name,
+                    Amount = x.Amount.ToString(CultureInfo.InvariantCulture),
+                    LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                    Project = x.Project, //Will always be null
+                    SubAccount = x.SubAccount //Will always be null
+                }).ToList();
+
             var splits = (from s in _repositoryFactory.SplitRepository.Queryable
                           join a in _repositoryFactory.AccountRepository.Queryable on s.Account equals a.Id
-                          where s.Order.Id == id
+                          where s.Order.Id == id && s.Account != null
                           select new OrderViewModel.Split
-                                     {
-                                         Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Id,
-                                         AccountName = a.Name,
-                                         Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
-                                         LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
-                                         Project = s.Project,
-                                         SubAccount = s.SubAccount
-                                     }).ToList();
+                          {
+                              Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Id,
+                              AccountName = a.Name,
+                              Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
+                              LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
+                              Project = s.Project,
+                              SubAccount = s.SubAccount
+                          }).ToList();
+
+            if (AeAccountSplits.Any())
+            {
+                splits.AddRange(AeAccountSplits);
+            }
 
             OrderViewModel.SplitTypes splitType;
 
@@ -1258,6 +1281,22 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(groupedSubAccounts);
         }
 
+        public async Task<ActionResult> ValidateCoA(string financialSegmentString)
+        {
+            var rtValue = await _aggieEnterpriseService.ValidateAccount(financialSegmentString);
+            if (rtValue?.IsValid == true)
+            {
+                return Json(new { success = true });
+            }
+            if(rtValue == null)
+            {
+                return Json(new { success = false, message = "Invalid Account" });
+            }
+
+            return Json(new { success = false, message = rtValue.Message});
+
+        }
+        
         [HttpPost]
         public ActionResult AddVendor(int workgroupId, WorkgroupVendor vendor)
         {
@@ -2018,6 +2057,7 @@ namespace Purchasing.Mvc.Controllers
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(model.Workgroup);
+            var workgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == workgroup.Id).ToArray();
 
             //TODO: automapper?
             order.Vendor = model.Vendor == 0 ? null : _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor);
@@ -2131,14 +2171,7 @@ namespace Purchasing.Mvc.Controllers
                             {
                                 if (split.IsValid())
                                 {
-                                    order.AddSplit(new Split
-                                    {
-                                        Account = split.Account,
-                                        Amount = decimal.Parse(split.Amount),
-                                        LineItem = orderLineItem,
-                                        SubAccount = split.SubAccount,
-                                        Project = split.Project
-                                    });
+                                    order.AddSplit(BuildSplit(workgroupAccounts, split.Account, decimal.Parse(split.Amount), orderLineItem));
                                 }
                             }
                         }
@@ -2152,24 +2185,95 @@ namespace Purchasing.Mvc.Controllers
                     {
                         if (split.IsValid())
                         {
-                            order.AddSplit(new Split
-                            {
-                                Account = split.Account,
-                                Amount = decimal.Parse(split.Amount),
-                                SubAccount = split.SubAccount,
-                                Project = split.Project
-                            });
+                            order.AddSplit(BuildSplit(workgroupAccounts, split.Account, decimal.Parse(split.Amount), null));
                         }
                     }
                 }
                 else if (model.SplitType == OrderViewModel.SplitTypes.None)
                 {
-                    order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                    //This one is using the model, not a split
+                    order.AddSplit(BuildSplit(workgroupAccounts, model.Account, order.Total(), null));
                 }
 
                 order.TotalFromDb = order.Total();
                 order.LineItemSummary = order.GenerateLineItemSummary();
             }
+        }
+
+        /// <summary>
+        /// Ok, so this tries to find either the Financial Segment String *OR* the account in the workgroup accounts
+        /// If it finds it. regardless if it is by CoA or Account it tries to use the CoA if that is set.
+        /// This means it should work if a KFS account is used, and that has been updated to a CoA in the workgroup Account.
+        /// </summary>
+        /// <param name="workgroupAccounts">Array of workgroup account for the order</param>
+        /// <param name="split">The view model split</param>
+        /// <param name="orderLineItem"></param>
+        /// <returns>Split to add to the order</returns>
+        private Split BuildSplit(WorkgroupAccount[] workgroupAccounts, string account, decimal amount, LineItem orderLineItem)
+        {
+            //Ok, this should be if no accounts are entered. Just approvers
+            if(account == null && orderLineItem == null)
+            {
+                return new Split
+                {
+                    Account = null,
+                    FinancialSegmentString = null,
+                    Amount = amount,
+                    LineItem = null,
+                    Name = null
+                };
+            }
+
+            var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => (a.FinancialSegmentString != null && a.FinancialSegmentString == account) || (a.Account != null && a.Account.Id == account));
+
+            if(foundWorkgroupAccount != null)
+            {
+                //Ok, we found a wga, check if it is a CoA
+                if (!string.IsNullOrWhiteSpace(foundWorkgroupAccount.FinancialSegmentString))
+                {
+                    return new Split
+                    {
+                        Account = null,
+                        FinancialSegmentString = foundWorkgroupAccount.FinancialSegmentString,
+                        Amount = amount,
+                        LineItem = orderLineItem,
+                        Name = foundWorkgroupAccount?.Name
+                    };
+                }
+                //We found one, but it is an old account
+                return new Split
+                {
+                    Account = foundWorkgroupAccount.Account?.Id,
+                    FinancialSegmentString = null,
+                    Amount = amount,
+                    LineItem = orderLineItem,
+                    Name = foundWorkgroupAccount.GetName
+                };
+            }
+
+            //We didn't find the wga, so check if split.account is a CoA or KFS account
+            if(FinancialChartValidation.GetFinancialChartStringType(account) == FinancialChartStringType.Invalid)
+            {
+                //KFS
+                return new Split
+                {
+                    Account =  account,
+                    FinancialSegmentString = null,
+                    Amount = amount,
+                    LineItem = orderLineItem,
+                    Name = "Externally Set"
+                };
+            }
+
+            //CoA
+            return new Split
+            {
+                Account = null,
+                FinancialSegmentString = account,
+                Amount = amount,
+                LineItem = orderLineItem,
+                Name = "Externally Set"
+            };
         }
 
         private OrderModifyModel CreateOrderModifyModel(Workgroup workgroup)
@@ -2180,6 +2284,7 @@ namespace Purchasing.Mvc.Controllers
                 Workgroup = workgroup,
                 Units = _repositoryFactory.UnitOfMeasureRepository.Queryable.Cache().ToList(),
                 Accounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).Select(x => x.Account).ToList(),
+                WorkgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToList(), //Should end up replacing the Accounts above...
                 Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).OrderBy(a => a.Name).ToList(),
                 Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).ToList(),
                 ShippingTypes = _repositoryFactory.ShippingTypeRepository.Queryable.Cache().ToList(),

@@ -21,8 +21,8 @@
     <thead>
         <tr>
             <th></th>
-            <th>Id</th>
             <th>Name</th>
+            <th>Account</th>
             <th>Approver</th>
             <th>Manager</th>
             <th>Purchaser</th>
@@ -42,11 +42,9 @@
                     </a>
                 </td>
                 <td>
-                    @Html.ActionLink(item.Account.Id, "AccountDetails", "Workgroup", new {id = Model.Id, accountId = item.Id}, new {})
+                    @Html.ActionLink(item.GetName, "AccountDetails", "Workgroup", new {id = Model.Id, accountId = item.Id}, new {})
                 </td>
-                <td>
-                    @Html.ActionLink(item.Account.Name, "AccountDetails", "Workgroup", new {id = Model.Id, accountId = item.Id}, new {})
-                </td>
+                <td>@Html.ActionLink(item.GetAccount, "AccountDetails", "Workgroup", new {id = Model.Id, accountId = item.Id}, new {})</td>
                 <td>@(item.Approver != null ? @item.Approver.FullNameAndId : string.Empty)</td>
                 <td>@(item.AccountManager != null ? item.AccountManager.FullNameAndId : string.Empty)</td>                
                 <td>@(item.Purchaser != null ? item.Purchaser.FullNameAndId : string.Empty)</td>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using FluentNHibernate.Mapping;
@@ -31,10 +32,20 @@ namespace Purchasing.Core.Domain
         public virtual SubAccount DbSubAccount { get; set; }
 
         public virtual IList<Approval> Approvals { get; set; }
-        
+
+        [StringLength(64)]
+        public virtual string Name { get; set; } //Have the name here?
+        [DisplayName("CoA")]
+        [StringLength(128)]
+        public virtual string FinancialSegmentString { get; set; }
+
         public virtual string AccountDisplay
         {
             get {
+                if (!string.IsNullOrWhiteSpace(FinancialSegmentString))
+                {
+                    return $"{Name} ({FinancialSegmentString})";
+                }
                 return DbAccount == null ? Account : DbAccount.NameAndId;
             }
         }
@@ -55,6 +66,10 @@ namespace Purchasing.Core.Domain
         {
             get
             {
+                if (!string.IsNullOrWhiteSpace(FinancialSegmentString))
+                {
+                    return AccountDisplay;
+                }
                 if (Account == null) return string.Empty;
 
                 var result = new StringBuilder();
@@ -80,6 +95,8 @@ namespace Purchasing.Core.Domain
             Map(x => x.Account);
             Map(x => x.SubAccount);
             Map(x => x.Project);
+            Map(x => x.Name);
+            Map(x => x.FinancialSegmentString);
             
             References(x => x.Order);
             References(x => x.LineItem);

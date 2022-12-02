@@ -12,13 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using static Purchasing.Core.Services.AggieEnterpriseService;
 
 namespace Purchasing.Core.Services
 {
     public interface IAggieEnterpriseService
     {
-        Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true);
+        Task<AccountValidationModel> ValidateAccount(string financialSegmentString, bool validateCVRs = true);
 
         Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb);
         Task<AeResultStatus> LookupOrderStatus(string requestId);
@@ -33,6 +34,10 @@ namespace Purchasing.Core.Services
 
         Task<List<IdAndName>> SearchShippingAddress(string query);
         Task<WorkgroupAddress> GetShippingAddress(WorkgroupAddress workgroupAddress);
+
+        Task<string> ConvertKfsAccount(Account account);
+
+        Task<ExternalRoutingModel> GetFinancialOfficer(string financialSegmentString);
     }
     public class AggieEnterpriseService : IAggieEnterpriseService
     {
@@ -50,8 +55,19 @@ namespace Purchasing.Core.Services
             _repositoryFactory = repositoryFactory;
         }
 
-        public async Task<bool> IsAccountValid(string financialSegmentString, bool validateCVRs = true)
+        public async Task<ExternalRoutingModel> GetFinancialOfficer(string financialSegmentString)
         {
+            //TODO: If AE can supply the query....
+            var rtValue = new ExternalRoutingModel();
+            rtValue.IsExternal = false; //Set to true if we can get the info
+            rtValue.FinancialOfficerId = null; 
+
+            return rtValue;
+        }
+
+        public async Task<AccountValidationModel> ValidateAccount(string financialSegmentString, bool validateCVRs = true)
+        {
+            var rtValue = new AccountValidationModel();
             var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(financialSegmentString);
 
             if (segmentStringType == FinancialChartStringType.Gl)
@@ -60,10 +76,34 @@ namespace Purchasing.Core.Services
 
                 var data = result.ReadData();
 
-                var isValid = data.GlValidateChartstring.ValidationResponse.Valid;
+                rtValue.IsValid = data.GlValidateChartstring.ValidationResponse.Valid;
+                rtValue.IsPpm = false;
 
+                if (!rtValue.IsValid)
+                {
+                    foreach (var err in data.GlValidateChartstring.ValidationResponse.ErrorMessages)
+                    {
+                        rtValue.Messages.Add(err);
+                    }
+                }
+                rtValue.Details.Add(new KeyValuePair<string, string>("Entity", $"{data.GlValidateChartstring.SegmentNames.EntityName} ({data.GlValidateChartstring.Segments.Entity})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Fund", $"{data.GlValidateChartstring.SegmentNames.FundName} ({data.GlValidateChartstring.Segments.Fund})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Department", $"{data.GlValidateChartstring.SegmentNames.DepartmentName} ({data.GlValidateChartstring.Segments.Department})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Account", $"{data.GlValidateChartstring.SegmentNames.AccountName} ({data.GlValidateChartstring.Segments.Account})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Purpose", $"{data.GlValidateChartstring.SegmentNames.PurposeName} ({data.GlValidateChartstring.Segments.Purpose})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Project", $"{data.GlValidateChartstring.SegmentNames.ProjectName} ({data.GlValidateChartstring.Segments.Project})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Program", $"{data.GlValidateChartstring.SegmentNames.ProgramName} ({data.GlValidateChartstring.Segments.Program})"));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Activity", $"{data.GlValidateChartstring.SegmentNames.ActivityName} ({data.GlValidateChartstring.Segments.Activity})"));
 
-                return isValid;
+                if (data.GlValidateChartstring.Warnings != null)
+                {
+                    foreach (var warn in data.GlValidateChartstring.Warnings)
+                    {
+                        rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
+                    }
+                }
+
+                return rtValue;
             }
 
             if (segmentStringType == FinancialChartStringType.Ppm)
@@ -72,14 +112,45 @@ namespace Purchasing.Core.Services
 
                 var data = result.ReadData();
 
-                var isValid = data.PpmStringSegmentsValidate.ValidationResponse.Valid;
+                rtValue.IsValid = data.PpmStringSegmentsValidate.ValidationResponse.Valid;
+                rtValue.IsPpm = true;
+                if (!rtValue.IsValid)
+                {
+                    foreach (var err in data.PpmStringSegmentsValidate.ValidationResponse.ErrorMessages)
+                    {
+                        rtValue.Messages.Add(err);
+                    }
+                }
 
-                return isValid;
+                rtValue.Details.Add(new KeyValuePair<string, string>("Project", data.PpmStringSegmentsValidate.Segments.Project));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Task", data.PpmStringSegmentsValidate.Segments.Task));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Organization", data.PpmStringSegmentsValidate.Segments.Organization));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Expenditure Type", data.PpmStringSegmentsValidate.Segments.ExpenditureType));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Award", data.PpmStringSegmentsValidate.Segments.Award));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Funding Source", data.PpmStringSegmentsValidate.Segments.FundingSource));
+
+                if (data.PpmStringSegmentsValidate.Warnings != null)
+                {
+                    foreach (var warn in data.PpmStringSegmentsValidate.Warnings)
+                    {
+                        rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
+                    }
+                }
+
+                return rtValue;
+            }
+
+            if(segmentStringType == FinancialChartStringType.Invalid)
+            {
+                {
+                    rtValue.Messages.Add("Invalid Financial Chart String format");
+                    rtValue.IsValid = false;
+                }
             }
 
 
-
-            return false;
+            rtValue.IsValid = false;
+            return rtValue; //It isn't a GL or PPM string, so it's not valid
         }
 
         public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb)
@@ -113,7 +184,6 @@ namespace Purchasing.Core.Services
                 SupplierSiteCode = supplier.SupplierSiteCode ,
                 RequesterEmailAddress = await GetAggieEnterpriseUserEmail(purchaserKerb, purchaserEmail),
                 Description = $"{order.RequestNumber} {order.Justification?.Trim()}{bp}".SafeTruncate(240),
-                //Justification has been deprecated, we will just pass in the description above
             };
                 
             var unitCodes = order.LineItems.Select(a => a.Unit).Distinct().ToArray();
@@ -123,6 +193,7 @@ namespace Purchasing.Core.Services
             var shippingLocation = await GetShippingAddress(order.Address); //Verify still good.
 
             var distributions = await CalculateDistributions(order);
+            //TODO: Get a unique list of CoA values from the distributions and validate that they are ok to use? Or just let the error happen?
             var lineItems = new List<ScmPurchaseRequisitionLineInput>();
             foreach(var line in order.LineItems)
             {
@@ -321,7 +392,7 @@ namespace Purchasing.Core.Services
             }).ToArray();
         }
 
-        
+
         /// <summary>
         /// Potentially we could cache this lookup, but it should really only be a SIT2 test thing....
         /// </summary>
@@ -330,82 +401,50 @@ namespace Purchasing.Core.Services
         private async Task<KfsToAeCoa> LookupAccount(Split split)
         {
             var rtValue = new KfsToAeCoa { Split = split };
-
-            var chart = split.Account.Split('-')[0];
-            var account = split.Account.Split('-')[1];
-
-            if (_options.FakeSit.Equals("Yes", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(split.FinancialSegmentString))
             {
+                var chart = split.Account.Split('-')[0];
+                var account = split.Account.Split('-')[1];
+               
 
-                var lookupInAe = false;
-
-                Log.Error("Faking AE CCOA for specific account. Remove before Go Live");
-
-                //TODO: Remove
-                switch (split.Account)
+                var distributionResult = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, account, split.SubAccount);
+                var distributionData = distributionResult.ReadData();
+                if (distributionData.KfsConvertAccount.GlSegments != null)
                 {
-                    case "3-CRU9033":
-                        rtValue.FinincialSegmentString = "3110-13U00-ADNO006-534101-40-000-0000000000-200504-0000-000000-000000";
-                        break;
-                    case "3-ADOIGAA":
-                        rtValue.FinincialSegmentString = "3110-13U00-ADNO003-534101-40-000-0000000000-200504-0000-000000-000000";
-                        break;
-                    case "3-CRUCECP":
-                        rtValue.FinincialSegmentString = "K30CRUCECP-TASK01-ADNO006-522400";
-                        rtValue.IsPPm = true;
-                        break;
-                    case "3-IPFFPR3":
-                        rtValue.FinincialSegmentString = "K30IPFFPR3-TASK01-ADNO006-522400";
-                        rtValue.IsPPm = true;
-                        break;
-                    case "P-9530101":
-                        rtValue.FinincialSegmentString = "KP0953010U-301001-ADNO001-525900";
-                        rtValue.IsPPm = true;
-                        break;
-                    default:
-                        lookupInAe = true;
-                        break;
-                }
-
-                if (!lookupInAe)
-                {
-                    return rtValue;
-                }
-            }
-            
-            var distributionResult = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, account, split.SubAccount);
-            var distributionData = distributionResult.ReadData();
-            if (distributionData.KfsConvertAccount.GlSegments != null)
-            {
-                var tempGlSegments = new GlSegments(distributionData.KfsConvertAccount.GlSegments);
-                if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
-                {
-                    //770000
-                    Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                    tempGlSegments.Account = _options.DefaultNaturalAccount;
-                }
-                rtValue.FinincialSegmentString = tempGlSegments.ToSegmentString();
-            }
-            else
-            {
-                if (distributionData.KfsConvertAccount.PpmSegments != null)
-                {
-                    rtValue.IsPPm = true;
-                    var tempPpmSegments = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments);
-                    if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
+                    var tempGlSegments = new GlSegments(distributionData.KfsConvertAccount.GlSegments);
+                    if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
                     {
                         //770000
-                        Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                        tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                        Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                        tempGlSegments.Account = _options.DefaultNaturalAccount;
                     }
-                    rtValue.FinincialSegmentString = tempPpmSegments.ToSegmentString();
+                    rtValue.FinincialSegmentString = tempGlSegments.ToSegmentString();
                 }
                 else
                 {
-                    //TODO: REMOVE THIS!!!!
-                    Log.Error("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
-                    rtValue.FinincialSegmentString = $"3110-13U02-ADNO006-{_options.DefaultNaturalAccount}-43-000-0000000000-000000-0000-000000-000000";
+                    if (distributionData.KfsConvertAccount.PpmSegments != null)
+                    {
+                        rtValue.IsPPm = true;
+                        var tempPpmSegments = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments);
+                        if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
+                        {
+                            //770000
+                            Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                            tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                        }
+                        rtValue.FinincialSegmentString = tempPpmSegments.ToSegmentString();
+                    }
+                    else
+                    {
+                        //TODO: REMOVE THIS!!!!
+                        Log.Error("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
+                        rtValue.FinincialSegmentString = $"3110-13U02-ADNO006-{_options.DefaultNaturalAccount}-43-000-0000000000-000000-0000-000000-000000";
+                    }
                 }
+            }
+            else
+            {
+                rtValue.FinincialSegmentString = split.FinancialSegmentString; //TODO: Validate?
             }
             return rtValue;
         }
@@ -450,6 +489,22 @@ namespace Purchasing.Core.Services
                     // calculate the distribution percent, over the line totals
                     var dist = Math.Round( (sp.Amount / sp.LineItem.TotalWithTax()) * 100m, 3);
                     distributions.Add(new KeyValuePair<KfsToAeCoa, decimal>(await LookupAccount(sp), dist));
+                }
+            }
+
+            //Make sure distributions add up to 100%
+            var lineItems = distributions.GroupBy(a => a.Key.Split.LineItem).ToList();
+            foreach (var line in lineItems)
+            {
+                var total = line.Sum(a => a.Value);
+                if (total != 100m)
+                {
+                    var diff = 100m - total;
+                    var first = line.First();
+                    first = new KeyValuePair<KfsToAeCoa, decimal>(first.Key, first.Value + diff);
+                    distributions.Remove(line.First());
+                    distributions.Add(first);
+                    Log.Warning("Distribution percent fixed {RequestNumber}", order.RequestNumber);
                 }
             }
 
@@ -726,6 +781,45 @@ namespace Purchasing.Core.Services
             }
 
             return null;
+        }
+
+        public async Task<string> ConvertKfsAccount(Account account)
+        {
+            var chart = account.Id.Split('-')[0];
+            var accountPart = account.Id.Split('-')[1];
+
+            var result = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, accountPart, null);
+            var data = result.ReadData();
+            if (data.KfsConvertAccount.GlSegments != null)
+            {
+                var tempGlSegments = new GlSegments(data.KfsConvertAccount.GlSegments);
+                if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
+                {
+                    //770000
+                    Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                    tempGlSegments.Account = _options.DefaultNaturalAccount;
+                }
+                return tempGlSegments.ToSegmentString();
+            }
+            else
+            {
+                if (data.KfsConvertAccount.PpmSegments != null)
+                {
+                    //rtValue.IsPPm = true; //Maybe want to return and store this?
+                    var tempPpmSegments = new PpmSegments(data.KfsConvertAccount.PpmSegments);
+                    if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
+                    {
+                        //770000
+                        Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                        tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                    }
+                    return tempPpmSegments.ToSegmentString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
         }
 
         public class Supplier

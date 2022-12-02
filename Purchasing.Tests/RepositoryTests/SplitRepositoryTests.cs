@@ -1146,6 +1146,11 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("Approvals", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Approval]", new List<string>()));
             expectedFields.Add(new NameAndType("DbAccount", "Purchasing.Core.Domain.Account", new List<string>()));
             expectedFields.Add(new NameAndType("DbSubAccount", "Purchasing.Core.Domain.SubAccount", new List<string>()));
+            expectedFields.Add(new NameAndType("FinancialSegmentString", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]",
+                "[System.ComponentModel.DisplayNameAttribute(\"CoA\")]"
+            }));
             expectedFields.Add(new NameAndType("FullAccountDisplay", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
             {
@@ -1153,6 +1158,10 @@ namespace Purchasing.Tests.RepositoryTests
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
             expectedFields.Add(new NameAndType("LineItem", "Purchasing.Core.Domain.LineItem", new List<string>()));
+            expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)64)]"
+            }));
             expectedFields.Add(new NameAndType("Order", "Purchasing.Core.Domain.Order", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"

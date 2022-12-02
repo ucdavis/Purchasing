@@ -23,6 +23,9 @@ using IdAndName = Purchasing.Core.Services.IdAndName;
 using Microsoft.AspNetCore.Http;
 using Purchasing.Core.Services;
 using System.Threading.Tasks;
+using Serilog;
+using Purchasing.Core.Helpers;
+using Purchasing.Core.Models.AggieEnterprise;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -361,7 +364,7 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(Details), new { id = id });
             }
 
-            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup);
+            var viewModel = WorkgroupAccountModel.Create(Repository, workgroup); //TODO: Remove accounts and just have CCOA?
 
             return View(viewModel);
         }
@@ -374,7 +377,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="workgroupAccount">Workgroup Account Model</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult AddAccount(int id, WorkgroupAccount workgroupAccount, string account_search)
+        public async Task<ActionResult> AddAccount(int id, WorkgroupAccount workgroupAccount, string account_search)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -389,46 +392,87 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(Details), new { id = id });
             }
 
+            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray(); //All workgroup accounts
+
 
             var workgroupAccountToCreate = new WorkgroupAccount() {Workgroup = workgroup};
             //_mapper.Map(workgroupAccount, workgroupAccountToCreate); //Mapper was causing me an exception JCS
-            workgroupAccountToCreate.Account        = workgroupAccount.Account;
-            workgroupAccountToCreate.AccountManager = workgroupAccount.AccountManager;
-            workgroupAccountToCreate.Approver       = workgroupAccount.Approver;
-            workgroupAccountToCreate.Purchaser      = workgroupAccount.Purchaser;
+            workgroupAccountToCreate.Account                = workgroupAccount.Account;
+            workgroupAccountToCreate.AccountManager         = workgroupAccount.AccountManager;
+            workgroupAccountToCreate.Approver               = workgroupAccount.Approver;
+            workgroupAccountToCreate.Purchaser              = workgroupAccount.Purchaser;
+            workgroupAccountToCreate.Name                   = workgroupAccount.Name?.Trim();
+            workgroupAccountToCreate.FinancialSegmentString = workgroupAccount.FinancialSegmentString?.Trim()?.ToUpper();
 
 
             ModelState.Clear();
             //workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
 
+            
+
             if(workgroupAccountToCreate.Account == null)
             {
-                workgroupAccountToCreate.Account = _repositoryFactory.AccountRepository.GetNullableById(account_search);
+                if (!string.IsNullOrWhiteSpace(account_search))
+                {
+                    workgroupAccountToCreate.Account = _repositoryFactory.AccountRepository.GetNullableById(account_search);
+                }
             }
 
             if(workgroupAccountToCreate.Account == null)
             {
-                ModelState.AddModelError("WorkgroupAccount.Account", "Account not found");
+                //ModelState.AddModelError("WorkgroupAccount.Account", "Account not found");
+                // Ok, not required
             }
             else
             {
-                if (_workgroupAccountRepository.Queryable.Any(a => a.Workgroup.Id == workgroup.Id && a.Account.Id == workgroupAccountToCreate.Account.Id))
+                if (workgroupAccounts.Any(a => a.Account != null && a.Account.Id == workgroupAccountToCreate.Account.Id))
                 {
                     ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
                 }
             }
 
-            if(ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(workgroupAccountToCreate.FinancialSegmentString))
+            {
+                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA is required");
+            }
+            else
+            {
+                var accountValid = await _aggieEnterpriseService.ValidateAccount(workgroupAccountToCreate.FinancialSegmentString);
+                if (!accountValid.IsValid)
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", accountValid.Message);
+                }
+                if (workgroupAccounts.Any(a => a.FinancialSegmentString != null && a.FinancialSegmentString.Equals(workgroupAccountToCreate.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA already exists for this workgroup");
+                }
+            }
+            if (string.IsNullOrWhiteSpace(workgroupAccountToCreate.Name))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Name", "Name is required");
+            }
+            else
+            {
+                if (workgroupAccounts.Any(a => a.Name != null && a.Name.Equals(workgroupAccountToCreate.Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
+                }
+            }
+
+
+            if (ModelState.IsValid)
             {
                 workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
             }
 
             if (ModelState.IsValid)
             {
-                _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
                 Message = "Workgroup account saved.";
+
+                _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
+
                 //return this.RedirectToAction("Accounts", new {id = id});
-                return this.RedirectToAction(nameof(Accounts), new { id = id });
+                return this.RedirectToAction(nameof(AccountDetails), new { id = id, accountId = workgroupAccountToCreate.Id });
             }
 
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccountToCreate);
@@ -442,8 +486,11 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="accountId">Workgroup Account Id</param>
         /// <returns></returns>
-        public ActionResult AccountDetails(int id, int accountId)
+        public async Task<ActionResult> AccountDetails(int id, int accountId)
         {
+            var model = new WorkgroupAccountDetails();
+            model.AccountValidationModel = new AccountValidationModel();
+            
             var account = _workgroupAccountRepository.GetNullableById(accountId);
 
             if (account == null)
@@ -457,7 +504,13 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
             }
 
-            return View(account);
+            model.WorkgroupAccount = account;
+            if (!string.IsNullOrWhiteSpace(account.FinancialSegmentString))
+            {
+                model.AccountValidationModel = await _aggieEnterpriseService.ValidateAccount(account.FinancialSegmentString);
+            }
+
+            return View(model);
         }
 
         /// <summary>
@@ -467,7 +520,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id">Workgroup Id</param>
         /// <param name="accountId"> Workgroup Account Id</param>
         /// <returns></returns>
-        public ActionResult EditAccount(int id, int accountId)
+        public async Task<ActionResult> EditAccount(int id, int accountId)
         {
             var account = _workgroupAccountRepository.GetNullableById(accountId);
 
@@ -484,6 +537,24 @@ namespace Purchasing.Mvc.Controllers
             }
 
             var viewModel = WorkgroupAccountModel.Create(Repository, account.Workgroup, account);
+            if (string.IsNullOrWhiteSpace(viewModel.WorkgroupAccount.Name))
+            {
+                viewModel.WorkgroupAccount.Name = $"{viewModel.WorkgroupAccount.GetName} [{viewModel.WorkgroupAccount.GetAccount}]".SafeTruncate(64);
+            }
+            
+            if (string.IsNullOrWhiteSpace(viewModel.WorkgroupAccount.FinancialSegmentString))
+            {
+                //Lookup.
+                try
+                {
+                    viewModel.WorkgroupAccount.FinancialSegmentString = await _aggieEnterpriseService.ConvertKfsAccount(viewModel.WorkgroupAccount.Account);
+                    Message = "CoA was defaulted from KFS. Please review, edit, and save.";
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error getting financial segment string from Aggie Enterprise Service");
+                }
+            }
             return View(viewModel);
         }
 
@@ -496,7 +567,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="workgroupAccount"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditAccount(int id, int accountId, WorkgroupAccount workgroupAccount)
+        public async Task<ActionResult> EditAccount(int id, int accountId, WorkgroupAccount workgroupAccount)
         {
             var accountToEdit = _workgroupAccountRepository.GetNullableById(accountId);
 
@@ -515,24 +586,69 @@ namespace Purchasing.Mvc.Controllers
             //accountToEdit.Account = workgroupAccount.Account;
             accountToEdit.AccountManager = workgroupAccount.AccountManager;
             accountToEdit.Approver = workgroupAccount.Approver;
-            accountToEdit.Purchaser = workgroupAccount.Purchaser;            
+            accountToEdit.Purchaser = workgroupAccount.Purchaser;
+            accountToEdit.Name = workgroupAccount.Name?.Trim();
+            accountToEdit.FinancialSegmentString = workgroupAccount.FinancialSegmentString?.Trim()?.ToUpper();
 
-           // _mapper.Map(workgroupAccount, accountToEdit); //I was getting an exception on test, planet express workgroup when using the mapper. JCS
+            // _mapper.Map(workgroupAccount, accountToEdit); //I was getting an exception on test, planet express workgroup when using the mapper. JCS
 
             ModelState.Clear();
             accountToEdit.TransferValidationMessagesTo(ModelState);
 
-            if(_workgroupAccountRepository.Queryable.Any(a => a.Id != accountToEdit.Id &&  a.Workgroup.Id == accountToEdit.Workgroup.Id && a.Account.Id == accountToEdit.Account.Id ))
+
+            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id && a.Id != accountToEdit.Id).ToArray(); //All wg accounts except the one being edited
+
+            //If we need to support both this and AE, we will need a flag here
+            //if(_workgroupAccountRepository.Queryable.Any(a => a.Id != accountToEdit.Id &&  a.Workgroup.Id == accountToEdit.Workgroup.Id && a.Account.Id == accountToEdit.Account.Id ))
+            //{
+            //    ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
+            //}
+
+            if (string.IsNullOrWhiteSpace(accountToEdit.FinancialSegmentString))
+            {
+                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA is required");
+            }
+            else
+            {
+                var accountValid = await _aggieEnterpriseService.ValidateAccount(accountToEdit.FinancialSegmentString);
+                if (!accountValid.IsValid)
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", accountValid.Message);
+                }
+                if (workgroupAccounts.Any(a => a.FinancialSegmentString != null && a.FinancialSegmentString.Equals(accountToEdit.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA already exists for this workgroup");
+                }
+            }
+            if (string.IsNullOrWhiteSpace(accountToEdit.Name))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Name", "Name is required");
+            }
+            else
+            {
+                if (workgroupAccounts.Any(a => a.Name != null && a.Name.Equals(accountToEdit.Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
+                }
+            }
+
+            
+
+            if (accountToEdit.Account != null && workgroupAccounts.Any(a => a.Account != null && a.Account.Id == accountToEdit.Account.Id))
             {
                 ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup");
             }
 
+
+
             if (ModelState.IsValid)
             {
-                _workgroupAccountRepository.EnsurePersistent(accountToEdit);
                 Message = "Workgroup account has been updated.";
+
+                _workgroupAccountRepository.EnsurePersistent(accountToEdit);
+
                 //return RedirectToAction("Accounts", new { id = accountToEdit.Workgroup.Id });
-                return this.RedirectToAction(nameof(Accounts), new { id = accountToEdit.Workgroup.Id });
+                return this.RedirectToAction(nameof(AccountDetails), new { id = accountToEdit.Workgroup.Id, accountId = accountToEdit.Id });
             }
 
             var viewModel = WorkgroupAccountModel.Create(Repository, accountToEdit.Workgroup, accountToEdit);

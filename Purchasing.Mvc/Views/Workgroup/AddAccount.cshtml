@@ -32,6 +32,25 @@
         });
     </script>
 
+    <script src="https://finjector.ucdavis.edu/finjector.js?v=5" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        $("#ccoa-picker").on("click",
+
+            async function () {
+                const chart = await window.Finjector.findChartSegmentString();
+                if (chart && chart.status === "success") {
+                    $("#WorkgroupAccount_FinancialSegmentString").val(chart.data);
+                }
+                else {
+                    alert("Something went wrong with the CoA picker")
+                }
+                return false;
+            });
+
+    </script>
+
 }
 
 @await Html.PartialAsync("_AccountForm")

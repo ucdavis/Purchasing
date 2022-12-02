@@ -22,7 +22,7 @@
     @Html.Hidden("id", Model.Workgroup.Id)
     @Html.Hidden("accountId", Model.Id)
 <section class="display-form ui-corner-all">
-    <header class="ui-corner-top ui-widget-header">Account: @Model.Account.Name (@Model.Account.Id)</header>
+    <header class="ui-corner-top ui-widget-header">Account: @Model.GetName (@Model.GetAccount)</header>
     
     <ul>
         <li><h3>Are you sure you want to delete this account?</h3></li>
@@ -42,7 +42,7 @@
             @* For the clear and submit buttons an empty label is required. Example: <label>&nbsp;</label> *@
             <div class="display-label">&nbsp;</div>
             <div class="display-details">
-                <input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "Index")
+                <input class="button" type="submit" value="Delete" /> | @Html.ActionLink("Cancel", "Accounts", new { id = Model.Workgroup.Id })
             </div>
         </li>
     </ul>
