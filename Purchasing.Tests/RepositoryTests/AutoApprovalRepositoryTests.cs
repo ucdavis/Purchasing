@@ -195,7 +195,7 @@ namespace Purchasing.Tests.RepositoryTests
                 Assert.AreEqual(autoApproval.TargetUser, null);
                 Assert.AreEqual(autoApproval.Account, null);
                 var results = autoApproval.ValidationResults().AsMessageList();
-                results.AssertErrorsAre("An account OR user must be selected, not both.");
+                results.AssertErrorsAre("A user must be selected.");
                 Assert.IsTrue(autoApproval.IsTransient());
                 Assert.IsFalse(autoApproval.IsValid());
                 throw;
@@ -227,7 +227,7 @@ namespace Purchasing.Tests.RepositoryTests
                 Assert.IsNotNull(autoApproval.User);
                 Assert.IsNotNull(autoApproval.Account);
                 var results = autoApproval.ValidationResults().AsMessageList();
-                results.AssertErrorsAre("An account OR user must be selected, not both.");
+                results.AssertErrorsAre("A user must be selected.");
                 Assert.IsTrue(autoApproval.IsTransient());
                 Assert.IsFalse(autoApproval.IsValid());
                 throw;
