@@ -106,6 +106,7 @@ namespace Purchasing.Mvc.Controllers
         [HttpPost]
         public ActionResult Create(AutoApproval autoApproval, bool showAll = false)
         {
+            autoApproval.Account = null;
             autoApproval.Equal = !autoApproval.LessThan; //only one can be true, the other must be false
             autoApproval.User = _userRepository.GetNullableById(CurrentUser.Identity.Name);            
             ModelState.Clear();
@@ -148,6 +149,7 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult Edit(int id, bool showAll = false)
         {
             var autoApproval = _autoApprovalRepository.GetNullableById(id);
+            autoApproval.Account = null;
 
             if (autoApproval == null)
             {
@@ -191,6 +193,7 @@ namespace Purchasing.Mvc.Controllers
                 ErrorMessage = "No Access";
                 return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
             }
+            autoApproval.Account = null;
 
             TransferValues(autoApproval, autoApprovalToEdit);
             autoApprovalToEdit.Equal = !autoApprovalToEdit.LessThan;
