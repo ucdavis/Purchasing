@@ -1157,6 +1157,7 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("KfsAccount", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("LineItem", "Purchasing.Core.Domain.LineItem", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
             {

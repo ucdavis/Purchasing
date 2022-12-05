@@ -31,7 +31,7 @@
                         <div class="display-label">Comment (Required For Deny)</div>
                         <div class="display-details"><textarea id="comment" name="comment"></textarea></div>
                     </li>
-                    @if (Model.CanSubmitOrder)
+                    @if (Model.CanSubmitOrder && !Model.HasInvalidAccounts)
                     {
                         if (Model.IsPurchaser)
                         {

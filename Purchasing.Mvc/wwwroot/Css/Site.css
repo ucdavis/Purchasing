@@ -484,18 +484,23 @@ div.dataTables_wrapper { margin: 1em 0 2em 0;}
 #WizardNavigation li:nth-child(2) a {padding-right: 10px;}
 #WizardNavigation li:nth-child(3) a {padding-left: 10px;}
 
-#error-message, #status-message, #browser-warning {
+#error-message, #status-message, #browser-warning, #error-message-account {
     border: 2px solid;
-    border-radius: 5px; 
-    -moz-border-radius: 5px; 
-    -webkit-border-radius: 5px; 
-    margin: 1.5em 0; 
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin: 1.5em 0;
     padding: 1em 0.5em;
     text-align: center;
 }
 #error-message {
     border-color: red;
     background-color: #faf5f6;
+}
+#error-message-account {
+    border-color: red;
+    background-color: #faf5f6;
+    text-align: left;
 }
 #status-message {
     border-color: green;

@@ -83,6 +83,21 @@ namespace Purchasing.Core.Domain
                 return result.ToString();
             }
         }
+
+        public virtual string KfsAccount
+        {
+            get
+            {
+                if (Account == null) return string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(SubAccount))
+                {
+                    return ($"{Account}-{SubAccount}");
+                }
+
+                return Account;
+            }
+        }
     }
 
     public class SplitMap : ClassMap<Split>

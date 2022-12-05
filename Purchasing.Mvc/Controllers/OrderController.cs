@@ -579,7 +579,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         //[AuthorizeReadOrEditOrder] //Doing access directly to avoid duplicate permissions check
-        public ActionResult Review(int id)
+        public async Task<ActionResult> Review(int id)
         {
             var orderQuery =
                 _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id)
@@ -721,6 +721,59 @@ namespace Purchasing.Mvc.Controllers
 
             model.ApprovalUsers =
                 _repositoryFactory.UserRepository.Queryable.Where(x => approvalUserIds.Contains(x.Id)).ToList();
+
+            if (model.CanSubmitOrder)
+            {
+                //So this means that
+                //1 the order is not in the completed status (there is an early return above)
+                //2 there are accounts or it is at the purchaser level.
+                // So lets validate all the accounts...
+
+                var uniqueFinancialSegments = model.Order.Splits.Where(x => x.FinancialSegmentString != null).Select(x => x.FinancialSegmentString).Distinct().ToList();
+                var uniqueKfsAccounts = model.Order.Splits.Where(a => a.FinancialSegmentString == null).Select(a => a.KfsAccount).Distinct().ToList();
+                var validationDict = new Dictionary<string, string>();
+                if (uniqueKfsAccounts.Any())
+                {
+                    foreach (var account in uniqueKfsAccounts)
+                    {
+                        var convertedAccount = await _aggieEnterpriseService.ConvertKfsAccount(account);
+                        if(string.IsNullOrWhiteSpace(convertedAccount))
+                        {
+                            validationDict.Add(account, "Account not found in AE conversion");
+                        }
+                        else
+                        {
+                            var validated = await _aggieEnterpriseService.ValidateAccount(convertedAccount);
+                            if (!validated.IsValid)
+                            {
+                                validationDict.Add(account, $"Converted KFS account ({convertedAccount}) has validation errors in AE: {validated.Message}");
+                            }
+                        }
+                    }
+                }
+                if (uniqueFinancialSegments.Any())
+                {
+                    foreach (var financialSegment in uniqueFinancialSegments)
+                    {
+                        var validated = await _aggieEnterpriseService.ValidateAccount(financialSegment);
+                        if (!validated.IsValid)
+                        {
+                            validationDict.Add(financialSegment, validated.Message);
+                        }
+                    }
+                }
+                if (validationDict.Any())
+                {
+                    var msg = "The following accounts/CoA are invalid: <br/>";
+                    foreach (var  item in validationDict)
+                    {
+                        msg = $"{msg}Account/CoA:{item.Key}<br/>Error: {item.Value}<br/><br/>";
+                    }
+
+                    model.HasInvalidAccounts = true;
+                    model.InvalidAccountsMessage = msg;
+                }
+            }
             
             return View(model);
         }
