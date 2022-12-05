@@ -34,8 +34,9 @@ namespace Purchasing.Core.Services
 
         Task<List<IdAndName>> SearchShippingAddress(string query);
         Task<WorkgroupAddress> GetShippingAddress(WorkgroupAddress workgroupAddress);
-
+        
         Task<string> ConvertKfsAccount(Account account);
+        Task<string> ConvertKfsAccount(string account);
 
         Task<ExternalRoutingModel> GetFinancialOfficer(string financialSegmentString);
     }
@@ -785,10 +786,23 @@ namespace Purchasing.Core.Services
 
         public async Task<string> ConvertKfsAccount(Account account)
         {
-            var chart = account.Id.Split('-')[0];
-            var accountPart = account.Id.Split('-')[1];
+            return await ConvertKfsAccount(account.Id);
+        }
 
-            var result = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, accountPart, null);
+        /// <summary>
+        /// Account must be in the format x-xxxxxxx or x-xxxxxxx-xxxxx (or whatever the correct number of characters are for a KFS account with optional subaccount)
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public async Task<string> ConvertKfsAccount(string account)
+        {
+            var parts = account.Split('-');
+            
+            var chart = parts[0];
+            var accountPart = parts[1];
+            var subAcct = parts.Length > 2 ? parts[2] : null;
+
+            var result = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, accountPart, subAcct);
             var data = result.ReadData();
             if (data.KfsConvertAccount.GlSegments != null)
             {

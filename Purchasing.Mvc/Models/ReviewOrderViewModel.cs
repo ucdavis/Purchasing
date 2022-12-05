@@ -23,6 +23,8 @@ namespace Purchasing.Mvc.Models
         public bool IsPurchaser { get; set; }
         public bool IsRequesterInWorkgroup { get; set; }
         public bool IsAccountManager { get; set; }
+        public bool HasInvalidAccounts { get; set; } = false;
+        public string InvalidAccountsMessage { get; set; } = string.Empty;
 
         public string CurrentUser { get; set; }
         

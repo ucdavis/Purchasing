@@ -7,3 +7,11 @@
         @Html.ActionLink("Please edit this order", "Edit", new {Model.Order.Id}) and rectify the issue before proceeding.
     </div>
 }
+@if (Model.CanEditOrder && Model.CanSubmitOrder && Model.HasInvalidAccounts)
+{
+    <div id="error-message-account">
+        <span>@Html.Raw(Model.InvalidAccountsMessage)</span>
+        <br /><br />
+        @Html.ActionLink("Please edit this order", "Edit", new {Model.Order.Id}) and rectify the issue before proceeding.
+    </div>
+}
