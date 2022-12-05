@@ -149,8 +149,7 @@ namespace Purchasing.Mvc.Controllers
         public ActionResult Edit(int id, bool showAll = false)
         {
             var autoApproval = _autoApprovalRepository.GetNullableById(id);
-            autoApproval.Account = null;
-
+            
             if (autoApproval == null)
             {
                 return this.RedirectToAction(nameof(Index), new { showAll });
@@ -161,6 +160,8 @@ namespace Purchasing.Mvc.Controllers
                 ErrorMessage = "No Access";
                 return this.RedirectToAction(nameof(ErrorController.Index), typeof(ErrorController).ControllerName());
             }
+            
+            autoApproval.Account = null;
 
             var viewModel = AutoApprovalViewModel.Create(Repository, CurrentUser.Identity.Name);
 			viewModel.AutoApproval = autoApproval;
