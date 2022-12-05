@@ -69,7 +69,7 @@ Example: Dinosaur 1  *@
 					@Html.ValidationMessageFor(model => model.AutoApproval.Expiration)
 				</div>
 			</li>
-			<li>
+@*			<li>
 				<div class="editor-label required">
 					@Html.LabelFor(model => model.AutoApproval.Account)*<br /><br />
                     <span style="display:block; padding-left:1em; color:#000;"> (or) </span>
@@ -78,7 +78,7 @@ Example: Dinosaur 1  *@
 					@Html.Select("AutoApproval.Account", o => o.Options(Model.Accounts, x => x.Id, x => x.NameAndId).FirstOption("--Select Account--").Selected(Model.AutoApproval != null && Model.AutoApproval.Account != null ? Model.AutoApproval.Account.Id : string.Empty))
 					@Html.ValidationMessageFor(model => model.AutoApproval.Account)
 				</div>
-			</li>
+			</li>*@
 			<li>
 				<div class="editor-label required">
 					@Html.LabelFor(model => model.AutoApproval.TargetUser)*

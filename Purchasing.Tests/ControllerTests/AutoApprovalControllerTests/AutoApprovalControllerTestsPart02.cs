@@ -34,18 +34,18 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(4, result.Users.Count);
-            Assert.AreEqual(7, result.Accounts.Count);
+            //Assert.AreEqual(7, result.Accounts.Count);
             Assert.AreEqual("Someone55", result.Users[0].Id);
             Assert.AreEqual("Someone2", result.Users[1].Id);
             Assert.AreEqual("Someone3", result.Users[2].Id);
             Assert.AreEqual("Someone4", result.Users[3].Id);
-            Assert.AreEqual("AccountName2", result.Accounts[0].Name);
-            Assert.AreEqual("AccountName3", result.Accounts[1].Name);
-            Assert.AreEqual("AccountName5", result.Accounts[2].Name);
-            Assert.AreEqual("AccountName6", result.Accounts[3].Name);
-            Assert.AreEqual("AccountName7", result.Accounts[4].Name);
-            Assert.AreEqual("AccountName8", result.Accounts[5].Name);
-            Assert.AreEqual("AccountName9", result.Accounts[6].Name);
+            //Assert.AreEqual("AccountName2", result.Accounts[0].Name);
+            //Assert.AreEqual("AccountName3", result.Accounts[1].Name);
+            //Assert.AreEqual("AccountName5", result.Accounts[2].Name);
+            //Assert.AreEqual("AccountName6", result.Accounts[3].Name);
+            //Assert.AreEqual("AccountName7", result.Accounts[4].Name);
+            //Assert.AreEqual("AccountName8", result.Accounts[5].Name);
+            //Assert.AreEqual("AccountName9", result.Accounts[6].Name);
 
             Assert.IsFalse(Controller.ViewBag.ShowAll);
             Assert.IsTrue(Controller.ViewBag.IsCreate);
@@ -69,18 +69,18 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(4, result.Users.Count);
-            Assert.AreEqual(7, result.Accounts.Count);
+            //Assert.AreEqual(7, result.Accounts.Count);
             Assert.AreEqual("Someone55", result.Users[0].Id);
             Assert.AreEqual("Someone2", result.Users[1].Id);
             Assert.AreEqual("Someone3", result.Users[2].Id);
             Assert.AreEqual("Someone4", result.Users[3].Id);
-            Assert.AreEqual("AccountName2", result.Accounts[0].Name);
-            Assert.AreEqual("AccountName3", result.Accounts[1].Name);
-            Assert.AreEqual("AccountName5", result.Accounts[2].Name);
-            Assert.AreEqual("AccountName6", result.Accounts[3].Name);
-            Assert.AreEqual("AccountName7", result.Accounts[4].Name);
-            Assert.AreEqual("AccountName8", result.Accounts[5].Name);
-            Assert.AreEqual("AccountName9", result.Accounts[6].Name);
+            //Assert.AreEqual("AccountName2", result.Accounts[0].Name);
+            //Assert.AreEqual("AccountName3", result.Accounts[1].Name);
+            //Assert.AreEqual("AccountName5", result.Accounts[2].Name);
+            //Assert.AreEqual("AccountName6", result.Accounts[3].Name);
+            //Assert.AreEqual("AccountName7", result.Accounts[4].Name);
+            //Assert.AreEqual("AccountName8", result.Accounts[5].Name);
+            //Assert.AreEqual("AccountName9", result.Accounts[6].Name);
 
             Assert.IsFalse(Controller.ViewBag.ShowAll);
             Assert.IsTrue(Controller.ViewBag.IsCreate);
@@ -104,18 +104,18 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(4, result.Users.Count);
-            Assert.AreEqual(7, result.Accounts.Count);
+            //Assert.AreEqual(7, result.Accounts.Count);
             Assert.AreEqual("Someone55", result.Users[0].Id);
             Assert.AreEqual("Someone2", result.Users[1].Id);
             Assert.AreEqual("Someone3", result.Users[2].Id);
             Assert.AreEqual("Someone4", result.Users[3].Id);
-            Assert.AreEqual("AccountName2", result.Accounts[0].Name);
-            Assert.AreEqual("AccountName3", result.Accounts[1].Name);
-            Assert.AreEqual("AccountName5", result.Accounts[2].Name);
-            Assert.AreEqual("AccountName6", result.Accounts[3].Name);
-            Assert.AreEqual("AccountName7", result.Accounts[4].Name);
-            Assert.AreEqual("AccountName8", result.Accounts[5].Name);
-            Assert.AreEqual("AccountName9", result.Accounts[6].Name);
+            //Assert.AreEqual("AccountName2", result.Accounts[0].Name);
+            //Assert.AreEqual("AccountName3", result.Accounts[1].Name);
+            //Assert.AreEqual("AccountName5", result.Accounts[2].Name);
+            //Assert.AreEqual("AccountName6", result.Accounts[3].Name);
+            //Assert.AreEqual("AccountName7", result.Accounts[4].Name);
+            //Assert.AreEqual("AccountName8", result.Accounts[5].Name);
+            //Assert.AreEqual("AccountName9", result.Accounts[6].Name);
 
             Assert.IsTrue(Controller.ViewBag.ShowAll);
             Assert.IsTrue(Controller.ViewBag.IsCreate);
@@ -139,7 +139,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Users.Count);
-            Assert.AreEqual(0, result.Accounts.Count);
+            //Assert.AreEqual(0, result.Accounts.Count);
 
             Assert.IsFalse(Controller.ViewBag.ShowAll);
             Assert.IsTrue(Controller.ViewBag.IsCreate);
@@ -163,7 +163,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #region Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Users.Count);
-            Assert.AreEqual(1, result.Accounts.Count);
+            //Assert.AreEqual(1, result.Accounts.Count);
 
             Assert.IsFalse(Controller.ViewBag.ShowAll);
             Assert.IsTrue(Controller.ViewBag.IsCreate);
@@ -197,7 +197,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #endregion Act
 
             #region Assert
-            Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
+            Controller.ModelState.AssertErrorsAre("A user must be selected.");
             Assert.IsNotNull(result);
             Assert.AreEqual("Me", result.AutoApproval.User.Id);
             Assert.AreEqual((decimal)765.32, result.AutoApproval.MaxAmount);
@@ -229,7 +229,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #endregion Act
 
             #region Assert
-            Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
+            Controller.ModelState.AssertErrorsAre("A user must be selected.");
             Assert.IsNotNull(result);
             Assert.AreEqual("Me", result.AutoApproval.User.Id);
             Assert.AreEqual((decimal)765.32, result.AutoApproval.MaxAmount);
@@ -261,7 +261,7 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             #endregion Act
 
             #region Assert
-            Controller.ModelState.AssertErrorsAre("An account OR user must be selected, not both.");
+            Controller.ModelState.AssertErrorsAre("A user must be selected.");
             Assert.IsNotNull(result);
             Assert.AreEqual("Me", result.AutoApproval.User.Id);
             Assert.AreEqual((decimal)765.32, result.AutoApproval.MaxAmount);
