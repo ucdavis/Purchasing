@@ -340,7 +340,7 @@ namespace Purchasing.Core.Services
         {
             try
             {
-                var result = await _aggieClient.ScmPurchaseRequisitionRequestStatus.ExecuteAsync(requestId);
+                var result = await _aggieClient.ScmPurchaseRequisitionRequestStatus.ExecuteAsync(new Guid(requestId));
 
                 var data = result.ReadData();
 
