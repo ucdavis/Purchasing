@@ -446,6 +446,7 @@ namespace Purchasing.Core.Services
             else
             {
                 rtValue.FinincialSegmentString = split.FinancialSegmentString; //TODO: Validate?
+                rtValue.IsPPm = FinancialChartValidation.GetFinancialChartStringType(split.FinancialSegmentString) == FinancialChartStringType.Ppm;
             }
             return rtValue;
         }
