@@ -7,6 +7,15 @@
 <html lang="en" class="no-js">
 <head>
 	<title>Purchasing - @ViewBag.Title</title>
+	<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GHQXSM337H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GHQXSM337H');
+</script>
     
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="description" content="">
@@ -271,23 +280,6 @@
             })
         </script>
 	<![endif]-->
-
-    <script type="text/javascript">
-        if (window.Configuration.AnalyticsKey) {
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', window.Configuration.AnalyticsKey]);
-            _gaq.push(['_trackPageview']);
-
-            (function() {
-                var ga = document.createElement('script');
-                ga.type = 'text/javascript';
-                ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0];
-                s.parentNode.insertBefore(ga, s);
-            })();
-        }
-    </script>
 
     <a href="#" id="carty" class="carty" style="display: none; position: fixed; top: 40%; left: 40%; background: #fff; border-radius: 18px; box-shadow: 0px 0px 13px #333; border: 3px solid maroon; padding: 2em;">
         <img src="@Url.Image("Carty.png")" style="padding: 2em 1em; float: left; width: 100px;" />
