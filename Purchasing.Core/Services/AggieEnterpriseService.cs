@@ -353,9 +353,18 @@ namespace Purchasing.Core.Services
                     RequestDateTime = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.RequestDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
                     LastStatusDateTime = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.LastStatusDateTime.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
                     ProcessedDateTime = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.ProcessedDateTime?.DateTime.ToPacificTime().ToString("dddd, MMMM dd yyyy h:mm tt"),
-                    Status = Enum.GetName(typeof(RequestStatus), data.ScmPurchaseRequisitionRequestStatus.RequestStatus.RequestStatus),
+                    Status = Enum.GetName(typeof(RequestStatus), data.ScmPurchaseRequisitionRequestStatus.RequestStatus.RequestStatus),                    
                 };
 
+                if (data.ScmPurchaseRequisitionRequestStatus.RequestStatus.ResultValues.ValuesExtracted)
+                {
+                    var job = data.ScmPurchaseRequisitionRequestStatus.RequestStatus.ResultValues.Jobs.Where(a => a.JobType == "scm_reqn").FirstOrDefault();
+                    if(job != null)
+                    {
+                        rtValue.OracleReq = job.Values.SingleOrDefault(a => a.Name == "requisitionNumber")?.Value;
+                        rtValue.PoNumber = job.Values.SingleOrDefault(a => a.Name == "poNumber")?.Value;
+                    }
+                }
                 return rtValue;
             }
             catch

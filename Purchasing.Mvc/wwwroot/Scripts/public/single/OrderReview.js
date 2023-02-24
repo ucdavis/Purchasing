@@ -302,6 +302,8 @@
                     $("#ae-request-requested").html(result.RequestDateTime);
                     $("#ae-request-updated").html(result.LastStatusDateTime);
                     $("#ae-request-processed").html(result.ProcessedDateTime);
+                    $("#ae-request-req").html(result.OracleReq);
+                    $("#ae-request-po").html(result.PoNumber);
                    
                     $("#ae-loading").hide();
                     $("#ae-data").show();
