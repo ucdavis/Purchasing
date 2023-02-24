@@ -19,6 +19,8 @@ namespace Purchasing.Core.Models.AggieEnterprise
         public string LastStatusDateTime { get; set; }
 
         public string ProcessedDateTime { get; set; }
+        public string OracleReq { get; set; }
+        public string PoNumber { get; set; }
 
 
         public string Status { get; set; }
