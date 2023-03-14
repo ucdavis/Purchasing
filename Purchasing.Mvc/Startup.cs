@@ -129,8 +129,8 @@ namespace Purchasing.Mvc
             services.Configure<SendGridSettings>(Configuration);
 
             services.Configure<AggieEnterpriseOptions>(Configuration.GetSection("AggieEnterprise"));
-            services.AddSingleton<IAggieEnterpriseService, AggieEnterpriseService>();
-            services.AddSingleton<IAeLookupsService, AeLookupsService>();
+            services.AddTransient<IAggieEnterpriseService, AggieEnterpriseService>();
+            services.AddTransient<IAeLookupsService, AeLookupsService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

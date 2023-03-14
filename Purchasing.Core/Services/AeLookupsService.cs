@@ -15,7 +15,7 @@ namespace Purchasing.Core.Services
     public class AeLookupsService : IAeLookupsService
     {
         private readonly IDbService _dbService ;
-        private readonly IAggieEnterpriseService _aggieEnterpriseService;
+        private IAggieEnterpriseService _aggieEnterpriseService;
 
         public AeLookupsService(IDbService dbService, IAggieEnterpriseService aggieEnterpriseService)
         {
