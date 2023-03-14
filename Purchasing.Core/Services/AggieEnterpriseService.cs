@@ -45,14 +45,18 @@ namespace Purchasing.Core.Services
         //If there is any validation that uses nullable start and end dates, use this helper method: DateTime.UtcNow.ToPacificTime().IsActiveDate(a.StartDateActive, a.EndDateActive)
 
 
-        private readonly IAggieEnterpriseClient _aggieClient;
+        private IAggieEnterpriseClient _aggieClient;
         private readonly AggieEnterpriseOptions _options;
         private readonly IRepositoryFactory _repositoryFactory;
 
         public AggieEnterpriseService(IOptions<AggieEnterpriseOptions> options, IRepositoryFactory repositoryFactory)
         {
-            _aggieClient = GraphQlClient.Get(options.Value.GraphQlUrl, options.Value.Token);
             _options = options.Value;
+            //_aggieClient = GraphQlClient.Get(options.Value.GraphQlUrl, options.Value.Token);
+            _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
+            Log.Information("AggieEnterpriseService: {Scope}", $"{_options.ScopeApp}-{_options.ScopeEnv}"); //TODO: Remove after testing jobs, etc.
+
             _repositoryFactory = repositoryFactory;
         }
 

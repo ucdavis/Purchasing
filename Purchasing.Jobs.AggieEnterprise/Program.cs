@@ -43,8 +43,8 @@ class Program : WebJobBase
         services.Configure<AggieEnterpriseOptions>(configuration.GetSection("AggieEnterprise"));
         services.AddSingleton<IDbService, DbService>();
         services.AddSingleton<IRepositoryFactory, RepositoryFactory>(); //Can't really use this here, but it's required for the service
-        services.AddSingleton<IAggieEnterpriseService, AggieEnterpriseService>();
-        services.AddSingleton<IAeLookupsService, AeLookupsService>();
+        services.AddTransient<IAggieEnterpriseService, AggieEnterpriseService>();
+        services.AddTransient<IAeLookupsService, AeLookupsService>();
 
 
 
