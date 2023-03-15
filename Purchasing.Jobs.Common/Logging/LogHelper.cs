@@ -48,7 +48,8 @@ namespace Purchasing.Jobs.Common.Logging
 
             return logConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(esUrl))
             {
-                IndexFormat = "aspnet-purchasing-{0:yyyy.MM}"
+                IndexFormat = "aspnet-purchasing-{0:yyyy.MM}",
+                TypeName = null
             });
         }
 
