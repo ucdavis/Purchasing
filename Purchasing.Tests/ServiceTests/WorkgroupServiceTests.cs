@@ -20,6 +20,7 @@ using UCDArch.Testing.Fakes;
 using AutoMapper;
 using Moq;
 using Purchasing.Core.Services;
+using System.Threading.Tasks;
 
 namespace Purchasing.Tests.ServiceTests
 {
@@ -86,7 +87,7 @@ namespace Purchasing.Tests.ServiceTests
         #region TransferValues Tests
 
         [TestMethod]
-        public void TestTransferValuesWhenKfsVendorHasNullState()
+        public async Task TestTransferValuesWhenKfsVendorHasNullState()
         {
             #region Arrange
             var vendors = new List<Vendor>();
@@ -109,7 +110,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Arrange
 
             #region Act
-            WorkgroupService.TransferValues(source, ref destination);
+            destination = await WorkgroupService.TransferValues(source, destination);
             #endregion Act
 
             #region Assert
@@ -118,7 +119,7 @@ namespace Purchasing.Tests.ServiceTests
         }
 
         [TestMethod]
-        public void TestTransferValuesWhenKfsVendorHasNullZip()
+        public async Task TestTransferValuesWhenKfsVendorHasNullZip()
         {
             #region Arrange
             var vendors = new List<Vendor>();
@@ -141,7 +142,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Arrange
 
             #region Act
-            WorkgroupService.TransferValues(source, ref destination);
+            destination = await WorkgroupService.TransferValues(source, destination);
             #endregion Act
 
             #region Assert
@@ -150,7 +151,7 @@ namespace Purchasing.Tests.ServiceTests
         }
 
         [TestMethod]
-        public void TestTransferValuesWhenKfsVendor()
+        public async Task TestTransferValuesWhenKfsVendor()
         {
             #region Arrange
             var vendors = new List<Vendor>();
@@ -184,7 +185,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Arrange
 
             #region Act
-            WorkgroupService.TransferValues(source, ref destination);
+            destination = await WorkgroupService.TransferValues(source, destination);
             #endregion Act
 
             #region Assert
@@ -202,7 +203,7 @@ namespace Purchasing.Tests.ServiceTests
         }
 
         [TestMethod]
-        public void TestTransferValuesWhenNotKfsVendor()
+        public async Task TestTransferValuesWhenNotKfsVendor()
         {
             #region Arrange
             var vendors = new List<Vendor>();
@@ -238,7 +239,7 @@ namespace Purchasing.Tests.ServiceTests
             #endregion Arrange
 
             #region Act
-            WorkgroupService.TransferValues(source, ref destination);
+            destination = await WorkgroupService.TransferValues(source, destination);
             #endregion Act
 
             #region Assert

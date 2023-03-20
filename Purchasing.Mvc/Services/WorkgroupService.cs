@@ -14,12 +14,13 @@ using UCDArch.Core.Utils;
 using UCDArch.Core;
 using Microsoft.AspNetCore.Http;
 using Purchasing.Core.Services;
+using System.Threading.Tasks;
 
 namespace Purchasing.Mvc.Services
 {
     public interface IWorkgroupService
     {
-        void TransferValues(WorkgroupVendor source, ref WorkgroupVendor destination);
+        Task<WorkgroupVendor> TransferValues(WorkgroupVendor source, WorkgroupVendor destination);
         int TryToAddPeople(int id, Role role, Workgroup workgroup, int successCount, string lookupUser, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         int TryBulkLoadPeople(string bulk, bool isEmail, int id, Role role, Workgroup workgroup, int successCount, ref int failCount, ref int duplicateCount, List<KeyValuePair<string, string>> notAddedKvp);
         Workgroup CreateWorkgroup(Workgroup workgroup, string[] selectedOrganizations);
@@ -119,7 +120,7 @@ namespace Purchasing.Mvc.Services
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination">Note, this is a ref so tests work</param>
-        public void TransferValues(WorkgroupVendor source, ref WorkgroupVendor destination)
+        public async Task<WorkgroupVendor> TransferValues(WorkgroupVendor source, WorkgroupVendor destination)
         {
             _mapper.Map(source, destination);
 
@@ -149,7 +150,7 @@ namespace Purchasing.Mvc.Services
             }
             if (!string.IsNullOrWhiteSpace(source.AeSupplierNumber) && !string.IsNullOrWhiteSpace(source.AeSupplierSiteCode))
             {
-                source =  _aggieEnterpriseService.GetSupplierForWorkgroup(source).GetAwaiter().GetResult(); //Async doesn't allow ref params above, so do it like this?
+                source =  await _aggieEnterpriseService.GetSupplierForWorkgroup(source); //Async doesn't allow ref params above, so do it like this?
                 var saveId = destination.Id;
                 var saveWorkgroup = destination.Workgroup;
                 destination = source;
@@ -158,6 +159,7 @@ namespace Purchasing.Mvc.Services
                 destination.Id = saveId; 
                 destination.Workgroup = saveWorkgroup;
             }
+            return destination;
         }
 
         /// <summary>

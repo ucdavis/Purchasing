@@ -102,7 +102,7 @@ namespace Purchasing.Mvc.Controllers
             //                              //CountryCode = vendorAddress.CountryCode
             //                          };
             var workgroupVendorToCreate = new WorkgroupVendor();
-            _workgroupService.TransferValues(workgroupVendor, ref workgroupVendorToCreate); //Central location for values that get transferred (Fax, state, etc.)
+            workgroupVendorToCreate = await _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate); //Central location for values that get transferred (Fax, state, etc.)
             workgroupVendorToCreate.Workgroup = workgroup;
 
 

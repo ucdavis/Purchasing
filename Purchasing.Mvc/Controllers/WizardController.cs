@@ -685,7 +685,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddKfsVendor(int id, WorkgroupVendor workgroupVendor)
+        public async Task<ActionResult> AddKfsVendor(int id, WorkgroupVendor workgroupVendor)
         {
             ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -697,7 +697,7 @@ namespace Purchasing.Mvc.Controllers
 
             var workgroupVendorToCreate = new WorkgroupVendor();
 
-            _workgroupService.TransferValues(workgroupVendor, ref workgroupVendorToCreate);
+            workgroupVendorToCreate = await _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
 
             workgroupVendorToCreate.Workgroup = workgroup;
 
@@ -807,7 +807,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddNewVendor(int id, WorkgroupVendor workgroupVendor, bool skipAddress)
+        public async Task<ActionResult> AddNewVendor(int id, WorkgroupVendor workgroupVendor, bool skipAddress)
         {
             ViewBag.StepNumber = 9;
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -828,7 +828,7 @@ namespace Purchasing.Mvc.Controllers
 
             var workgroupVendorToCreate = new WorkgroupVendor();
 
-            _workgroupService.TransferValues(workgroupVendor, ref workgroupVendorToCreate);
+            workgroupVendorToCreate = await _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
 
             workgroupVendorToCreate.Workgroup = workgroup;
 

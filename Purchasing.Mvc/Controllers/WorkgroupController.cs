@@ -936,7 +936,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="newVendor">New Vendor or KFS Existing Vendor</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult CreateVendor(int id, WorkgroupVendor workgroupVendor, bool newVendor, bool skipAddress = false)
+        public async Task<ActionResult> CreateVendor(int id, WorkgroupVendor workgroupVendor, bool newVendor, bool skipAddress = false)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
 
@@ -964,7 +964,7 @@ namespace Purchasing.Mvc.Controllers
 
             var workgroupVendorToCreate = new WorkgroupVendor();
 
-            _workgroupService.TransferValues(workgroupVendor, ref workgroupVendorToCreate);
+            workgroupVendorToCreate = await _workgroupService.TransferValues(workgroupVendor, workgroupVendorToCreate);
 
             workgroupVendorToCreate.Workgroup = workgroup;
 
@@ -1115,7 +1115,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="workgroupVendor"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditWorkgroupVendor(int id, int workgroupVendorId, WorkgroupVendor workgroupVendor, bool skipAddress = false)
+        public async Task<ActionResult> EditWorkgroupVendor(int id, int workgroupVendorId, WorkgroupVendor workgroupVendor, bool skipAddress = false)
         {
             var oldWorkgroupVendor = _workgroupVendorRepository.GetNullableById(workgroupVendorId);
 
@@ -1152,7 +1152,7 @@ namespace Purchasing.Mvc.Controllers
             var newWorkgroupVendor = new WorkgroupVendor();
             newWorkgroupVendor.Workgroup = oldWorkgroupVendor.Workgroup;
 
-            _workgroupService.TransferValues(workgroupVendor, ref newWorkgroupVendor);
+            newWorkgroupVendor = await _workgroupService.TransferValues(workgroupVendor, newWorkgroupVendor);
             ModelState.Clear();
             newWorkgroupVendor.TransferValidationMessagesTo(ModelState);
 

@@ -929,7 +929,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
         }
 
@@ -972,7 +972,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(1, allAttributes.Count(), "More than expected custom attributes found.");
+            Assert.AreEqual(2, allAttributes.Count(), "More than expected custom attributes found.");
             #endregion Assert
         }
 
