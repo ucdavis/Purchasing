@@ -72,7 +72,7 @@ namespace Purchasing.Core.Services
 
         public async Task<AccountValidationModel> ValidateAccount(string financialSegmentString, bool validateCVRs = true)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
             var rtValue = new AccountValidationModel();
             var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(financialSegmentString);
 
@@ -161,7 +161,7 @@ namespace Purchasing.Core.Services
 
         public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             var inputOrder = new ScmPurchaseRequisitionRequestInput
             {
@@ -320,7 +320,7 @@ namespace Purchasing.Core.Services
 
         private async Task<string> GetAggieEnterpriseUserEmail(string purchaserKerb, string purchaserEmail)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             var filter = new ErpUserFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
@@ -345,7 +345,7 @@ namespace Purchasing.Core.Services
 
         public async Task<AeResultStatus> LookupOrderStatus(string requestId)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             try
             {
@@ -385,7 +385,7 @@ namespace Purchasing.Core.Services
 
         public async Task<Commodity[]> GetPurchasingCategories()
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             var filter = new ScmPurchasingCategoryFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
@@ -421,7 +421,7 @@ namespace Purchasing.Core.Services
         /// <returns></returns>
         private async Task<KfsToAeCoa> LookupAccount(Split split)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             var rtValue = new KfsToAeCoa { Split = split };
             if (string.IsNullOrWhiteSpace(split.FinancialSegmentString))
@@ -537,7 +537,7 @@ namespace Purchasing.Core.Services
 
         public async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             if ((string.IsNullOrWhiteSpace(vendor.AeSupplierNumber) || string.IsNullOrWhiteSpace(vendor.AeSupplierSiteCode)) && (vendor == null || vendor.VendorId == null || vendor.VendorAddressTypeCode == null))
             {
@@ -616,7 +616,7 @@ namespace Purchasing.Core.Services
 
         public async Task<UnitOfMeasure[]> GetUnitOfMeasures()
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             var filter = new ErpUnitOfMeasureFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
@@ -644,7 +644,7 @@ namespace Purchasing.Core.Services
 
         public async Task<List<IdAndName>> SearchSupplier(string query)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             var rtValue = new List<IdAndName>();
             if (String.IsNullOrWhiteSpace(query) || query.Trim().Length < 3)
@@ -684,7 +684,7 @@ namespace Purchasing.Core.Services
 
         public async Task<List<IdAndName>> SearchSupplierAddress(string query)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             var filter = new ScmSupplierFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
@@ -709,7 +709,7 @@ namespace Purchasing.Core.Services
 
         public async Task<WorkgroupVendor> GetSupplierForWorkgroup(WorkgroupVendor workgroupVendor)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             //TODO add validation here to see if it is still active?
             var filter = new ScmSupplierFilterInput();
@@ -741,7 +741,7 @@ namespace Purchasing.Core.Services
 
         public async Task<List<IdAndName>> SearchShippingAddress(string query)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             if (String.IsNullOrWhiteSpace(query) || query.Trim().Length < 3)
             {
@@ -780,7 +780,7 @@ namespace Purchasing.Core.Services
 
         public async Task<WorkgroupAddress> GetShippingAddress(WorkgroupAddress workgroupAddress)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             if (workgroupAddress == null || String.IsNullOrWhiteSpace(workgroupAddress.AeLocationCode))
             {
@@ -833,7 +833,7 @@ namespace Purchasing.Core.Services
         /// <returns></returns>
         public async Task<string> ConvertKfsAccount(string account)
         {
-            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            var _aggieClient = GetClient();
 
             var parts = account.Split('-');
             
@@ -873,6 +873,11 @@ namespace Purchasing.Core.Services
                     return String.Empty;
                 }
             }
+        }
+
+        private IAggieEnterpriseClient GetClient()
+        {
+            return GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
         }
 
         public class Supplier
