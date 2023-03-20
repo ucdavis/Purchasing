@@ -692,6 +692,8 @@ namespace Purchasing.Core.Services
 
         public async Task<WorkgroupVendor> GetSupplierForWorkgroup(WorkgroupVendor workgroupVendor)
         {
+            _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             //TODO add validation here to see if it is still active?
             var filter = new ScmSupplierFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
