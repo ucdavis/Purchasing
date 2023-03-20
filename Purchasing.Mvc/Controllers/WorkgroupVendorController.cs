@@ -140,8 +140,8 @@ namespace Purchasing.Mvc.Controllers
                 //found one
                 var inactiveVendor = _repositoryFactory.WorkgroupVendorRepository.Queryable
                     .FirstOrDefault(a => a.Workgroup.Id == workgroupId &&
-                                         a.VendorId == workgroupVendorToCreate.VendorId &&
-                                         a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                                         a.AeSupplierNumber == workgroupVendorToCreate.AeSupplierNumber &&
+                                         a.AeSupplierSiteCode == workgroupVendorToCreate.AeSupplierSiteCode &&
                                          !a.IsActive);
                 if(inactiveVendor != null)
                 {
@@ -156,8 +156,8 @@ namespace Purchasing.Mvc.Controllers
                 // there was an active duplicate, return the first one.
                 workgroupVendorToCreate = _repositoryFactory.WorkgroupVendorRepository.Queryable
                     .First(a => a.Workgroup.Id == workgroupId &&
-                                         a.VendorId == workgroupVendorToCreate.VendorId &&
-                                         a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                                         a.AeSupplierNumber == workgroupVendorToCreate.AeSupplierNumber &&
+                                         a.AeSupplierSiteCode == workgroupVendorToCreate.AeSupplierSiteCode &&
                                          a.IsActive);
                 added = false;
                 duplicate = true;
