@@ -45,7 +45,7 @@ namespace Purchasing.Core.Services
         //If there is any validation that uses nullable start and end dates, use this helper method: DateTime.UtcNow.ToPacificTime().IsActiveDate(a.StartDateActive, a.EndDateActive)
 
 
-        private IAggieEnterpriseClient _aggieClient;
+        //private IAggieEnterpriseClient _aggieClient;
         private readonly AggieEnterpriseOptions _options;
         private readonly IRepositoryFactory _repositoryFactory;
 
@@ -53,7 +53,7 @@ namespace Purchasing.Core.Services
         {
             _options = options.Value;
             //_aggieClient = GraphQlClient.Get(options.Value.GraphQlUrl, options.Value.Token);
-            _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+            //_aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
 
             Log.Information("AggieEnterpriseService: {Scope}", $"{_options.ScopeApp}-{_options.ScopeEnv}"); //TODO: Remove after testing jobs, etc.
 
@@ -72,6 +72,7 @@ namespace Purchasing.Core.Services
 
         public async Task<AccountValidationModel> ValidateAccount(string financialSegmentString, bool validateCVRs = true)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
             var rtValue = new AccountValidationModel();
             var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(financialSegmentString);
 
@@ -160,7 +161,7 @@ namespace Purchasing.Core.Services
 
         public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb)
         {
-            
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
 
             var inputOrder = new ScmPurchaseRequisitionRequestInput
             {
@@ -319,6 +320,8 @@ namespace Purchasing.Core.Services
 
         private async Task<string> GetAggieEnterpriseUserEmail(string purchaserKerb, string purchaserEmail)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             var filter = new ErpUserFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
             filter.SearchCommon.Limit = 5;
@@ -342,6 +345,8 @@ namespace Purchasing.Core.Services
 
         public async Task<AeResultStatus> LookupOrderStatus(string requestId)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             try
             {
                 var result = await _aggieClient.ScmPurchaseRequisitionRequestStatus.ExecuteAsync(new Guid(requestId));
@@ -380,6 +385,8 @@ namespace Purchasing.Core.Services
 
         public async Task<Commodity[]> GetPurchasingCategories()
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             var filter = new ScmPurchasingCategoryFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
             filter.SearchCommon.Limit = 5000; //Should only be a few hundred eventually, AE may cap this at 500
@@ -414,6 +421,8 @@ namespace Purchasing.Core.Services
         /// <returns></returns>
         private async Task<KfsToAeCoa> LookupAccount(Split split)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             var rtValue = new KfsToAeCoa { Split = split };
             if (string.IsNullOrWhiteSpace(split.FinancialSegmentString))
             {
@@ -528,6 +537,8 @@ namespace Purchasing.Core.Services
 
         public async Task<Supplier> GetSupplier(WorkgroupVendor vendor)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             if ((string.IsNullOrWhiteSpace(vendor.AeSupplierNumber) || string.IsNullOrWhiteSpace(vendor.AeSupplierSiteCode)) && (vendor == null || vendor.VendorId == null || vendor.VendorAddressTypeCode == null))
             {
                 //We have neither new or old values to lookup, can't continue. This should probably be caught earlier.
@@ -605,6 +616,8 @@ namespace Purchasing.Core.Services
 
         public async Task<UnitOfMeasure[]> GetUnitOfMeasures()
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             var filter = new ErpUnitOfMeasureFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
             filter.SearchCommon.Limit = 300; //Should only be a few hundred eventually, AE may cap this at 500
@@ -631,6 +644,8 @@ namespace Purchasing.Core.Services
 
         public async Task<List<IdAndName>> SearchSupplier(string query)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             var rtValue = new List<IdAndName>();
             if (String.IsNullOrWhiteSpace(query) || query.Trim().Length < 3)
             {
@@ -669,6 +684,8 @@ namespace Purchasing.Core.Services
 
         public async Task<List<IdAndName>> SearchSupplierAddress(string query)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             var filter = new ScmSupplierFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
             filter.SearchCommon.Limit = 5; //Shouldn't really matter, only expect one or two depending if the new eligible field for use gets implemented
@@ -692,6 +709,8 @@ namespace Purchasing.Core.Services
 
         public async Task<WorkgroupVendor> GetSupplierForWorkgroup(WorkgroupVendor workgroupVendor)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             //TODO add validation here to see if it is still active?
             var filter = new ScmSupplierFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
@@ -722,6 +741,8 @@ namespace Purchasing.Core.Services
 
         public async Task<List<IdAndName>> SearchShippingAddress(string query)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             if (String.IsNullOrWhiteSpace(query) || query.Trim().Length < 3)
             {
                 return new List<IdAndName>();
@@ -759,6 +780,8 @@ namespace Purchasing.Core.Services
 
         public async Task<WorkgroupAddress> GetShippingAddress(WorkgroupAddress workgroupAddress)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             if (workgroupAddress == null || String.IsNullOrWhiteSpace(workgroupAddress.AeLocationCode))
             {
                 return null;
@@ -810,6 +833,8 @@ namespace Purchasing.Core.Services
         /// <returns></returns>
         public async Task<string> ConvertKfsAccount(string account)
         {
+            var _aggieClient = GraphQlClient.Get(_options.GraphQlUrl, _options.TokenEndpoint, _options.ConsumerKey, _options.ConsumerSecret, $"{_options.ScopeApp}-{_options.ScopeEnv}");
+
             var parts = account.Split('-');
             
             var chart = parts[0];
