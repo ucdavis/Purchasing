@@ -390,7 +390,7 @@ namespace Purchasing.Core.Services
             var filter = new ScmPurchasingCategoryFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
             filter.SearchCommon.Limit = 5000; //Should only be a few hundred eventually, AE may cap this at 500
-            filter.LastUpdateDateTime = new DateFilterInput { Gt = new DateTime(2000, 01, 01) }; //2022-07-14 should return a smaller number
+            filter.LastUpdateDateTime = new DateFilterInput { Gt = "2000-01-01" }; //2022-07-14 should return a smaller number (I don't know if this is needed anymore. Data seems cleaner)
 
 
             var result = await _aggieClient.ScmPurchasingCategorySearch.ExecuteAsync(filter);
