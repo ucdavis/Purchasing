@@ -649,7 +649,7 @@ namespace Purchasing.Core.Services
             var rtValue = new List<IdAndName>();
             if (String.IsNullOrWhiteSpace(query) || query.Trim().Length < 3)
             {
-                return rtValue;
+                return rtValue; 
             }
             var filter = new ScmSupplierFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
