@@ -758,7 +758,7 @@ namespace Purchasing.Core.Services
             var rtValue = new List<IdAndName>();
             
             var data = result.ReadData();
-            if (data.ErpInstitutionLocationByCode != null && data.ErpInstitutionLocationByCode.Enabled)
+            if (data.ErpInstitutionLocationByCode != null && data.ErpInstitutionLocationByCode.Enabled && data.ErpInstitutionLocationByCode.DeliverySite)
             {
                 //Exact Match first.
                 rtValue.Add(new IdAndName(
@@ -768,7 +768,7 @@ namespace Purchasing.Core.Services
             }
             if (data.ErpInstitutionLocationSearch != null && data.ErpInstitutionLocationSearch.Data != null && data.ErpInstitutionLocationSearch.Data.Count > 0)
             {
-                rtValue.AddRange(data.ErpInstitutionLocationSearch.Data.Where(a => a.Enabled).Select(a => new IdAndName(
+                rtValue.AddRange(data.ErpInstitutionLocationSearch.Data.Where(a => a.Enabled && a.DeliverySite).Select(a => new IdAndName(
                     a.LocationCode,
                     $"({a.LocationCode}) {a.AddressLine1} {a.AddressLine2} {a.AddressLine3} {a.City} {a.State}"
                 )));
@@ -794,19 +794,31 @@ namespace Purchasing.Core.Services
                 workgroupAddress.Address = address.AddressLine1.SafeTruncate(100);
                 workgroupAddress.State   = address.State.SafeTruncate(2);
                 workgroupAddress.City    = address.City.SafeTruncate(100);
-                workgroupAddress.Zip     = address.PostalCode?.SafeTruncate(10) ?? "95616-5270"; // if they supply it, use it, otherwise use the campus default.
+                workgroupAddress.Zip     = address.PostalCode?.SafeTruncate(10) ?? "95616-5270"; // if they supply it, use it, otherwise use the campus default.    
+
+                //Mrak Hall (350 Mrak Hall Dr)RM 0150, MS21172
 
                 //Ok, try to parse the locationcode to get a building name and room.
-                if (address.LocationCode.Contains("Room", StringComparison.OrdinalIgnoreCase))
+                if (address.LocationCode.Contains("RM", StringComparison.OrdinalIgnoreCase))
                 {
-                    var parts = address.LocationCode.Split(new string[] { "Room" }, StringSplitOptions.RemoveEmptyEntries);
+                    var parts = address.LocationCode.Split(new string[] { "RM" }, StringSplitOptions.RemoveEmptyEntries);
                     if (parts.Length > 0)
-                    {
-                        workgroupAddress.Building = parts[0]?.Trim()?.TrimEnd(',').SafeTruncate(50);
+                    {                        
+                        workgroupAddress.Building = parts[0]?.Trim()?.TrimEnd('(').SafeTruncate(50);
+                        //Remove all characters from Building after the (, if there is one.
+                        if (workgroupAddress.Building.Contains("("))
+                        {
+                            workgroupAddress.Building = workgroupAddress.Building.Substring(0, workgroupAddress.Building.IndexOf("(")).Trim();
+                        }
                     }
                     if (parts.Length > 1)
                     {
                         workgroupAddress.Room = parts[1].SafeTruncate(50);
+                        //Remove all characters from room after the , if there is one.
+                        if (workgroupAddress.Room.Contains(","))
+                        {
+                            workgroupAddress.Room = workgroupAddress.Room.Substring(0, workgroupAddress.Room.IndexOf(",")).Trim();
+                        }
                     }
                 }
                 else
