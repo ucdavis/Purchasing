@@ -21,6 +21,15 @@
                 <p>Warning: You cannot advance this order until it is assigned at least one account. @Html.ActionLink("Please edit this order", "Edit", new {Model.Order.Id}) and rectify the issue before proceeding.</p>
             }
         </div>
+        @if (Model.CanSubmitOrder)
+        {
+            if (Model.IsPurchaser)
+            {
+                <div id="error-message">
+                    WARNING!!! The last day to complete order in KFS is November 22th, 2023  After this date, these types of orders must be completed in Aggie Enterprise January 1st 2024.
+                </div>
+            }
+        }
         <div class="section-contents">
             @using (Html.BeginForm("Approve", "Order", new { Model.Order.Id }, FormMethod.Post))
             {
