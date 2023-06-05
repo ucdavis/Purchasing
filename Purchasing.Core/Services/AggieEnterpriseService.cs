@@ -114,30 +114,30 @@ namespace Purchasing.Core.Services
 
             if (segmentStringType == FinancialChartStringType.Ppm)
             {
-                var result = await _aggieClient.PpmStringSegmentsValidate.ExecuteAsync(financialSegmentString);
+                var result = await _aggieClient.PpmSegmentStringValidate.ExecuteAsync(financialSegmentString);
 
                 var data = result.ReadData();
 
-                rtValue.IsValid = data.PpmStringSegmentsValidate.ValidationResponse.Valid;
+                rtValue.IsValid = data.PpmSegmentStringValidate.ValidationResponse.Valid;
                 rtValue.IsPpm = true;
                 if (!rtValue.IsValid)
                 {
-                    foreach (var err in data.PpmStringSegmentsValidate.ValidationResponse.ErrorMessages)
+                    foreach (var err in data.PpmSegmentStringValidate.ValidationResponse.ErrorMessages)
                     {
                         rtValue.Messages.Add(err);
                     }
                 }
 
-                rtValue.Details.Add(new KeyValuePair<string, string>("Project", data.PpmStringSegmentsValidate.Segments.Project));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Task", data.PpmStringSegmentsValidate.Segments.Task));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Organization", data.PpmStringSegmentsValidate.Segments.Organization));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Expenditure Type", data.PpmStringSegmentsValidate.Segments.ExpenditureType));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Award", data.PpmStringSegmentsValidate.Segments.Award));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Funding Source", data.PpmStringSegmentsValidate.Segments.FundingSource));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Project", data.PpmSegmentStringValidate.Segments.Project));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Task", data.PpmSegmentStringValidate.Segments.Task));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Organization", data.PpmSegmentStringValidate.Segments.Organization));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Expenditure Type", data.PpmSegmentStringValidate.Segments.ExpenditureType));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Award", data.PpmSegmentStringValidate.Segments.Award));
+                rtValue.Details.Add(new KeyValuePair<string, string>("Funding Source", data.PpmSegmentStringValidate.Segments.FundingSource));
 
-                if (data.PpmStringSegmentsValidate.Warnings != null)
+                if (data.PpmSegmentStringValidate.Warnings != null)
                 {
-                    foreach (var warn in data.PpmStringSegmentsValidate.Warnings)
+                    foreach (var warn in data.PpmSegmentStringValidate.Warnings)
                     {
                         rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
                     }
