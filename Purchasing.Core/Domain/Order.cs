@@ -500,12 +500,15 @@ namespace Purchasing.Core.Domain
             return validKfsOrder;
         }
 
+        /// <summary>
+        /// Used to determine if we display the AE fields on the review page.
+        /// The reference number means we successfully submitted to AE.
+        /// </summary>
+        /// <returns>true/false</returns>
         public virtual bool IsValidAe()
         {
-            var validKfsOrder = OrderType.Id.Trim() == OrderType.Types.AggieEnterprise
-                                && !string.IsNullOrWhiteSpace(ReferenceNumber);
-
-            return validKfsOrder;
+            return OrderType.Id.Trim() == OrderType.Types.AggieEnterprise
+                                && !string.IsNullOrWhiteSpace(ReferenceNumber); 
         }
     }
 
