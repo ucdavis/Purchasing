@@ -313,6 +313,13 @@ namespace Purchasing.Core.Services
                 return rtValue;
             }
 
+            if(responseData.ScmPurchaseRequisitionCreate.RequestStatus.Equals(RequestStatus.Validated))
+            {
+                //If this happens, it is because we are using sandbox keys against production. Or it is some UAT/Testing thing
+                //We could potentially get this in the future if we decide to validate the order before submitting it. But that would just end up calling it twice.
+                throw new Exception("Unexpected Status of Validated.");
+            }
+
             rtValue = new SubmitResult { Success = true, DocNumber = responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestId.ToString() };
 
             return rtValue;
