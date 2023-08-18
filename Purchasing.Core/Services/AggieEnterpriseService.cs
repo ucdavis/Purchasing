@@ -36,7 +36,7 @@ namespace Purchasing.Core.Services
         Task<WorkgroupAddress> GetShippingAddress(WorkgroupAddress workgroupAddress);
         
         Task<string> ConvertKfsAccount(Account account);
-        Task<string> ConvertKfsAccount(string account);
+        Task<string> ConvertKfsAccount(string account, bool updateNaturalAccount = true);
 
         Task<ExternalRoutingModel> GetFinancialOfficer(string financialSegmentString);
     }
@@ -850,7 +850,7 @@ namespace Purchasing.Core.Services
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
-        public async Task<string> ConvertKfsAccount(string account)
+        public async Task<string> ConvertKfsAccount(string account, bool updateNaturalAccount = true)
         {
             var _aggieClient = GetClient();
 
@@ -865,7 +865,7 @@ namespace Purchasing.Core.Services
             if (data.KfsConvertAccount.GlSegments != null)
             {
                 var tempGlSegments = new GlSegments(data.KfsConvertAccount.GlSegments);
-                if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
+                if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000"))
                 {
                     //770000
                     Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
@@ -879,7 +879,7 @@ namespace Purchasing.Core.Services
                 {
                     //rtValue.IsPPm = true; //Maybe want to return and store this?
                     var tempPpmSegments = new PpmSegments(data.KfsConvertAccount.PpmSegments);
-                    if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
+                    if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000"))
                     {
                         //770000
                         Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
