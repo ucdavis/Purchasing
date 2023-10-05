@@ -81,7 +81,7 @@ namespace Purchasing.Core.Domain
                 }
                 else
                 {
-                    return $"{Name} ({AeSupplierSiteCode}) ({Line1.Summarize()}, {City} {State})";
+                    return $"{Name} [{AeSupplierSiteCode}] ({Line1.Summarize()}, {City} {State})";
                 }
 
             }
