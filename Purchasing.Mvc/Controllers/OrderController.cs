@@ -953,9 +953,9 @@ namespace Purchasing.Mvc.Controllers
                         }
                         else
                         {
-                            if(!supplierInfo.SupplierSiteCode.StartsWith("PUR", StringComparison.OrdinalIgnoreCase))
+                            if(!supplierInfo.SupplierSiteCode.Contains("PUR"))
                             {
-                                ErrorMessage = "Vendor (supplier) address site code must start PUR to complete an Aggie Enterprise order";
+                                ErrorMessage = "Vendor (supplier) address site code must have PUR to complete an Aggie Enterprise order";
                                 return RedirectToAction("Review", new { id });
                             }
                         }
@@ -963,9 +963,9 @@ namespace Purchasing.Mvc.Controllers
                     }
                     else
                     {
-                        if (!order.Vendor.AeSupplierSiteCode.StartsWith("PUR", StringComparison.OrdinalIgnoreCase))
+                        if (!order.Vendor.AeSupplierSiteCode.Contains("PUR"))
                         {
-                            ErrorMessage = "Vendor (supplier) address site code must start PUR to complete an Aggie Enterprise order";
+                            ErrorMessage = "Vendor (supplier) address site code must have PUR to complete an Aggie Enterprise order";
                             return RedirectToAction("Review", new { id });
                         }
                     }
