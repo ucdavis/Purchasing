@@ -71,8 +71,21 @@ namespace Purchasing.Core.Domain
         [StringLength(128)]
         public virtual string Url { get; set; }
 
-        public virtual string ShortDisplayName {
-            get { return string.Format("{0} ({1}, {2} {3})", Name, Line1.Summarize(), City, State); }
+        public virtual string ShortDisplayName
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(AeSupplierSiteCode))
+                {
+                    return $"{Name} ({Line1.Summarize()}, {City} {State})";
+                }
+                else
+                {
+                    return $"{Name} [{AeSupplierSiteCode}] ({Line1.Summarize()}, {City} {State})";
+                }
+
+            }
+            //get { return string.Format("{0} ({1}, {2} {3})", Name, Line1.Summarize(), City, State); }
         }
 
         public virtual string DisplayName { 
