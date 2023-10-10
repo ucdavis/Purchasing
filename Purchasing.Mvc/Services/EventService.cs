@@ -17,6 +17,7 @@ namespace Purchasing.Mvc.Services
         void OrderDenied(Order order, string comment, OrderStatusCode previousStatus);
         void OrderCancelled(Order order, string comment, OrderStatusCode previousStatus);
         void OrderCompleted(Order order);
+        void AeOrderCompleted(Order order); //Just to write requestid to log.
         void OrderReceived(Order order, LineItem lineItem, decimal quantity, string overrideDescription = null);
         void OrderPaid(Order order, LineItem lineItem, decimal quantity, string overrideDescription = null);
         void OrderReRoutedToPurchaser(Order order, string routedTo);
@@ -166,6 +167,21 @@ namespace Purchasing.Mvc.Services
             order.AddTracking(trackingEvent);
 
             _notificationService.OrderCompleted(order, user);
+        }
+
+        public void AeOrderCompleted(Order order)
+        {
+            var user = _userRepository.GetById(_userIdentity.Current);
+
+            var trackingEvent = new OrderTracking
+            {
+                User = user,
+                StatusCode = order.StatusCode,
+                Description = $"Completed with Request ID: {order.ReferenceNumber}"
+            };
+
+            order.AddTracking(trackingEvent);
+
         }
 
         public void OrderReceived(Order order, LineItem lineItem, decimal quantity, string overrideDescription = null)
