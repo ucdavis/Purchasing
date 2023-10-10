@@ -690,6 +690,15 @@ namespace Purchasing.Mvc.Controllers
             return Content(isValid.IsValid.ToString());
         }
 
+        public async Task<ActionResult> TestAe2()
+        {
+            var rtValue = await _aggieEnterpriseService.LookupOracleErrors("d594a0f3-73f3-41d6-bd02-e122bf98d384");
+
+
+
+            return Content("Done");
+        }
+
         public ActionResult TestEmail()
         {
             var sgMessage = new MailMessage(
