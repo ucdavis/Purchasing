@@ -5,6 +5,13 @@
     ViewBag.Title = "Aggie Enterprise Errors";
 }
 
+@section SubNav
+    {
+    <ul class="navigation">
+        <li><a href="@Url.Action("Review", new {id=Model.Order.Id})" class="ui-button button ui-state-default">Back to Order</a></li>
+    </ul>
+}
+
 <table class='dt-table'>
     <thead>
         <tr>
@@ -39,3 +46,11 @@
         }
     </tbody>
 </table>
+
+@if (Model.AllowSetStatusBack)
+{
+    <form method="post" asp-controller="Order" asp-action="SetBackToPurchaserLevel">
+        <input type="hidden" name="id" value="@Model.Order.Id" />
+        <input type="submit" value="Set Status Back" class="button" />
+</form>
+}

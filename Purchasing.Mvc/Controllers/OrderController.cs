@@ -1041,8 +1041,7 @@ namespace Purchasing.Mvc.Controllers
 
         }
 
-        //[HttpPost] //Change back to a post
-        [HttpGet]
+        [HttpPost] //Change back to a post
         public async Task<ActionResult> SetBackToPurchaserLevel(int id)
         {
             var order = _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
@@ -1069,7 +1068,7 @@ namespace Purchasing.Mvc.Controllers
             }
             else
             {
-                ErrorMessage = "This order was not completed as an Aggie Enterprise order.";
+                ErrorMessage = "This order was not completed as an Aggie Enterprise order and can't be set back.";
                 return RedirectToAction("Review", new { id });
             }
 
@@ -1081,9 +1080,12 @@ namespace Purchasing.Mvc.Controllers
             else
             {
                 order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Purchaser);
-                order.ConsumerTrackingId = Guid.NewGuid();
+                order.ConsumerTrackingId = Guid.NewGuid(); //Need a new one if it gets past the AE API validation, but fails on the back end.
                 _eventService.AeOrderSetBackToPurchaser(order);
-                //Update Approval?
+                //Update Approval
+                var approval = order.Approvals.Single(a => a.User.Id == CurrentUser.Identity.Name && a.StatusCode.Id == Role.Codes.Purchaser);
+                approval.Completed = false;
+
                 _repositoryFactory.OrderRepository.EnsurePersistent(order);
                 Message = "Order Set back to Purchaser level.";
                 return RedirectToAction("Review", new { id });
