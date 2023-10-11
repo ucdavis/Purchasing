@@ -1,0 +1,41 @@
+﻿@using Purchasing.Core.Domain
+@model OrderAeErrorsViewModel
+
+@{
+    ViewBag.Title = "Aggie Enterprise Errors";
+}
+
+<table class='dt-table'>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Error Code</th>
+            <th>Error Message</th>            
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var odd = false;
+        }
+        @foreach (var item in Model.Errors)
+        {
+            <tr class="@(odd ? "odd" : "even")">
+                <td>
+                    @item.ColumnName
+                </td>
+                <td>
+                    @item.ColumnValue
+                </td>
+                <td>
+                    @item.ErrorCode
+                </td>
+                <td>
+                    @item.ErrorMessage
+                </td>
+            </tr>
+            odd = !odd;
+        }
+    </tbody>
+</table>

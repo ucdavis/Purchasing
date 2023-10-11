@@ -389,9 +389,9 @@ namespace Purchasing.Core.Services
             catch (Exception ex)
             {
                 Log.Error(ex, "Error looking up Oracle Errors");
-                return null;
+                return rtValue;
             }
-            return null;
+            return rtValue;
         }
 
         public async Task<AeResultStatus> LookupOrderStatus(string requestId)
