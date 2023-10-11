@@ -23,6 +23,7 @@ namespace Purchasing.Core.Services
 
         Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb);
         Task<AeResultStatus> LookupOrderStatus(string requestId);
+        Task<List<AeJobErrorDetailCleaned>> LookupOracleErrors(string requestId);
 
         Task<Commodity[]> GetPurchasingCategories();
         Task<UnitOfMeasure[]> GetUnitOfMeasures();
@@ -348,6 +349,49 @@ namespace Purchasing.Core.Services
                 Log.Information($"Aggie Enterprise user email does not match email on order. {purchaserEmail} != {user.Email}");
             }
             return user.Email;
+        }
+
+        public async Task<List<AeJobErrorDetailCleaned>> LookupOracleErrors(string requestId)
+        {
+            var rtValue = new List<AeJobErrorDetailCleaned>();
+            var _aggieClient = GetClient();
+
+            try
+            {
+                var result = await _aggieClient.ScmPurchaseRequisitionRequestErrors.ExecuteAsync(new Guid(requestId));
+                var data = result.ReadData();
+
+                var jobErrors = data.ScmPurchaseRequisitionRequestStatus.ProcessingResult.Jobs.Where(a => a.JobStatus.ToUpper() == "ERROR").ToArray();
+
+                if (jobErrors.Length > 0)
+                {
+                    foreach( var job in jobErrors)
+                    {
+                       var jobReport = System.Text.Json.JsonSerializer.Deserialize<AeJobError>(job.JobReport);
+                        if(jobReport.G_1.Length > 0)
+                        {
+                            foreach(var g in jobReport.G_1)
+                            {
+                                rtValue.Add(new AeJobErrorDetailCleaned
+                                {
+                                    ColumnName = g.COLUMN_NAME,
+                                    ColumnValue = g.COLUMN_VALUE?.ToString(),
+                                    ErrorCode = g.ERROR_CODE?.ToString(),
+                                    ErrorMessage = g.ERROR_MESSAGE?.ToString()
+                                });
+                            }
+                        }
+                    }
+
+                    return rtValue;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error looking up Oracle Errors");
+                return rtValue;
+            }
+            return rtValue;
         }
 
         public async Task<AeResultStatus> LookupOrderStatus(string requestId)

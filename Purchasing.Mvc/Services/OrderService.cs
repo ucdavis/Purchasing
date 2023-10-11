@@ -630,6 +630,7 @@ namespace Purchasing.Mvc.Services
                 if (result.Success)
                 {
                     order.ReferenceNumber = result.DocNumber; //TODO: Replace?
+                    _eventService.AeOrderCompleted(order);
                 }
                 else
                 {

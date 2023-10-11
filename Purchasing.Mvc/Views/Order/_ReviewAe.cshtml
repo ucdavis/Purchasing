@@ -9,6 +9,7 @@
                 <li><span>Request #:</span><strong id="ae-requestid"></strong></li>
             </ul>
 
+            <a id="ae-view-errors" asp-controller="Order" asp-action="ViewAeErrorDetails" asp-route-id="@Model.Order.Id" class="button" style="display:none">View Error Details</a>
         </div>
         <div class="col2">
             <section class="display-form ui-corner-all" id="ae-additional-info">

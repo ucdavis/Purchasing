@@ -27,7 +27,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Core.Services;
 using AggieEnterpriseApi.Validation;
-
+using NHibernate.Util;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -997,6 +997,107 @@ namespace Purchasing.Mvc.Controllers
 
             return RedirectToAction("Landing", "Home");
         }
+
+        [HttpGet]
+        public async Task<ActionResult> ViewAeErrorDetails(int id)
+        {
+            var model = new OrderAeErrorsViewModel();
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
+
+            const OrderAccessLevel requiredAccessLevel = OrderAccessLevel.Edit | OrderAccessLevel.Readonly;
+            var roleAndAccessLevel = _securityService.GetAccessRoleAndLevel(order);
+
+            if (!requiredAccessLevel.HasFlag(roleAndAccessLevel.OrderAccessLevel))
+            {
+                return ViewHelper.NotAuthorized(Resources.Authorization_PermissionDenied);
+            }
+
+            model.Order = order;
+
+
+
+            //Only do this part to set it back to edit or to show a button to set it back
+            if (order.OrderType.Id.Trim() == OrderType.Types.AggieEnterprise.Trim())
+            {
+                if (order.StatusCode.Id == OrderStatusCode.Codes.Complete && order.Approvals.Any(a => a.User != null && a.User.Id == CurrentUser.Identity.Name && a.StatusCode != null && a.StatusCode.Id == Role.Codes.Purchaser))
+                {
+                    model.AllowSetStatusBack = true;
+                }
+            }
+            else
+            {
+                ErrorMessage = "This order was not completed as an Aggie Enterprise order.";
+                return RedirectToAction("Review", new { id });
+            }
+
+            model.Errors = await _aggieEnterpriseService.LookupOracleErrors(order.ReferenceNumber);
+            //Check if the person was the purchaser who completed this
+            //Get the errors and add them to a view
+
+            //Do I need to uncheck the approval that was completed? Probably
+
+            return View(model);
+
+        }
+
+        [HttpPost] //Change back to a post
+        public async Task<ActionResult> SetBackToPurchaserLevel(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
+            const OrderAccessLevel requiredAccessLevel = OrderAccessLevel.Edit | OrderAccessLevel.Readonly;
+            var roleAndAccessLevel = _securityService.GetAccessRoleAndLevel(order);
+
+            var allowAction = false;
+
+            if (!requiredAccessLevel.HasFlag(roleAndAccessLevel.OrderAccessLevel))
+            {
+                return ViewHelper.NotAuthorized(Resources.Authorization_PermissionDenied);
+            }
+
+            if(order.StatusCode.Id != OrderStatusCode.Codes.Complete)
+            {
+                ErrorMessage = "This order is not in a completed state. Unable to set back to purchaser level.";
+                return RedirectToAction("Review", new { id });
+            }
+
+            if (order.OrderType.Id.Trim() == OrderType.Types.AggieEnterprise.Trim())
+            {
+                if (order.Approvals.Any(a => a.User != null &&  a.User.Id == CurrentUser.Identity.Name && a.StatusCode != null && a.StatusCode.Id == Role.Codes.Purchaser))
+                {
+                    var temp = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber);
+                    if(temp.Status.ToUpper() == "ERROR")
+                    {
+                        allowAction = true;
+                    }
+                }
+            }
+            else
+            {
+                ErrorMessage = "This order was not completed as an Aggie Enterprise order and can't be set back.";
+                return RedirectToAction("Review", new { id });
+            }
+
+            if (!allowAction)
+            {
+                ErrorMessage = "This order is not in an error state. Unable to set back to purchaser level.";
+                return RedirectToAction("Review", new { id });
+            }
+            else
+            {
+                order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Purchaser);
+                order.ConsumerTrackingId = Guid.NewGuid(); //Need a new one if it gets past the AE API validation, but fails on the back end.
+                _eventService.AeOrderSetBackToPurchaser(order);
+                //Update Approval
+                var approval = order.Approvals.Single(a => a.User != null && a.User.Id == CurrentUser.Identity.Name && a.StatusCode != null && a.StatusCode.Id == Role.Codes.Purchaser);
+                approval.Completed = false;
+
+                _repositoryFactory.OrderRepository.EnsurePersistent(order);
+                Message = "Order Set back to Purchaser level.";
+                return RedirectToAction("Review", new { id });
+            }
+
+        }   
 
         [HttpPost]
         public ActionResult Cancel(int id, string comment)

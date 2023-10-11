@@ -307,6 +307,9 @@
                    
                     $("#ae-loading").hide();
                     $("#ae-data").show();
+                    if(result.Status === "Error"){
+                        $("#ae-view-errors").show();
+                    }
                 }
             }
         });
