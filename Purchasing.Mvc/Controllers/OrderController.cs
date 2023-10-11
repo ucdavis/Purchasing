@@ -1020,7 +1020,7 @@ namespace Purchasing.Mvc.Controllers
             //Only do this part to set it back to edit or to show a button to set it back
             if (order.OrderType.Id.Trim() == OrderType.Types.AggieEnterprise.Trim())
             {
-                if (order.Approvals.Any(a => a.User.Id == CurrentUser.Identity.Name && a.StatusCode.Id == Role.Codes.Purchaser))
+                if (order.StatusCode.Id == OrderStatusCode.Codes.Complete && order.Approvals.Any(a => a.User != null && a.User.Id == CurrentUser.Identity.Name && a.StatusCode != null && a.StatusCode.Id == Role.Codes.Purchaser))
                 {
                     model.AllowSetStatusBack = true;
                 }
@@ -1055,9 +1055,15 @@ namespace Purchasing.Mvc.Controllers
                 return ViewHelper.NotAuthorized(Resources.Authorization_PermissionDenied);
             }
 
+            if(order.StatusCode.Id != OrderStatusCode.Codes.Complete)
+            {
+                ErrorMessage = "This order is not in a completed state. Unable to set back to purchaser level.";
+                return RedirectToAction("Review", new { id });
+            }
+
             if (order.OrderType.Id.Trim() == OrderType.Types.AggieEnterprise.Trim())
             {
-                if (order.Approvals.Any(a => a.User.Id == CurrentUser.Identity.Name && a.StatusCode.Id == Role.Codes.Purchaser))
+                if (order.Approvals.Any(a => a.User != null &&  a.User.Id == CurrentUser.Identity.Name && a.StatusCode != null && a.StatusCode.Id == Role.Codes.Purchaser))
                 {
                     var temp = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber);
                     if(temp.Status.ToUpper() == "ERROR")
@@ -1083,7 +1089,7 @@ namespace Purchasing.Mvc.Controllers
                 order.ConsumerTrackingId = Guid.NewGuid(); //Need a new one if it gets past the AE API validation, but fails on the back end.
                 _eventService.AeOrderSetBackToPurchaser(order);
                 //Update Approval
-                var approval = order.Approvals.Single(a => a.User.Id == CurrentUser.Identity.Name && a.StatusCode.Id == Role.Codes.Purchaser);
+                var approval = order.Approvals.Single(a => a.User != null && a.User.Id == CurrentUser.Identity.Name && a.StatusCode != null && a.StatusCode.Id == Role.Codes.Purchaser);
                 approval.Completed = false;
 
                 _repositoryFactory.OrderRepository.EnsurePersistent(order);
