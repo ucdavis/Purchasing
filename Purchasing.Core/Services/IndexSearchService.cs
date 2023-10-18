@@ -137,7 +137,19 @@ namespace Purchasing.Core.Services
             var results = _client.Search<Commodity>(
                 s => s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm))));
 
-            return results.Hits.Select(h => new IdAndName(h.Source.Id, h.Source.Name)).ToList();
+            //Do a fuzzy search on the name field
+            var results1 = _client.Search<Commodity>(
+                a => a.Index(index).Query(q => q.Fuzzy(f => f.Value(searchTerm).Field("name"))));
+
+            //join the results with distinct values
+            var temp = results.Hits.Select(h => new IdAndName(h.Source.Id, h.Source.Name)).ToList();
+            var temp2 = results1.Hits.Select(h => new IdAndName(h.Source.Id, h.Source.Name)).ToList();
+            //join temp and temp2 into a distinct list based on Id
+            var combinedResults = temp.Concat(temp2).GroupBy(x => x.Id).Select(x => x.First()).ToList(); //union wasn't working for some reason
+
+            return combinedResults;
+
+            //return results.Hits.Select(h => new IdAndName(h.Source.Id, h.Source.Name)).ToList();
         }
 
         public IList<IdAndName> SearchVendors(string searchTerm)

@@ -17,10 +17,12 @@ namespace Purchasing.Mvc.Controllers
     public class AjaxController : ApplicationController
     {
         private readonly ISearchService _searchService;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
-        public AjaxController(ISearchService searchService)
+        public AjaxController(ISearchService searchService, IAggieEnterpriseService aggieEnterpriseService)
         {
             _searchService = searchService;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
         /// <summary>
@@ -41,9 +43,10 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="searchTerm"></param>
         /// <returns></returns>
-        public JsonResult SearchCommodityCodes(string searchTerm)
+        public  JsonResult SearchCommodityCodes(string searchTerm)
         {
-            var results = _searchService.SearchCommodities(searchTerm).Select(a => new IdAndName(a.Id, a.Name));
+            //var results = _searchService.SearchCommodities(searchTerm).Select(a => new IdAndName(a.Id, a.Name));
+            var results = _aggieEnterpriseService.SearchCommodities(searchTerm).GetAwaiter().GetResult().Select(a => new IdAndName(a.Id, a.Name)).ToList();
 
             return Json(results);
         }
