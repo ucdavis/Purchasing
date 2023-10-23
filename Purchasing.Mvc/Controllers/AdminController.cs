@@ -44,6 +44,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly SendGridSettings _sendGridSettings;
         private readonly IConfiguration _configuration;
         private readonly IAggieEnterpriseService _aggieEnterpriseService;
+        private readonly IRepository<OrgDescendant> _orgDescendantRepository;
 
         public AdminController(
             IRepositoryWithTypedId<User, string> userRepository,
@@ -56,7 +57,8 @@ namespace Purchasing.Mvc.Controllers
             IWorkgroupService workgroupService,
             IOptions<SendGridSettings> sendGridSettings,
             IConfiguration configuration,
-            IAggieEnterpriseService aggieEnterpriseService)
+            IAggieEnterpriseService aggieEnterpriseService,
+            IRepository<OrgDescendant> orgDescendantRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -69,6 +71,7 @@ namespace Purchasing.Mvc.Controllers
             _sendGridSettings = sendGridSettings.Value;
             _configuration = configuration;
             _aggieEnterpriseService = aggieEnterpriseService;
+            _orgDescendantRepository = orgDescendantRepository;
         }
 
         //
@@ -671,6 +674,14 @@ namespace Purchasing.Mvc.Controllers
             Message = string.Format("{0} permissions removed", count);
             return this.RedirectToAction(nameof(ValidateChildWorkgroups));
         }
+
+        public ActionResult AddOrg()
+        {
+            //This will return a view where a new org can be added and validated. For now, use to test.
+
+            var parentOrg
+        }
+
 
         /// <summary>
         /// #18
