@@ -24,7 +24,6 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using Microsoft.Extensions.Configuration;
 using Purchasing.Core.Services;
-using NHibernate.Linq;
 using Purchasing.Mvc.Models;
 
 namespace Purchasing.Mvc.Controllers
@@ -684,7 +683,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddOrg(AddNewOrgEditModel model)
+        public ActionResult AddOrg(AddNewOrgEditModel model)
         {
             model.ParentOrgCode = model.ParentOrgCode.ToUpper();
             model.OrgCode = model.OrgCode.ToUpper();
@@ -694,20 +693,20 @@ namespace Purchasing.Mvc.Controllers
                 return View(model);
             }
 
-            var parentOrg = await _organizationRepository.Queryable.SingleOrDefaultAsync(a => a.Id == model.ParentOrgCode && a.IsActive);
+            var parentOrg = _organizationRepository.Queryable.SingleOrDefault(a => a.Id == model.ParentOrgCode && a.IsActive);
             if (parentOrg == null)
             {
                 ModelState.AddModelError("ParentOrgCode", "Parent Org not found");
                 return View(model);
             }
 
-            if(await _repositoryFactory.OrganizationRepository.Queryable.AnyAsync(a => a.Id == model.OrgCode))
+            if(_repositoryFactory.OrganizationRepository.Queryable.Any(a => a.Id == model.OrgCode))
             {
                 ModelState.AddModelError("OrgCode", "Org already exists");
                 return View(model);
             }
 
-            var parentOrgDescendants = await _orgDescendantRepository.Queryable.Where(a => a.OrgId == parentOrg.Id).Select(a => a.RollupParentId).Distinct().ToListAsync();
+            var parentOrgDescendants = _orgDescendantRepository.Queryable.Where(a => a.OrgId == parentOrg.Id).Select(a => a.RollupParentId).Distinct().ToList();
             if(parentOrgDescendants == null || parentOrgDescendants.Count() <= 0)
             {
                 ErrorMessage = "No Descendants found";
