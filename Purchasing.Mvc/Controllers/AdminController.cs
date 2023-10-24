@@ -686,29 +686,38 @@ namespace Purchasing.Mvc.Controllers
         [HttpPost]
         public async Task<ActionResult> AddOrg(AddNewOrgEditModel model)
         {
-            //This will return a view where a new org can be added and validated. For now, use to test.
+            model.ParentOrgCode = model.ParentOrgCode.ToUpper();
+            model.OrgCode = model.OrgCode.ToUpper();
 
-            var parentOrg = await _organizationRepository.Queryable.SingleOrDefaultAsync(a => a.Id == "3-ACRU" && a.IsActive);
-            if (parentOrg == null)
+            if (!ModelState.IsValid)
             {
-                return  Content("Parent Org not found");
+                return View(model);
             }
 
-            if(await _repositoryFactory.OrganizationRepository.Queryable.AnyAsync(a => a.Id == "X-JAS2"))
+            var parentOrg = await _organizationRepository.Queryable.SingleOrDefaultAsync(a => a.Id == model.ParentOrgCode && a.IsActive);
+            if (parentOrg == null)
             {
-                return Content("Org already exists");
+                ModelState.AddModelError("ParentOrgCode", "Parent Org not found");
+                return View(model);
+            }
+
+            if(await _repositoryFactory.OrganizationRepository.Queryable.AnyAsync(a => a.Id == model.OrgCode))
+            {
+                ModelState.AddModelError("OrgCode", "Org already exists");
+                return View(model);
             }
 
             var parentOrgDescendants = await _orgDescendantRepository.Queryable.Where(a => a.OrgId == parentOrg.Id).Select(a => a.RollupParentId).Distinct().ToListAsync();
             if(parentOrgDescendants == null || parentOrgDescendants.Count() <= 0)
             {
-                return Content("No Descendants found");
+                ErrorMessage = "No Descendants found";
+                return View(model);
             }
 
             var org = new Organization
             {
-                Id = "X-JAS2",
-                Name = "Faked Org",
+                Id = model.OrgCode,
+                Name = model.OrgName,
                 IsActive = true,
                 TypeCode = "4",
                 TypeName = "Manually Added",
@@ -719,8 +728,8 @@ namespace Purchasing.Mvc.Controllers
             //Add the new org descendant 
             var orgDescendant = new OrgDescendant
             {
-                OrgId = "X-JAS2",
-                Name = "Faked Org",
+                OrgId = model.OrgCode,
+                Name = model.OrgName,
                 ImmediateParentId = null,
                 RollupParentId = parentOrg.Id
             };
@@ -730,15 +739,16 @@ namespace Purchasing.Mvc.Controllers
             {
                 orgDescendant = new OrgDescendant
                 {
-                    OrgId = "X-JAS2",
-                    Name = "Faked Org",
+                    OrgId = model.OrgCode,
+                    Name = model.OrgName,
                     ImmediateParentId = parentOrg.Id,
                     RollupParentId = parentOrgDescendant
                 };
                 _orgDescendantRepository.EnsurePersistent(orgDescendant);
             }
 
-            return Content("Here");
+            Message = "Org Added";
+            return RedirectToAction(nameof(AddOrg));
         }
 
 

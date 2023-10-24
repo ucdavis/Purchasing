@@ -4,58 +4,62 @@
     ViewBag.Title = "Add New Organization";
 }
 
-<form method="post">
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
 
-	<section class="ui-corner-all">
-		<header class="ui-corner-top">Service Message</header>
 
-		<div class="section-contents">
+<section class="display-form">
+    <header class="ui-widget-header ui-corner-top">Add a KFS org now that KFS is gone</header>
+    <form method="post">
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
 
-			<div class="section-text">
 
-				<p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
 
-			</div>
+        <div class="section-contents">
 
-			<ul>
-				<li>
-					<div class="editor-label required">
-						@Html.LabelFor(model => model.ParentOrgCode)<span>*</span>
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.ParentOrgCode)
-						@Html.ValidationMessageFor(model => model.ParentOrgCode)
-					</div>
-				</li>
-				<li>
-					<div class="editor-label required">
-						@Html.LabelFor(model => model.OrgCode)<span>*</span>
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.OrgCode)
-						@Html.ValidationMessageFor(model => model.OrgCode)
-					</div>
-				</li>
-				<li>
-					<div class="editor-label required">
-						@Html.LabelFor(model => model.OrgName)<span>*</span>
-					</div>
-					<div class="editor-field">
-						@Html.EditorFor(model => model.OrgName)
-						@Html.ValidationMessageFor(model => model.OrgName)
-					</div>
-				</li>
-				<li>
-					<div class="editor-label"><label>&nbsp;</label></div>
-					<div class="editor-field"><input class="button" type="submit" value="Save" /></div>
-				</li>
-			</ul>
+            <div class="section-text">
 
-		</div>
+                <p>All required fields are in <strong>bold</strong> and have a red <span class="required">*</span> next to the field label.</p>
+                <p>Strongly recommend starting the Org Code with X- as an indication that is is manually added. Must be X-XXXX format</p>
 
-		<footer class="ui-corner-bottom"></footer>
+            </div>
 
-	</section>
-</form>
+            <ul>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.ParentOrgCode)<span>*</span>
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.ParentOrgCode)
+                        @Html.ValidationMessageFor(model => model.ParentOrgCode)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.OrgCode)<span>*</span>
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.OrgCode)
+                        @Html.ValidationMessageFor(model => model.OrgCode)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(model => model.OrgName)<span>*</span>
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.OrgName)
+                        @Html.ValidationMessageFor(model => model.OrgName)
+                    </div>
+                </li>
+                <li>
+                    <div class="editor-label"><label>&nbsp;</label></div>
+                    <div class="editor-field"><input class="button" type="submit" value="Save" /></div>
+                </li>
+            </ul>
+
+        </div>
+    </form>
+
+
+</section>
+
