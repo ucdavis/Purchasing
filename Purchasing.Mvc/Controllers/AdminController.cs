@@ -24,6 +24,8 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using Microsoft.Extensions.Configuration;
 using Purchasing.Core.Services;
+using NHibernate.Linq;
+using Purchasing.Mvc.Models;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -677,9 +679,66 @@ namespace Purchasing.Mvc.Controllers
 
         public ActionResult AddOrg()
         {
+            var model = new AddNewOrgEditModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddOrg(AddNewOrgEditModel model)
+        {
             //This will return a view where a new org can be added and validated. For now, use to test.
 
-            var parentOrg
+            var parentOrg = await _organizationRepository.Queryable.SingleOrDefaultAsync(a => a.Id == "3-ACRU" && a.IsActive);
+            if (parentOrg == null)
+            {
+                return  Content("Parent Org not found");
+            }
+
+            if(await _repositoryFactory.OrganizationRepository.Queryable.AnyAsync(a => a.Id == "X-JAS2"))
+            {
+                return Content("Org already exists");
+            }
+
+            var parentOrgDescendants = await _orgDescendantRepository.Queryable.Where(a => a.OrgId == parentOrg.Id).Select(a => a.RollupParentId).Distinct().ToListAsync();
+            if(parentOrgDescendants == null || parentOrgDescendants.Count() <= 0)
+            {
+                return Content("No Descendants found");
+            }
+
+            var org = new Organization
+            {
+                Id = "X-JAS2",
+                Name = "Faked Org",
+                IsActive = true,
+                TypeCode = "4",
+                TypeName = "Manually Added",
+                Parent = parentOrg
+            };
+            _organizationRepository.EnsurePersistent(org);
+
+            //Add the new org descendant 
+            var orgDescendant = new OrgDescendant
+            {
+                OrgId = "X-JAS2",
+                Name = "Faked Org",
+                ImmediateParentId = null,
+                RollupParentId = parentOrg.Id
+            };
+            _orgDescendantRepository.EnsurePersistent(orgDescendant);
+
+            foreach (var parentOrgDescendant in parentOrgDescendants)
+            {
+                orgDescendant = new OrgDescendant
+                {
+                    OrgId = "X-JAS2",
+                    Name = "Faked Org",
+                    ImmediateParentId = parentOrg.Id,
+                    RollupParentId = parentOrgDescendant
+                };
+                _orgDescendantRepository.EnsurePersistent(orgDescendant);
+            }
+
+            return Content("Here");
         }
 
 
