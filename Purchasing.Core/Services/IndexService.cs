@@ -15,6 +15,7 @@ using UCDArch.Core;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Text.RegularExpressions;
+using Serilog;
 
 namespace Purchasing.Core.Services
 {
@@ -39,6 +40,7 @@ namespace Purchasing.Core.Services
 
         ElasticClient GetIndexClient();
         void CreateTrackingIndex();
+
 
         /// <summary>
         /// return just the orders within the given date ranges
@@ -65,7 +67,7 @@ namespace Purchasing.Core.Services
         private ElasticClient _client;
         private const int MaxReturnValues = 10000; //This was 15,000 but ElasticSearch Errors out if it is that big. Tested with 12,000
         private const int MaxTermCount = 1000000; // allow up to 1M terms to search on (in case someone has lots of orders)
-        private const int CreateIndexQueryTimeout = 60 * 5; // Allow 5 minutes for long index creation queries
+        private const int CreateIndexQueryTimeout = 60 * 50; // Allow 50 minutes for long index creation queries
 
         public ElasticSearchIndexService(IDbService dbService)
         {
@@ -117,11 +119,13 @@ namespace Purchasing.Core.Services
 
         public void CreateHistoricalOrderIndex()
         {
+            Log.Information("CreateHistoricalOrderIndex - Start");
             IEnumerable<OrderHistory> orderHistoryEntries;
 
             using (var conn = _dbService.GetConnection())
             {
                 orderHistoryEntries = conn.Query<OrderHistory>("SELECT * FROM vOrderHistory", commandTimeout: CreateIndexQueryTimeout);
+                Log.Information($"CreateHistoricalOrderIndex - History Count: {orderHistoryEntries.Count()}");
             }
 
             WriteIndex(orderHistoryEntries, Indexes.OrderHistory, o => o.OrderId);
@@ -420,6 +424,7 @@ namespace Purchasing.Core.Services
 
         void WriteIndex<T>(IEnumerable<T> entities, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
         {
+            Log.Information("CreateHistoricalOrderIndex - WriteIndex");
             if (entities == null)
             {
                 return;
@@ -429,14 +434,20 @@ namespace Purchasing.Core.Services
 
             if (recreate) //TODO: might have to check to see if index exists first time
             {
+                Log.Information("CreateHistoricalOrderIndex - ReCreate");
                 _client.Indices.Delete(index);
                 _client.Indices.Create(index, opt => opt.Settings(s => s.Setting("index.max_terms_count", MaxTermCount)));
             }
 
             var batches = entities.Partition(5000).ToArray(); //split into batches of up to 5000
+            Log.Information($"CreateHistoricalOrderIndex - Batches Count: {batches.Count()}");
+
+            var count = 0;
 
             foreach (var batch in batches)
             {
+                count++;
+                Log.Information($"CreateHistoricalOrderIndex - Batch: {count}");
                 var bulkOperation = new BulkDescriptor();
 
                 foreach (var item in batch)
@@ -465,6 +476,7 @@ namespace Purchasing.Core.Services
                 _client.Bulk(_ => bulkOperation);
             }
         }
+
     }
 
     public class OrderTrackingDto
