@@ -100,6 +100,7 @@ namespace Purchasing.Core.Services
 
         public void CreateCommentsIndex()
         {
+            Log.Information("CreateCommentsIndex - Start");
             WriteIndex<SearchResults.CommentResult>(
                 "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults",
                 Indexes.Comments);
@@ -112,6 +113,7 @@ namespace Purchasing.Core.Services
 
         public void CreateCustomAnswersIndex()
         {
+            Log.Information("CreateCustomAnswersIndex - Start");
             WriteIndex<SearchResults.CustomFieldResult>(
                 "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults",
                 Indexes.CustomAnswers);
@@ -133,6 +135,7 @@ namespace Purchasing.Core.Services
 
         public void CreateLineItemsIndex()
         {
+            Log.Information("CreateLineItemsIndex - Start");
             WriteIndex<SearchResults.LineResult>(
                 "SELECT [Id], [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults",
                 Indexes.LineItems
@@ -146,6 +149,7 @@ namespace Purchasing.Core.Services
 
         public void CreateTrackingIndex()
         {
+            Log.Information("CreateTrackingIndex - Start");
             using (var conn = _dbService.GetConnection())
             {
                 var orderTrackings =
@@ -424,7 +428,7 @@ namespace Purchasing.Core.Services
 
         void WriteIndex<T>(IEnumerable<T> entities, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
         {
-            Log.Information("CreateHistoricalOrderIndex - WriteIndex");
+            Log.Information("WriteIndex - Start");
             if (entities == null)
             {
                 return;
@@ -434,20 +438,20 @@ namespace Purchasing.Core.Services
 
             if (recreate) //TODO: might have to check to see if index exists first time
             {
-                Log.Information("CreateHistoricalOrderIndex - ReCreate");
+                Log.Information("WriteIndex - ReCreate");
                 _client.Indices.Delete(index);
                 _client.Indices.Create(index, opt => opt.Settings(s => s.Setting("index.max_terms_count", MaxTermCount)));
             }
 
             var batches = entities.Partition(5000).ToArray(); //split into batches of up to 5000
-            Log.Information($"CreateHistoricalOrderIndex - Batches Count: {batches.Count()}");
+            Log.Information($"WriteIndex - Batches Count: {batches.Count()}");
 
             var count = 0;
 
             foreach (var batch in batches)
             {
                 count++;
-                Log.Information($"CreateHistoricalOrderIndex - Batch: {count}");
+                Log.Information($"WriteIndex - Batch: {count}");
                 var bulkOperation = new BulkDescriptor();
 
                 foreach (var item in batch)
