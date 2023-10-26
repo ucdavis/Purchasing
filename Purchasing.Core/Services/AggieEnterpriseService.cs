@@ -441,6 +441,7 @@ namespace Purchasing.Core.Services
             var filter = new ScmPurchasingCategoryFilterInput();
             filter.SearchCommon = new SearchCommonInputs();
             filter.SearchCommon.Limit = 5000; //Should only be a few hundred eventually, AE may cap this at 500
+            //If we ever star filtering on the last update datetime, maybe the last month, we need that to be allowed an override when called from the system controller. Otherwise it will miss all the historical data that may still be active
             filter.LastUpdateDateTime = new DateFilterInput { Gt = "2000-01-01" }; //2022-07-14 should return a smaller number (I don't know if this is needed anymore. Data seems cleaner)
 
 
