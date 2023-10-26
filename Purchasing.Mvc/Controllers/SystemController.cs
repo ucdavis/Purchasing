@@ -44,6 +44,7 @@ namespace Purchasing.Mvc.Controllers
         public async Task<IActionResult> UpdateCategories()
         {           
             await _aeLookupService.UpdateCategories(true);
+            _indexService.CreateCommoditiesIndex(); // We are looking up from the index, so need to do this after an update.
             Message = "Categories Updated";
             return RedirectToAction("Index");
         }
