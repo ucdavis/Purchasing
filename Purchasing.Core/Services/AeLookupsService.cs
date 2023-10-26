@@ -74,7 +74,7 @@ namespace Purchasing.Core.Services
                         foreach (var category in inactiveCategories)
                         {
                             var deactivatedCategory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id and IsActive = 1", new { category.Id }, ts);
-                            if (deactivatedCategory != null && category.IsActive)
+                            if (deactivatedCategory != null)
                             {
                                 await connection.ExecuteAsync("update vCommodities set Name = @name, IsActive = 0 where Id = @id", new { category.Id, category.Name }, ts);
                                 deactivated++;
