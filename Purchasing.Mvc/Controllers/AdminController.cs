@@ -730,7 +730,7 @@ namespace Purchasing.Mvc.Controllers
                 OrgId = model.OrgCode,
                 Name = model.OrgName,
                 ImmediateParentId = null,
-                RollupParentId = parentOrg.Id
+                RollupParentId = model.OrgCode
             };
             _orgDescendantRepository.EnsurePersistent(orgDescendant);
 
