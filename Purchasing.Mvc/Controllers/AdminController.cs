@@ -24,6 +24,7 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using Microsoft.Extensions.Configuration;
 using Purchasing.Core.Services;
+using Purchasing.Mvc.Models;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -44,6 +45,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly SendGridSettings _sendGridSettings;
         private readonly IConfiguration _configuration;
         private readonly IAggieEnterpriseService _aggieEnterpriseService;
+        private readonly IRepository<OrgDescendant> _orgDescendantRepository;
 
         public AdminController(
             IRepositoryWithTypedId<User, string> userRepository,
@@ -56,7 +58,8 @@ namespace Purchasing.Mvc.Controllers
             IWorkgroupService workgroupService,
             IOptions<SendGridSettings> sendGridSettings,
             IConfiguration configuration,
-            IAggieEnterpriseService aggieEnterpriseService)
+            IAggieEnterpriseService aggieEnterpriseService,
+            IRepository<OrgDescendant> orgDescendantRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -69,6 +72,7 @@ namespace Purchasing.Mvc.Controllers
             _sendGridSettings = sendGridSettings.Value;
             _configuration = configuration;
             _aggieEnterpriseService = aggieEnterpriseService;
+            _orgDescendantRepository = orgDescendantRepository;
         }
 
         //
@@ -671,6 +675,81 @@ namespace Purchasing.Mvc.Controllers
             Message = string.Format("{0} permissions removed", count);
             return this.RedirectToAction(nameof(ValidateChildWorkgroups));
         }
+
+        public ActionResult AddOrg()
+        {
+            var model = new AddNewOrgEditModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AddOrg(AddNewOrgEditModel model)
+        {
+            model.ParentOrgCode = model.ParentOrgCode.ToUpper();
+            model.OrgCode = model.OrgCode.ToUpper();
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var parentOrg = _organizationRepository.Queryable.SingleOrDefault(a => a.Id == model.ParentOrgCode && a.IsActive);
+            if (parentOrg == null)
+            {
+                ModelState.AddModelError("ParentOrgCode", "Parent Org not found");
+                return View(model);
+            }
+
+            if(_repositoryFactory.OrganizationRepository.Queryable.Any(a => a.Id == model.OrgCode))
+            {
+                ModelState.AddModelError("OrgCode", "Org already exists");
+                return View(model);
+            }
+
+            var parentOrgDescendants = _orgDescendantRepository.Queryable.Where(a => a.OrgId == parentOrg.Id).Select(a => a.RollupParentId).Distinct().ToList();
+            if(parentOrgDescendants == null || parentOrgDescendants.Count() <= 0)
+            {
+                ErrorMessage = "No Descendants found";
+                return View(model);
+            }
+
+            var org = new Organization
+            {
+                Id = model.OrgCode,
+                Name = model.OrgName,
+                IsActive = true,
+                TypeCode = "4",
+                TypeName = "Manually Added",
+                Parent = parentOrg
+            };
+            _organizationRepository.EnsurePersistent(org);
+
+            //Add the new org descendant 
+            var orgDescendant = new OrgDescendant
+            {
+                OrgId = model.OrgCode,
+                Name = model.OrgName,
+                ImmediateParentId = null,
+                RollupParentId = parentOrg.Id
+            };
+            _orgDescendantRepository.EnsurePersistent(orgDescendant);
+
+            foreach (var parentOrgDescendant in parentOrgDescendants)
+            {
+                orgDescendant = new OrgDescendant
+                {
+                    OrgId = model.OrgCode,
+                    Name = model.OrgName,
+                    ImmediateParentId = parentOrg.Id,
+                    RollupParentId = parentOrgDescendant
+                };
+                _orgDescendantRepository.EnsurePersistent(orgDescendant);
+            }
+
+            Message = "Org Added";
+            return RedirectToAction(nameof(AddOrg));
+        }
+
 
         /// <summary>
         /// #18

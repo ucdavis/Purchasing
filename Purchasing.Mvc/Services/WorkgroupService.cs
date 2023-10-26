@@ -381,6 +381,12 @@ namespace Purchasing.Mvc.Services
                         Check.Require(adminWP.Role.Id != Role.Codes.Requester);
                         foreach (var childid in ids)
                         {
+                            //var wpAction =
+                            //    wpActions.FirstOrDefault(
+                            //        a =>
+                            //        a.WorkgroupPermission.Workgroup.Id == childid &&
+                            //        a.WorkgroupPermission.User == adminWP.User &&
+                            //        a.WorkgroupPermission.Role == adminWP.Role);
                             var wpAction =
                                 wpActions.SingleOrDefault(
                                     a =>
