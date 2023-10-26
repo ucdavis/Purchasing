@@ -29,14 +29,14 @@ namespace Purchasing.Core.Services
 
             if (resetAll)
             {
-                //Inactivate all categories
+                //Inactivate all categories. THe job isn't doing this, maybe it should?
                 using (var connection = _dbService.GetConnection())
                 {
                     using (var ts = connection.BeginTransaction())
                     {
-                        //Testing just one.
                         await connection.ExecuteAsync("update vCommodities set IsActive = 0 where IsActive = 1", null, ts);
                         ts.Commit();
+                        Log.Information("All categories inactivated");
                     }
                 }
             } 
@@ -47,48 +47,45 @@ namespace Purchasing.Core.Services
                 {
                     var updated = 0;
                     var added = 0;
+                    var deactivated = 0;
                     var activeCategories = categories.Where(x => x.IsActive).ToArray();
+                    var inactiveCategories = categories.Where(x => !x.IsActive).ToArray(); 
                     if (activeCategories.Any())
                     {
                         foreach (var category in activeCategories)
                         {
-                            var newCatgory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id", new { category.Id }, ts);
+                            var newCategory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id", new { category.Id }, ts);
 
-                            if (newCatgory == null)
+                            if (newCategory == null)
                             {
                                 await connection.ExecuteAsync("insert into vCommodities (Id, Name, IsActive) values (@id, @name, @isactive)", new { category.Id, category.Name, category.IsActive }, ts);
-
                                 added++;
                             }
-                            else if (newCatgory.Name != category.Name || newCatgory.IsActive != category.IsActive)
+                            else if (newCategory.Name != category.Name || newCategory.IsActive != category.IsActive)
                             {
                                 await connection.ExecuteAsync("update vCommodities set Name = @name, IsActive = @isactive where Id = @id", new { category.Id, category.Name, category.IsActive }, ts);
                                 updated++;
                             }
-                        }
-                        await ts.CommitAsync();
+                        }                        
                     }
-                    Log.Information("Categories: Updated {updatedCount} Added: {addedCount}", updated, added);
-                }
-
-                using (var ts = connection.BeginTransaction())
-                {
-                    var count = 0;
-                    var inactiveCategories = categories.Where(x => !x.IsActive).ToArray();
-                    if (inactiveCategories.Any())
+                    
+                    if(inactiveCategories.Any())
                     {
                         foreach (var category in inactiveCategories)
                         {
-                            var newCatgory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id", new { category.Id }, ts);
-                            if (newCatgory != null && newCatgory.IsActive != category.IsActive)
+                            var deactivatedCategory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id and IsActive = 1", new { category.Id }, ts);
+                            if (deactivatedCategory != null)
                             {
-                                await connection.ExecuteAsync("update vCommodities set Name = @name, IsActive = @isactive where Id = @id", new { category.Id, category.Name, category.IsActive }, ts);
-                                count++;
+                                await connection.ExecuteAsync("update vCommodities set Name = @name, IsActive = 0 where Id = @id", new { category.Id, category.Name }, ts);
+                                deactivated++;
                             }
                         }
+                    }
+                    if (added > 0 || updated > 0 || deactivated > 0)
+                    {
                         await ts.CommitAsync();
                     }
-                    Log.Information("Deactivated Categories: {count}", count);
+                    Log.Information("Categories: Updated {updatedCount} Added: {addedCount} Deactivated: {deactivatedCount}", updated, added, deactivated);
                 }
             }
 
