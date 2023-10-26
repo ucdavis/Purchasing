@@ -459,7 +459,7 @@ namespace Purchasing.Core.Services
             return data.ScmPurchasingCategorySearch.Data.Select(a => new Commodity
             {
                 Id = a.Code,
-                Name = a.Name,
+                Name = a.Name ?? "Invalid",
                 IsActive =
                 a.Enabled && DateTime.UtcNow.ToPacificTime().IsActiveDate(a.StartDateActive, a.EndDateActive)
             }).ToArray();
