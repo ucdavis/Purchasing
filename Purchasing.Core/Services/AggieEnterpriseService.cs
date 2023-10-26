@@ -314,7 +314,7 @@ namespace Purchasing.Core.Services
                 return rtValue;
             }
 
-            if(responseData.ScmPurchaseRequisitionCreate.RequestStatus.Equals(RequestStatus.Validated))
+            if(responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestStatus.Equals(RequestStatus.Validated))
             {
                 //If this happens, it is because we are using sandbox keys against production. Or it is some UAT/Testing thing
                 //We could potentially get this in the future if we decide to validate the order before submitting it. But that would just end up calling it twice.
