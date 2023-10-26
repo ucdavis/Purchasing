@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Ninject;
 using Purchasing.Core;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Models.Configuration;
@@ -11,6 +12,7 @@ class Program : WebJobBase
     static async Task Main(string[] args)
     {
         var kernel = ConfigureServices();
+        var indexService = kernel.Get<IIndexService>();
 
         var provider = ConfigureServicesLocal();
 
@@ -25,7 +27,11 @@ class Program : WebJobBase
 
             await aeLookupService.UpdateCategories();
 
+            Log.Information("Updating Commodity/P_Category Index");
+            indexService.CreateCommoditiesIndex(); //Do it here, just in case we decide to remove the UpdateLookupIndexes job
+
             Log.Information("Aggie Enterprise Purchasing Categories updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
+
         }
         catch (Exception ex)
         {
