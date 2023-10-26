@@ -73,7 +73,7 @@ namespace Purchasing.Core.Services
                     {
                         foreach (var category in inactiveCategories)
                         {
-                            var deactivatedCategory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id", new { category.Id }, ts);
+                            var deactivatedCategory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id and IsActive = 1", new { category.Id }, ts);
                             if (deactivatedCategory != null && category.IsActive)
                             {
                                 await connection.ExecuteAsync("update vCommodities set Name = @name, IsActive = 0 where Id = @id", new { category.Id, category.Name }, ts);
@@ -86,26 +86,6 @@ namespace Purchasing.Core.Services
                         await ts.CommitAsync();
                     }
                     Log.Information("Categories: Updated {updatedCount} Added: {addedCount} Deactivated: {deactivatedCount}", updated, added, deactivated);
-                }
-
-                using (var ts = connection.BeginTransaction())
-                {
-                    var count = 0;
-                    var inactiveCategories = categories.Where(x => !x.IsActive).ToArray();
-                    if (inactiveCategories.Any())
-                    {
-                        foreach (var category in inactiveCategories)
-                        {
-                            var newCatgory = await connection.QueryFirstOrDefaultAsync<Commodity>("Select * from vCommodities where id = @id", new { category.Id }, ts);
-                            if (newCatgory != null && newCatgory.IsActive != category.IsActive)
-                            {
-                                await connection.ExecuteAsync("update vCommodities set Name = @name, IsActive = @isactive where Id = @id", new { category.Id, category.Name, category.IsActive }, ts);
-                                count++;
-                            }
-                        }
-                        await ts.CommitAsync();
-                    }
-                    Log.Information("Deactivated Categories: {count}", count);
                 }
             }
 
