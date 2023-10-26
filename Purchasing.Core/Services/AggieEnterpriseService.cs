@@ -318,7 +318,10 @@ namespace Purchasing.Core.Services
             {
                 //If this happens, it is because we are using sandbox keys against production. Or it is some UAT/Testing thing
                 //We could potentially get this in the future if we decide to validate the order before submitting it. But that would just end up calling it twice.
-                throw new Exception("Unexpected Status of Validated.");
+                //throw new Exception("Unexpected Status of Validated.");
+
+                rtValue.Messages.Add("Aggie Enterprise did not accept the order, just validated it. Please use the help to contact support.");
+                return rtValue;
             }
 
             rtValue = new SubmitResult { Success = true, DocNumber = responseData.ScmPurchaseRequisitionCreate.RequestStatus.RequestId.ToString() };
