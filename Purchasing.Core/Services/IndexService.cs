@@ -67,7 +67,7 @@ namespace Purchasing.Core.Services
         private ElasticClient _client;
         private const int MaxReturnValues = 10000; //This was 15,000 but ElasticSearch Errors out if it is that big. Tested with 12,000
         private const int MaxTermCount = 1000000; // allow up to 1M terms to search on (in case someone has lots of orders)
-        private const int CreateIndexQueryTimeout = 60 * 50; // Allow 50 minutes for long index creation queries
+        private const int CreateIndexQueryTimeout = 60 * 5; // Allow 5 minutes for long index creation queries
 
         public ElasticSearchIndexService(IDbService dbService)
         {
@@ -119,6 +119,9 @@ namespace Purchasing.Core.Services
                 Indexes.CustomAnswers);
         }
 
+        /// <summary>
+        /// Strongly recommend setting the DB to a S6, then running this locally. 
+        /// </summary>
         public void CreateHistoricalOrderIndex()
         {
             Log.Information("CreateHistoricalOrderIndex - Start");
