@@ -370,20 +370,36 @@ namespace Purchasing.Core.Services
                 {
                     foreach( var job in jobErrors)
                     {
-                       var jobReport = System.Text.Json.JsonSerializer.Deserialize<AeJobError>(job.JobReport);
-                        if(jobReport.G_1.Length > 0)
+                        if(job.JobReport.Contains("\"G_1\":["))
                         {
-                            foreach(var g in jobReport.G_1)
+                            var jobReport = System.Text.Json.JsonSerializer.Deserialize<AeJobError>(job.JobReport);
+                            if (jobReport.G_1.Count() > 0)
                             {
-                                rtValue.Add(new AeJobErrorDetailCleaned
+                                foreach (var g in jobReport.G_1)
                                 {
-                                    ColumnName = g.COLUMN_NAME,
-                                    ColumnValue = g.COLUMN_VALUE?.ToString(),
-                                    ErrorCode = g.ERROR_CODE?.ToString(),
-                                    ErrorMessage = g.ERROR_MESSAGE?.ToString()
-                                });
+                                    rtValue.Add(new AeJobErrorDetailCleaned
+                                    {
+                                        ColumnName   = g.COLUMN_NAME,
+                                        ColumnValue  = g.COLUMN_VALUE?.ToString(),
+                                        ErrorCode    = g.ERROR_CODE?.ToString(),
+                                        ErrorMessage = g.ERROR_MESSAGE?.ToString()
+                                    });
+                                }
                             }
                         }
+                        else
+                        {
+                            var jobReport = System.Text.Json.JsonSerializer.Deserialize<AeJobErrorSingle>(job.JobReport);
+                            rtValue.Add(new AeJobErrorDetailCleaned
+                            {
+                                ColumnName   = jobReport.G_1.COLUMN_NAME,
+                                ColumnValue  = jobReport.G_1.COLUMN_VALUE?.ToString(),
+                                ErrorCode    = jobReport.G_1.ERROR_CODE?.ToString(),
+                                ErrorMessage = jobReport.G_1.ERROR_MESSAGE?.ToString()
+                            });
+                        }
+
+
                     }
 
                     return rtValue;
