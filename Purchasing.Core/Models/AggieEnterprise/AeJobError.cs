@@ -8,7 +8,7 @@ namespace Purchasing.Core.Models.AggieEnterprise
 {
     public class AeJobError
     {
-        public List<AeJobErrorDetail> G_1 { get; set; }
+        public AeJobErrorDetail[] G_1 { get; set; }
     }
 
     public class AeJobErrorSingle
