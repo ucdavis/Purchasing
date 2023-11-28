@@ -47,11 +47,11 @@
                         <li>
                             <div class="display-label">Complete order as </div>
                             <div class="display-details">
-                                @Html.Select("orderType", o => o.Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("AE"))
+                                @Html.Select("orderType", o => o.Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("CS "))
                                 <select id="kfsDocType" name="kfsdoctype" style="display: none">
                                     <option value="">-- Select A Document Type --</option>                                  
-                                    <option value="PR">Purchase Request</option>
-                                    <option value="PR2">Purchase Request without KFS Document</option>
+@*                                     <option value="PR">Purchase Request</option>
+                                    <option value="PR2">Purchase Request without KFS Document</option> *@
                                 </select>
                                 <input type="submit" id="complete-order" name="action" class="button" value="Complete"/>
                             </div>
