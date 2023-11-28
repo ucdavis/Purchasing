@@ -1,4 +1,4 @@
-﻿@model ReviewOrderViewModel
+@model ReviewOrderViewModel
 
 @if (Model.CanEditOrder)
 {
@@ -21,6 +21,15 @@
                 <p>Warning: You cannot advance this order until it is assigned at least one account. @Html.ActionLink("Please edit this order", "Edit", new {Model.Order.Id}) and rectify the issue before proceeding.</p>
             }
         </div>
+        @if (Model.CanSubmitOrder)
+        {
+            if (Model.IsPurchaser)
+            {
+                <div id="error-message">
+                    WARNING!!! The last day to complete KFS orders was November 22th, 2023  After this date, these types of orders must be completed in Aggie Enterprise in January 2024.
+                </div>
+            }
+        }
         <div class="section-contents">
             @using (Html.BeginForm("Approve", "Order", new { Model.Order.Id }, FormMethod.Post))
             {
@@ -38,11 +47,11 @@
                         <li>
                             <div class="display-label">Complete order as </div>
                             <div class="display-details">
-                                @Html.Select("orderType", o => o.Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("AE"))
+                                @Html.Select("orderType", o => o.Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("CS "))
                                 <select id="kfsDocType" name="kfsdoctype" style="display: none">
                                     <option value="">-- Select A Document Type --</option>                                  
-                                    <option value="PR">Purchase Request</option>
-                                    <option value="PR2">Purchase Request without KFS Document</option>
+@*                                     <option value="PR">Purchase Request</option>
+                                    <option value="PR2">Purchase Request without KFS Document</option> *@
                                 </select>
                                 <input type="submit" id="complete-order" name="action" class="button" value="Complete"/>
                             </div>
