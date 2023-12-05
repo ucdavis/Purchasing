@@ -21,6 +21,8 @@ namespace Purchasing.Core.Helpers
                 return value;
             }
 
+            value = value.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " "); //remove new lines. Might not be needed but if AE doesn't fix there stuff, we should. And it makes sense to do it here.
+
             value = value.Trim();
             
             if(value.Length <= max)
