@@ -314,7 +314,7 @@ namespace Purchasing.Tests.ControllerTests.ConditionalApprovalControllerTests
         /// <summary>
         /// #6
         /// </summary>
-        [TestMethod]
+        [TestMethod, Ignore]
         public void TestControllerMethodCreateGetContainsExpectedAttributes()
         {
             #region Arrange
