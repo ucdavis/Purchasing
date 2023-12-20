@@ -22,6 +22,11 @@
 
 <div class="dt-table-filter-header display-form">
 <header class="ui-widget-header ui-corner-top">Filters</header>
+		<div class="section-text">			
+			<p>A quick word about auto approvals</p>
+            <p>They will only auto approve the first approval step if you are the specific approver for that order. So if the requester specifically picks you, or if you are the approver assigned to the account they use.</p>
+            <p>With the move to Aggie Enterprise it was determined that because of low usage and other issues, you will no longer be able to create an auto approval based on an account that is used.</p>
+		</div>
 <div class="section-contents">
 
     @using(Html.BeginForm("Index", "AutoApproval", FormMethod.Post))
@@ -63,9 +68,6 @@
 				Equal
 			</th>
             <th>
-                Account
-            </th>
-            <th>
                 User
             </th>
             @if((Model.ShowAll))
@@ -105,10 +107,6 @@
 			<td>
 				@item.Equal
 			</td>
-
-            <td>
-                @(item.Account == null ? "No Account" : item.Account.NameAndId)
-            </td>
 
             <td>
                 @(item.TargetUser == null ? "No User" : item.TargetUser.FullNameAndId)

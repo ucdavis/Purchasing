@@ -42,6 +42,9 @@
         if (options.IsKfsOrder) {
             purchasing.loadKfsData();
         }
+        if (options.IsAeOrder) {
+            purchasing.loadAeData();
+        }
 
         attachTagEvents();
 
@@ -113,6 +116,9 @@
 
                                     if (options.IsKfsOrder) { //if we change the reference # on a KFS order, requery for new info
                                         purchasing.loadKfsData();
+                                    }
+                                    if (options.IsAeOrder) {
+                                        purchasing.loadAeData();
                                     }
                                 }
                             }
@@ -268,6 +274,42 @@
 
                     $("#kfs-loading").hide();
                     $("#kfs-data").show();
+                }
+            }
+        });
+    };
+
+    purchasing.loadAeData = function () {
+        $.getJSON(options.AeStatusUrl, function (result) {
+            console.log(result);
+            if (result === null) {
+                $("#ae-loading").show();
+                $("#ae-data").hide();
+                $("#ae-loading-status").html("A problem was encountered accessing the Aggie Enterprise Financial Information Service. Please try again later.");
+            }
+            else {
+                if (result === null) {
+                    $("#ae-loading").show();
+                    $("#ae-data").hide();
+                    $("#ae-loading-status").html("No Aggie Enterprise Financial Information Was Found For This Order. Please Verify That The Reference # Is Valid");
+                } else {
+                    $("#ae-requestid").html(result.RequestId);
+                    $("#ae-request-status").html(result.Status);
+
+                    $("#ae-request-tracking").html(result.ConsumerTrackingId);
+                    $("#ae-request-reference").html(result.ConsumerReferenceId);
+                    $("#ae-request-notes").html(result.ConsumerNotes);
+                    $("#ae-request-requested").html(result.RequestDateTime);
+                    $("#ae-request-updated").html(result.LastStatusDateTime);
+                    $("#ae-request-processed").html(result.ProcessedDateTime);
+                    $("#ae-request-req").html(result.OracleReq);
+                    $("#ae-request-po").html(result.PoNumber);
+                   
+                    $("#ae-loading").hide();
+                    $("#ae-data").show();
+                    if(result.Status === "Error"){
+                        $("#ae-view-errors").show();
+                    }
                 }
             }
         });

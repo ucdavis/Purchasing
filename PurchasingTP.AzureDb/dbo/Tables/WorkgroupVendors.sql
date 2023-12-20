@@ -18,6 +18,8 @@
     [Url]                   VARCHAR (128) NULL,
     [VendorAddressDetailId] VARCHAR (4)   NULL,
     [VendorAddressId]       VARCHAR (25)  NULL,
+    [AeSupplierNumber] VARCHAR(30) NULL, 
+    [AeSupplierSiteCode] VARCHAR(15) NULL, 
     PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON),
     CONSTRAINT [FK_WorkgroupVendors_Workgroups] FOREIGN KEY ([WorkgroupId]) REFERENCES [dbo].[Workgroups] ([Id])
 );

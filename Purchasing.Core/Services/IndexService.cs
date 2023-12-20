@@ -15,6 +15,7 @@ using UCDArch.Core;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Text.RegularExpressions;
+using Serilog;
 
 namespace Purchasing.Core.Services
 {
@@ -39,6 +40,7 @@ namespace Purchasing.Core.Services
 
         ElasticClient GetIndexClient();
         void CreateTrackingIndex();
+
 
         /// <summary>
         /// return just the orders within the given date ranges
@@ -98,6 +100,7 @@ namespace Purchasing.Core.Services
 
         public void CreateCommentsIndex()
         {
+            Log.Information("CreateCommentsIndex - Start");
             WriteIndex<SearchResults.CommentResult>(
                 "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults",
                 Indexes.Comments);
@@ -110,18 +113,24 @@ namespace Purchasing.Core.Services
 
         public void CreateCustomAnswersIndex()
         {
+            Log.Information("CreateCustomAnswersIndex - Start");
             WriteIndex<SearchResults.CustomFieldResult>(
                 "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults",
                 Indexes.CustomAnswers);
         }
 
+        /// <summary>
+        /// Strongly recommend setting the DB to a S6, then running this locally. 
+        /// </summary>
         public void CreateHistoricalOrderIndex()
         {
+            Log.Information("CreateHistoricalOrderIndex - Start");
             IEnumerable<OrderHistory> orderHistoryEntries;
 
             using (var conn = _dbService.GetConnection())
             {
                 orderHistoryEntries = conn.Query<OrderHistory>("SELECT * FROM vOrderHistory", commandTimeout: CreateIndexQueryTimeout);
+                Log.Information($"CreateHistoricalOrderIndex - History Count: {orderHistoryEntries.Count()}");
             }
 
             WriteIndex(orderHistoryEntries, Indexes.OrderHistory, o => o.OrderId);
@@ -129,6 +138,7 @@ namespace Purchasing.Core.Services
 
         public void CreateLineItemsIndex()
         {
+            Log.Information("CreateLineItemsIndex - Start");
             WriteIndex<SearchResults.LineResult>(
                 "SELECT [Id], [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults",
                 Indexes.LineItems
@@ -142,6 +152,7 @@ namespace Purchasing.Core.Services
 
         public void CreateTrackingIndex()
         {
+            Log.Information("CreateTrackingIndex - Start");
             using (var conn = _dbService.GetConnection())
             {
                 var orderTrackings =
@@ -420,6 +431,7 @@ namespace Purchasing.Core.Services
 
         void WriteIndex<T>(IEnumerable<T> entities, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
         {
+            Log.Information("WriteIndex - Start");
             if (entities == null)
             {
                 return;
@@ -429,14 +441,20 @@ namespace Purchasing.Core.Services
 
             if (recreate) //TODO: might have to check to see if index exists first time
             {
+                Log.Information("WriteIndex - ReCreate");
                 _client.Indices.Delete(index);
                 _client.Indices.Create(index, opt => opt.Settings(s => s.Setting("index.max_terms_count", MaxTermCount)));
             }
 
             var batches = entities.Partition(5000).ToArray(); //split into batches of up to 5000
+            Log.Information($"WriteIndex - Batches Count: {batches.Count()}");
+
+            var count = 0;
 
             foreach (var batch in batches)
             {
+                count++;
+                Log.Information($"WriteIndex - Batch: {count}");
                 var bulkOperation = new BulkDescriptor();
 
                 foreach (var item in batch)
@@ -465,6 +483,7 @@ namespace Purchasing.Core.Services
                 _client.Bulk(_ => bulkOperation);
             }
         }
+
     }
 
     public class OrderTrackingDto

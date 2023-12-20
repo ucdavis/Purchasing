@@ -11,6 +11,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Web.Attributes;
 using UCDArch.Web.Controller;
 using System;
+using System.Threading.Tasks;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -21,19 +22,39 @@ namespace Purchasing.Mvc.Controllers
         private readonly IIndexService _indexService;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IRepositoryWithTypedId<EmailQueue, Guid> _emailQueueRepository;
+        private readonly IAeLookupsService _aeLookupService;
+
         //private readonly INotificationSender _notificationSender;
 
-        public SystemController(IIndexService indexService, IRepositoryFactory repositoryFactory, IRepositoryWithTypedId<EmailQueue, Guid> emailQueueRepository)//, INotificationSender notificationSender)
+        public SystemController(IIndexService indexService, IRepositoryFactory repositoryFactory, IRepositoryWithTypedId<EmailQueue, Guid> emailQueueRepository, IAeLookupsService aeLookupService)//, INotificationSender notificationSender)
         {
             _indexService = indexService;
             _repositoryFactory = repositoryFactory;
             _emailQueueRepository = emailQueueRepository;
+            _aeLookupService = aeLookupService;
             //_notificationSender = notificationSender;
         }
 
         public ActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateCategories()
+        {           
+            await _aeLookupService.UpdateCategories(true);
+            _indexService.CreateCommoditiesIndex(); // We are looking up from the index, so need to do this after an update.
+            Message = "Categories Updated";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUnitOfMeasures()
+        {
+            await _aeLookupService.UpdateUnitOfMeasure();
+            Message = "Unit of measures updated";
+            return RedirectToAction("Index");
         }
 
         public ActionResult Indexes()

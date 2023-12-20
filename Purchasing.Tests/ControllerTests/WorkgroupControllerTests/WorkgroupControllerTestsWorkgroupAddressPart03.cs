@@ -223,7 +223,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            Controller.EditAddress(4, 6, new WorkgroupAddress())
+            Controller.EditAddress(4, 6, new WorkgroupAddress()).GetAwaiter().GetResult()
                 .AssertActionRedirect();
             #endregion Act
 
@@ -240,7 +240,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAddress(3, 6, new WorkgroupAddress())
+            var result = Controller.EditAddress(3, 6, new WorkgroupAddress()).GetAwaiter().GetResult()
                 .AssertActionRedirect();
             #endregion Act
 
@@ -262,7 +262,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAddress(2, 4, address)
+            var result = Controller.EditAddress(2, 4, address).GetAwaiter().GetResult()
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAddressViewModel>();
             #endregion Act
@@ -288,7 +288,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAddress(2, 4, address)
+            var result = Controller.EditAddress(2, 4, address).GetAwaiter().GetResult()
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAddressViewModel>();
             #endregion Act
@@ -313,7 +313,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAddress(2, 4, address)
+            var result = Controller.EditAddress(2, 4, address).GetAwaiter().GetResult()
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAddressViewModel>();
             #endregion Act
@@ -343,7 +343,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAddress(2, 4, address)
+            var result = Controller.EditAddress(2, 4, address).GetAwaiter().GetResult()
                 .AssertActionRedirect();
             #endregion Act
 
@@ -383,7 +383,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAddress(2, 4, address)
+            var result = Controller.EditAddress(2, 4, address).GetAwaiter().GetResult()
                 .AssertActionRedirect();
             #endregion Act
 

@@ -80,7 +80,7 @@
             buttons: [closeButton, { name: "Next"}],
             description: "Select a unit: the default is 'Each'. In our case we are going to select 'Dozen'",
             onShow: function (guider) {
-                $(guider.actualSelect).val("DZ").trigger("liszt:updated"); ;
+                $(guider.actualSelect).val("DZN").trigger("liszt:updated"); ;
             },
             id: "lineitem-unit",
             next: "lineitem-description",
@@ -190,9 +190,9 @@
         guiders.createGuider({
             attachTo: "input[name='items[0].commodityCode']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Optionally, you may enter a Commodity code. A lookup against KFS Commodity Codes and Names will be performed, and you can select the correct match if it appears.  You will be notified if no match is found. If you do not know the commodity code, leave it blank and it will be completed at the purchase stage.",
+            description: "Optionally, you may enter a Commodity code. A lookup against Aggie Enterprise Purchasing Categories will be performed, and you can select the correct match if it appears.  You will be notified if no match is found. If you do not know the commodity code/Purchasing Category, leave it blank and it will be completed at the purchase stage.",
             onShow: function (guider) {
-                $(guider.attachTo).val("13165").change();
+                $(guider.attachTo).val("44000000").change();
             },
             id: "lineitem-commodity",
             next: "lineitem-url",
@@ -269,7 +269,7 @@
         guiders.createGuider({
             attachTo: "#Account",
             buttons: [closeButton, { name: "Next"}],
-            description: "If you know the account that this purchase should use, you may pick it from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
+            description: "If you know the account that this purchase should use, you may pick it from the list of accounts in the workgroup.<br/>The name of the account is now what you pick and the CoA will be shown if you hover over it.<br/>Note! Subaccounts and projects are no longer available with Aggie Enterprise.<br/><br/>Also note! The Natural Account of the CoA my be changed when the order is uploaded to Aggie Enterprise based on the Purcashing Category (Commodity Code).",
             onShow: function (guider) {
                 var lineItems = purchasing.OrderModel.items();
                 lineItems[0].quantity(12);
@@ -283,82 +283,85 @@
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             id: "orderDetails-account",
-            next: "orderDetails-project",
+            next: "orderDetails-searchAccount",
             position: 1,
             overlay: true,
             highlight: '#order-account-section',
             title: "Order Details Tour: Account"
         });
 
-        //#3
-        guiders.createGuider({
-            attachTo: "input[name='Project']",
-            buttons: [closeButton, { name: "Next"}],
-            description: "Optionally enter a project.",
-            onShow: function (guider) {
-                $(guider.attachTo).val("Proj");
-            },
-            id: "orderDetails-project",
-            next: "orderDetails-searchAccount",
-            position: 1,
-            overlay: true,
-            highlight: '#order-account-section',
-            title: "Order Details Tour: Account Project"
-        });
+        ////#3
+        //guiders.createGuider({
+        //    attachTo: "input[name='Project']",
+        //    buttons: [closeButton, { name: "Next"}],
+        //    description: "Optionally enter a project.",
+        //    onShow: function (guider) {
+        //        $(guider.attachTo).val("Proj");
+        //    },
+        //    id: "orderDetails-project",
+        //    next: "orderDetails-searchAccount",
+        //    position: 1,
+        //    overlay: true,
+        //    highlight: '#order-account-section',
+        //    title: "Order Details Tour: Account Project"
+        //});
 
         //#4
         guiders.createGuider({
-            attachTo: ".search-account",
+            attachTo: ".coa-picker",
             buttons: [closeButton, { name: "Next"}],
-            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.<br/><br/><strong>NOTE!</strong> If you search for and pick an account not in the drop down list it will change the approval routing. The account manager for that account in KFS will be added as an account manager approver for the order and the workgroup approver may be bypassed.",
+            description: "If the account you need is not in the drop down list for the workgroup, you may pick or build it by clicking here.<br/>This will open up 'Finjector' in a popup browser that lets you save and re-use Aggie Enterprise CoA<br/><br/><strong>NOTE!</strong> If you pick an account not in the drop down list it may change the approval routing. The financial officer for that CoA in Aggie Enterprise may be added as an account manager approver for the order and the workgroup approver may be bypassed.",
             id: "orderDetails-searchAccount",
-            next: "orderDetails-searchAccount2",
+            onHide: function () {
+                if (hasApprovers) { purchasing.OrderModel.setOrderApproverRouting(); }
+            },
+            next: hasApprovers ? "orderDetails-accountManager": "orderDetails-split",
             position: 2,
             offset: { top: -36, left: null },
             overlay: true,
             highlight: '#order-account-section',
-            title: "Order Details Tour: Search for a KFS Account"
+            title: "Order Details Tour: Pick/Build an Aggie Enterprise CoA"
         });
 
 
         //#5
-        guiders.createGuider({
-            buttons: [closeButton, { name: "Next"}],
-            attachTo: "#accounts-search-dialog-searchbox",
-            onShow: function () {
-                $(".search-account:first").click();  //TODO: either turn off animation or wait until complete
-                $("#accounts-search-dialog-searchbox").val("3-3136");
-            },
+        //guiders.createGuider({
+        //    buttons: [closeButton, { name: "Next"}],
+        //    attachTo: "#accounts-search-dialog-searchbox",
+        //    onShow: function () {
+        //        $(".search-account:first").click();  //TODO: either turn off animation or wait until complete
+        //        $("#accounts-search-dialog-searchbox").val("3-3136");
+        //    },
 
-            description: "Enter an account or account name.",
-            id: "orderDetails-searchAccount2",
-            next: "orderDetails-searchAccount3",
-            overlay: true,
-            highlight: ".ui-dialog",
-            position: 1,
-            title: "Order Details Tour: Search for a KFS Account"
-        });
+        //    description: "Enter an account or account name.",
+        //    id: "orderDetails-searchAccount2",
+        //    next: "orderDetails-searchAccount3",
+        //    overlay: true,
+        //    highlight: ".ui-dialog",
+        //    position: 1,
+        //    title: "Order Details Tour: Search for a KFS Account"
+        //});
 
         //#6
-        guiders.createGuider({
-            buttons: [closeButton, { name: "Next"}],
-            attachTo: "#accounts-search-dialog-searchbox-btn",
-            onShow: function () {
-                $("#accounts-search-dialog-searchbox-btn").click();
-            },
-            onHide: function () {
-                $(".ui-dialog-titlebar-close").click();
-                if (hasApprovers) { purchasing.OrderModel.setOrderApproverRouting(); }
-            },
-            description: "Click on the search icon. Once the results are found, click on the Select button, search again or cancel.",
-            id: "orderDetails-searchAccount3",
-            next: hasApprovers ? "orderDetails-accountManager" : "orderDetails-split",
-            overlay: true,
-            highlight: ".ui-dialog",
-            position: 2,
-            offset: { top: -35, left: null },
-            title: "Order Details Tour: Search for a KFS Account"
-        });
+        //guiders.createGuider({
+        //    buttons: [closeButton, { name: "Next"}],
+        //    attachTo: "#accounts-search-dialog-searchbox-btn",
+        //    onShow: function () {
+        //        $("#accounts-search-dialog-searchbox-btn").click();
+        //    },
+        //    onHide: function () {
+        //        $(".ui-dialog-titlebar-close").click();
+        //        if (hasApprovers) { purchasing.OrderModel.setOrderApproverRouting(); }
+        //    },
+        //    description: "Click on the search icon. Once the results are found, click on the Select button, search again or cancel.",
+        //    id: "orderDetails-searchAccount3",
+        //    next: hasApprovers ? "orderDetails-accountManager" : "orderDetails-split",
+        //    overlay: true,
+        //    highlight: ".ui-dialog",
+        //    position: 2,
+        //    offset: { top: -35, left: null },
+        //    title: "Order Details Tour: Search for a KFS Account"
+        //});
 
         if (hasApprovers) {
             //#7
@@ -422,12 +425,12 @@
         guiders.createGuider({
             attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Pick an account from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
+            description: "Pick an account from the list of accounts in the workgroup.<br/>Subaccounts are no longer available with aggie Enterprise.",
             onShow: function (guider) {
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
             id: "orderDetails-account1",
-            next: "orderDetails-project1",
+            next: "orderDetails-searchAccount3",
             position: 1,
             overlay: true,
             highlight: '#order-split-section',
@@ -435,33 +438,33 @@
         });
 
         //#11
-        guiders.createGuider({
-            attachTo: "input[name='splits[0].Project']",
-            buttons: [closeButton, { name: "Next"}],
-            description: "Optionally enter a project.",
-            id: "orderDetails-project1",
-            next: "orderDetails-searchAccount3",
-            onShow: function (guider) {
-                $(guider.attachTo).val("Proj");
-            },
-            position: 1,
-            overlay: true,
-            highlight: '#order-split-section',
-            title: "Order Details Tour: Split Between Accounts"
-        });
+        //guiders.createGuider({
+        //    attachTo: "input[name='splits[0].Project']",
+        //    buttons: [closeButton, { name: "Next"}],
+        //    description: "Optionally enter a project.",
+        //    id: "orderDetails-project1",
+        //    next: "orderDetails-searchAccount3",
+        //    onShow: function (guider) {
+        //        $(guider.attachTo).val("Proj");
+        //    },
+        //    position: 1,
+        //    overlay: true,
+        //    highlight: '#order-split-section',
+        //    title: "Order Details Tour: Split Between Accounts"
+        //});
 
         //#12
         guiders.createGuider({
             attachTo: "select[name='splits[0].Account']",
-            buttons: [closeButton, { name: "Next"}],
-            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
+            buttons: [closeButton, { name: "Next" }],
+            description: "If the account you need is not in the drop down list for the workgroup, you may pick or build it by clicking here.<br/>This will open up 'Finjector' in a popup browser that lets you save and re-use Aggie Enterprise CoA<br/><br/><strong>NOTE!</strong> If you pick an account not in the drop down list it may change the approval routing. The financial officer for that CoA in Aggie Enterprise may be added as an account manager approver for the order and the workgroup approver may be bypassed.",
             id: "orderDetails-searchAccount3",
             next: "orderDetails-percent",
             position: 2,
             offset: { top: -25, left: 20 },
             overlay: true,
             highlight: '#order-split-section',
-            title: "Order Details Tour: Search for a KFS Account"
+            title: "Order Details Tour: Pick/Build an Aggie Enterprise CoA"
         });
 
         //#13
@@ -501,7 +504,7 @@
         guiders.createGuider({
             attachTo: "#order-split-account-total",
             buttons: [closeButton, { name: "Next"}],
-            description: "No we have entered 2 more percentages. That takes care of all the unaccounted amounts.",
+            description: "Now we have entered 2 more percentages. That takes care of all the unaccounted amounts.",
             id: "orderDetails-percent2",
             next: "orderDetails-finish",
             onShow: function () {
@@ -620,9 +623,9 @@
         guiders.createGuider({
             attachTo: "select[name='splits[0].Account']",
             buttons: [closeButton, { name: "Next"}],
-            description: "Pick an account from the list of accounts in the workgroup.<br/>If there are any related sub accounts, they will be available from the drop down list once the account is selected.",
+            description: "Pick an account from the list of accounts in the workgroup. The account name or Externally Set are now the choices. You can hover over the name to see the CoA<br/>Subaccounts and Projects are no longer used with Aggie Enterprise.",
             id: "lineitemsplit-account1",
-            next: "lineitemsplit-project1",
+            next: "lineitemsplit-searchAccount1",
             onShow: function (guider) {
                 $(guider.attachTo).val($(guider.attachTo + " option:nth-child(2)").val());
             },
@@ -633,33 +636,33 @@
         });
 
         //#6
-        guiders.createGuider({
-            attachTo: "input[name='splits[0].Project']",
-            buttons: [closeButton, { name: "Next"}],
-            description: "Optionally enter a project.",
-            id: "lineitemsplit-project1",
-            next: "lineitemsplit-searchAccount1",
-            onShow: function (guider) {
-                $(guider.attachTo).val("Proj");
-            },
-            position: 1,
-            overlay: true,
-            highlight: '#line-items-section',
-            title: "Line Item Tour: Select Account"
-        });
+        //guiders.createGuider({
+        //    attachTo: "input[name='splits[0].Project']",
+        //    buttons: [closeButton, { name: "Next"}],
+        //    description: "Optionally enter a project.",
+        //    id: "lineitemsplit-project1",
+        //    next: "lineitemsplit-searchAccount1",
+        //    onShow: function (guider) {
+        //        $(guider.attachTo).val("Proj");
+        //    },
+        //    position: 1,
+        //    overlay: true,
+        //    highlight: '#line-items-section',
+        //    title: "Line Item Tour: Select Account"
+        //});
 
         //#7
         guiders.createGuider({
             attachTo: ".account-container:first",
             buttons: [closeButton, { name: "Next"}],
-            description: "If the account you need is not in the drop down list for the workgroup, you may search for it by clicking here.",
+            description: "If the account you need is not in the drop down list for the workgroup, you may pick or build it by clicking here.<br/>This will open up 'Finjector' in a popup browser that lets you save and re-use Aggie Enterprise CoA<br/><br/><strong>NOTE!</strong> If you pick an account not in the drop down list it may change the approval routing. The financial officer for that CoA in Aggie Enterprise may be added as an account manager approver for the order and the workgroup approver may be bypassed.",
             id: "lineitemsplit-searchAccount1",
             next: "lineitemsplit-amount1",
             position: 2,
             overlay: true,
             highlight: '#line-items-section',
             offset: { top: -26, left: null },
-            title: "Line Item Tour: Search for a KFS Account"
+            title: "Line Item Tour: Pick/Build an Aggie Enterprise CoA"
         });
 
         //#8
@@ -841,7 +844,7 @@
 
     function loadOverviewTour() {
         var intro = tour.isOriginalRequest() === true
-            ? "Don't panic!  Your current form will be saved and restored whenever you choose to quit the tour"
+            ? "Don't panic! Your current form will be saved and restored whenever you choose to quit the tour"
             : "Once this tour is over your page will reload and any unsaved modifications will be lost. If this is not ok, please click close now";
 
         guiders.createGuider({
@@ -960,7 +963,7 @@
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#search-vendor",
-            description: "Now let's look at searching for an existing vendor (from KFS)<br/><br/>Clicking on the 'Search Vendor' button will bring up the Search Vendor dialog",
+            description: "Now let's look at searching for an existing vendor (the animation is from KFS, but the basic idea is the same for Aggie Enterprise)<br/><br/>Clicking on the 'Search Vendor' button will bring up the Search Vendor dialog",
             id: "searchvendorbutton",
             next: "searchvendor",
             overlay: true,
@@ -1025,11 +1028,38 @@
             + "This will create a new address and automatically select it for you in the address list"
             + "<br/><br/>Click cancel if you want to close the dialog without saving your changes",
             id: "addaddress",
-            next: "lineitemsoverview",
+            next: "addaddressSearch",
             overlay: true,
             highlight: ".ui-dialog",
             position: 3,
             title: "Add A New Address"
+        });
+
+        guiders.createGuider({
+            buttons: [closeButton, { name: "Next" }],
+            attachTo: "#address-search",
+            onShow: function (guider) {
+                $("#add-address").click(); //TODO: either turn off animation or wait until complete
+                $("#address-name").val("New Address Name");
+                $("#address-search").val("Mrak 38");
+                $("#address-building").val("Mrak Hall");
+                $("#address-room").val("38");
+                $("#address-address").val("One Shields Ave");
+                $("#address-city").val("Davis");
+                $("#address-state").val("CA");
+                $("#address-zip").val("95616");
+                $("#address-phone").val("754-5555");
+            },
+            onHide: function () {
+                $(".ui-dialog-titlebar-close").click();
+            },
+            description: "If the address is a campus address, search for a valid address by typing here. If an address is selected it will populate the rest of the fields and be usable by Aggie Enterprise completed orders.",
+            id: "addaddressSearch",
+            next: "lineitemsoverview",
+            overlay: true,
+            highlight: ".ui-dialog",
+            position: 3,
+            title: "Search for a Valid Campus Address"
         });
 
         guiders.createGuider({
@@ -1089,8 +1119,8 @@
         guiders.createGuider({
             buttons: [closeButton, { name: "Next"}],
             attachTo: "#Account",
-            description: "If you know the account this order should be charged against, select it from the account drop down.  If there are any subaccounts related to the selected account, they will appear in the '--Sub Account--' drop down."
-            + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to lookup any account",
+            description: "If you know the account this order should be charged against, select it from the account drop down.  Subaccounts and Projects are no longer available for new orders with Aggie Enterprise."
+            + "<br/><br/>If you do not see the desired account in the list, you can use the <img src=\"/Images/details.png\"> icon to open Finjector to select or build a CoA.",
             onShow: function () {
                 var model = purchasing.OrderModel;
                 if (model.accounts().length > 1) {

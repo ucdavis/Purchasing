@@ -1,4 +1,4 @@
-﻿@model ReviewOrderViewModel
+@model ReviewOrderViewModel
 
 @if (Model.CanEditOrder)
 {
@@ -26,7 +26,7 @@
             if (Model.IsPurchaser)
             {
                 <div id="error-message">
-                    WARNING!!! The last day to complete order in KFS is November 22th, 2023  After this date, these types of orders must be completed in Aggie Enterprise January 1st 2024.
+                    WARNING!!! The last day to complete KFS orders was November 22th, 2023  After this date, these types of orders must be completed in Aggie Enterprise in January 2024.
                 </div>
             }
         }
@@ -40,15 +40,20 @@
                         <div class="display-label">Comment (Required For Deny)</div>
                         <div class="display-details"><textarea id="comment" name="comment"></textarea></div>
                     </li>
-                    @if (Model.CanSubmitOrder)
+                    @if (Model.CanSubmitOrder && !Model.HasInvalidAccounts)
                     {
                         if (Model.IsPurchaser)
                         {
                         <li>
                             <div class="display-label">Complete order as </div>
                             <div class="display-details">
-                                @Html.Select("orderType", o => o.Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("CP"))
-                                <input type="submit" id="complete-order" name="action" class="button" value="Complete" />
+                                @Html.Select("orderType", o => o.Options(Model.OrderTypes, x => x.Id, x => x.Name).Selected("CS "))
+                                <select id="kfsDocType" name="kfsdoctype" style="display: none">
+                                    <option value="">-- Select A Document Type --</option>                                  
+@*                                     <option value="PR">Purchase Request</option>
+                                    <option value="PR2">Purchase Request without KFS Document</option> *@
+                                </select>
+                                <input type="submit" id="complete-order" name="action" class="button" value="Complete"/>
                             </div>
                         </li>
                         <li>

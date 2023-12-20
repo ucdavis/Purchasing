@@ -167,7 +167,7 @@ form input[type='text'].catalog-num { min-width: 0; width: 65px;}
 form input[type='text'].description { min-width: 0; width: 259px;}
 form input[type='text'].price,#shipping, #tax,#freight  { min-width: 0; width: 35px;}
         
-form select.account-subaccount, form select.account-number {min-width: 120px; width: 120px;}
+form select.account-subaccount, form select.account-number {min-width: 300px; width: 300px;}
 form input.account-projectcode {min-width: 80px; width: 80px;}
 
 .account-container, .account-split-amounts {display: inline-block;}

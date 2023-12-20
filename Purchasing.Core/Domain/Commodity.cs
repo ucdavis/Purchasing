@@ -21,7 +21,7 @@ namespace Purchasing.Core.Domain
         public CommodityMap()
         {
             ReadOnly();
-
+            
             Table("vCommodities");
 
             Id(x => x.Id).GeneratedBy.Assigned();

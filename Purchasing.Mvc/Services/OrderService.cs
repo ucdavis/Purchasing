@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using AggieEnterpriseApi.Validation;
+using Azure.Storage.Blobs.Models;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -23,13 +26,13 @@ namespace Purchasing.Mvc.Services
         /// <param name="accountId">Optional id of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null);
+        Task CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null);
         
         /// <summary>
         /// Recreates approvals for the given order, removing all approvals at or above the current order level
         /// Should not affect conditional approvals?
         /// </summary>
-        void ReRouteApprovalsForExistingOrder(Order order, string approverId, string accountManagerId);
+        Task ReRouteApprovalsForExistingOrder(Order order, string approverId, string accountManagerId);
 
         /// <summary>
         /// Returns all of the approvals that need to be completed for the current approval status level
@@ -66,7 +69,7 @@ namespace Purchasing.Mvc.Services
         /// Complete the last approval for an order, and return any errors that result
         /// </summary>
         /// <returns>String array of error messages, non-empty if completion didn't succeed</returns>
-        string[] Complete(Order order, OrderType newOrderType, string kfsDocType = null);
+        Task<string[]> Complete(Order order, OrderType newOrderType, string kfsDocType = null);
 
         /// <summary>
         /// Get the current user's list of orders.
@@ -125,6 +128,8 @@ namespace Purchasing.Mvc.Services
         //private readonly IRepositoryWithTypedId<User, string> _userRepository; // UserRepository is in the RepositoryFactory
         private readonly IRepository<Order> _orderRepository;
 
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
+
         public OrderService(IRepositoryFactory repositoryFactory, 
                             IEventService eventService, 
                             IUserIdentity userIdentity, 
@@ -138,7 +143,8 @@ namespace Purchasing.Mvc.Services
                             IQueryRepositoryFactory queryRepositoryFactory, 
                             IAccessQueryService accessQueryService,
                             IFinancialSystemService financialSystemService,
-                            IIndexService indexService)
+                            IIndexService indexService,
+                            IAggieEnterpriseService aggieEnterpriseService)
         {
             _repositoryFactory = repositoryFactory;
             _eventService = eventService;
@@ -154,6 +160,7 @@ namespace Purchasing.Mvc.Services
             _accessQueryService = accessQueryService;
             _financialSystemService = financialSystemService;
             _indexService = indexService;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
         /// <summary>
@@ -164,7 +171,7 @@ namespace Purchasing.Mvc.Services
         /// <param name="accountId">Optional id of an account to use for routing</param>
         /// <param name="approverId">Optional approver userID</param>
         /// <param name="accountManagerId">AccountManager userID, required if account is not supplied</param>
-        public void CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null)
+        public async Task CreateApprovalsForNewOrder(Order order, int[] conditionalApprovalIds = null, string accountId = null, string approverId = null, string accountManagerId = null)
         {
             var approvalInfo = new ApprovalInfo();
 
@@ -177,9 +184,10 @@ namespace Purchasing.Mvc.Services
 
                 if (!string.IsNullOrWhiteSpace(accountId)) //if we route by account, use that for info
                 {
-                    //TODO: move this code to a private methods as very similar code is used elsewhere here.
+                    //TODO: move this code to a private methods as very similar code is used elsewhere here.                   
                     var workgroupAccount =
-                        _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == accountId && x.Workgroup.Id == order.Workgroup.Id);
+                        _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Workgroup.Id == order.Workgroup.Id && 
+                        ((x.Account != null && x.Account.Id == accountId) || (x.FinancialSegmentString != null && x.FinancialSegmentString == accountId)) );
 
                     approvalInfo.AccountId = accountId;
                     approvalInfo.IsExternal = (workgroupAccount == null); //if we can't find the account in the workgroup it is external
@@ -191,17 +199,40 @@ namespace Purchasing.Mvc.Services
                         approvalInfo.Purchaser = workgroupAccount.Purchaser;
                     }
                     else //account is not in the workgroup, even if we don't find the account, we will still use it
-                    { 
-                        var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
+                    {
+                        if (FinancialChartValidation.GetFinancialChartStringType(accountId) == FinancialChartStringType.Invalid)
+                        {
+                            var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
 
-                        approvalInfo.Approver = null;
-                        approvalInfo.AcctManager = externalAccount != null
-                                                       ? _securityService.GetUser(externalAccount.AccountManagerId)
-                                                       : null;
-                        approvalInfo.Purchaser = null;
+                            approvalInfo.Approver = null;
+                            approvalInfo.AcctManager = externalAccount != null
+                                                           ? _securityService.GetUser(externalAccount.AccountManagerId)
+                                                           : null;
+                            approvalInfo.Purchaser = null;
+                        }
+                        else
+                        {
+                            var aggieApproval = await _aggieEnterpriseService.GetFinancialOfficer(accountId);
+                            //TODO: Fix if we can get info from AE
+                            approvalInfo.IsExternal = aggieApproval.IsExternal;
+                            approvalInfo.Approver = null;
+                            approvalInfo.AcctManager = aggieApproval.FinancialOfficerId != null ? _securityService.GetUser(aggieApproval.FinancialOfficerId) : null;
+                            approvalInfo.Purchaser = null;
+                        }
                     }
-                    
-                    split.Account = accountId; //Assign the account to the split
+
+                    //Ok this is causing issues... May need more debugging
+                    //split.Account = accountId; //Assign the account to the split
+                    //Try doing this instead:
+                    var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(accountId);
+                    if(segmentStringType == FinancialChartStringType.Invalid)
+                    {
+                        split.Account = accountId;
+                    }
+                    else if(string.IsNullOrWhiteSpace(split.FinancialSegmentString))
+                    {
+                        split.FinancialSegmentString = accountId;
+                    }
                 }
                 else //else stick with user provided values
                 {
@@ -216,8 +247,8 @@ namespace Purchasing.Mvc.Services
                 foreach (var split in order.Splits)
                 {
                     //Try to find the account in the workgroup so we can route it by users
-                    var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
-
+                    var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Workgroup.Id == order.Workgroup.Id &&
+                        ((x.Account != null && x.Account.Id == split.Account) || (x.FinancialSegmentString != null && x.FinancialSegmentString == split.FinancialSegmentString)));
                     approvalInfo.AccountId = split.Account; 
                     approvalInfo.IsExternal = workgroupAccount == null; //if we can't find the account in the workgroup it is external
 
@@ -229,13 +260,25 @@ namespace Purchasing.Mvc.Services
                     }
                     else
                     { //account is not in the workgroup
-                        var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
+                        if (split.Account != null)
+                        {
+                            var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
 
-                        approvalInfo.Approver = null;
-                        approvalInfo.AcctManager = externalAccount != null
-                                                       ? _securityService.GetUser(externalAccount.AccountManagerId)
-                                                       : null;
-                        approvalInfo.Purchaser = null;
+                            approvalInfo.Approver = null;
+                            approvalInfo.AcctManager = externalAccount != null
+                                                           ? _securityService.GetUser(externalAccount.AccountManagerId)
+                                                           : null;
+                            approvalInfo.Purchaser = null;
+                        }
+                        else
+                        {
+                            var aggieApproval = await _aggieEnterpriseService.GetFinancialOfficer(split.FinancialSegmentString);
+                            //TODO: Fix if we can get info from AE
+                            approvalInfo.IsExternal = aggieApproval.IsExternal;
+                            approvalInfo.Approver = null;
+                            approvalInfo.AcctManager = aggieApproval.FinancialOfficerId != null ? _securityService.GetUser(aggieApproval.FinancialOfficerId) : null;
+                            approvalInfo.Purchaser = null;
+                        }
                     }
                     
                     AddApprovalSteps(order, approvalInfo, split);
@@ -294,7 +337,7 @@ namespace Purchasing.Mvc.Services
         /// Recreates approvals for the given order, removing all approvals at or above the current order level
         /// Should not affect conditional approvals?
         /// </summary>
-        public void ReRouteApprovalsForExistingOrder(Order order, string approverId = null, string accountManagerId = null)
+        public async Task ReRouteApprovalsForExistingOrder(Order order, string approverId = null, string accountManagerId = null)
         {
             var currentLevel = order.StatusCode.Level;
 
@@ -328,9 +371,10 @@ namespace Purchasing.Mvc.Services
                     var approvalInfo = new ApprovalInfo();
                     
                     //Try to find the account in the workgroup so we can route it by users
-                    var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Account.Id == split.Account && x.Workgroup.Id == order.Workgroup.Id);
+                    var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Workgroup.Id == order.Workgroup.Id && 
+                    ((x.Account != null && x.Account.Id == split.Account) || (x.FinancialSegmentString != null && x.FinancialSegmentString == split.FinancialSegmentString)));
 
-                    approvalInfo.AccountId = split.Account;
+                    approvalInfo.AccountId = split.Account ?? split.FinancialSegmentString;
                     approvalInfo.IsExternal = (workgroupAccount == null); //if we can't find the account in the workgroup it is external
 
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
@@ -341,6 +385,18 @@ namespace Purchasing.Mvc.Services
                     }
                     else
                     { //account is not in the workgroup
+                        if(split.Account == null) //Workaround for CoA
+                        {
+                            var aggieApproval = await _aggieEnterpriseService.GetFinancialOfficer(split.FinancialSegmentString);
+                            //TODO: Fix if we can get info from AE
+                            approvalInfo.IsExternal = aggieApproval.IsExternal;
+                            approvalInfo.Approver = null;
+                            approvalInfo.AcctManager = aggieApproval.FinancialOfficerId != null ? _securityService.GetUser(aggieApproval.FinancialOfficerId) : null;
+                            approvalInfo.Purchaser = null;
+                        }
+                        else 
+                        { 
+                        //TODO!!! This will fail with CoA                        
                         var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
 
                         approvalInfo.Approver = null;
@@ -348,6 +404,7 @@ namespace Purchasing.Mvc.Services
                                                        ? _securityService.GetUser(externalAccount.AccountManagerId)
                                                        : null;
                         approvalInfo.Purchaser = null;
+                        }
                     }
                     
                     AddApprovalSteps(order, approvalInfo, split, currentLevel);
@@ -543,7 +600,7 @@ namespace Purchasing.Mvc.Services
         /// Complete the last approval for an order, and return any errors that result
         /// </summary>
         /// <returns>String array of error messages, non-empty if completion didn't succeed</returns>
-        public string[] Complete(Order order, OrderType newOrderType, string kfsDocType = null)
+        public async Task<string[]> Complete(Order order, OrderType newOrderType, string kfsDocType = null)
         {
             order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Complete);
             order.OrderType = newOrderType;
@@ -558,6 +615,22 @@ namespace Purchasing.Mvc.Services
                 if (result.Success)
                 {
                     order.ReferenceNumber = result.DocNumber;    
+                }
+                else
+                {
+                    return result.Messages.ToArray();
+                }
+            }
+
+            if(newOrderType.Id.Trim() == OrderType.Types.AggieEnterprise)
+            {
+                var user = _repositoryFactory.UserRepository.Queryable.Single(x => x.Id == _userIdentity.Current);
+
+                var result = await _aggieEnterpriseService.UploadOrder(order, user.Email, user.Id); //TODO: Get an IAM email with a new field on the user?
+                if (result.Success)
+                {
+                    order.ReferenceNumber = result.DocNumber; //TODO: Replace?
+                    _eventService.AeOrderCompleted(order);
                 }
                 else
                 {

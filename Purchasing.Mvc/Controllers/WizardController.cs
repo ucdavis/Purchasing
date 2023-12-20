@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +16,8 @@ using UCDArch.Core.Utils;
 using UCDArch.Web.ActionResults;
 using UCDArch.Web.Helpers;
 using IdAndName = Purchasing.Core.Services.IdAndName;
+using Purchasing.Core.Services;
+using System.Threading.Tasks;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -41,6 +43,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
         private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
         public const string WorkgroupType = "Workgroup";
         public const string OrganizationType = "Organization";
 
@@ -59,7 +62,8 @@ namespace Purchasing.Mvc.Controllers
             IQueryRepositoryFactory queryRepositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
             IWorkgroupService workgroupService,
-            IRepositoryFactory repositoryFactory)
+            IRepositoryFactory repositoryFactory,
+            IAggieEnterpriseService aggieEnterpriseService)
         {
             _workgroupRepository = workgroupRepository;
             _userRepository = userRepository;
@@ -76,6 +80,7 @@ namespace Purchasing.Mvc.Controllers
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
             _repositoryFactory = repositoryFactory;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
 
@@ -533,7 +538,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddAccounts(int id, WorkgroupAccount workgroupAccount, string account_search)
+        public async Task<ActionResult> AddAccounts(int id, WorkgroupAccount workgroupAccount, string account_search)
         {
             ViewBag.StepNumber = 8;
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -544,6 +549,10 @@ namespace Purchasing.Mvc.Controllers
             }
             if(workgroupAccount != null && workgroupAccount.Account == null)
             {
+                if (account_search == null) //Hacky fix so the call below doesn't throw an exception. Ideally, this would bind as an empty string value not a null
+                {
+                    account_search = string.Empty;
+                }
                 workgroupAccount.Account = _repositoryFactory.AccountRepository.GetNullableById(account_search);
             }
 
@@ -559,33 +568,72 @@ namespace Purchasing.Mvc.Controllers
                 {
                     ModelState.AddModelError("WorkgroupAccount.Account", "Account not found.");
                 }
-                else
-                {
-                    ModelState.AddModelError("WorkgroupAccount.Account", "Select Account or skip.");
-                }
-                var viewModel1 = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccount);
-                return View(viewModel1);
+                //else
+                //{
+                //    ModelState.AddModelError("WorkgroupAccount.Account", "Select Account or skip.");
+                //}
+                //var viewModel1 = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccount);
+                //return View(viewModel1);
             }
+
+            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray(); //All workgroup accounts
 
             var workgroupAccountToCreate = new WorkgroupAccount { Workgroup = workgroup };
 
             //_mapper.Map(workgroupAccount, workgroupAccountToCreate);//Mapper was causing me an exception JCS
-            workgroupAccountToCreate.Account = workgroupAccount.Account;
-            workgroupAccountToCreate.AccountManager = workgroupAccount.AccountManager;
-            workgroupAccountToCreate.Approver = workgroupAccount.Approver;
-            workgroupAccountToCreate.Purchaser = workgroupAccount.Purchaser;
+            workgroupAccountToCreate.Account                = workgroupAccount.Account;
+            workgroupAccountToCreate.AccountManager         = workgroupAccount.AccountManager;
+            workgroupAccountToCreate.Approver               = workgroupAccount.Approver;
+            workgroupAccountToCreate.Purchaser              = workgroupAccount.Purchaser;
+            workgroupAccountToCreate.Name                   = workgroupAccount.Name?.Trim();
+            workgroupAccountToCreate.FinancialSegmentString = workgroupAccount.FinancialSegmentString?.Trim()?.ToUpper();
 
             ModelState.Clear();
             workgroupAccountToCreate.TransferValidationMessagesTo(ModelState);
 
-            if(_workgroupAccountRepository.Queryable.Any(a => a.Workgroup.Id == workgroup.Id && a.Account.Id == workgroupAccountToCreate.Account.Id))
+            if(workgroupAccountToCreate.Account != null && workgroupAccounts.Any(a => a.Workgroup.Id == workgroup.Id && a.Account != null && a.Account.Id == workgroupAccountToCreate.Account.Id))
             {
                 ModelState.AddModelError("WorkgroupAccount.Account", "Account already exists for this workgroup.");
             }
-            if(ModelState.IsValid)
+
+            if (string.IsNullOrWhiteSpace(workgroupAccountToCreate.FinancialSegmentString))
             {
-                _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
+                ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA is required"); 
+            }
+            else
+            {
+                var accountValid = await _aggieEnterpriseService.ValidateAccount(workgroupAccountToCreate.FinancialSegmentString);
+                if (!accountValid.IsValid)
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", accountValid.Message);
+                }
+                if (workgroupAccounts.Any(a => a.FinancialSegmentString != null && a.FinancialSegmentString.Equals(workgroupAccountToCreate.FinancialSegmentString, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.FinancialSegmentString", "CoA already exists for this workgroup");
+                }
+                if (accountValid.Warnings.Any())
+                {
+                    ErrorMessage = $"Warning (Review accounts after wizard completes): {accountValid.Warnings.FirstOrDefault().Value}";
+                }
+            }
+            if (string.IsNullOrWhiteSpace(workgroupAccountToCreate.Name))
+            {
+                ModelState.AddModelError("WorkgroupAccount.Name", "Name is required");
+            }
+            else
+            {
+                if (workgroupAccounts.Any(a => a.Name != null && a.Name.Equals(workgroupAccountToCreate.Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("WorkgroupAccount.Name", "Name already exists for this workgroup");
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
                 Message = "Workgroup account saved.";
+                
+                _workgroupAccountRepository.EnsurePersistent(workgroupAccountToCreate);
+
                 //return this.RedirectToAction("Accounts", new {id = id});
                 return this.RedirectToAction(nameof(Accounts), new { id = id });
             }
@@ -655,13 +703,13 @@ namespace Purchasing.Mvc.Controllers
 
             ModelState.Clear();
             //workgroupVendorToCreate.TransferValidationMessagesTo(ModelState);
-            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorId))
+            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.AeSupplierNumber))
             {
-                ModelState.AddModelError("WorkgroupVendor.VendorId", "Please select a Kfs Vendor");
+                ModelState.AddModelError("WorkgroupVendor.AeSupplierNumber", "Please select a Campus Vendor");
             }
-            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.VendorAddressTypeCode))
+            if(string.IsNullOrWhiteSpace(workgroupVendorToCreate.AeSupplierSiteCode))
             {
-                ModelState.AddModelError("WorkgroupVendor.VendorAddressTypeCode", "Please select a Vendor Address");
+                ModelState.AddModelError("WorkgroupVendor.AeSupplierSiteCode", "Please select a Vendor Address");
             }
             if (ModelState.IsValid)
             {
@@ -678,25 +726,49 @@ namespace Purchasing.Mvc.Controllers
 
             if(ModelState.IsValid)
             {
-                if(_workgroupVendorRepository.Queryable
+                //if(_workgroupVendorRepository.Queryable
+                //    .Any(a => a.Workgroup.Id == id &&
+                //        a.VendorId == workgroupVendorToCreate.VendorId &&
+                //        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                //        a.IsActive))
+                //{
+                //    Message = "KFS vendor has already been added";
+                //    return this.RedirectToAction(nameof(Vendors), new { id = id });
+                //}
+                //var inactiveKfsVendor = _workgroupVendorRepository.Queryable
+                //    .FirstOrDefault(a => a.Workgroup.Id == id &&
+                //        a.VendorId == workgroupVendorToCreate.VendorId &&
+                //        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                //        !a.IsActive);
+                //if(inactiveKfsVendor != null)
+                //{
+                //    inactiveKfsVendor.IsActive = true;
+                //    _workgroupVendorRepository.EnsurePersistent(inactiveKfsVendor);
+                //    Message = "KFS vendor added back. It was previously deleted from this workgroup.";
+                //    return this.RedirectToAction(nameof(Vendors), new { id = id });
+                //}
+
+                if (_workgroupVendorRepository.Queryable
                     .Any(a => a.Workgroup.Id == id &&
-                        a.VendorId == workgroupVendorToCreate.VendorId &&
-                        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                        a.AeSupplierNumber == workgroupVendorToCreate.AeSupplierNumber &&
+                        a.AeSupplierSiteCode == workgroupVendorToCreate.AeSupplierSiteCode &&
                         a.IsActive))
                 {
                     Message = "KFS vendor has already been added";
                     return this.RedirectToAction(nameof(Vendors), new { id = id });
                 }
-                var inactiveKfsVendor = _workgroupVendorRepository.Queryable
+
+                //Possibly do a check to see if it is still valid/active
+                var inactiveAeVendor = _workgroupVendorRepository.Queryable
                     .FirstOrDefault(a => a.Workgroup.Id == id &&
-                        a.VendorId == workgroupVendorToCreate.VendorId &&
-                        a.VendorAddressTypeCode == workgroupVendorToCreate.VendorAddressTypeCode &&
+                        a.AeSupplierNumber == workgroupVendorToCreate.AeSupplierNumber &&
+                        a.AeSupplierSiteCode == workgroupVendorToCreate.AeSupplierSiteCode &&
                         !a.IsActive);
-                if(inactiveKfsVendor != null)
+                if (inactiveAeVendor != null)
                 {
-                    inactiveKfsVendor.IsActive = true;
-                    _workgroupVendorRepository.EnsurePersistent(inactiveKfsVendor);
-                    Message = "KFS vendor added back. It was previously deleted from this workgroup.";
+                    inactiveAeVendor.IsActive = true;
+                    _workgroupVendorRepository.EnsurePersistent(inactiveAeVendor);
+                    Message = "Aggie Enterprise vendor added back. It was previously deleted from this workgroup.";
                     return this.RedirectToAction(nameof(Vendors), new { id = id });
                 }
 
@@ -839,7 +911,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddAddresses(int id, WorkgroupAddress workgroupAddress)
+        public async Task<ActionResult> AddAddresses(int id, WorkgroupAddress workgroupAddress)
         {
             ViewBag.StepNumber = 10;
             var workgroup = _workgroupRepository.GetNullableById(id);
@@ -847,6 +919,26 @@ namespace Purchasing.Mvc.Controllers
             {
                 Message = "Workgroup not found.";
                 this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
+            }
+
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.AeLocationCode))
+            {
+                var location = await _aggieEnterpriseService.GetShippingAddress(workgroupAddress);
+                if (location == null)
+                {
+                    ErrorMessage = "Active Campus Location Code not found.";
+                    var viewModel = WorkgroupAddressViewModel.Create(workgroup, _stateRepository, true);
+                    viewModel.WorkgroupAddress = workgroupAddress;
+                    viewModel.WorkgroupAddress.Workgroup = workgroup;
+                    return View(viewModel);
+                }
+
+                workgroupAddress.Address = location.Address;
+                workgroupAddress.City = location.City;
+                workgroupAddress.State = location.State;
+                workgroupAddress.Zip = location.Zip;
+                workgroupAddress.Building = location.Building;
+                workgroupAddress.Room = location.Room;
             }
 
             workgroupAddress.Workgroup = workgroup;

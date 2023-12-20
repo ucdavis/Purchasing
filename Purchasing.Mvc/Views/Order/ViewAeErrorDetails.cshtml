@@ -1,0 +1,81 @@
+﻿@using Purchasing.Core.Domain
+@model OrderAeErrorsViewModel
+
+@{
+    ViewBag.Title = "Aggie Enterprise Errors";
+}
+
+@section SubNav
+    {
+    <ul class="navigation">
+        <li><a href="@Url.Action("Review", new {id=Model.Order.Id})" class="ui-button button ui-state-default">Back to Order</a></li>
+    </ul>
+}
+
+<section class="ui-corner-all display-form">
+
+    <header class="ui-corner-top ui-widget-header">Errors from Aggie Enterprise for # @Model.Order.RequestNumber</header>
+    <div class="section-text">
+        <p>The errors listed below are from Oracle when your order was attempted to be created.</p>
+        <p>Some of the errors listed may be caused because one of the other errors broke something further along.</p>
+        <p>If you don't know how to fix the errors, please submit a help ticket using the help menu above and we can work with the Aggie Enterprise people to figure it out.</p>
+    </div>
+
+    <br />
+
+    <table class='dt-table'>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Error Code</th>
+                <th>Error Message</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var odd = false;
+            }
+            @foreach (var item in Model.Errors)
+            {
+                <tr class="@(odd ? "odd" : "even")">
+                    <td>
+                        @item.ColumnName
+                    </td>
+                    <td>
+                        @item.ColumnValue
+                    </td>
+                    <td>
+                        @item.ErrorCode
+                    </td>
+                    <td>
+                        @item.ErrorMessage
+                    </td>
+                </tr>
+                odd = !odd;
+            }
+        </tbody>
+    </table>
+
+    @if (Model.AllowSetStatusBack)
+    {
+        <form method="post" asp-controller="Order" asp-action="SetBackToPurchaserLevel">
+            <div style="margin: 10px;">
+                <input type="hidden" name="id" value="@Model.Order.Id" />
+                <input type="submit" value="Set Order back" class="button" />
+                <p>This will set the order back to the Purchaser level to be edited and resubmitted.</p>
+                <p>This functionality is only available and visible to the Purchaser who completed the order originally.</p>
+            </div>
+            <br />
+        </form>
+    }
+</section>
+
+
+
+
+
+
+
+

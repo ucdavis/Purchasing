@@ -2,8 +2,8 @@
 
 <select class="@Model.ClassName" id="@Model.Name" name="@Model.Name">
     <option value="" title="No Account Selected">--Account--</option>
-    @foreach(Purchasing.Core.Domain.Account account in @Model.Accounts)
+    @foreach (var wgaccount in @Model.WorkgroupAccounts)
     {
-        <option value="@account.Id" title="@account.Name">@account.Id</option>
+        <option value="@wgaccount.GetAccount" title="@wgaccount.GetAccount">@wgaccount.GetName</option>
     }
 </select>

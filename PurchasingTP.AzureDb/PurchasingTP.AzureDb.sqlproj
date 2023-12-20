@@ -191,6 +191,13 @@
     <Build Include="dbo\Functions\udf_GetRecentActivityForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetReadAndEditAccessOrderIdsForLogin.sql" />
     <Build Include="dbo\Functions\udf_GetCommentHistoryForLogin.sql" />
+    <Build Include="dbo\Views\PendingEmails_1.sql" />
+    <Build Include="dbo\Views\Get_NEWID_1.sql" />
+    <Build Include="dbo\Functions\udf_GetReadAndEditAccessRecentOrdersForLogin.sql" />
+    <Build Include="dbo\Functions\udf_GetReadAccessRecentOrdersForLogin_1.sql" />
+    <Build Include="dbo\Functions\udf_GetOpenOrdersForLogin_Old_1.sql" />
+    <Build Include="dbo\Functions\udf_GetOpenOrdersForLogin_New_1.sql" />
+    <Build Include="dbo\Functions\udf_GetEditAccessRecentOrdersForLogin_1.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PurchasingTP.AzureDb.publish.xml" />

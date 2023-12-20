@@ -38,7 +38,7 @@ namespace Purchasing.Core.Domain
     {
         public OrganizationMap()
         {
-            ReadOnly();
+            //ReadOnly(); Need to be able to write to this now, or use dapper....
 
             Table("vOrganizations");
 

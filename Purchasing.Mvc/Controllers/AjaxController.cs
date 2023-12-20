@@ -28,6 +28,7 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         /// <param name="term"></param>
         /// <returns></returns>
+        [Obsolete("We don't use building codes anymore")]
         public JsonNetResult SearchBuilding(string term)
         {
             var results = _searchService.SearchBuildings(term);

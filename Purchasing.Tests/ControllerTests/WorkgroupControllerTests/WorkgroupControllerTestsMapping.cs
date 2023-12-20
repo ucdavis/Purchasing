@@ -389,7 +389,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         /// <summary>
         /// Vendors #8
         /// </summary>
-        [TestMethod]
+        [TestMethod, Ignore("Obsolete")]
         public void TestGetVendorAddressesMapping()
         {
             "~/Workgroup/GetVendorAddresses/5".ShouldMapTo<WorkgroupController>(a => a.GetVendorAddresses("blah"), true);

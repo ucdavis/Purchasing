@@ -39,7 +39,11 @@ namespace Purchasing.Core.Domain
         public virtual string Phone { get; set; }
         public virtual bool IsActive { get; set; }
 
-        public virtual string DisplayName
+        [Display(Name = "Campus Location Code")]
+        [StringLength(60)]
+        public virtual string AeLocationCode {get;set;}
+
+    public virtual string DisplayName
         {
             get { return string.Format("{0} ({1}{2}{3} {4}, {5} {6})", Name, Room, string.IsNullOrWhiteSpace(Room) || string.IsNullOrWhiteSpace(Building) ? string.Empty : "-", string.IsNullOrWhiteSpace(Building) ? string.Empty : Building.Summarize(), Address.Summarize(), City, State); }
         }
@@ -61,6 +65,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.Zip);
             Map(x => x.Phone);
             Map(x => x.IsActive);
+            Map(x => x.AeLocationCode);
 
             References(x => x.Workgroup);
         }

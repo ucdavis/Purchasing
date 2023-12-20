@@ -37,6 +37,24 @@
         });
     </script>
 
+    <script src="https://finjector.ucdavis.edu/finjector.js?v=6" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        $("#ccoa-picker").on("click",
+
+            async function () {
+                const chart = await window.Finjector.findChartSegmentString();
+                if (chart && chart.status === "success") {
+                    $("#WorkgroupAccount_FinancialSegmentString").val(chart.data);
+                }
+                else {
+                    alert("Something went wrong with the CoA picker")
+                }
+                return false;
+            });
+
+    </script>
 }
 
     @{
@@ -63,9 +81,31 @@
 
             <ul>
                 <li>
-		            <div class="editor-label required">
-                        @Html.LabelFor(x => x.WorkgroupAccount.Account)
+                    <div class="editor-label required">
+                        @Html.LabelFor(x => x.WorkgroupAccount.Name)
                         <span>*</span>
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBox("WorkgroupAccount.Name", Model.WorkgroupAccount.Name != null ? Model.WorkgroupAccount.Name : string.Empty, new {@class="wide600", placeholder="Account name"})
+                    </div>
+                    @Html.ValidationMessageFor(x => x.WorkgroupAccount.Name)
+                </li>
+                <li>
+                    <div class="editor-label required">
+                        @Html.LabelFor(x => x.WorkgroupAccount.FinancialSegmentString)
+                        <span>*</span>
+                    </div>
+                    <div class="editor-field input-group">
+                        @Html.TextBox("WorkgroupAccount.FinancialSegmentString", Model.WorkgroupAccount.FinancialSegmentString != null ? Model.WorkgroupAccount.FinancialSegmentString : string.Empty, new {@class="wide500", placeholder="Financial Segment String"})
+                        <span class="input-group-btn">
+                            <button id="ccoa-picker" class="btn" type="button">CoA Picker</button>
+                        </span>
+                    </div>
+                    @Html.ValidationMessageFor(x => x.WorkgroupAccount.FinancialSegmentString)
+                </li>
+                <li>
+		            <div class="editor-label">
+                        KFS Account
 					</div>
 					<div class="editor-field">						
                         @Html.Hidden("WorkgroupAccount.Account", Model.WorkgroupAccount.Account != null ? Model.WorkgroupAccount.Account.Id : string.Empty)

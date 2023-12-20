@@ -33,6 +33,7 @@ namespace Purchasing.Core.Domain
             HasControlledSubstance = false;
 
             EstimatedTax = 7.25m; //Default 7.25% UCD estimated tax
+            ConsumerTrackingId = Guid.NewGuid(); //Used for Aggie Enterprise, but doesn't hurt to have it here
         }
 
         public virtual string RequestNumber { get; protected set; }
@@ -100,6 +101,8 @@ namespace Purchasing.Core.Domain
         public virtual bool HasControlledSubstance { get; set; }
 
         public virtual string CompletionReason { get; set; }
+
+        public virtual Guid ConsumerTrackingId { get; set; }
 
         public virtual IList<Attachment> Attachments { get; set; }
         public virtual IList<LineItem> LineItems { get; set; }
@@ -496,6 +499,17 @@ namespace Purchasing.Core.Domain
 
             return validKfsOrder;
         }
+
+        /// <summary>
+        /// Used to determine if we display the AE fields on the review page.
+        /// The reference number means we successfully submitted to AE.
+        /// </summary>
+        /// <returns>true/false</returns>
+        public virtual bool IsValidAe()
+        {
+            return OrderType.Id.Trim() == OrderType.Types.AggieEnterprise
+                                && !string.IsNullOrWhiteSpace(ReferenceNumber); 
+        }
     }
 
     public class OrderMap : ClassMap<Order>
@@ -527,6 +541,7 @@ namespace Purchasing.Core.Domain
             Map(x => x.HasControlledSubstance).Column("HasAuthorizationNum");
             Map(x => x.TotalFromDb).Column("Total");
             Map(x => x.KfsDocType);
+            Map(x => x.ConsumerTrackingId);
 
             References(x => x.OrderType);
             References(x => x.ShippingType);

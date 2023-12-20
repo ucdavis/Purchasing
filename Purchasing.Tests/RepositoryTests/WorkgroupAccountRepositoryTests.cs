@@ -199,35 +199,6 @@ namespace Purchasing.Tests.RepositoryTests
 
         #region Account Tests
 
-        [TestMethod]
-        [ExpectedException(typeof (ApplicationException))]
-        public void TestWorkgroupAccountsFieldAccountWithAValueOfNullDoesNotSave()
-        {
-            WorkgroupAccount record = null;
-            try
-            {
-                #region Arrange
-                record = GetValid(9);
-                record.Account = null;
-                #endregion Arrange
-
-                #region Act
-                WorkgroupAccountRepository.DbContext.BeginTransaction();
-                WorkgroupAccountRepository.EnsurePersistent(record);
-                WorkgroupAccountRepository.DbContext.CommitTransaction();
-                #endregion Act
-            }
-            catch (Exception)
-            {
-                Assert.IsNotNull(record);
-                Assert.AreEqual(record.Account, null);
-                var results = record.ValidationResults().AsMessageList();
-                results.AssertErrorsAre("The Account field is required.");
-                Assert.IsTrue(record.IsTransient());
-                Assert.IsFalse(record.IsValid());
-                throw;
-            }
-        }
 
         [TestMethod]
         [ExpectedException(typeof (TransientObjectException))]
@@ -513,19 +484,28 @@ namespace Purchasing.Tests.RepositoryTests
         {
             #region Arrange
             var expectedFields = new List<NameAndType>();
-            expectedFields.Add(new NameAndType("Account", "Purchasing.Core.Domain.Account", new List<string>
-            {
-                 "[System.ComponentModel.DataAnnotations.RequiredAttribute()]"
-            }));
+            expectedFields.Add(new NameAndType("Account", "Purchasing.Core.Domain.Account", new List<string>()));
             expectedFields.Add(new NameAndType("AccountManager", "Purchasing.Core.Domain.User", new List<string>
             {
                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Account Manager\")]"
             }));
             expectedFields.Add(new NameAndType("Approver", "Purchasing.Core.Domain.User", new List<string>()));
+            expectedFields.Add(new NameAndType("FinancialSegmentString", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)128)]",
+                "[System.ComponentModel.DisplayNameAttribute(\"CoA\")]"
+            }));
+            expectedFields.Add(new NameAndType("GetAccount", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("GetName", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Id", "System.Int32", new List<string>
             {
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
+            }));
+
+            expectedFields.Add(new NameAndType("Name", "System.String", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)64)]"
             }));
             expectedFields.Add(new NameAndType("Purchaser", "Purchasing.Core.Domain.User", new List<string>()));
             expectedFields.Add(new NameAndType("Workgroup", "Purchasing.Core.Domain.Workgroup", new List<string>

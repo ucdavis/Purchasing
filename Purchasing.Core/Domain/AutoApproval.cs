@@ -25,7 +25,8 @@ namespace Purchasing.Core.Domain
         {
             if((TargetUser == null && Account == null) || (TargetUser != null && Account != null))
             {
-                yield return new ValidationResult("An account OR user must be selected, not both.", new[] { "Account" });
+                //yield return new ValidationResult("An account OR user must be selected, not both.", new[] { "Account" });
+                yield return new ValidationResult("A user must be selected.", new[] { "TargetUser" });
             }
         }
 

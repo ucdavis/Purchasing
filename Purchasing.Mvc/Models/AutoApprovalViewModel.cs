@@ -28,7 +28,7 @@ namespace Purchasing.Mvc.Models
                                 };
 
             var workgroups = repository.OfType<WorkgroupPermission>().Queryable.Where(a => a.Role != null && a.Role.Id == Role.Codes.Approver && a.User != null && a.User.Id == userName && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(b => b.Workgroup).Distinct().ToList();
-            viewModel.Accounts = repository.OfType<WorkgroupAccount>().Queryable.Where(a => a.Approver != null && a.Approver.Id == userName && a.Account.IsActive).Select(b => b.Account).Distinct().ToList(); //workgroups.SelectMany(a => a.Accounts).Select(b => b.Account).Distinct().ToList();
+            //viewModel.Accounts = repository.OfType<WorkgroupAccount>().Queryable.Where(a => a.Approver != null && a.Approver.Id == userName && a.Account.IsActive).Select(b => b.Account).Distinct().ToList(); //workgroups.SelectMany(a => a.Accounts).Select(b => b.Account).Distinct().ToList();
             viewModel.Users = workgroups.SelectMany(a => a.Permissions).Where(b => b.Role != null && b.Role.Id == Role.Codes.Requester).Select(c => c.User).Where(c => c.IsActive).Distinct().ToList();
 
             return viewModel;

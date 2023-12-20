@@ -21,6 +21,7 @@
 			<th>
 				Name
 			</th>
+			<th>Site Code</th>
 			<th>
 				Line1
 			</th>
@@ -42,7 +43,7 @@
 			<th>
 				CountryCode
 			</th>
-            <th>Kfs Vendor</th>
+            <th>Type</th>
 
 			<th></th>
 
@@ -51,9 +52,16 @@
 	<tbody>
 @{ var odd = false; }
 @foreach (var item in Model) {
+        var itemType = "Generic";
+        if(!string.IsNullOrWhiteSpace(item.AeSupplierNumber)){
+            itemType = "Aggie Enterprise";
+		}
+        else if(!string.IsNullOrWhiteSpace(item.VendorId)){
+            itemType = "KFS";
+		}
 		<tr class="@(odd ? "odd": "even")">
 			<td>
-                @if (string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode))
+                @if (string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) && string.IsNullOrWhiteSpace(item.AeSupplierNumber) && string.IsNullOrWhiteSpace(item.AeSupplierSiteCode) )
                 {
 				<a href='@Url.Action("EditWorkgroupVendor", new { id = item.Workgroup.Id, workgroupVendorId = item.Id })' class="ui-icon ui-icon-pencil">
 				</a>                    
@@ -62,6 +70,7 @@
 			<td>
 				@item.Name
 			</td>
+			<td>@item.AeSupplierSiteCode</td>
 			<td>
 				@item.Line1
 			</td>
@@ -84,7 +93,7 @@
 				@item.CountryCode
 			</td>
             <td>
-                @(string.IsNullOrWhiteSpace(item.VendorId) && string.IsNullOrWhiteSpace(item.VendorAddressTypeCode) ? "No" : "Yes")
+                @itemType
             </td>
 			<td>
 				<a href='@Url.Action("DeleteWorkgroupVendor", new { id = item.Workgroup.Id, workgroupVendorId = item.Id })' class="ui-icon ui-icon-trash">

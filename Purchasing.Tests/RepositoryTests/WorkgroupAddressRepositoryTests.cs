@@ -1858,6 +1858,11 @@ namespace Purchasing.Tests.RepositoryTests
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)100)]"
             }));
+            expectedFields.Add(new NameAndType("AeLocationCode", "System.String", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Campus Location Code\")]",
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)60)]"
+            }));
             expectedFields.Add(new NameAndType("Building", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)50)]"

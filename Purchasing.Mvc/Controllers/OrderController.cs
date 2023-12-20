@@ -25,6 +25,9 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Purchasing.Mvc.Helpers;
+using Purchasing.Core.Services;
+using AggieEnterpriseApi.Validation;
+using NHibernate.Util;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -43,6 +46,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IBugTrackingService _bugTrackingService;
         private readonly IFileService _fileService;
         private readonly IMemoryCache _memoryCache;
+        private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
         public OrderController(
             IRepositoryFactory repositoryFactory, 
@@ -54,7 +58,8 @@ namespace Purchasing.Mvc.Controllers
             IEventService eventService,
             IBugTrackingService bugTrackingService, 
             IFileService fileService,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IAggieEnterpriseService aggieEnterpriseService)
         {
             _orderService = orderService;
             _repositoryFactory = repositoryFactory;
@@ -66,6 +71,7 @@ namespace Purchasing.Mvc.Controllers
             _bugTrackingService = bugTrackingService;
             _fileService = fileService;
             _memoryCache = memoryCache;
+            _aggieEnterpriseService = aggieEnterpriseService;
         }
 
         /// <summary>
@@ -349,7 +355,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public new ActionResult Request(OrderViewModel model)
+        public new async Task<ActionResult> Request(OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
@@ -362,7 +368,7 @@ namespace Purchasing.Mvc.Controllers
 
             order.Tag = order.Workgroup.DefaultTag;
 
-            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+            await _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             _orderService.HandleSavedForm(order, model.FormSaveId);
 
@@ -412,7 +418,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult Edit(int id, OrderViewModel model)
+        public async Task<ActionResult> Edit(int id, OrderViewModel model)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
@@ -455,7 +461,7 @@ namespace Purchasing.Mvc.Controllers
             //TODO: Add expense validation
                 //order.ValidateExpenses().ToArray();
 
-                _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
+                await _orderService.ReRouteApprovalsForExistingOrder(order, approverId: model.Approvers, accountManagerId: model.AccountManagers);
             }
             else
             {
@@ -526,7 +532,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
-        public ActionResult Copy(int id, OrderViewModel model)
+        public async Task<ActionResult> Copy(int id, OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
                 _securityService.HasWorkgroupAccess(_repositoryFactory.WorkgroupRepository.GetById(model.Workgroup));
@@ -538,8 +544,8 @@ namespace Purchasing.Mvc.Controllers
             BindOrderModel(order, model, includeLineItemsAndSplits: true);
 
             order.Tag = order.Workgroup.DefaultTag;
-
-            _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
+            
+            await _orderService.CreateApprovalsForNewOrder(order, accountId: model.Account, approverId: model.Approvers, accountManagerId: model.AccountManagers, conditionalApprovalIds: model.ConditionalApprovals);
 
             Check.Require(order.LineItems.Count > 0, "line count");
 
@@ -570,7 +576,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         //[AuthorizeReadOrEditOrder] //Doing access directly to avoid duplicate permissions check
-        public ActionResult Review(int id)
+        public async Task<ActionResult> Review(int id)
         {
             var orderQuery =
                 _repositoryFactory.OrderRepository.Queryable.Where(x => x.Id == id)
@@ -603,7 +609,7 @@ namespace Purchasing.Mvc.Controllers
             model.LineItems =
                 _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToList();
             model.Splits = _repositoryFactory.SplitRepository.Queryable.Where(x => x.Order.Id == id).Fetch(x=>x.DbAccount).ToList();
-
+            
             var splitsWithSubAccounts = model.Splits.Where(a => a.Account != null && a.SubAccount != null).ToList();
 
             if (splitsWithSubAccounts.Any())
@@ -665,9 +671,10 @@ namespace Purchasing.Mvc.Controllers
             {
                 if (model.IsAccountManager || model.IsApprover) //need to check if there are associated accounts
                 {
+                    //I don't think this is used anywhere?
                     model.HasAssociatedAccounts =
                         _repositoryFactory.SplitRepository.Queryable
-                            .Any(s => s.Order.Id == model.Order.Id && s.Account != null);
+                            .Any(s => s.Order.Id == model.Order.Id && (s.Account != null || s.FinancialSegmentString != null));
                 }
 
                 if (model.IsAccountManager) //TODO: Get Scott to review this to make sure things like toFuture or other performance things are ok.
@@ -711,6 +718,59 @@ namespace Purchasing.Mvc.Controllers
 
             model.ApprovalUsers =
                 _repositoryFactory.UserRepository.Queryable.Where(x => approvalUserIds.Contains(x.Id)).ToList();
+
+            if (model.CanSubmitOrder)
+            {
+                //So this means that
+                //1 the order is not in the completed status (there is an early return above)
+                //2 there are accounts or it is at the purchaser level.
+                // So lets validate all the accounts...
+
+                var uniqueFinancialSegments = model.Order.Splits.Where(x => x.FinancialSegmentString != null).Select(x => x.FinancialSegmentString).Distinct().ToList();
+                var uniqueKfsAccounts = model.Order.Splits.Where(a => a.FinancialSegmentString == null).Select(a => a.KfsAccount).Distinct().ToList();
+                var validationDict = new Dictionary<string, string>();
+                if (uniqueKfsAccounts.Any())
+                {
+                    foreach (var account in uniqueKfsAccounts)
+                    {
+                        var convertedAccount = await _aggieEnterpriseService.ConvertKfsAccount(account);
+                        if(string.IsNullOrWhiteSpace(convertedAccount))
+                        {
+                            validationDict.Add(account, "Account not found in AE conversion");
+                        }
+                        else
+                        {
+                            var validated = await _aggieEnterpriseService.ValidateAccount(convertedAccount);
+                            if (!validated.IsValid)
+                            {
+                                validationDict.Add(account, $"Converted KFS account ({convertedAccount}) has validation errors in AE: {validated.Message}");
+                            }
+                        }
+                    }
+                }
+                if (uniqueFinancialSegments.Any())
+                {
+                    foreach (var financialSegment in uniqueFinancialSegments)
+                    {
+                        var validated = await _aggieEnterpriseService.ValidateAccount(financialSegment);
+                        if (!validated.IsValid)
+                        {
+                            validationDict.Add(financialSegment, validated.Message);
+                        }
+                    }
+                }
+                if (validationDict.Any())
+                {
+                    var msg = "The following accounts/CoA are invalid: <br/>";
+                    foreach (var  item in validationDict)
+                    {
+                        msg = $"{msg}Account/CoA:{item.Key}<br/>Error: {item.Value}<br/><br/>";
+                    }
+
+                    model.HasInvalidAccounts = true;
+                    model.InvalidAccountsMessage = msg;
+                }
+            }
             
             return View(model);
         }
@@ -785,7 +845,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
-        public ActionResult Approve(int id /*order*/, string action, string comment, string orderType, string kfsDocType)
+        public async Task<ActionResult> Approve(int id /*order*/, string action, string comment, string orderType, string kfsDocType)
         {
             var order =
                 _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
@@ -858,8 +918,61 @@ namespace Purchasing.Mvc.Controllers
                     //    return RedirectToAction("Review", new { id });
                     //}
                 }
+                if(newOrderType.Id.Trim() == OrderType.Types.AggieEnterprise)
+                {
+                    //Copied from the KFS, these will change, but there will be something similar
+                    if (order.LineItems.Any(a => a.Commodity == null))
+                    {
+                        ErrorMessage = "Must have commodity codes (Purchasing Category) for all line items to complete an Aggie Enterprise order";
+                        return RedirectToAction("Review", new { id });
+                    }
+                    if (order.LineItems.Any(a => a.Commodity != null && !a.Commodity.IsActive))
+                    {
+                        var inactiveCodes = string.Empty;
+                        foreach (var invalidLineItem in order.LineItems.Where(a => a.Commodity != null && !a.Commodity.IsActive))
+                        {
+                            inactiveCodes = string.Format("{0} Commodity Code: {1} ", inactiveCodes, invalidLineItem.Commodity.Id);
+                        }
+                        ErrorMessage = "Inactive (old) commodity codes (Purchasing Category) detected. Please update";
+                        return RedirectToAction("Review", new { id });
+                    }
 
-                var errors = _orderService.Complete(order, newOrderType, kfsDocType);
+                    if (string.IsNullOrWhiteSpace(order.Vendor.AeSupplierNumber) || string.IsNullOrWhiteSpace(order.Vendor.AeSupplierSiteCode))
+                    {
+                        //Do more checks...
+                        if (order.Vendor == null || order.Vendor.VendorId == null)
+                        {
+                            ErrorMessage = "Must have a Campus vendor (supplier) to complete an Aggie Enterprise order";
+                            return RedirectToAction("Review", new { id });
+                        }
+                        var supplierInfo = await _aggieEnterpriseService.GetSupplier(order.Vendor); //This may update the Vendor to AE...
+                        if (supplierInfo == null || string.IsNullOrWhiteSpace(supplierInfo.SupplierNumber) || string.IsNullOrWhiteSpace(supplierInfo.SupplierSiteCode))
+                        {
+                            ErrorMessage = "Unable to automatically convert KFS vendor to Campus Vendor. Please edit the order to add (Search) a new Campus Vendor to the order.";
+                            return RedirectToAction("Review", new { id });
+                        }
+                        else
+                        {
+                            if(!supplierInfo.SupplierSiteCode.Contains("PUR"))
+                            {
+                                ErrorMessage = "Vendor (supplier) address site code must have PUR to complete an Aggie Enterprise order";
+                                return RedirectToAction("Review", new { id });
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if (!order.Vendor.AeSupplierSiteCode.Contains("PUR"))
+                        {
+                            ErrorMessage = "Vendor (supplier) address site code must have PUR to complete an Aggie Enterprise order";
+                            return RedirectToAction("Review", new { id });
+                        }
+                    }
+
+                }
+
+                var errors = await _orderService.Complete(order, newOrderType, kfsDocType);
 
                 if (errors.Any()) //if we have any errors, raise them in ELMAH and redirect back to the review page without saving change
                 {
@@ -884,6 +997,108 @@ namespace Purchasing.Mvc.Controllers
 
             return RedirectToAction("Landing", "Home");
         }
+
+        [HttpGet]
+        public async Task<ActionResult> ViewAeErrorDetails(int id)
+        {
+            var model = new OrderAeErrorsViewModel();
+            var order =
+                _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
+
+            const OrderAccessLevel requiredAccessLevel = OrderAccessLevel.Edit | OrderAccessLevel.Readonly;
+            var roleAndAccessLevel = _securityService.GetAccessRoleAndLevel(order);
+
+            if (!requiredAccessLevel.HasFlag(roleAndAccessLevel.OrderAccessLevel))
+            {
+                return ViewHelper.NotAuthorized(Resources.Authorization_PermissionDenied);
+            }
+
+            model.Order = order;
+        
+
+
+            //Only do this part to set it back to edit or to show a button to set it back
+            if (order.OrderType.Id.Trim() == OrderType.Types.AggieEnterprise.Trim())
+            {
+                var allowSetBack = _repositoryFactory.WorkgroupPermissionRepository.Queryable.Any(x => x.Workgroup.Id == order.Workgroup.Id && x.Role.Id == Role.Codes.Purchaser && x.User.Id == CurrentUser.Identity.Name);
+                if (order.StatusCode.Id == OrderStatusCode.Codes.Complete && allowSetBack)
+                {
+                    model.AllowSetStatusBack = true;
+                }
+            }
+            else
+            {
+                ErrorMessage = "This order was not completed as an Aggie Enterprise order.";
+                return RedirectToAction("Review", new { id });
+            }
+
+            model.Errors = await _aggieEnterpriseService.LookupOracleErrors(order.ReferenceNumber);
+            //Check if the person was the purchaser who completed this
+            //Get the errors and add them to a view
+
+            //Do I need to uncheck the approval that was completed? Probably
+
+            return View(model);
+
+        }
+
+        [HttpPost] //Change back to a post
+        public async Task<ActionResult> SetBackToPurchaserLevel(int id)
+        {
+            var order = _repositoryFactory.OrderRepository.Queryable.Fetch(x => x.Approvals).Single(x => x.Id == id);
+            const OrderAccessLevel requiredAccessLevel = OrderAccessLevel.Edit | OrderAccessLevel.Readonly;
+            var roleAndAccessLevel = _securityService.GetAccessRoleAndLevel(order);
+
+            var allowAction = false;
+
+            if (!requiredAccessLevel.HasFlag(roleAndAccessLevel.OrderAccessLevel))
+            {
+                return ViewHelper.NotAuthorized(Resources.Authorization_PermissionDenied);
+            }
+
+            if(order.StatusCode.Id != OrderStatusCode.Codes.Complete)
+            {
+                ErrorMessage = "This order is not in a completed state. Unable to set back to purchaser level.";
+                return RedirectToAction("Review", new { id });
+            }
+
+            if (order.OrderType.Id.Trim() == OrderType.Types.AggieEnterprise.Trim())
+            {
+                if (_repositoryFactory.WorkgroupPermissionRepository.Queryable.Any(x => x.Workgroup.Id == order.Workgroup.Id && x.Role.Id == Role.Codes.Purchaser && x.User.Id == CurrentUser.Identity.Name))
+                {
+                    var temp = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber);
+                    if(temp.Status.ToUpper() == "ERROR")
+                    {
+                        allowAction = true;
+                    }
+                }
+            }
+            else
+            {
+                ErrorMessage = "This order was not completed as an Aggie Enterprise order and can't be set back.";
+                return RedirectToAction("Review", new { id });
+            }
+
+            if (!allowAction)
+            {
+                ErrorMessage = "This order is not in an error state. Unable to set back to purchaser level.";
+                return RedirectToAction("Review", new { id });
+            }
+            else
+            {
+                order.StatusCode = _repositoryFactory.OrderStatusCodeRepository.GetById(OrderStatusCode.Codes.Purchaser);
+                order.ConsumerTrackingId = Guid.NewGuid(); //Need a new one if it gets past the AE API validation, but fails on the back end.
+                _eventService.AeOrderSetBackToPurchaser(order);
+                //Update Approval
+                var approval = order.Approvals.Single(a => a.StatusCode != null && a.StatusCode.Id == Role.Codes.Purchaser);
+                approval.Completed = false;
+
+                _repositoryFactory.OrderRepository.EnsurePersistent(order);
+                Message = "Order Set back to Purchaser level.";
+                return RedirectToAction("Review", new { id });
+            }
+
+        }   
 
         [HttpPost]
         public ActionResult Cancel(int id, string comment)
@@ -1131,6 +1346,9 @@ namespace Purchasing.Mvc.Controllers
                 .Single();
 
             var inactiveAccounts = GetInactiveAccountsForOrder(id);
+            //TODO: Do a CoA validation that is similar the call above
+
+            //var workgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray();
 
             var lineItems = _repositoryFactory.LineItemRepository
                 .Queryable
@@ -1151,18 +1369,35 @@ namespace Purchasing.Mvc.Controllers
                     })
                 .ToList();
 
+            //All the new Aggie Enterprise Accounts
+            var AeAccountSplits = _repositoryFactory.SplitRepository.Queryable.Where(a => a.Order.Id == id && a.Account == null && a.FinancialSegmentString != null).Select(x =>
+                new OrderViewModel.Split
+                {
+                    Account = x.FinancialSegmentString,
+                    AccountName = x.Name,
+                    Amount = x.Amount.ToString(CultureInfo.InvariantCulture),
+                    LineItemId = x.LineItem == null ? 0 : x.LineItem.Id,
+                    Project = x.Project, //Will always be null
+                    SubAccount = x.SubAccount //Will always be null
+                }).ToList();
+
             var splits = (from s in _repositoryFactory.SplitRepository.Queryable
                           join a in _repositoryFactory.AccountRepository.Queryable on s.Account equals a.Id
-                          where s.Order.Id == id
+                          where s.Order.Id == id && s.Account != null
                           select new OrderViewModel.Split
-                                     {
-                                         Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Id,
-                                         AccountName = a.Name,
-                                         Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
-                                         LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
-                                         Project = s.Project,
-                                         SubAccount = s.SubAccount
-                                     }).ToList();
+                          {
+                              Account = inactiveAccounts.Contains(a.Id) ? string.Empty : a.Id,
+                              AccountName = a.Name,
+                              Amount = s.Amount.ToString(CultureInfo.InvariantCulture),
+                              LineItemId = s.LineItem == null ? 0 : s.LineItem.Id,
+                              Project = s.Project,
+                              SubAccount = s.SubAccount
+                          }).ToList();
+
+            if (AeAccountSplits.Any())
+            {
+                splits.AddRange(AeAccountSplits);
+            }
 
             OrderViewModel.SplitTypes splitType;
 
@@ -1198,6 +1433,22 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(groupedSubAccounts);
         }
 
+        public async Task<ActionResult> ValidateCoA(string financialSegmentString)
+        {
+            var rtValue = await _aggieEnterpriseService.ValidateAccount(financialSegmentString);
+            if (rtValue?.IsValid == true)
+            {
+                return Json(new { success = true });
+            }
+            if(rtValue == null)
+            {
+                return Json(new { success = false, message = "Invalid Account" });
+            }
+
+            return Json(new { success = false, message = rtValue.Message});
+
+        }
+        
         [HttpPost]
         public ActionResult AddVendor(int workgroupId, WorkgroupVendor vendor)
         {
@@ -1221,12 +1472,27 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
+        public async Task<ActionResult> AddAddress(int workgroupId, WorkgroupAddress workgroupAddress)
         {
             //TODO: Consider using same logic as workgroup: _workgroupAddressService.CompareAddress
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(workgroupId);
 
             Check.Require(_securityService.HasWorkgroupAccess(workgroup));
+
+            if (!string.IsNullOrWhiteSpace(workgroupAddress.AeLocationCode))
+            {
+                var location = await _aggieEnterpriseService.GetShippingAddress(workgroupAddress);
+                if (location != null)
+                {
+
+                    workgroupAddress.Address = location.Address;
+                    workgroupAddress.City = location.City;
+                    workgroupAddress.State = location.State;
+                    workgroupAddress.Zip = location.Zip;
+                    workgroupAddress.Building = location.Building;
+                    workgroupAddress.Room = location.Room;
+                }
+            }
 
             workgroup.AddAddress(workgroupAddress);
 
@@ -1943,6 +2209,7 @@ namespace Purchasing.Mvc.Controllers
         private void BindOrderModel(Order order, OrderViewModel model, bool includeLineItemsAndSplits = false)
         {
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(model.Workgroup);
+            var workgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == workgroup.Id).ToArray();
 
             //TODO: automapper?
             order.Vendor = model.Vendor == 0 ? null : _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor);
@@ -2056,14 +2323,7 @@ namespace Purchasing.Mvc.Controllers
                             {
                                 if (split.IsValid())
                                 {
-                                    order.AddSplit(new Split
-                                    {
-                                        Account = split.Account,
-                                        Amount = decimal.Parse(split.Amount),
-                                        LineItem = orderLineItem,
-                                        SubAccount = split.SubAccount,
-                                        Project = split.Project
-                                    });
+                                    order.AddSplit(BuildSplit(workgroupAccounts, split.Account, decimal.Parse(split.Amount), orderLineItem));
                                 }
                             }
                         }
@@ -2077,24 +2337,95 @@ namespace Purchasing.Mvc.Controllers
                     {
                         if (split.IsValid())
                         {
-                            order.AddSplit(new Split
-                            {
-                                Account = split.Account,
-                                Amount = decimal.Parse(split.Amount),
-                                SubAccount = split.SubAccount,
-                                Project = split.Project
-                            });
+                            order.AddSplit(BuildSplit(workgroupAccounts, split.Account, decimal.Parse(split.Amount), null));
                         }
                     }
                 }
                 else if (model.SplitType == OrderViewModel.SplitTypes.None)
                 {
-                    order.AddSplit(new Split { Amount = order.Total(), Account = model.Account, SubAccount = model.SubAccount, Project = model.Project }); //Order with "no" splits get one split for the full amount
+                    //This one is using the model, not a split
+                    order.AddSplit(BuildSplit(workgroupAccounts, model.Account, order.Total(), null));
                 }
 
                 order.TotalFromDb = order.Total();
                 order.LineItemSummary = order.GenerateLineItemSummary();
             }
+        }
+
+        /// <summary>
+        /// Ok, so this tries to find either the Financial Segment String *OR* the account in the workgroup accounts
+        /// If it finds it. regardless if it is by CoA or Account it tries to use the CoA if that is set.
+        /// This means it should work if a KFS account is used, and that has been updated to a CoA in the workgroup Account.
+        /// </summary>
+        /// <param name="workgroupAccounts">Array of workgroup account for the order</param>
+        /// <param name="split">The view model split</param>
+        /// <param name="orderLineItem"></param>
+        /// <returns>Split to add to the order</returns>
+        private Split BuildSplit(WorkgroupAccount[] workgroupAccounts, string account, decimal amount, LineItem orderLineItem)
+        {
+            //Ok, this should be if no accounts are entered. Just approvers
+            if(account == null && orderLineItem == null)
+            {
+                return new Split
+                {
+                    Account = null,
+                    FinancialSegmentString = null,
+                    Amount = amount,
+                    LineItem = null,
+                    Name = null
+                };
+            }
+
+            var foundWorkgroupAccount = workgroupAccounts.FirstOrDefault(a => (a.FinancialSegmentString != null && a.FinancialSegmentString == account) || (a.Account != null && a.Account.Id == account));
+
+            if(foundWorkgroupAccount != null)
+            {
+                //Ok, we found a wga, check if it is a CoA
+                if (!string.IsNullOrWhiteSpace(foundWorkgroupAccount.FinancialSegmentString))
+                {
+                    return new Split
+                    {
+                        Account = null,
+                        FinancialSegmentString = foundWorkgroupAccount.FinancialSegmentString,
+                        Amount = amount,
+                        LineItem = orderLineItem,
+                        Name = foundWorkgroupAccount?.Name
+                    };
+                }
+                //We found one, but it is an old account
+                return new Split
+                {
+                    Account = foundWorkgroupAccount.Account?.Id,
+                    FinancialSegmentString = null,
+                    Amount = amount,
+                    LineItem = orderLineItem,
+                    Name = foundWorkgroupAccount.GetName
+                };
+            }
+
+            //We didn't find the wga, so check if split.account is a CoA or KFS account
+            if(FinancialChartValidation.GetFinancialChartStringType(account) == FinancialChartStringType.Invalid)
+            {
+                //KFS
+                return new Split
+                {
+                    Account =  account,
+                    FinancialSegmentString = null,
+                    Amount = amount,
+                    LineItem = orderLineItem,
+                    Name = "Externally Set"
+                };
+            }
+
+            //CoA
+            return new Split
+            {
+                Account = null,
+                FinancialSegmentString = account,
+                Amount = amount,
+                LineItem = orderLineItem,
+                Name = "Externally Set"
+            };
         }
 
         private OrderModifyModel CreateOrderModifyModel(Workgroup workgroup)
@@ -2105,6 +2436,7 @@ namespace Purchasing.Mvc.Controllers
                 Workgroup = workgroup,
                 Units = _repositoryFactory.UnitOfMeasureRepository.Queryable.Cache().ToList(),
                 Accounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).Select(x => x.Account).ToList(),
+                WorkgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id).ToList(), //Should end up replacing the Accounts above...
                 Vendors = _repositoryFactory.WorkgroupVendorRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).OrderBy(a => a.Name).ToList(),
                 Addresses = _repositoryFactory.WorkgroupAddressRepository.Queryable.Where(x => x.Workgroup.Id == workgroup.Id && x.IsActive).ToList(),
                 ShippingTypes = _repositoryFactory.ShippingTypeRepository.Queryable.Cache().ToList(),
@@ -2144,6 +2476,28 @@ namespace Purchasing.Mvc.Controllers
                 return new JsonNetResult(null);
             }
             
+        }
+
+        public async Task<JsonNetResult> GetAeStatus(int id)
+        {
+            // load the order
+            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(order.ReferenceNumber))
+                {
+                    return new JsonNetResult(null);
+                }
+                
+                var rtValue = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim()); 
+
+                return new JsonNetResult(rtValue);
+
+            }
+            catch (Exception)
+            {
+                return new JsonNetResult(null);
+            }
         }
 
         /// <summary>

@@ -20,6 +20,9 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using UCDArch.Core;
 using Moq;
+using Purchasing.Core.Services;
+using System.Threading.Tasks;
+using Purchasing.Core.Models.AggieEnterprise;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -50,6 +53,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         protected IRepositoryFactory RepositoryFactory;
 
         protected IRepositoryWithTypedId<Account, string> AccountRepository; 
+
+        protected IAggieEnterpriseService AggieEnterpriseService;
 
         #region Init
         /// <summary>
@@ -84,6 +89,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Mock.Get(RepositoryFactory).SetupGet(r => r.RoleRepository).Returns(RoleRepository);
             Mock.Get(RepositoryFactory).SetupGet(r => r.ColumnPreferencesRepository).Returns(Mock.Of<IRepositoryWithTypedId<ColumnPreferences, string>>());
 
+            AggieEnterpriseService = Mock.Of<IAggieEnterpriseService>();
+            Mock.Get(AggieEnterpriseService).Setup(a => a.ValidateAccount(It.IsAny<string>(), true)).Returns(Task.FromResult(new AccountValidationModel() { IsValid = true}) );
+
             Controller = new WorkgroupController(WorkgroupRepository,
                 UserRepository,
                 RoleRepository,
@@ -100,7 +108,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 RepositoryFactory,
                 WorkgroupAddressService,
                 WorkgroupService,
-                SmartServiceLocator<IMapper>.GetService());
+                SmartServiceLocator<IMapper>.GetService(),
+                AggieEnterpriseService);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)

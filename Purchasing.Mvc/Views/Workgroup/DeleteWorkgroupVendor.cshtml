@@ -4,6 +4,15 @@
 
 @{
     ViewBag.Title = "Delete Workgroup Vendor";
+    var itemType = "Generic";
+    if (!string.IsNullOrWhiteSpace(Model.AeSupplierNumber))
+    {
+        itemType = "Aggie Enterprise";
+    }
+    else if (!string.IsNullOrWhiteSpace(Model.VendorId))
+    {
+        itemType = "KFS";
+    }
 }
 
 @section SubNav
@@ -24,10 +33,10 @@
 	<header class="ui-corner-top ui-widget-header">WorkgroupVendor</header>
 	<ul>
 	    <li>
-	        <div class="display-label">Kfs Vendor?</div>
-	        <div class="display-details">@(string.IsNullOrWhiteSpace(Model.VendorId) && string.IsNullOrWhiteSpace(Model.VendorAddressTypeCode) ? "No" : "Yes")</div>
+	        <div class="display-label">Vendor Type</div>
+	        <div class="display-details">@itemType</div>
 	    </li>
-        @if (!string.IsNullOrWhiteSpace(Model.VendorId))
+        @if (!string.IsNullOrWhiteSpace(Model.VendorId) && string.IsNullOrWhiteSpace(Model.AeSupplierNumber))
         {
 			
             var kfsLookup = string.Format("{0}/kr/inquiry.do?businessObjectClassName=org.kuali.kfs.vnd.businessobject.VendorDetail&methodToCall=start&vendorDetailAssignedIdentifier=0&vendorHeaderGeneratedIdentifier={1}",configuration["AfsLookupUrl"] ,Model.VendorId);                                    
@@ -38,6 +47,17 @@
                 </div>
             </li>
         }
+		@if (!string.IsNullOrWhiteSpace(Model.AeSupplierNumber))
+		{
+			<li>
+				<div class="display-label">Supplier Number</div>
+				<div class="display-details">@Model.AeSupplierNumber</div>
+			</li>
+            <li>
+                <div class="display-label">Site Code</div>
+                <div class="display-details">@Model.AeSupplierSiteCode</div>
+             </li>
+		}
 		<li>
 			<div class="display-label">Name</div>
 			<div class="display-details">@Model.Name</div>

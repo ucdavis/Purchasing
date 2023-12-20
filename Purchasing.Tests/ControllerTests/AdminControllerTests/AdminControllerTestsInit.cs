@@ -18,6 +18,7 @@ using Moq;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Purchasing.Core.Services;
 
 namespace Purchasing.Tests.ControllerTests.AdminControllerTests
 {
@@ -28,6 +29,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public IRepositoryWithTypedId<User, string> UserRepository;
         public IRepositoryWithTypedId<Role, string> RoleRepository;
         public IRepositoryWithTypedId<Organization, string> OrganizationRepository;
+        public IRepository<OrgDescendant> OrgDescRepo;
         public IDirectorySearchService SearchService;
         public IRepositoryWithTypedId<EmailPreferences, string> EmailPreferencesRepository;
         public IUserIdentity UserIdentity;
@@ -35,6 +37,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
         public IWorkgroupService WorkgroupService;
         public IConfiguration Configuration;
         public IOptions<SendGridSettings> SendGridSettings;
+        public IAggieEnterpriseService AggieEnterpriseService;
 
 
         #region Init
@@ -46,6 +49,7 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
             RoleRepository = Mock.Of<IRepositoryWithTypedId<Role, string>>();
             OrganizationRepository = Mock.Of<IRepositoryWithTypedId<Organization, string>>();
+            OrgDescRepo = Mock.Of<IRepository<OrgDescendant>>();
             SearchService = Mock.Of<IDirectorySearchService>();
             EmailPreferencesRepository = Mock.Of<IRepositoryWithTypedId<EmailPreferences, string>>();
             UserIdentity = Mock.Of<IUserIdentity>();
@@ -56,8 +60,9 @@ namespace Purchasing.Tests.ControllerTests.AdminControllerTests
             Mock.Get(RepositoryFactory).SetupGet(r => r.WorkgroupPermissionRepository).Returns(Mock.Of<IRepository<WorkgroupPermission>>());
             Configuration = Mock.Of<IConfiguration>();
             SendGridSettings = Mock.Of<IOptions<SendGridSettings>>();
+            AggieEnterpriseService = Mock.Of<IAggieEnterpriseService>();
 
-            Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration);
+            Controller = new AdminController(UserRepository, RoleRepository, OrganizationRepository, SearchService, EmailPreferencesRepository, UserIdentity, RepositoryFactory, WorkgroupService, SendGridSettings, Configuration, AggieEnterpriseService, OrgDescRepo);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)

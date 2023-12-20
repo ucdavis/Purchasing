@@ -11,6 +11,7 @@ using UCDArch.Testing.Extensions;
 using UCDArch.Web.ActionResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Threading.Tasks;
 
 namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 {
@@ -19,14 +20,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         #region AccountDetails Tests
 
         [TestMethod]
-        public void TestAccountDetailsRedirectsIfNotFound()
+        public async Task TestAccountDetailsRedirectsIfNotFound()
         {
             #region Arrange
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             #endregion Arrange
 
             #region Act
-            Controller.AccountDetails(0,4)
+            (await Controller.AccountDetails(0, 4))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -37,13 +38,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
 
         [TestMethod]
-        public void TestAccountDetailsReturnsView()
+        public async Task TestAccountDetailsReturnsView()
         {
             #region Arrange
             var accounts = new List<WorkgroupAccount>();
             for (var i = 0; i < 3; i++)
             {
-                accounts.Add(CreateValidEntities.WorkgroupAccount(i+1));
+                accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
             }
             accounts[2].Account.Id = "blah";
             accounts[2].AccountManager.Id = "myAccMan";
@@ -53,17 +54,17 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.AccountDetails(0,3)
+            var result = (await Controller.AccountDetails(0, 3))
                 .AssertViewRendered()
-                .WithViewData<WorkgroupAccount>();
+                .WithViewData<WorkgroupAccountDetails>();
             #endregion Act
 
             #region Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("blah", result.Account.Id);
-            Assert.AreEqual("myAccMan", result.AccountManager.Id);
-            Assert.AreEqual("myApp", result.Approver.Id);
-            Assert.AreEqual("myPur", result.Purchaser.Id);
+            Assert.AreEqual("blah", result.WorkgroupAccount.Account.Id);
+            Assert.AreEqual("myAccMan", result.WorkgroupAccount.AccountManager.Id);
+            Assert.AreEqual("myApp", result.WorkgroupAccount.Approver.Id);
+            Assert.AreEqual("myPur", result.WorkgroupAccount.Purchaser.Id);
             #endregion Assert		
         }
         #endregion AccountDetails Tests
@@ -71,14 +72,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         #region EditAccount Get Tests
 
         [TestMethod]
-        public void TestEditAccountGetRedirectsIfAccountNotFound()
+        public async Task TestEditAccountGetRedirectsIfAccountNotFound()
         {
             #region Arrange
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             #endregion Arrange
 
             #region Act
-            Controller.EditAccount(0,4)
+            (await Controller.EditAccount(0, 4))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -89,15 +90,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
 
         [TestMethod]
-        public void TestEditAccountGetReturnsView()
+        public async Task TestEditAccountGetReturnsView()
         {
             #region Arrange
             SetupDataForAccounts1(true);
             var accounts = new List<WorkgroupAccount>();
-            for(var i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-                accounts[i].Workgroup = WorkgroupRepository.GetNullableById(i+1);
+                accounts[i].Workgroup = WorkgroupRepository.GetNullableById(i + 1);
             }
             accounts[2].Account.Id = "blah";
             accounts[2].AccountManager.Id = "myAccMan";
@@ -107,7 +108,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAccount(3, 3)
+            var result = (await Controller.EditAccount(3, 3))
                 .AssertViewRendered()
                 .WithViewData<WorkgroupAccountModel>();
             #endregion Act
@@ -131,14 +132,14 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
         #region EditAccount Post Tests
         [TestMethod]
-        public void TestEditAccountPostRedirectsIfAccountNotFound()
+        public async Task TestEditAccountPostRedirectsIfAccountNotFound()
         {
             #region Arrange
             new FakeWorkgroupAccounts(3, WorkgroupAccountRepository);
             #endregion Arrange
 
             #region Act
-            Controller.EditAccount(0, 4, new WorkgroupAccount())
+            (await Controller.EditAccount(0, 4, new WorkgroupAccount()))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -151,11 +152,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
 
         [TestMethod]
-        public void TestEditAccountPostRedirectsWhenValid()
+        public async Task TestEditAccountPostRedirectsWhenValid()
         {
             #region Arrange
             var accounts = new List<WorkgroupAccount>();
-            for(var i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
             }
@@ -175,13 +176,15 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             accountToEdit.AccountManager.Id = "EmyAccMan";
             accountToEdit.Approver.Id = "EmyApp";
             accountToEdit.Purchaser.Id = "EmyPur";
+            accountToEdit.Name = "Name Updated";
+            accountToEdit.FinancialSegmentString = "3110-12100-ADNO034-522201-43-000-AR06046801-000000-0000-000000-000000";
             WorkgroupAccount args = default;
-            Mock.Get( WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()))
+            Mock.Get(WorkgroupAccountRepository).Setup(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()))
                 .Callback<WorkgroupAccount>(x => args = x);
             #endregion Arrange
 
             #region Act
-            var result = Controller.EditAccount(9, 3, accountToEdit)
+            var result = (await Controller.EditAccount(9, 3, accountToEdit))
                 .AssertActionRedirect();
             #endregion Act
 
@@ -191,7 +194,7 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             Assert.AreEqual("Workgroup account has been updated.", Controller.Message);
 
             Mock.Get(WorkgroupAccountRepository).Verify(a => a.EnsurePersistent(It.IsAny<WorkgroupAccount>()));
- 
+
             Assert.IsNotNull(args);
             Assert.AreEqual(9, args.Workgroup.Id); //Did not change
             Assert.AreEqual(3, args.Id); //Did not change
@@ -203,54 +206,6 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         }
 
 
-        [TestMethod]
-        public void TestEditAccountPostWhenNotValidReturnsView()
-        {
-            #region Arrange
-            SetupDataForAccounts1(true);
-            var accounts = new List<WorkgroupAccount>();
-            for(var i = 0; i < 3; i++)
-            {
-                accounts.Add(CreateValidEntities.WorkgroupAccount(i + 1));
-            }
-            accounts[2].Workgroup = WorkgroupRepository.GetNullableById(3);
-            accounts[2].Account = null;
-            accounts[2].AccountManager.Id = "myAccMan";
-            accounts[2].Approver.Id = "myApp";
-            accounts[2].Purchaser.Id = "myPur";
-            new FakeWorkgroupAccounts(0, WorkgroupAccountRepository, accounts);
-
-            var accountToEdit = CreateValidEntities.WorkgroupAccount(8);
-            accountToEdit.Id = 8;
-            accountToEdit.Workgroup = CreateValidEntities.Workgroup(7);
-            accountToEdit.Workgroup.Id = 7;
-            //accountToEdit.Account.Id = "Eblah";
-            accountToEdit.Account = null;
-            //accountToEdit.AccountManager.Id = "EmyAccMan";
-            accountToEdit.AccountManager = null;
-            accountToEdit.Approver.Id = "EmyApp";
-            accountToEdit.Purchaser.Id = "EmyPur";
-            #endregion Arrange
-
-            #region Act
-            var result = Controller.EditAccount(3, 3, accountToEdit)
-                .AssertViewRendered()
-                .WithViewData<WorkgroupAccountModel>();
-            #endregion Act
-
-            #region Assert
-            Controller.ModelState.AssertErrorsAre("The Account field is required.");
-            Assert.IsNotNull(result);
-            Assert.AreEqual(10, result.Accounts.Count());
-            Assert.AreEqual(12, result.WorkGroupPermissions.Count());
-            Assert.AreEqual(1, result.Approvers.Count());
-            Assert.AreEqual(1, result.AccountManagers.Count());
-            Assert.AreEqual(1, result.Purchasers.Count());
-
-            Assert.IsNull(result.WorkgroupAccount.Account);
-            Assert.IsNull(result.WorkgroupAccount.AccountManager);
-            #endregion Assert		
-        }
         #endregion EditAccount Post Tests
 
         #region AccountDelete Get Tests

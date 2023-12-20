@@ -5,21 +5,22 @@
     <div class="display-details">@Model.WorkgroupAddress.Name</div>
 </li>
 <li>
-    <div class="display-label">Building</div>
-    <div class="display-details">@Model.WorkgroupAddress.Building</div>
-</li>
-<li>
-    <div class="display-label">Building Code</div>
-    @if (Model.WorkgroupAddress.BuildingCode != null)
+    <div class="display-label">Campus Location Code</div>
+    @if (!string.IsNullOrWhiteSpace(Model.WorkgroupAddress.AeLocationCode))
     {
-        <div class="display-details">@Model.WorkgroupAddress.BuildingCode.Id</div>
+        <div class="display-details">@Model.WorkgroupAddress.AeLocationCode</div>
     }
     else
     {
-        <div style="color: red" class="display-details">Warning Not a Valid Building</div>        
+        <div style="color: red" class="display-details">Warning Not a Valid Campus Location</div>        
     }
     
 </li>
+<li>
+    <div class="display-label">Building</div>
+    <div class="display-details">@Model.WorkgroupAddress.Building</div>
+</li>
+
 <li>
     <div class="display-label">Room</div>
     <div class="display-details">@Model.WorkgroupAddress.Room</div>

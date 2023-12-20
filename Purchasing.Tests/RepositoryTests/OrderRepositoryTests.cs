@@ -8284,6 +8284,7 @@ namespace Purchasing.Tests.RepositoryTests
             expectedFields.Add(new NameAndType("Attachments", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.Attachment]", new List<string>()));
             expectedFields.Add(new NameAndType("BusinessPurpose", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("CompletionReason", "System.String", new List<string>()));
+            expectedFields.Add(new NameAndType("ConsumerTrackingId", "System.Guid", new List<string>()));
             expectedFields.Add(new NameAndType("ControlledSubstances", "System.Collections.Generic.IList`1[Purchasing.Core.Domain.ControlledSubstanceInformation]", new List<string>()));
             expectedFields.Add(new NameAndType("CreatedBy", "Purchasing.Core.Domain.User", new List<string>
             {
