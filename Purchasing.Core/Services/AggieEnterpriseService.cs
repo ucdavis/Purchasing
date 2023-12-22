@@ -924,6 +924,11 @@ namespace Purchasing.Core.Services
         /// <returns></returns>
         public async Task<string> ConvertKfsAccount(string account, bool updateNaturalAccount = true)
         {
+            if(string.IsNullOrWhiteSpace(account))
+            {
+                return String.Empty;
+            }
+
             var _aggieClient = GetClient();
 
             var parts = account.Split('-');

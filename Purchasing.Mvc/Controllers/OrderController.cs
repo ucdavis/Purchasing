@@ -727,7 +727,7 @@ namespace Purchasing.Mvc.Controllers
                 // So lets validate all the accounts...
 
                 var uniqueFinancialSegments = model.Order.Splits.Where(x => x.FinancialSegmentString != null).Select(x => x.FinancialSegmentString).Distinct().ToList();
-                var uniqueKfsAccounts = model.Order.Splits.Where(a => a.FinancialSegmentString == null).Select(a => a.KfsAccount).Distinct().ToList();
+                var uniqueKfsAccounts = model.Order.Splits.Where(a => a.FinancialSegmentString == null  && a.KfsAccount != null && a.KfsAccount != string.Empty).Select(a => a.KfsAccount).Distinct().ToList();
                 var validationDict = new Dictionary<string, string>();
                 if (uniqueKfsAccounts.Any())
                 {
