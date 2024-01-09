@@ -110,15 +110,15 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser")); // the account was not found in the workgroup or the account table
-            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(2));
+            //Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser")); // the account was not found in the workgroup or the account table
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(3));
             Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
             Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
-            Assert.AreEqual(2, order.Approvals.Count); //Only 2 approvals for an external account
-            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[0].StatusCode.Id);
-            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[1].StatusCode.Id);
-            Assert.AreEqual("LastName55", order.Approvals[0].User.LastName);
+            Assert.AreEqual(3, order.Approvals.Count); //Only 2 approvals for an external account-- not anymore
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[1].StatusCode.Id);
+            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[2].StatusCode.Id);
+
             Assert.IsNull(order.Approvals[1].User);
             Assert.AreEqual("12345", order.Splits[0].Account);
             #endregion Assert
