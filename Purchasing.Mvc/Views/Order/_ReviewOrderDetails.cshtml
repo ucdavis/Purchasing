@@ -1,4 +1,5 @@
-﻿@using Purchasing.Mvc.Helpers
+﻿@using Purchasing.Core.Domain
+@using Purchasing.Mvc.Helpers
 @model ReviewOrderViewModel
 
 @using Microsoft.Extensions.Configuration
@@ -59,9 +60,11 @@
                                                  </strong>
                         @if (ViewBag.HideEditDialogue == null || (bool)ViewBag.HideEditDialogue == false)
                         {
-                            //Leaving this here for now in case we want to enable it later
-                            //Basically it is a problem if the end user changes this value for Aggie Enterprise where it was useful for KFS
-                            //<a id="edit-reference-number" href="#" class="ui-icon ui-icon-pencil" title="Edit Reference Number"></a>
+                            //Don't allow editing of the ref if it is an AE order as this is used to link to AE and the value is not available to the end user in oracle
+                            if (Model.Order.OrderType.Id.Trim() != OrderType.Types.AggieEnterprise.Trim())
+                            {
+                                <a id="edit-reference-number" href="#" class="ui-icon ui-icon-pencil" title="Edit Reference Number"></a>
+                            }
                         }
                     </li>
                     <li>
