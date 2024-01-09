@@ -202,13 +202,7 @@ namespace Purchasing.Mvc.Services
                     {
                         if (FinancialChartValidation.GetFinancialChartStringType(accountId) == FinancialChartStringType.Invalid)
                         {
-                            //var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
-
-                            //approvalInfo.Approver = null;
-                            //approvalInfo.AcctManager = externalAccount != null
-                            //                               ? _securityService.GetUser(externalAccount.AccountManagerId)
-                            //                               : null;
-                            //approvalInfo.Purchaser = null;
+                            //This was doing some stuff to deal with KFS external accounts which we no longer support
                             
                             approvalInfo.Approver = null;
                             approvalInfo.AcctManager = null;
@@ -266,14 +260,7 @@ namespace Purchasing.Mvc.Services
                     { //account is not in the workgroup
                         if (split.Account != null)
                         {
-                            //var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
-
-                            //approvalInfo.Approver = null;
-                            //approvalInfo.AcctManager = externalAccount != null
-                            //                               ? _securityService.GetUser(externalAccount.AccountManagerId)
-                            //                               : null;
-                            //approvalInfo.Purchaser = null;
-                            
+                            //This was doing some stuff to deal with KFS external accounts which we no longer support
 
                             approvalInfo.Approver = null;
                             approvalInfo.AcctManager = null;
@@ -404,16 +391,8 @@ namespace Purchasing.Mvc.Services
                             approvalInfo.Purchaser = null;
                         }
                         else 
-                        { 
-                        //TODO!!! This will fail with CoA                        
-                        //var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
-
-                        //approvalInfo.Approver = null;
-                        //approvalInfo.AcctManager = externalAccount != null
-                        //                               ? _securityService.GetUser(externalAccount.AccountManagerId)
-                        //                               : null;
-                        //approvalInfo.Purchaser = null;
-
+                        {
+                            //This was doing some stuff to deal with KFS external accounts which we no longer support
 
                             approvalInfo.Approver = null;
                             approvalInfo.AcctManager =null;
