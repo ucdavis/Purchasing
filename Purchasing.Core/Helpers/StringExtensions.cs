@@ -20,6 +20,9 @@ namespace Purchasing.Core.Helpers
             {
                 return value;
             }
+            value = value.ReplaceLineEndings(" ");
+            //replace multiple spaces with single space
+            value = System.Text.RegularExpressions.Regex.Replace(value, @"\s+", " ");
 
             value = value.Trim();
             
