@@ -190,7 +190,7 @@ namespace Purchasing.Mvc.Services
                         ((x.Account != null && x.Account.Id == accountId) || (x.FinancialSegmentString != null && x.FinancialSegmentString == accountId)) );
 
                     approvalInfo.AccountId = accountId;
-                    approvalInfo.IsExternal = (workgroupAccount == null); //if we can't find the account in the workgroup it is external
+                    approvalInfo.IsExternal = false; //always false now? (workgroupAccount == null); //if we can't find the account in the workgroup it is external
                     
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
@@ -202,19 +202,23 @@ namespace Purchasing.Mvc.Services
                     {
                         if (FinancialChartValidation.GetFinancialChartStringType(accountId) == FinancialChartStringType.Invalid)
                         {
-                            var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
+                            //var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(accountId);
 
+                            //approvalInfo.Approver = null;
+                            //approvalInfo.AcctManager = externalAccount != null
+                            //                               ? _securityService.GetUser(externalAccount.AccountManagerId)
+                            //                               : null;
+                            //approvalInfo.Purchaser = null;
+                            
                             approvalInfo.Approver = null;
-                            approvalInfo.AcctManager = externalAccount != null
-                                                           ? _securityService.GetUser(externalAccount.AccountManagerId)
-                                                           : null;
+                            approvalInfo.AcctManager = null;
                             approvalInfo.Purchaser = null;
                         }
                         else
                         {
                             var aggieApproval = await _aggieEnterpriseService.GetFinancialOfficer(accountId);
                             //TODO: Fix if we can get info from AE
-                            approvalInfo.IsExternal = aggieApproval.IsExternal;
+                            approvalInfo.IsExternal = aggieApproval.IsExternal; //This is currently always false in the GetFinancialOfficer method
                             approvalInfo.Approver = null;
                             approvalInfo.AcctManager = aggieApproval.FinancialOfficerId != null ? _securityService.GetUser(aggieApproval.FinancialOfficerId) : null;
                             approvalInfo.Purchaser = null;
@@ -249,8 +253,8 @@ namespace Purchasing.Mvc.Services
                     //Try to find the account in the workgroup so we can route it by users
                     var workgroupAccount = _repositoryFactory.WorkgroupAccountRepository.Queryable.FirstOrDefault(x => x.Workgroup.Id == order.Workgroup.Id &&
                         ((x.Account != null && x.Account.Id == split.Account) || (x.FinancialSegmentString != null && x.FinancialSegmentString == split.FinancialSegmentString)));
-                    approvalInfo.AccountId = split.Account; 
-                    approvalInfo.IsExternal = workgroupAccount == null; //if we can't find the account in the workgroup it is external
+                    approvalInfo.AccountId = split.Account;
+                    approvalInfo.IsExternal = false; // always false now  workgroupAccount == null; //if we can't find the account in the workgroup it is external
 
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
@@ -262,12 +266,17 @@ namespace Purchasing.Mvc.Services
                     { //account is not in the workgroup
                         if (split.Account != null)
                         {
-                            var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
+                            //var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
+
+                            //approvalInfo.Approver = null;
+                            //approvalInfo.AcctManager = externalAccount != null
+                            //                               ? _securityService.GetUser(externalAccount.AccountManagerId)
+                            //                               : null;
+                            //approvalInfo.Purchaser = null;
+                            
 
                             approvalInfo.Approver = null;
-                            approvalInfo.AcctManager = externalAccount != null
-                                                           ? _securityService.GetUser(externalAccount.AccountManagerId)
-                                                           : null;
+                            approvalInfo.AcctManager = null;
                             approvalInfo.Purchaser = null;
                         }
                         else
@@ -375,7 +384,7 @@ namespace Purchasing.Mvc.Services
                     ((x.Account != null && x.Account.Id == split.Account) || (x.FinancialSegmentString != null && x.FinancialSegmentString == split.FinancialSegmentString)));
 
                     approvalInfo.AccountId = split.Account ?? split.FinancialSegmentString;
-                    approvalInfo.IsExternal = (workgroupAccount == null); //if we can't find the account in the workgroup it is external
+                    approvalInfo.IsExternal = false; // always false now (workgroupAccount == null); //if we can't find the account in the workgroup it is external
 
                     if (workgroupAccount != null) //route to the people contained in the workgroup account info
                     {
@@ -397,14 +406,22 @@ namespace Purchasing.Mvc.Services
                         else 
                         { 
                         //TODO!!! This will fail with CoA                        
-                        var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
+                        //var externalAccount = _repositoryFactory.AccountRepository.GetNullableById(split.Account);
 
-                        approvalInfo.Approver = null;
-                        approvalInfo.AcctManager = externalAccount != null
-                                                       ? _securityService.GetUser(externalAccount.AccountManagerId)
-                                                       : null;
-                        approvalInfo.Purchaser = null;
+                        //approvalInfo.Approver = null;
+                        //approvalInfo.AcctManager = externalAccount != null
+                        //                               ? _securityService.GetUser(externalAccount.AccountManagerId)
+                        //                               : null;
+                        //approvalInfo.Purchaser = null;
+
+
+                            approvalInfo.Approver = null;
+                            approvalInfo.AcctManager =null;
+                            approvalInfo.Purchaser = null;
+
+
                         }
+
                     }
                     
                     AddApprovalSteps(order, approvalInfo, split, currentLevel);
