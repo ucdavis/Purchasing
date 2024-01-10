@@ -11,6 +11,10 @@
 @section SubNav
 {
     <ul class="navigation">
+        <li><a href='@Url.Action("UpdateAccountsFromFinjector", new {id = Model.Id})' class="ui-button button ui-state-default">Update From Finjector</a></li>
+    </ul>
+    <br />
+    <ul class="navigation">
         <li><a href='@Url.Action("AddAccount", new {id = Model.Id})' class="ui-button button ui-state-default">Add Accounts</a></li>
         <li><a href='@Url.Action("UpdateMultipleAccounts", new { id = Model.Id })' class="ui-button button ui-state-default">Update Multiple</a></li>
         <li><a href="@Url.Action("Details", new {id=Model.Id})" class="ui-button button ui-state-default">Back to Workgroup</a></li>
