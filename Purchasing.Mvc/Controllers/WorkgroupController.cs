@@ -479,6 +479,55 @@ namespace Purchasing.Mvc.Controllers
             return View(viewModel);
         }
 
+        [HttpGet]
+        public ActionResult UpdateAccountsFromFinjector(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
+            }
+
+            if (workgroup.Administrative)
+            {
+                ErrorMessage = "Accounts may not be added to an administrative workgroup.";
+                return this.RedirectToAction(nameof(Details), new { id = id });
+            }
+
+            return View(workgroup);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateAccountsFromFinjector(int id, WorkgroupFinjectorChart[] model)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
+            }
+
+            if (workgroup.Administrative)
+            {
+                ErrorMessage = "Accounts may not be added to an administrative workgroup.";
+                return this.RedirectToAction(nameof(Details), new { id = id });
+            }
+
+            //Validate the format of the chartStrings
+            //Possible update the natural account if it is zeros
+
+            //Find all workgroup accounts that are not in the model
+            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray(); //All workgroup accounts
+            var workgroupAccountsToDelete = workgroupAccounts.Where(a => !model.Any(b => b.ChartString == a.FinancialSegmentString)).ToArray();
+            var workgroupAccountsToUpdate = workgroupAccounts.Where(a => model.Any(b => b.ChartString == a.FinancialSegmentString)).ToArray();
+            var workgroupAccountsToAdd = model.Where(a => !workgroupAccounts.Any(b => b.FinancialSegmentString == a.ChartString)).ToArray();
+
+            //TODO: actually do it.
+
+            return this.RedirectToAction(nameof(Accounts), new { id = id });
+        }
+
         /// <summary>
         /// Accounts #4
         /// GET: Workgroup/AccountDetails
