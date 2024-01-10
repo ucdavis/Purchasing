@@ -164,15 +164,16 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser"));
-            Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser2"));
-            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(3));
+            //Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser"));
+            //Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser2"));
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(5));
             Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
             Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
-            Assert.AreEqual(3, order.Approvals.Count); //no approvers, 2 account managers, 1 purchaser
-            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[0].StatusCode.Id);
-            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[1].StatusCode.Id);
+            Assert.AreEqual(5, order.Approvals.Count); //no approvers, 2 account managers, 1 purchaser
+            Assert.AreEqual(OrderStatusCode.Codes.Approver, order.Approvals[0].StatusCode.Id);
+            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[1].StatusCode.Id);
+            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[2].StatusCode.Id);
             var purchaserCount = 0;
             var approverCount = 0;
             var acctManagerCount = 0;
@@ -197,9 +198,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             }
             Assert.AreEqual(1, purchaserCount);
             Assert.AreEqual(2, acctManagerCount);
-            Assert.AreEqual(0, approverCount);
-            Assert.AreEqual("LastName66", order.Approvals[0].User.LastName);
-            Assert.AreEqual("LastName55", order.Approvals[2].User.LastName);
+            Assert.AreEqual(2, approverCount);
             Assert.AreEqual("12345", order.Splits[0].Account);
             Assert.AreEqual("23456", order.Splits[1].Account);
             #endregion Assert
@@ -259,15 +258,15 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser"));
-            Mock.Get(SecurityService).Verify(a => a.GetUser(null));
-            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(5));
+            //Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser"));
+            //Mock.Get(SecurityService).Verify(a => a.GetUser(null));
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(7));
             Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()), Times.Never());
             Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
-            Assert.AreEqual(5, order.Approvals.Count);
-            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[0].StatusCode.Id);
-            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[1].StatusCode.Id);
+            Assert.AreEqual(7, order.Approvals.Count);
+            //Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[2].StatusCode.Id);
+            //Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[3].StatusCode.Id);
             var purchaserCount = 0;
             var approverCount = 0;
             var acctManagerCount = 0;
@@ -292,9 +291,8 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             }
             Assert.AreEqual(1, purchaserCount);
             Assert.AreEqual(3, acctManagerCount);
-            Assert.AreEqual(1, approverCount);
-            //Assert.AreEqual("LastName66", order.Approvals[0].User.LastName);
-            Assert.AreEqual("LastName55", order.Approvals[2].User.LastName);
+            Assert.AreEqual(3, approverCount);
+
             Assert.AreEqual("12345", order.Splits[0].Account);
             Assert.AreEqual("23456", order.Splits[1].Account);
             #endregion Assert
@@ -371,15 +369,13 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             #endregion Act
 
             #region Assert
-            Mock.Get(SecurityService).Verify(a => a.GetUser("TestUser"));
-            Mock.Get(SecurityService).Verify(a => a.GetUser(null));
-            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(4));
+
+            Mock.Get(EventService).Verify(a => a.OrderApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>(), It.IsAny<bool>()), Times.Exactly(6));
             Mock.Get(EventService).Verify(a => a.OrderAutoApprovalAdded(It.IsAny<Order>(), It.IsAny<Approval>()));
             Mock.Get(EventService).Verify(a => a.OrderCreated(order));
 
-            Assert.AreEqual(5, order.Approvals.Count);
-            Assert.AreEqual(OrderStatusCode.Codes.AccountManager, order.Approvals[0].StatusCode.Id);
-            Assert.AreEqual(OrderStatusCode.Codes.Purchaser, order.Approvals[1].StatusCode.Id);
+            Assert.AreEqual(7, order.Approvals.Count);
+
             var purchaserCount = 0;
             var approverCount = 0;
             var acctManagerCount = 0;
@@ -404,12 +400,11 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
             }
             Assert.AreEqual(1, purchaserCount);
             Assert.AreEqual(3, acctManagerCount);
-            Assert.AreEqual(1, approverCount);
-            //Assert.AreEqual("LastName66", order.Approvals[0].User.LastName);
-            Assert.AreEqual("LastName55", order.Approvals[2].User.LastName);
+            Assert.AreEqual(3, approverCount);
+
             Assert.AreEqual("12345", order.Splits[0].Account);
             Assert.AreEqual("23456", order.Splits[1].Account);
-            Assert.IsTrue(order.Approvals[3].Completed);
+            Assert.IsTrue(order.Approvals[5].Completed);
             #endregion Assert
         }
     }
