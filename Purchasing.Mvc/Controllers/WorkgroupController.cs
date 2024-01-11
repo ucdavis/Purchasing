@@ -499,7 +499,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateAccountsFromFinjector(int id, WorkgroupFinjectorChart[] model)
+        public ActionResult UpdateAccountsFromFinjector(int id, WorkgroupFinjectorChart[] model, bool onlyAdd = false)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -513,9 +513,22 @@ namespace Purchasing.Mvc.Controllers
                 ErrorMessage = "Accounts may not be added to an administrative workgroup.";
                 return this.RedirectToAction(nameof(Details), new { id = id });
             }
+#if DEBUG
+            //TOTALLY FAKING THIS
+            //model = new WorkgroupFinjectorChart[]
+            //{
+            //    new WorkgroupFinjectorChart() { ChartString = "123456-12345-12345-12345-12345", Name = "Test Account 1" },
+            //    new WorkgroupFinjectorChart() { ChartString = "3110-13U20-ADNO003-410004-00-000-GLPEV00120-000000-0000-000000-000000", Name = "REGIFEE - FeeFinancialSegmentString Updated" },
+            //    new WorkgroupFinjectorChart() { ChartString = "3110-13U02-ADNO006-522201-43-000-0000000000-200504-0000-000000-000000", Name = "COMPUTING RESOURCES UNIT- GETCHELL [3-CRU9033]"}
+            //};
+#endif
+            if(model == null || model.Length == 0)
+            {
+                ErrorMessage = "No accounts were selected from Finjector.";
+                return this.RedirectToAction(nameof(Details), new { id = id });
+            }
 
-            //Validate the format of the chartStrings
-            //Possible update the natural account if it is zeros
+            var defaults = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup.Id == id && a.IsAdmin == false && a.IsDefaultForAccount).Fetch(a => a.User).ToList();
 
             //Find all workgroup accounts that are not in the model
             var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray(); //All workgroup accounts
@@ -523,7 +536,54 @@ namespace Purchasing.Mvc.Controllers
             var workgroupAccountsToUpdate = workgroupAccounts.Where(a => model.Any(b => b.ChartString == a.FinancialSegmentString)).ToArray();
             var workgroupAccountsToAdd = model.Where(a => !workgroupAccounts.Any(b => b.FinancialSegmentString == a.ChartString)).ToArray();
 
-            //TODO: actually do it.
+            var deleteCount = 0;
+            var updateCount = 0;
+            var addCount = 0;
+
+            //Get a count of the number of items in the model that have unique chart strings
+            var uniqueChartStrings = model.Select(a => a.ChartString).Distinct().Count();
+
+            if (onlyAdd == false)
+            {
+                //Delete
+                foreach (var workgroupAccount in workgroupAccountsToDelete)
+                {
+                    _workgroupAccountRepository.Remove(workgroupAccount);
+                    deleteCount++;
+                }
+            }
+            //Update
+            foreach (var workgroupAccount in workgroupAccountsToUpdate)
+            {
+                var modelAccount = model.First(a => a.ChartString == workgroupAccount.FinancialSegmentString);
+                if (modelAccount.Name.SafeTruncate(64) != workgroupAccount.Name)
+                {
+                    workgroupAccount.Name = modelAccount.Name.SafeTruncate(64); //64 characters
+                    workgroupAccount.FinancialSegmentString = modelAccount.ChartString;
+                    _workgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                    updateCount++;
+                }
+            }
+            //Add
+            foreach (var workgroupAccount in workgroupAccountsToAdd)
+            {
+                var newWorkgroupAccount = new WorkgroupAccount()
+                {
+                    Workgroup = workgroup,
+                    Name = workgroupAccount.Name,
+                    FinancialSegmentString = workgroupAccount.ChartString,
+                    AccountManager = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.AccountManager)?.User,
+                    Approver = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.Approver)?.User,
+                    Purchaser = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.Purchaser)?.User
+                };
+                _workgroupAccountRepository.EnsurePersistent(newWorkgroupAccount);
+                addCount++;
+            }
+
+            //TODO: Test defaults for added above
+
+            Message = $"{uniqueChartStrings} accounts were found in the import from Finjector. {deleteCount} accounts were deleted. {updateCount} accounts were updated. {addCount} accounts were added.";
+            
 
             return this.RedirectToAction(nameof(Accounts), new { id = id });
         }

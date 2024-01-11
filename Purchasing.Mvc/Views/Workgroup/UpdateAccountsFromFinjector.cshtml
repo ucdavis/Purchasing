@@ -14,3 +14,10 @@
 <div>
     TODO: Update Accounts From Finjector
 </div>
+
+<form method="post" asp-route-id="@Model.Id" asp-controller="Workgroup" asp-action="UpdateAccountsFromFinjector">
+    @Html.AntiForgeryToken()
+
+    <button type="submit" class="button">Update Accounts</button>
+
+</form>
