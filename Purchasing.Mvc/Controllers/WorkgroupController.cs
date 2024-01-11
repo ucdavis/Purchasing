@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using Serilog;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Models.AggieEnterprise;
+using Purchasing.Mvc.Models.Finjector;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -499,7 +500,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateAccountsFromFinjector(int id, WorkgroupFinjectorChart[] model, bool onlyAdd = false)
+        public ActionResult UpdateAccountsFromFinjector(int id, string chartsString, bool onlyAdd = false)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -513,6 +514,12 @@ namespace Purchasing.Mvc.Controllers
                 ErrorMessage = "Accounts may not be added to an administrative workgroup.";
                 return this.RedirectToAction(nameof(Details), new { id = id });
             }
+
+
+            //chartsString is a stringified json object. deserialized it into a list of WorkgroupFinjectorChart
+            var charts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<WorkgroupFinjectorChart>>(chartsString);
+
+
 #if DEBUG
             //TOTALLY FAKING THIS
             //model = new WorkgroupFinjectorChart[]
@@ -522,7 +529,7 @@ namespace Purchasing.Mvc.Controllers
             //    new WorkgroupFinjectorChart() { ChartString = "3110-13U02-ADNO006-522201-43-000-0000000000-200504-0000-000000-000000", Name = "COMPUTING RESOURCES UNIT- GETCHELL [3-CRU9033]"}
             //};
 #endif
-            if(model == null || model.Length == 0)
+            if(charts == null || charts.Count == 0)
             {
                 ErrorMessage = "No accounts were selected from Finjector.";
                 return this.RedirectToAction(nameof(Details), new { id = id });
@@ -532,16 +539,16 @@ namespace Purchasing.Mvc.Controllers
 
             //Find all workgroup accounts that are not in the model
             var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray(); //All workgroup accounts
-            var workgroupAccountsToDelete = workgroupAccounts.Where(a => !model.Any(b => b.ChartString == a.FinancialSegmentString)).ToArray();
-            var workgroupAccountsToUpdate = workgroupAccounts.Where(a => model.Any(b => b.ChartString == a.FinancialSegmentString)).ToArray();
-            var workgroupAccountsToAdd = model.Where(a => !workgroupAccounts.Any(b => b.FinancialSegmentString == a.ChartString)).ToArray();
+            var workgroupAccountsToDelete = workgroupAccounts.Where(a => !charts.Any(b => b.ChartString == a.FinancialSegmentString)).ToArray();
+            var workgroupAccountsToUpdate = workgroupAccounts.Where(a => charts.Any(b => b.ChartString == a.FinancialSegmentString)).ToArray();
+            var workgroupAccountsToAdd = charts.Where(a => !workgroupAccounts.Any(b => b.FinancialSegmentString == a.ChartString)).ToArray();
 
             var deleteCount = 0;
             var updateCount = 0;
             var addCount = 0;
 
             //Get a count of the number of items in the model that have unique chart strings
-            var uniqueChartStrings = model.Select(a => a.ChartString).Distinct().Count();
+            var uniqueChartStrings = charts.Select(a => a.ChartString).Distinct().Count();
 
             if (onlyAdd == false)
             {
@@ -555,7 +562,7 @@ namespace Purchasing.Mvc.Controllers
             //Update
             foreach (var workgroupAccount in workgroupAccountsToUpdate)
             {
-                var modelAccount = model.First(a => a.ChartString == workgroupAccount.FinancialSegmentString);
+                var modelAccount = charts.First(a => a.ChartString == workgroupAccount.FinancialSegmentString);
                 if (modelAccount.Name.SafeTruncate(64) != workgroupAccount.Name)
                 {
                     workgroupAccount.Name = modelAccount.Name.SafeTruncate(64); //64 characters

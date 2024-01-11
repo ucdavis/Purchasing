@@ -1,4 +1,4 @@
-﻿namespace Purchasing.Mvc.Models
+﻿namespace Purchasing.Mvc.Models.Finjector
 {
     public class WorkgroupFinjectorChart
     {

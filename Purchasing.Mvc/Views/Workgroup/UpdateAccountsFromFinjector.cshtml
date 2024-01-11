@@ -6,18 +6,78 @@
 }
 
 @section AdditionalScripts {
+    @await Html.PartialAsync("_JsBundle", "~/bundles/common")
+
+    <script type="text/javascript">
+
+        $("#finjector-import").on("click", function (e) {
+            alert("FAKING Importing from Finjector");
+
+            var fakeData = [
+                { Name: "Test Account 1", ChartString: "123456-12345-12345-12345-12345" },
+                { Name: "REGIFEE - FeeFinancialSegmentString Updated", ChartString: "3110-13U20-ADNO003-410004-00-000-GLPEV00120-000000-0000-000000-000000" },
+                { Name: "COMPUTING RESOURCES UNIT- GETCHELL [3-CRU9033]", ChartString: "3110-13U02-ADNO006-522201-43-000-0000000000-200504-0000-000000-000000" }
+            ];
+            //assign the data to the hidden field
+            $("#found-info").html("");
+            $("#found-info").append("<p>Found the following Chart Strings in Finjector:</p>");
+            for (var i = 0; i < fakeData.length; i++) {
+                $("#found-info").append("<p>" + fakeData[i].Name + " - " + fakeData[i].ChartString + "</p>");
+            }
+            $("#found-info").append("<p>Click Update Accounts to update the accounts in the workgroup.</p>");
+            $("#found-info").show();
+            //assigned fakeData to the hidden field charts
+            $("#chartsString").val(JSON.stringify(fakeData));
+        });
+
+    </script>
+
 
 
 
 }
 
-<div>
-    TODO: Update Accounts From Finjector
-</div>
 
 <form method="post" asp-route-id="@Model.Id" asp-controller="Workgroup" asp-action="UpdateAccountsFromFinjector">
     @Html.AntiForgeryToken()
+    @Html.Hidden("chartsString")
 
-    <button type="submit" class="button">Update Accounts</button>
+
+    <section class="padded">
+        <header class="ui-widget-header ui-corner-top">Finjector Import</header>
+
+        <div class="section-contents">
+
+            <div class="section-text">
+                <p>To import Chart Strings from Finjector, you must first click the Import button, then select the team or folder you wish to import from the popup window.</p>
+                <p>If any are found, you will see that information below and you can then click the Update Accounts.</p>
+                <p>IMPORTANT!!! This will remove any workgroup accounts that do not match the chart strings you have selected. And will update the name if it has changed.</p>
+            </div>
+
+            <br />
+            <br />
+
+            <div class="editor-field">
+                <button type="button" id="finjector-import">Import From Finjector</button>
+                <br />
+                <br />
+                <div id="found-info">
+                    <p>No Chart Strings from Finjector have been selected.</p>
+                </div>
+
+            </div>
+
+            <br />
+            <br />
+
+            <div class="editor-field">
+                <button type="submit">Update Accounts</button>  | @Html.ActionLink("Cancel", "Accounts", new { id = @Model.Id })
+            </div>
+
+
+
+        </div>
+
+    </section>
 
 </form>
