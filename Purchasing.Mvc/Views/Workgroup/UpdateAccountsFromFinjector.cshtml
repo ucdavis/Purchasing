@@ -21,11 +21,12 @@
             //assign the data to the hidden field
             if (fakeData.length > 0) {
                 $("#found-info").html("");
-                $("#found-info").append("<p>Found the following Chart Strings in Finjector:</p>");
-                for (var i = 0; i < fakeData.length; i++) {
-                    $("#found-info").append("<p>" + fakeData[i].Name + " - " + fakeData[i].ChartString + "</p>");
-                }
                 $("#found-info").append("<p>Click Update Accounts to update the accounts in the workgroup.</p>");
+                $("#found-info").append("<p>Found " + fakeData.length + " chart strings</p>");
+                for (var i = 0; i < fakeData.length; i++) {
+                    $("#found-info").append("<p><div><strong>" + fakeData[i].Name + "</strong></div><div>" + fakeData[i].ChartString + "</div></p>");
+                }
+                
                 $("#found-info").show();
                 //assigned fakeData to the hidden field charts
                 $("#chartsString").val(JSON.stringify(fakeData));
