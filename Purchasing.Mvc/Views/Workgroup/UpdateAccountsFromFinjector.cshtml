@@ -19,15 +19,31 @@
                 { Name: "COMPUTING RESOURCES UNIT- GETCHELL [3-CRU9033]", ChartString: "3110-13U02-ADNO006-522201-43-000-0000000000-200504-0000-000000-000000" }
             ];
             //assign the data to the hidden field
-            $("#found-info").html("");
-            $("#found-info").append("<p>Found the following Chart Strings in Finjector:</p>");
-            for (var i = 0; i < fakeData.length; i++) {
-                $("#found-info").append("<p>" + fakeData[i].Name + " - " + fakeData[i].ChartString + "</p>");
+            if (fakeData.length > 0) {
+                $("#found-info").html("");
+                $("#found-info").append("<p>Found the following Chart Strings in Finjector:</p>");
+                for (var i = 0; i < fakeData.length; i++) {
+                    $("#found-info").append("<p>" + fakeData[i].Name + " - " + fakeData[i].ChartString + "</p>");
+                }
+                $("#found-info").append("<p>Click Update Accounts to update the accounts in the workgroup.</p>");
+                $("#found-info").show();
+                //assigned fakeData to the hidden field charts
+                $("#chartsString").val(JSON.stringify(fakeData));
+
+                $("#submit-it").removeAttr("disabled");
+                //refresh it so it is enabled
+                $("#submit-it").button("refresh");
             }
-            $("#found-info").append("<p>Click Update Accounts to update the accounts in the workgroup.</p>");
-            $("#found-info").show();
-            //assigned fakeData to the hidden field charts
-            $("#chartsString").val(JSON.stringify(fakeData));
+            else {
+                $("#found-info").html("");
+                $("#found-info").append("<p>No Chart Strings from Finjector have been selected.</p>");
+                $("#found-info").show();
+                $("#chartsString").val("");
+
+                //disable the update accounts button
+                $("#submit-it").attr("disabled", "disabled");
+            }
+
         });
 
     </script>
@@ -59,11 +75,7 @@
 
             <div class="editor-field">
                 <button type="button" id="finjector-import">Import From Finjector</button>
-                <br />
-                <br />
-                <div id="found-info">
-                    <p>No Chart Strings from Finjector have been selected.</p>
-                </div>
+
 
             </div>
 
@@ -71,9 +83,14 @@
             <br />
 
             <div class="editor-field">
-                <button type="submit">Update Accounts</button>  | @Html.ActionLink("Cancel", "Accounts", new { id = @Model.Id })
+                <button id="submit-it" type="submit" disabled="disabled">Update Accounts</button>  | @Html.ActionLink("Cancel", "Accounts", new { id = @Model.Id })
             </div>
 
+            <br />
+            <br />
+            <div id="found-info">
+                <p>No Chart Strings from Finjector have been selected.</p>
+            </div>
 
 
         </div>
