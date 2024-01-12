@@ -26,7 +26,7 @@
                 for (var i = 0; i < fakeData.length; i++) {
                     $("#found-info").append("<p><div><strong>" + fakeData[i].Name + "</strong></div><div>" + fakeData[i].ChartString + "</div></p>");
                 }
-                
+
                 $("#found-info").show();
                 //assigned fakeData to the hidden field charts
                 $("#chartsString").val(JSON.stringify(fakeData));
@@ -50,8 +50,10 @@
     </script>
 
 
+}
 
-
+@section AdditionalStyles {
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")
 }
 
 
@@ -71,24 +73,38 @@
                 <p>IMPORTANT!!! This will remove any workgroup accounts that do not match the chart strings you have selected. And will update the name if it has changed.</p>
             </div>
 
-            <br />
-            <br />
-
-            <div class="editor-field">
-                <button type="button" id="finjector-import">Import From Finjector</button>
 
 
-            </div>
 
-            <br />
-            <br />
 
-            <div class="editor-field">
-                <button id="submit-it" type="submit" disabled="disabled">Update Accounts</button>  | @Html.ActionLink("Cancel", "Accounts", new { id = @Model.Id })
-            </div>
+            <ul>
+                <li>
+                    <div class="editor-field">
+                        <button type="button" id="finjector-import">Import From Finjector</button>
+                    </div>
+                </li>
+            </ul>
 
-            <br />
-            <br />
+            <ul>
+                <li>
+                    <div class="editor-field">
+                        <input id="onlystring" name="onlystring" type="checkbox" />
+                    </div>
+                    <div class="editor-label">Only Add and Update Chart Strings</div>
+                </li>
+            </ul>
+
+
+            <ul>
+                <li>
+
+                    <div class="editor-field">
+                        <button id="submit-it" type="submit" disabled="disabled">Update Accounts</button>  | @Html.ActionLink("Cancel", "Accounts", new { id = @Model.Id })
+                    </div>
+                </li>
+            </ul>
+
+
             <div id="found-info">
                 <p>No Chart Strings from Finjector have been selected.</p>
             </div>
