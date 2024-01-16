@@ -10,9 +10,8 @@
     ViewBag.Previous = Url.Action("Vendors", "Wizard", new { id = Model.Workgroup.Id });
     ViewBag.Skip = Url.Action("Addresses", "Wizard", new { id = Model.Workgroup.Id});
     ViewBag.IsAdministrative = Model.Workgroup.Administrative;
-    ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
+    ViewBag.IsAccountSync = false;
 }
-
 @section AdditionalScripts
 {
 
