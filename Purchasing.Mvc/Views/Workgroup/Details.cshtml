@@ -197,11 +197,8 @@
 
     <div class="section-contents">
         @{
-            var accountLabel = "Unsynchronized Accounts";
-            if(Model.Workgroup.SyncAccounts)
-            {
-                accountLabel = "Synchronized Accounts";
-            }
+            var accountLabel = "Accounts";
+
         }
         @ContainerFor("Accounts", Model.AccountCount, label: accountLabel, disable: Model.Workgroup.Administrative ? true : false)
         @ContainerFor("Vendors", Model.VendorCount, "VendorList", disable: Model.Workgroup.Administrative ? true : false)

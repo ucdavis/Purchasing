@@ -878,7 +878,7 @@ namespace Purchasing.Mvc.Controllers
             ViewBag.WorkgroupId = id;
             ViewBag.Title = workgroup.Name;
             ViewBag.IsAdministrative = workgroup.Administrative;
-            ViewBag.IsAccountSync = workgroup.SyncAccounts;
+            ViewBag.IsAccountSync = false;
             return View(workgroupVendorList.ToList());
         }
 
@@ -1025,7 +1025,7 @@ namespace Purchasing.Mvc.Controllers
             }
             var model = new ConditionalApproval();
             model.Workgroup = workgroup;
-            ViewBag.IsAccountSync = workgroup.SyncAccounts;
+            ViewBag.IsAccountSync = false;
 
             return View(model);
         }
@@ -1041,7 +1041,7 @@ namespace Purchasing.Mvc.Controllers
                 Message = "Workgroup not found.";
                 this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
             }
-            ViewBag.IsAccountSync = workgroup.SyncAccounts;
+            ViewBag.IsAccountSync = false;
 
             var primaryApproverInDb = GetUserBySearchTerm(primaryApproverParm);
             var secondaryApproverInDb = string.IsNullOrWhiteSpace(secondaryApproverParm)
@@ -1139,7 +1139,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 return this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
             }
-            ViewBag.IsAccountSync = workgroup.SyncAccounts;
+            ViewBag.IsAccountSync = false;
             var workgroupConditionalApprovals =
                 Repository.OfType<ConditionalApproval>().Queryable.Where(
                     a => a.Workgroup != null && a.Workgroup.Id == workgroup.Id);
