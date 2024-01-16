@@ -7,7 +7,7 @@
 	ViewBag.Next = Url.Action("AddPeople", "Wizard", new {id = Model.Id, roleFilter ="RQ"});
 	ViewBag.ListPage = true;
     ViewBag.IsAdministrative = Model.Administrative;
-    ViewBag.IsAccountSync = Model.SyncAccounts;
+    ViewBag.IsAccountSync = false;
 }
 
 	@await Html.PartialAsync("_StatusBar", Model.Id) 
