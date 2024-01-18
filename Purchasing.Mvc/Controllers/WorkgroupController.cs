@@ -500,7 +500,7 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateAccountsFromFinjector(int id, string chartsString, string onlystring, bool onlyAdd = false)
+        public ActionResult UpdateAccountsFromFinjector(int id, string chartsString, bool onlyAdd = false)
         {
             var workgroup = _workgroupRepository.GetNullableById(id);
             if (workgroup == null)
@@ -515,11 +515,6 @@ namespace Purchasing.Mvc.Controllers
                 return this.RedirectToAction(nameof(Details), new { id = id });
             }
 
-
-            if(onlystring != null && onlystring == "on")
-            {
-                onlyAdd = true;
-            }
 
             //chartsString is a stringified json object. deserialized it into a list of WorkgroupFinjectorChart
             var charts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<WorkgroupFinjectorChart>>(chartsString);
