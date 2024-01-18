@@ -7,7 +7,7 @@
     <UserSecretsId>8db1af8d-c21d-4a0d-a9d9-54009eb737eb</UserSecretsId>
     <Title>Purchasing.Mvc</Title>
     <Product>Purchasing.Mvc</Product>
-    <Copyright>Copyright ©  2022</Copyright>
+    <Copyright>Copyright ©  2024</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Version)' == '' ">
@@ -19,7 +19,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
-    <AssemblyVersion>2.0.0.2</AssemblyVersion>
+    <AssemblyVersion>2.0.0.3</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
