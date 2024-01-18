@@ -7,7 +7,7 @@
     ViewBag.Previous = Url.Action("People", "Wizard", new { id= Model.Workgroup.Id, roleFilter="RV"});
     ViewBag.Skip = Url.Action("Accounts", "Wizard", new {id = Model.Workgroup.Id});
     ViewBag.IsAdministrative = Model.Workgroup.Administrative;
-    ViewBag.IsAccountSync = Model.Workgroup.SyncAccounts;
+    ViewBag.IsAccountSync = false;
 }
 
 @section AdditionalScripts{
