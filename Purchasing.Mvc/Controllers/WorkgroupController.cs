@@ -519,16 +519,6 @@ namespace Purchasing.Mvc.Controllers
             //chartsString is a stringified json object. deserialized it into a list of WorkgroupFinjectorChart
             var charts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<WorkgroupFinjectorChart>>(chartsString);
 
-
-#if DEBUG
-            //TOTALLY FAKING THIS
-            //model = new WorkgroupFinjectorChart[]
-            //{
-            //    new WorkgroupFinjectorChart() { ChartString = "123456-12345-12345-12345-12345", Name = "Test Account 1" },
-            //    new WorkgroupFinjectorChart() { ChartString = "3110-13U20-ADNO003-410004-00-000-GLPEV00120-000000-0000-000000-000000", Name = "REGIFEE - FeeFinancialSegmentString Updated" },
-            //    new WorkgroupFinjectorChart() { ChartString = "3110-13U02-ADNO006-522201-43-000-0000000000-200504-0000-000000-000000", Name = "COMPUTING RESOURCES UNIT- GETCHELL [3-CRU9033]"}
-            //};
-#endif
             if(charts == null || charts.Count == 0)
             {
                 ErrorMessage = "No accounts were selected from Finjector.";
