@@ -592,9 +592,8 @@ namespace Purchasing.Mvc.Controllers
                 addCount++;
             }
 
-            //TODO: Test defaults for added above
 
-            Message = $"{uniqueChartStrings} accounts were found in the import from Finjector. {deleteCount} accounts were deleted. {updateCount} accounts were updated. {addCount} accounts were added.";
+            Message = $"{uniqueChartStrings} unique chart strings were found in the import from Finjector. {deleteCount} accounts were deleted. {updateCount} accounts were updated. {addCount} accounts were added.";
             
 
             return this.RedirectToAction(nameof(Accounts), new { id = id });
