@@ -7,43 +7,54 @@
 
 @section AdditionalScripts {
     @await Html.PartialAsync("_JsBundle", "~/bundles/common")
+    <script src="https://finjector.ucdavis.edu/finjector.js?v=7" type="text/javascript"></script>
 
     <script type="text/javascript">
 
         $("#finjector-import").on("click", function (e) {
-            alert("FAKING Importing from Finjector");
+            async function importFromFinjector() {
+                const chart = await window.Finjector.importBulkChartSegmentStrings();
+                if (chart && chart.status === "success") {
+                    if (chart.data.length > 0) {
+                        $("#found-info").html("");
+                        $("#found-info").append("<p>Click Update Accounts to update the accounts in the workgroup.</p>");
+                        $("#found-info").append("<p>Found " + chart.data.length + " chart strings</p>");
+                        for (var i = 0; i < chart.data.length; i++) {
+                            $("#found-info").append("<p><div><strong>" + chart.data[i].name + "</strong></div><div>" + chart.data[i].chartString + "</div></p>");
+                        }
 
-            var fakeData = [
-                { Name: "Test Account 1", ChartString: "123456-12345-12345-12345-12345" },
-                { Name: "REGIFEE - FeeFinancialSegmentString Updated", ChartString: "3110-13U20-ADNO003-410004-00-000-GLPEV00120-000000-0000-000000-000000" },
-                { Name: "COMPUTING RESOURCES UNIT- GETCHELL [3-CRU9033]", ChartString: "3110-13U02-ADNO006-522201-43-000-0000000000-200504-0000-000000-000000" }
-            ];
-            //assign the data to the hidden field
-            if (fakeData.length > 0) {
-                $("#found-info").html("");
-                $("#found-info").append("<p>Click Update Accounts to update the accounts in the workgroup.</p>");
-                $("#found-info").append("<p>Found " + fakeData.length + " chart strings</p>");
-                for (var i = 0; i < fakeData.length; i++) {
-                    $("#found-info").append("<p><div><strong>" + fakeData[i].Name + "</strong></div><div>" + fakeData[i].ChartString + "</div></p>");
+                        $("#found-info").show();
+                        //assigned fakeData to the hidden field charts
+                        $("#chartsString").val(JSON.stringify(chart.data));
+
+                        $("#submit-it").removeAttr("disabled");
+                        //refresh it so it is enabled
+                        $("#submit-it").button("refresh");
+                    }
+                    else {
+                        $("#found-info").html("");
+                        $("#found-info").append("<p>No Chart Strings from Finjector have been selected.</p>");
+                        $("#found-info").show();
+                        $("#chartsString").val("");
+
+                        //disable the update accounts button
+                        $("#submit-it").attr("disabled", "disabled");
+                    }
                 }
+                else {
+                    alert("Something went wrong with the CoA picker")
+                    $("#found-info").html("");
+                    $("#found-info").append("<p>No Chart Strings from Finjector have been selected.</p>");
+                    $("#found-info").show();
+                    $("#chartsString").val("");
 
-                $("#found-info").show();
-                //assigned fakeData to the hidden field charts
-                $("#chartsString").val(JSON.stringify(fakeData));
-
-                $("#submit-it").removeAttr("disabled");
-                //refresh it so it is enabled
-                $("#submit-it").button("refresh");
+                    //disable the update accounts button
+                    $("#submit-it").attr("disabled", "disabled");
+                }
+                return false;
             }
-            else {
-                $("#found-info").html("");
-                $("#found-info").append("<p>No Chart Strings from Finjector have been selected.</p>");
-                $("#found-info").show();
-                $("#chartsString").val("");
 
-                //disable the update accounts button
-                $("#submit-it").attr("disabled", "disabled");
-            }
+            importFromFinjector();
 
         });
 
