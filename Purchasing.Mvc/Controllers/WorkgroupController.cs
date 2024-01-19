@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using Serilog;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Models.AggieEnterprise;
+using Purchasing.Mvc.Models.Finjector;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -477,6 +478,110 @@ namespace Purchasing.Mvc.Controllers
 
             var viewModel = WorkgroupAccountModel.Create(Repository, workgroup, workgroupAccountToCreate);
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public ActionResult UpdateAccountsFromFinjector(int id)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
+            }
+
+            if (workgroup.Administrative)
+            {
+                ErrorMessage = "Accounts may not be added to an administrative workgroup.";
+                return this.RedirectToAction(nameof(Details), new { id = id });
+            }
+
+            return View(workgroup);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateAccountsFromFinjector(int id, string chartsString, bool onlyAdd = false)
+        {
+            var workgroup = _workgroupRepository.GetNullableById(id);
+            if (workgroup == null)
+            {
+                ErrorMessage = "Workgroup could not be found";
+                return this.RedirectToAction(nameof(WorkgroupController.Index), typeof(WorkgroupController).ControllerName(), new { showAll = false });
+            }
+
+            if (workgroup.Administrative)
+            {
+                ErrorMessage = "Accounts may not be added to an administrative workgroup.";
+                return this.RedirectToAction(nameof(Details), new { id = id });
+            }
+
+
+            //chartsString is a stringified json object. deserialized it into a list of WorkgroupFinjectorChart
+            var charts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<WorkgroupFinjectorChart>>(chartsString);
+
+            if(charts == null || charts.Count == 0)
+            {
+                ErrorMessage = "No accounts were selected from Finjector.";
+                return this.RedirectToAction(nameof(Details), new { id = id });
+            }
+
+            var defaults = _workgroupPermissionRepository.Queryable.Where(a => a.Workgroup.Id == id && a.IsAdmin == false && a.IsDefaultForAccount).Fetch(a => a.User).ToList();
+
+            //Find all workgroup accounts that are not in the model
+            var workgroupAccounts = _workgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == id).ToArray(); //All workgroup accounts
+            var workgroupAccountsToDelete = workgroupAccounts.Where(a => !charts.Any(b => b.ChartString == a.FinancialSegmentString)).ToArray();
+            var workgroupAccountsToUpdate = workgroupAccounts.Where(a => charts.Any(b => b.ChartString == a.FinancialSegmentString)).ToArray();
+            var workgroupAccountsToAdd = charts.Where(a => !workgroupAccounts.Any(b => b.FinancialSegmentString == a.ChartString)).ToArray();
+
+            var deleteCount = 0;
+            var updateCount = 0;
+            var addCount = 0;
+
+            //Get a count of the number of items in the model that have unique chart strings
+            var uniqueChartStrings = charts.Select(a => a.ChartString).Distinct().Count();
+
+            if (onlyAdd == false)
+            {
+                //Delete
+                foreach (var workgroupAccount in workgroupAccountsToDelete)
+                {
+                    _workgroupAccountRepository.Remove(workgroupAccount);
+                    deleteCount++;
+                }
+            }
+            //Update
+            foreach (var workgroupAccount in workgroupAccountsToUpdate)
+            {
+                var modelAccount = charts.First(a => a.ChartString == workgroupAccount.FinancialSegmentString);
+                if (modelAccount.Name.SafeTruncate(64) != workgroupAccount.Name)
+                {
+                    workgroupAccount.Name = modelAccount.Name.SafeTruncate(64); //64 characters
+                    workgroupAccount.FinancialSegmentString = modelAccount.ChartString;
+                    _workgroupAccountRepository.EnsurePersistent(workgroupAccount);
+                    updateCount++;
+                }
+            }
+            //Add
+            foreach (var workgroupAccount in workgroupAccountsToAdd)
+            {
+                var newWorkgroupAccount = new WorkgroupAccount()
+                {
+                    Workgroup = workgroup,
+                    Name = workgroupAccount.Name,
+                    FinancialSegmentString = workgroupAccount.ChartString,
+                    AccountManager = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.AccountManager)?.User,
+                    Approver = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.Approver)?.User,
+                    Purchaser = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.Purchaser)?.User
+                };
+                _workgroupAccountRepository.EnsurePersistent(newWorkgroupAccount);
+                addCount++;
+            }
+
+
+            Message = $"{uniqueChartStrings} unique chart strings were found in the import from Finjector. {deleteCount} accounts were deleted. {updateCount} accounts were updated. {addCount} accounts were added.";
+            
+
+            return this.RedirectToAction(nameof(Accounts), new { id = id });
         }
 
         /// <summary>

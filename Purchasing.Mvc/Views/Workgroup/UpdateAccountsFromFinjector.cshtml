@@ -1,0 +1,128 @@
+﻿@using Purchasing.Core.Domain
+@model Workgroup
+
+@{
+    ViewBag.Title = "Update Accounts From Finjector";
+}
+
+@section AdditionalScripts {
+    @await Html.PartialAsync("_JsBundle", "~/bundles/common")
+    <script src="https://finjector.ucdavis.edu/finjector.js?v=7" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        $("#finjector-import").on("click", function (e) {
+            async function importFromFinjector() {
+                const chart = await window.Finjector.importBulkChartSegmentStrings();
+                if (chart && chart.status === "success") {
+                    if (chart.data.length > 0) {
+                        $("#found-info").html("");
+                        $("#found-info").append("<p>Click Update Accounts to update the accounts in the workgroup.</p>");
+                        $("#found-info").append("<p>Found " + chart.data.length + " chart strings</p>");
+                        for (var i = 0; i < chart.data.length; i++) {
+                            $("#found-info").append("<p><div><strong>" + chart.data[i].name + "</strong></div><div>" + chart.data[i].chartString + "</div></p>");
+                        }
+
+                        $("#found-info").show();
+                        //assigned fakeData to the hidden field charts
+                        $("#chartsString").val(JSON.stringify(chart.data));
+
+                        $("#submit-it").removeAttr("disabled");
+                        //refresh it so it is enabled
+                        $("#submit-it").button("refresh");
+                    }
+                    else {
+                        $("#found-info").html("");
+                        $("#found-info").append("<p>No Chart Strings from Finjector have been selected.</p>");
+                        $("#found-info").show();
+                        $("#chartsString").val("");
+
+                        //disable the update accounts button
+                        $("#submit-it").attr("disabled", "disabled");
+                    }
+                }
+                else {
+                    alert("Something went wrong with the CoA picker")
+                    $("#found-info").html("");
+                    $("#found-info").append("<p>No Chart Strings from Finjector have been selected.</p>");
+                    $("#found-info").show();
+                    $("#chartsString").val("");
+
+                    //disable the update accounts button
+                    $("#submit-it").attr("disabled", "disabled");
+                }
+                return false;
+            }
+
+            importFromFinjector();
+
+        });
+
+    </script>
+
+
+}
+
+@section AdditionalStyles {
+    @await Html.PartialAsync("_CssBundle", "~/Css/multiselector")
+}
+
+
+<form method="post" asp-route-id="@Model.Id" asp-controller="Workgroup" asp-action="UpdateAccountsFromFinjector">
+    @Html.AntiForgeryToken()
+    @Html.Hidden("chartsString")
+
+
+    <section class="padded">
+        <header class="ui-widget-header ui-corner-top">Finjector Import</header>
+
+        <div class="section-contents">
+
+            <div class="section-text">
+                <p>To import Chart Strings from Finjector, you must first click the Import button, then select the team or folder you wish to import from the popup window.</p>
+                <p>If any are found, you will see that information below and you can then click the Update Accounts.</p>
+                <p>IMPORTANT!!! If the toggle [Only Add and Update Chart Strings] is set to "No" below, then when you click [Update Accounts] the system will also REMOVE any existing workgroup accounts or chart strings that do not match the ones appearing in the team or folder selected from Finjector.</p>
+            </div>
+
+
+
+
+
+            <ul>
+                <li>
+                    <div class="editor-field">
+                        <button type="button" id="finjector-import">Import From Finjector</button>
+                    </div>
+                </li>
+            </ul>
+
+            <ul>
+                <li>
+                    <div class="editor-field">
+                        <input id="onlyAdd" name="onlyAdd" type="checkbox" value="true" />
+                    </div>
+                    <div class="editor-label">Only Add and Update Chart Strings</div>
+                </li>
+            </ul>
+
+
+            <ul>
+                <li>
+
+                    <div class="editor-field">
+                        <button id="submit-it" type="submit" disabled="disabled">Update Accounts</button>  | @Html.ActionLink("Cancel", "Accounts", new { id = @Model.Id })
+                    </div>
+                </li>
+            </ul>
+
+
+            <div id="found-info">
+                <p>No Chart Strings from Finjector have been selected.</p>
+            </div>
+
+
+        </div>
+
+    </section>
+
+</form>
