@@ -567,7 +567,7 @@ namespace Purchasing.Mvc.Controllers
                 var newWorkgroupAccount = new WorkgroupAccount()
                 {
                     Workgroup = workgroup,
-                    Name = workgroupAccount.Name,
+                    Name = workgroupAccount.Name.SafeTruncate(64),
                     FinancialSegmentString = workgroupAccount.ChartString,
                     AccountManager = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.AccountManager)?.User,
                     Approver = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.Approver)?.User,
