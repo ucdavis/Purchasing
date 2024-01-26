@@ -805,13 +805,15 @@ namespace Purchasing.Core.Services
 
                 var address = supplier.Sites.Where(a => a.SupplierSiteCode == workgroupVendor.AeSupplierSiteCode).FirstOrDefault().Location;
 
+                //For AE completed orders, it looks like several of their fields are optional. When we upload we just send the code not these other values. So put in a non null value when needed
+
                 workgroupVendor.Name        = supplier.Name.SafeTruncate(45);
-                workgroupVendor.Line1       = address.AddressLine1.SafeTruncate(40);
+                workgroupVendor.Line1       = address.AddressLine1.SafeTruncate(40) ?? "na";
                 workgroupVendor.Line2       = address.AddressLine2.SafeTruncate(40);
                 workgroupVendor.Line3       = address.AddressLine3.SafeTruncate(40);
                 workgroupVendor.City        = address.City.SafeTruncate(40);
                 workgroupVendor.State       = address.State.SafeTruncate(2) ?? "--"; //Can be null in AE
-                workgroupVendor.Zip         = address.PostalCode.SafeTruncate(11);
+                workgroupVendor.Zip         = address.PostalCode.SafeTruncate(11) ?? "na";
                 workgroupVendor.CountryCode = address.CountryCode.SafeTruncate(2);
             }
 
