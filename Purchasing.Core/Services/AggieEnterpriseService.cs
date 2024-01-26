@@ -810,7 +810,7 @@ namespace Purchasing.Core.Services
                 workgroupVendor.Line2       = address.AddressLine2.SafeTruncate(40);
                 workgroupVendor.Line3       = address.AddressLine3.SafeTruncate(40);
                 workgroupVendor.City        = address.City.SafeTruncate(40);
-                workgroupVendor.State       = address.State.SafeTruncate(2);
+                workgroupVendor.State       = address.State.SafeTruncate(2) ?? "--"; //Can be null in AE
                 workgroupVendor.Zip         = address.PostalCode.SafeTruncate(11);
                 workgroupVendor.CountryCode = address.CountryCode.SafeTruncate(2);
             }
