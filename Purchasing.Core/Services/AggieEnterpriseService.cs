@@ -931,45 +931,54 @@ namespace Purchasing.Core.Services
                 return String.Empty;
             }
 
-            var _aggieClient = GetClient();
 
-            var parts = account.Split('-');
-            
-            var chart = parts[0];
-            var accountPart = parts[1];
-            var subAcct = parts.Length > 2 ? parts[2] : null;
+            try
+            {
+                var _aggieClient = GetClient();
 
-            var result = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, accountPart, subAcct);
-            var data = result.ReadData();
-            if (data.KfsConvertAccount.GlSegments != null)
-            {
-                var tempGlSegments = new GlSegments(data.KfsConvertAccount.GlSegments);
-                if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000"))
+                var parts = account.Split('-');
+
+                var chart = parts[0].ToUpper();
+                var accountPart = parts[1].ToUpper();
+                var subAcct = parts.Length > 2 ? parts[2].ToUpper() : null;
+
+                var result = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, accountPart, subAcct);
+                var data = result.ReadData();
+                if (data.KfsConvertAccount.GlSegments != null)
                 {
-                    //770000
-                    Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                    tempGlSegments.Account = _options.DefaultNaturalAccount;
-                }
-                return tempGlSegments.ToSegmentString();
-            }
-            else
-            {
-                if (data.KfsConvertAccount.PpmSegments != null)
-                {
-                    //rtValue.IsPPm = true; //Maybe want to return and store this?
-                    var tempPpmSegments = new PpmSegments(data.KfsConvertAccount.PpmSegments);
-                    if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000"))
+                    var tempGlSegments = new GlSegments(data.KfsConvertAccount.GlSegments);
+                    if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000"))
                     {
                         //770000
-                        Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                        tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                        Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                        tempGlSegments.Account = _options.DefaultNaturalAccount;
                     }
-                    return tempPpmSegments.ToSegmentString();
+                    return tempGlSegments.ToSegmentString();
                 }
                 else
                 {
-                    return String.Empty;
+                    if (data.KfsConvertAccount.PpmSegments != null)
+                    {
+                        //rtValue.IsPPm = true; //Maybe want to return and store this?
+                        var tempPpmSegments = new PpmSegments(data.KfsConvertAccount.PpmSegments);
+                        if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000"))
+                        {
+                            //770000
+                            Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                            tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                        }
+                        return tempPpmSegments.ToSegmentString();
+                    }
+                    else
+                    {
+                        return String.Empty;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error converting KFS Account {account}", account);
+                return String.Empty;
             }
         }
 
