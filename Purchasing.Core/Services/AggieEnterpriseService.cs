@@ -340,7 +340,7 @@ namespace Purchasing.Core.Services
 
             var result = await _aggieClient.ErpUserSearch.ExecuteAsync(filter);
             var data = result.ReadData();
-            var users = data.ErpUserSearch.Data.Where(a => a.Active == true).ToArray();
+            var users = data.ErpUserSearch.Data.Where(a => a.Active == true).Distinct().ToArray();
             if(users.Length > 1)
             {
                 throw new Exception($"Multiple Active Aggie Enterprise users found for {purchaserKerb}");
