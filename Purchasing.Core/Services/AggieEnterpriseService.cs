@@ -1,4 +1,4 @@
-﻿using AggieEnterpriseApi;
+using AggieEnterpriseApi;
 using AggieEnterpriseApi.Extensions;
 using AggieEnterpriseApi.Types;
 using AggieEnterpriseApi.Validation;
@@ -166,7 +166,7 @@ namespace Purchasing.Core.Services
                 Log.Error(ex, "Error validating account {financialSegmentString}", financialSegmentString);
                 var rtValue = new AccountValidationModel();
                 rtValue.IsValid = true;
-                rtValue.Warnings.Add(new KeyValuePair<string, string>("Unknown Error", "Warning, there was an error trying to validate this account. If it is valid, you may continue. If it isn't valid, please edit the order to fix the account used. If this problem persists, please use the Help menu to submit a help ticket."));
+                rtValue.Warnings.Add(new KeyValuePair<string, string>("Account", "Warning, there was an error trying to validate this account. You may be able to continue, but may see errors if trying to upload a requisition to Aggie Enterprise.  The order can be edited to update the account used.  If this problem persists, please use the Help menu to submit a help ticket."));
                 return rtValue;
             }
         }
