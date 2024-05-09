@@ -73,91 +73,102 @@ namespace Purchasing.Core.Services
 
         public async Task<AccountValidationModel> ValidateAccount(string financialSegmentString, bool validateCVRs = true)
         {
-            var _aggieClient = GetClient();
-            var rtValue = new AccountValidationModel();
-            var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(financialSegmentString);
-
-            if (segmentStringType == FinancialChartStringType.Gl)
+            try
             {
-                var result = await _aggieClient.GlValidateChartstring.ExecuteAsync(financialSegmentString, validateCVRs);
+                var _aggieClient = GetClient();
+                var rtValue = new AccountValidationModel();
+                var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(financialSegmentString);
 
-                var data = result.ReadData();
-
-                rtValue.IsValid = data.GlValidateChartstring.ValidationResponse.Valid;
-                rtValue.IsPpm = false;
-
-                if (!rtValue.IsValid)
+                if (segmentStringType == FinancialChartStringType.Gl)
                 {
-                    foreach (var err in data.GlValidateChartstring.ValidationResponse.ErrorMessages)
+                    var result = await _aggieClient.GlValidateChartstring.ExecuteAsync(financialSegmentString, validateCVRs);
+
+                    var data = result.ReadData();
+
+                    rtValue.IsValid = data.GlValidateChartstring.ValidationResponse.Valid;
+                    rtValue.IsPpm = false;
+
+                    if (!rtValue.IsValid)
                     {
-                        rtValue.Messages.Add(err);
+                        foreach (var err in data.GlValidateChartstring.ValidationResponse.ErrorMessages)
+                        {
+                            rtValue.Messages.Add(err);
+                        }
+                    }
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Entity", $"{data.GlValidateChartstring.SegmentNames.EntityName} ({data.GlValidateChartstring.Segments.Entity})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Fund", $"{data.GlValidateChartstring.SegmentNames.FundName} ({data.GlValidateChartstring.Segments.Fund})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Department", $"{data.GlValidateChartstring.SegmentNames.DepartmentName} ({data.GlValidateChartstring.Segments.Department})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Account", $"{data.GlValidateChartstring.SegmentNames.AccountName} ({data.GlValidateChartstring.Segments.Account})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Purpose", $"{data.GlValidateChartstring.SegmentNames.PurposeName} ({data.GlValidateChartstring.Segments.Purpose})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Project", $"{data.GlValidateChartstring.SegmentNames.ProjectName} ({data.GlValidateChartstring.Segments.Project})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Program", $"{data.GlValidateChartstring.SegmentNames.ProgramName} ({data.GlValidateChartstring.Segments.Program})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Activity", $"{data.GlValidateChartstring.SegmentNames.ActivityName} ({data.GlValidateChartstring.Segments.Activity})"));
+
+                    if (data.GlValidateChartstring.Warnings != null)
+                    {
+                        foreach (var warn in data.GlValidateChartstring.Warnings)
+                        {
+                            rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
+                        }
+                    }
+
+                    return rtValue;
+                }
+
+                if (segmentStringType == FinancialChartStringType.Ppm)
+                {
+                    var result = await _aggieClient.PpmSegmentStringValidate.ExecuteAsync(financialSegmentString);
+
+                    var data = result.ReadData();
+
+                    rtValue.IsValid = data.PpmSegmentStringValidate.ValidationResponse.Valid;
+                    rtValue.IsPpm = true;
+                    if (!rtValue.IsValid)
+                    {
+                        foreach (var err in data.PpmSegmentStringValidate.ValidationResponse.ErrorMessages)
+                        {
+                            rtValue.Messages.Add(err);
+                        }
+                    }
+
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Project", data.PpmSegmentStringValidate.Segments.Project));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Task", data.PpmSegmentStringValidate.Segments.Task));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Organization", data.PpmSegmentStringValidate.Segments.Organization));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Expenditure Type", data.PpmSegmentStringValidate.Segments.ExpenditureType));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Award", data.PpmSegmentStringValidate.Segments.Award));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Funding Source", data.PpmSegmentStringValidate.Segments.FundingSource));
+
+                    if (data.PpmSegmentStringValidate.Warnings != null)
+                    {
+                        foreach (var warn in data.PpmSegmentStringValidate.Warnings)
+                        {
+                            rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
+                        }
+                    }
+
+                    return rtValue;
+                }
+
+                if (segmentStringType == FinancialChartStringType.Invalid)
+                {
+                    {
+                        rtValue.Messages.Add("Invalid Financial Chart String format");
+                        rtValue.IsValid = false;
                     }
                 }
-                rtValue.Details.Add(new KeyValuePair<string, string>("Entity", $"{data.GlValidateChartstring.SegmentNames.EntityName} ({data.GlValidateChartstring.Segments.Entity})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Fund", $"{data.GlValidateChartstring.SegmentNames.FundName} ({data.GlValidateChartstring.Segments.Fund})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Department", $"{data.GlValidateChartstring.SegmentNames.DepartmentName} ({data.GlValidateChartstring.Segments.Department})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Account", $"{data.GlValidateChartstring.SegmentNames.AccountName} ({data.GlValidateChartstring.Segments.Account})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Purpose", $"{data.GlValidateChartstring.SegmentNames.PurposeName} ({data.GlValidateChartstring.Segments.Purpose})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Project", $"{data.GlValidateChartstring.SegmentNames.ProjectName} ({data.GlValidateChartstring.Segments.Project})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Program", $"{data.GlValidateChartstring.SegmentNames.ProgramName} ({data.GlValidateChartstring.Segments.Program})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Activity", $"{data.GlValidateChartstring.SegmentNames.ActivityName} ({data.GlValidateChartstring.Segments.Activity})"));
 
-                if (data.GlValidateChartstring.Warnings != null)
-                {
-                    foreach (var warn in data.GlValidateChartstring.Warnings)
-                    {
-                        rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
-                    }
-                }
 
+                rtValue.IsValid = false;
+                return rtValue; //It isn't a GL or PPM string, so it's not valid
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error validating account {financialSegmentString}", financialSegmentString);
+                var rtValue = new AccountValidationModel();
+                rtValue.IsValid = true;
+                rtValue.Warnings.Add(new KeyValuePair<string, string>("Unknown Error", "Warning, there was an error trying to validate this account. If it is valid, you may continue. If it isn't valid, please edit the order to fix the account used. If this problem persists, please use the Help menu to submit a help ticket."));
                 return rtValue;
             }
-
-            if (segmentStringType == FinancialChartStringType.Ppm)
-            {
-                var result = await _aggieClient.PpmSegmentStringValidate.ExecuteAsync(financialSegmentString);
-
-                var data = result.ReadData();
-
-                rtValue.IsValid = data.PpmSegmentStringValidate.ValidationResponse.Valid;
-                rtValue.IsPpm = true;
-                if (!rtValue.IsValid)
-                {
-                    foreach (var err in data.PpmSegmentStringValidate.ValidationResponse.ErrorMessages)
-                    {
-                        rtValue.Messages.Add(err);
-                    }
-                }
-
-                rtValue.Details.Add(new KeyValuePair<string, string>("Project", data.PpmSegmentStringValidate.Segments.Project));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Task", data.PpmSegmentStringValidate.Segments.Task));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Organization", data.PpmSegmentStringValidate.Segments.Organization));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Expenditure Type", data.PpmSegmentStringValidate.Segments.ExpenditureType));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Award", data.PpmSegmentStringValidate.Segments.Award));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Funding Source", data.PpmSegmentStringValidate.Segments.FundingSource));
-
-                if (data.PpmSegmentStringValidate.Warnings != null)
-                {
-                    foreach (var warn in data.PpmSegmentStringValidate.Warnings)
-                    {
-                        rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
-                    }
-                }
-
-                return rtValue;
-            }
-
-            if(segmentStringType == FinancialChartStringType.Invalid)
-            {
-                {
-                    rtValue.Messages.Add("Invalid Financial Chart String format");
-                    rtValue.IsValid = false;
-                }
-            }
-
-
-            rtValue.IsValid = false;
-            return rtValue; //It isn't a GL or PPM string, so it's not valid
         }
 
         public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb)
