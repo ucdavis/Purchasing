@@ -484,7 +484,7 @@ div.dataTables_wrapper { margin: 1em 0 2em 0;}
 #WizardNavigation li:nth-child(2) a {padding-right: 10px;}
 #WizardNavigation li:nth-child(3) a {padding-left: 10px;}
 
-#error-message, #status-message, #browser-warning, #error-message-account {
+#error-message, #status-message, #browser-warning, #error-message-account, #warning-message-account {
     border: 2px solid;
     border-radius: 5px;
     -moz-border-radius: 5px;
@@ -500,6 +500,11 @@ div.dataTables_wrapper { margin: 1em 0 2em 0;}
 #error-message-account {
     border-color: red;
     background-color: #faf5f6;
+    text-align: left;
+}
+#warning-message-account {
+    border-color: red;
+    background-color: lightgoldenrodyellow;
     text-align: left;
 }
 #status-message {
