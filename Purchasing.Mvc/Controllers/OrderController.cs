@@ -729,6 +729,7 @@ namespace Purchasing.Mvc.Controllers
                 var uniqueFinancialSegments = model.Order.Splits.Where(x => x.FinancialSegmentString != null).Select(x => x.FinancialSegmentString).Distinct().ToList();
                 var uniqueKfsAccounts = model.Order.Splits.Where(a => a.FinancialSegmentString == null  && a.KfsAccount != null && a.KfsAccount != string.Empty).Select(a => a.KfsAccount).Distinct().ToList();
                 var validationDict = new Dictionary<string, string>();
+                var validationWarningsDict = new Dictionary<string, string>();
                 if (uniqueKfsAccounts.Any())
                 {
                     foreach (var account in uniqueKfsAccounts)
@@ -745,6 +746,10 @@ namespace Purchasing.Mvc.Controllers
                             {
                                 validationDict.Add(account, $"Converted KFS account ({convertedAccount}) has validation errors in AE: {validated.Message}");
                             }
+                            if(validated.Warnings.Any())
+                            {
+                                validationWarningsDict.Add(account, $"Converted KFS account ({convertedAccount}) has validation warnings in AE: {string.Join(", ", validated.Warnings)}");
+                            }
                         }
                     }
                 }
@@ -756,6 +761,10 @@ namespace Purchasing.Mvc.Controllers
                         if (!validated.IsValid)
                         {
                             validationDict.Add(financialSegment, validated.Message);
+                        }
+                        if(validated.Warnings.Any())
+                        {
+                            validationWarningsDict.Add(financialSegment, string.Join(", ", validated.Warnings));
                         }
                     }
                 }
@@ -769,6 +778,16 @@ namespace Purchasing.Mvc.Controllers
 
                     model.HasInvalidAccounts = true;
                     model.InvalidAccountsMessage = msg;
+                }
+                if(validationWarningsDict.Any())
+                {
+                    var msg = "The following accounts/CoA have warnings: <br/>";
+                    foreach (var item in validationWarningsDict)
+                    {
+                        msg = $"{msg}Account/CoA:{item.Key}<br/>Warning: {item.Value}<br/><br/>";
+                    }
+
+                    model.AccountsWarningsMessage = msg;
                 }
             }
             
