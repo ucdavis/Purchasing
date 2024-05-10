@@ -321,7 +321,27 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
 
             #region Assert
             Assert.AreEqual(1, expectedAttribute.Count(), "HttpPostAttribute not found");
-            Assert.AreEqual(2, allAttributes.Count());
+            Assert.AreEqual(3, allAttributes.Count());
+            #endregion Assert
+        }
+
+        [TestMethod]
+        public void TestControllerMethodRequestContainsExpectedAttributes3()
+        {
+            #region Arrange
+            var controllerClass = ControllerClass;
+            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Request");
+            var element = controllerMethod.ElementAt(1);
+            #endregion Arrange
+
+            #region Act
+            var expectedAttribute = element.GetFilteredCustomAttributes(true).OfType<RequestFormLimitsAttribute>();
+            var allAttributes = element.GetFilteredCustomAttributes(true);
+            #endregion Act
+
+            #region Assert
+            Assert.AreEqual(1, expectedAttribute.Count(), "RequestFormLimitsAttribute not found");
+            Assert.AreEqual(3, allAttributes.Count());
             #endregion Assert
         }
 

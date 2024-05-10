@@ -355,6 +355,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         public new async Task<ActionResult> Request(OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
@@ -418,6 +419,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
+        [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         public async Task<ActionResult> Edit(int id, OrderViewModel model)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -532,6 +534,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
+        [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         public async Task<ActionResult> Copy(int id, OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
