@@ -26,6 +26,7 @@ namespace Purchasing.Core.Services
         Task<List<AeJobErrorDetailCleaned>> LookupOracleErrors(string requestId);
 
         Task<Commodity[]> GetPurchasingCategories();
+        Task<Commodity[]> SearchCommodities(string query);
         Task<UnitOfMeasure[]> GetUnitOfMeasures();
 
         Task<List<IdAndName>> SearchSupplier(string query);
@@ -484,6 +485,43 @@ namespace Purchasing.Core.Services
             }).ToArray();
         }
 
+        public async Task<Commodity[]> SearchCommodities(string query)
+        {
+            var _aggieClient = GetClient();
+
+            var filter = new ScmPurchasingCategoryFilterInput();
+            filter.SearchCommon = new SearchCommonInputs();
+            filter.SearchCommon.Limit = 20;
+            filter.Name = new StringFilterInput { Contains = query.Trim().Replace(" ", "%") };
+
+            var filter2 = new ScmPurchasingCategoryFilterInput();
+            filter2.SearchCommon = new SearchCommonInputs();
+            filter2.SearchCommon.Limit = 1;
+            filter2.Code = new StringFilterInput { Eq = query.Trim() };
+
+
+            var result = await _aggieClient.ScmPurchasingCategorySearch.ExecuteAsync(filter);
+            var result2 = await _aggieClient.ScmPurchasingCategorySearch.ExecuteAsync(filter2);
+
+            var data = result.ReadData();
+            var data2 = result2.ReadData();
+
+            var temp1 = data.ScmPurchasingCategorySearch.Data.Select(a => new Commodity
+            {
+                Id = a.Code,
+                Name = a.Name,
+                IsActive = a.Enabled && DateTime.UtcNow.ToPacificTime().IsActiveDate(a.StartDateActive, a.EndDateActive)
+            }).ToArray();
+
+            var temp2 = data2.ScmPurchasingCategorySearch.Data.Select(a => new Commodity
+            {
+                Id = a.Code,
+                Name = a.Name,
+                IsActive = a.Enabled && DateTime.UtcNow.ToPacificTime().IsActiveDate(a.StartDateActive, a.EndDateActive)
+            }).ToArray();
+
+            return temp1.Where(a => a.IsActive).Union(temp2.Where(a => a.IsActive)).Distinct().ToArray();
+        }
 
         /// <summary>
         /// Potentially we could cache this lookup, but it should really only be a SIT2 test thing....
