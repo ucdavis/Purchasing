@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Purchasing.Core.Helpers
 {
@@ -37,6 +38,31 @@ namespace Purchasing.Core.Helpers
             }
 
             return value.Substring(0, max);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="regEx"></param>
+        /// <returns></returns>
+        public static string SafeRegexRemove(this string value, string regEx = @"[^a-zA-Z0-9_\-@#&() ]")
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+
+            try
+            {
+                return Regex.Replace(value, regEx, string.Empty);
+            }
+            catch (Exception)
+            {
+                return value;
+            }
+
+
         }
     }
 }
