@@ -2752,6 +2752,10 @@ namespace Purchasing.Tests.RepositoryTests
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
             expectedFields.Add(new NameAndType("IsActive", "System.Boolean", new List<string>()));
+            expectedFields.Add(new NameAndType("IsValidInAggieEnterprise", "System.Boolean", new List<string>
+            {
+                 "[System.ComponentModel.DataAnnotations.Schema.NotMappedAttribute()]"
+            }));
             expectedFields.Add(new NameAndType("Line1", "System.String", new List<string>
             {
                  "[System.ComponentModel.DataAnnotations.RequiredAttribute()]", 
