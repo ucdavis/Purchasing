@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using FluentNHibernate.Mapping;
 using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
@@ -30,6 +31,7 @@ namespace Purchasing.Core.Domain
         [StringLength(15)] //Length confirmed in Slack.
         public virtual string AeSupplierSiteCode { get; set; }
 
+        [NotMapped]
         public virtual bool IsValidInAggieEnterprise { get; set; } = true; //This is not a mapped field, I'll set it from the review page
 
         [Required]
