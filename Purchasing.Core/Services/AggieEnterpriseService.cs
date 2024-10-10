@@ -639,8 +639,8 @@ namespace Purchasing.Core.Services
                     search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.AeSupplierNumber } };
                     var searchResult1 = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
                     var searchData1 = searchResult1.ReadData();
-                    rtValue.SupplierNumber = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.SupplierNumber.ToString();
-                    rtValue.SupplierSiteCode = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.Sites.Where(a => a.SupplierSiteCode.Equals(vendor.AeSupplierSiteCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.SupplierSiteCode;
+                    rtValue.SupplierNumber = searchData1.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).FirstOrDefault()?.SupplierNumber.ToString();
+                    rtValue.SupplierSiteCode = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.Sites.Where(a => a.SupplierSiteCode.Equals(vendor.AeSupplierSiteCode, StringComparison.OrdinalIgnoreCase) && a.EligibleForUse).FirstOrDefault()?.SupplierSiteCode;
                 }
                 else
                 {
@@ -648,9 +648,10 @@ namespace Purchasing.Core.Services
                     var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
                     var searchData = searchResult.ReadData();
 
-                    rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.First().SupplierNumber.ToString();
+                    rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).First().SupplierNumber.ToString();
 
                     rtValue.SupplierSiteCode = searchData.ScmSupplierSearch.Data.First().Sites.Where(a =>
+                        a.EligibleForUse &&
                         a.SupplierSiteCode.Contains("PUR") &&
                         a.Location.City.Equals(vendor.City, System.StringComparison.OrdinalIgnoreCase) &&
                         a.Location.State.Equals(vendor.State, System.StringComparison.OrdinalIgnoreCase) &&

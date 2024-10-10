@@ -30,6 +30,8 @@ namespace Purchasing.Core.Domain
         [StringLength(15)] //Length confirmed in Slack.
         public virtual string AeSupplierSiteCode { get; set; }
 
+        public virtual bool IsValidInAggieEnterprise { get; set; } = true; //This is not a mapped field, I'll set it from the review page
+
         [Required]
         [StringLength(45)]
         public virtual string Name { get; set; }
