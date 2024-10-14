@@ -608,6 +608,18 @@ namespace Purchasing.Mvc.Controllers
             }
             
             model.Vendor = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Vendor).Single();
+            if(model.Vendor != null && !string.IsNullOrWhiteSpace( model.Vendor.AeSupplierNumber ))
+            {
+                var aeVendor = await _aggieEnterpriseService.GetSupplier(model.Vendor);
+                if(aeVendor != null)
+                {
+                    model.Vendor.IsValidInAggieEnterprise = true;
+                }
+                else
+                {
+                    model.Vendor.IsValidInAggieEnterprise = false;
+                }
+            }
             model.Address = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Address).Single();
             model.LineItems =
                 _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToList();

@@ -639,8 +639,8 @@ namespace Purchasing.Core.Services
                     search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.AeSupplierNumber } };
                     var searchResult1 = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
                     var searchData1 = searchResult1.ReadData();
-                    rtValue.SupplierNumber = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.SupplierNumber.ToString();
-                    rtValue.SupplierSiteCode = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.Sites.Where(a => a.SupplierSiteCode.Equals(vendor.AeSupplierSiteCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.SupplierSiteCode;
+                    rtValue.SupplierNumber = searchData1.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).FirstOrDefault()?.SupplierNumber.ToString();
+                    rtValue.SupplierSiteCode = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.Sites.Where(a => a.SupplierSiteCode.Equals(vendor.AeSupplierSiteCode, StringComparison.OrdinalIgnoreCase) && a.EligibleForUse).FirstOrDefault()?.SupplierSiteCode;
                 }
                 else
                 {
@@ -648,9 +648,10 @@ namespace Purchasing.Core.Services
                     var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
                     var searchData = searchResult.ReadData();
 
-                    rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.First().SupplierNumber.ToString();
+                    rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).First().SupplierNumber.ToString();
 
                     rtValue.SupplierSiteCode = searchData.ScmSupplierSearch.Data.First().Sites.Where(a =>
+                        a.EligibleForUse &&
                         a.SupplierSiteCode.Contains("PUR") &&
                         a.Location.City.Equals(vendor.City, System.StringComparison.OrdinalIgnoreCase) &&
                         a.Location.State.Equals(vendor.State, System.StringComparison.OrdinalIgnoreCase) &&
@@ -742,7 +743,7 @@ namespace Purchasing.Core.Services
             var result = await _aggieClient.SupplierNameAndNumberSupplierSearch.ExecuteAsync(filter, query.Trim());
             var data = result.ReadData();
 
-            if (data.ScmSupplierByNumber != null)
+            if (data.ScmSupplierByNumber != null && data.ScmSupplierByNumber.EligibleForUse)
             {
                 rtValue.Add(new IdAndName(
                 
@@ -751,9 +752,9 @@ namespace Purchasing.Core.Services
                 ));
 
             }
-            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0)
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).Count() > 0)
             {
-                rtValue.AddRange(data.ScmSupplierSearch.Data.Select(a => new IdAndName(a.SupplierNumber.ToString(), a.Name)));
+                rtValue.AddRange(data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).Select(a => new IdAndName(a.SupplierNumber.ToString(), a.Name)));
 
             }
 
@@ -778,15 +779,15 @@ namespace Purchasing.Core.Services
             var data = result.ReadData();
 
             var rtValue = new List<IdAndName>();
-            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0 && data.ScmSupplierSearch.Data.First().Sites != null)
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).Count() > 0 && data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).First().Sites != null)
             {
-                var temp = data.ScmSupplierSearch.Data.First().Sites;
+                var temp = data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).First().Sites;
 
                 //Do it this way so we can order the results
-                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("DF PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
-                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("DF PAY")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
-                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
-                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("PAY")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => a.EligibleForUse && a.SupplierSiteCode.StartsWith("DF PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => a.EligibleForUse && a.SupplierSiteCode.StartsWith("DF PAY")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => a.EligibleForUse && a.SupplierSiteCode.StartsWith("PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => a.EligibleForUse && a.SupplierSiteCode.StartsWith("PAY")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
 
                 //This was wrong because they added site codes with more than PUR and PAY
                 //We need both PUR and PAY addresses. But only PUR can be used with AE
@@ -810,22 +811,22 @@ namespace Purchasing.Core.Services
             var result = await _aggieClient.ScmSupplierSearch.ExecuteAsync(filter);
             var data = result.ReadData();
 
-            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0)
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).Count() > 0)
             {
-                var supplier = data.ScmSupplierSearch.Data.First();
+                var supplier = data.ScmSupplierSearch.Data.First(a => a.EligibleForUse);
 
-                var address = supplier.Sites.Where(a => a.SupplierSiteCode == workgroupVendor.AeSupplierSiteCode).FirstOrDefault().Location;
+                var address = supplier.Sites.Where(a => a.SupplierSiteCode == workgroupVendor.AeSupplierSiteCode && a.EligibleForUse).FirstOrDefault()?.Location;
 
                 //For AE completed orders, it looks like several of their fields are optional. When we upload we just send the code not these other values. So put in a non null value when needed
 
                 workgroupVendor.Name        = supplier.Name.SafeTruncate(45);
-                workgroupVendor.Line1       = address.AddressLine1.SafeTruncate(40) ?? "na";
-                workgroupVendor.Line2       = address.AddressLine2.SafeTruncate(40);
-                workgroupVendor.Line3       = address.AddressLine3.SafeTruncate(40);
-                workgroupVendor.City        = address.City.SafeTruncate(40);
-                workgroupVendor.State       = address.State.SafeTruncate(2) ?? "--"; //Can be null in AE
-                workgroupVendor.Zip         = address.PostalCode.SafeTruncate(11) ?? "na";
-                workgroupVendor.CountryCode = address.CountryCode.SafeTruncate(2);
+                workgroupVendor.Line1       = address?.AddressLine1.SafeTruncate(40) ?? "na";
+                workgroupVendor.Line2       = address?.AddressLine2.SafeTruncate(40);
+                workgroupVendor.Line3       = address?.AddressLine3.SafeTruncate(40);
+                workgroupVendor.City        = address?.City.SafeTruncate(40);
+                workgroupVendor.State       = address?.State.SafeTruncate(2) ?? "--"; //Can be null in AE
+                workgroupVendor.Zip         = address?.PostalCode.SafeTruncate(11) ?? "na";
+                workgroupVendor.CountryCode = address?.CountryCode.SafeTruncate(2);
             }
 
             return workgroupVendor;
