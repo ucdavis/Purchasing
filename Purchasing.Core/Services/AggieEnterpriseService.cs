@@ -226,6 +226,7 @@ namespace Purchasing.Core.Services
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
                     //RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),  //Don't pass. Oracle will default to 7 days in the future.   
                     LineType = ScmPurchaseRequisitionLineType.Quantity,
+                    SupplierItem = line.CatalogNumber.SafeRegexRemove().SafeTruncate(300),
                 };
                 if (shippingLocation != null && !string.IsNullOrWhiteSpace(shippingLocation.AeLocationCode))
                 {
