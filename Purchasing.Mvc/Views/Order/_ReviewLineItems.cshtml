@@ -3,7 +3,7 @@
 <section id="line-items" class="ui-corner-all display-form">
 
     <header class="ui-corner-top ui-widget-header showInNav">Line Items </header>
-   
+
     <div class="section-contents">
         <div class="col1">
             @if (Model.Order.ApUser != null)
@@ -59,7 +59,7 @@
                     count++;
                     var hasLinesplits = Model.HasLineSplits;
                     var hasMoreInfo = line.Commodity != null || !string.IsNullOrWhiteSpace(line.Notes) || !string.IsNullOrWhiteSpace(line.Url);
-                
+
                     <tr class="row-item @(odd ? "row-odd" : "row-even") @(!hasLinesplits && !hasMoreInfo ? "row-bottom" : string.Empty)">
                         <td class="lineitem">@count</td>
                         <td>@string.Format("{0:0.###}", line.Quantity)</td>
@@ -69,9 +69,11 @@
                         <td>@(line.Commodity != null ? line.Commodity.Name : "n/a")</td>
                         <td>@line.UnitPrice.ToString("c")</td>
                     </tr>
-                              
+
                     if (hasLinesplits)
                     {
+                        var showKfsInfo = Model.Splits.Any(x => !string.IsNullOrWhiteSpace(x.SubAccount)) || Model.Splits.Any(x => !string.IsNullOrWhiteSpace(x.Project));
+
                         <tr class="@(odd ? "row-odd" : "row-even") @(hasMoreInfo ? "row-bottom" : string.Empty)">
                             <td class="lineitem"></td>
                             <td colspan="7">
@@ -82,8 +84,11 @@
                                             <tr><td colspan="4">Line Item Split</td></tr>
                                             <tr>
                                                 <th>Account</th>
-                                                <th>SubAccount</th>
-                                                <th>Project</th>
+                                                @if (showKfsInfo)
+                                                {
+                                                    <th>SubAccount</th>
+                                                    <th>Project</th>
+                                                }
                                                 <th>Amount</th>
                                             </tr>
                                         </thead>
@@ -95,14 +100,22 @@
                                                     {
                                                         var link = $"https://finjector.ucdavis.edu/Details/{split.FinancialSegmentString}";
                                                         <td><a href=@link target="_blank" style="text-decoration:underline">@split.AccountDisplay</a> </td>
+                                                        @if (showKfsInfo)
+                                                        {
+                                                            <td></td>
+                                                            <td></td>
+                                                        }
                                                     }
                                                     else
                                                     {
                                                         <td>@(string.IsNullOrWhiteSpace(split.Account) && string.IsNullOrWhiteSpace(split.FinancialSegmentString) ? "n/a" : split.AccountDisplay)</td>
-                                                    }
-                                                    
-                                                    <td>@(string.IsNullOrWhiteSpace(split.SubAccount) ? "n/a" : Model.GetSubAccountDisplayForSplit(split))</td>
-                                                    <td>@(string.IsNullOrWhiteSpace(split.Project) ? "n/a" : split.Project)</td>
+                                                        @if(showKfsInfo)
+                                                        {
+                                                            <td>@(string.IsNullOrWhiteSpace(split.SubAccount) ? "n/a" : Model.GetSubAccountDisplayForSplit(split))</td>
+                                                            <td>@(string.IsNullOrWhiteSpace(split.Project) ? "n/a" : split.Project)</td>
+                                                        }
+                                                    }                                                    
+
                                                     <td>@split.Amount</td>
                                                 </tr>
                                             }
