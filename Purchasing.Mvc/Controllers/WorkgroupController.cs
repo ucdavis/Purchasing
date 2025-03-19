@@ -2161,6 +2161,7 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(results);
         }
 
+        [AllowAnonymous]
         public async Task<JsonNetResult> SearchAddress(string searchTerm)
         {
 
