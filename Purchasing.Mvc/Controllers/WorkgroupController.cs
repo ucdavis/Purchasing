@@ -2161,7 +2161,7 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(results);
         }
 
-        [AllowAnonymous]
+        //This is also in the order controller as it is needed to add a shipping address from within an order.
         public async Task<JsonNetResult> SearchAddress(string searchTerm)
         {
 
@@ -2170,6 +2170,7 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(results.Select(a => new { a.Id, a.Name }));
         }
 
+        //This is also in the order controller as it is needed to add a shipping address from within an order.
         public async Task<JsonNetResult> GetAddress(string searchTerm)
         {
             var workgroupAddress = new WorkgroupAddress();
