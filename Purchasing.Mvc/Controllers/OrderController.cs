@@ -1483,7 +1483,24 @@ namespace Purchasing.Mvc.Controllers
             return Json(new { success = false, message = rtValue.Message});
 
         }
-        
+
+        public async Task<JsonNetResult> SearchAddress(string searchTerm)
+        {
+            var results = await _aggieEnterpriseService.SearchShippingAddress(searchTerm);
+
+            return new JsonNetResult(results.Select(a => new { a.Id, a.Name }));
+        }
+
+        public async Task<JsonNetResult> GetAddress(string searchTerm)
+        {
+            var workgroupAddress = new WorkgroupAddress();
+            workgroupAddress.AeLocationCode = searchTerm;
+            var results = await _aggieEnterpriseService.GetShippingAddress(workgroupAddress);
+
+            return new JsonNetResult(new { results.Room, results.Building, results.City, results.State, results.Zip, results.Address });
+
+        }
+
         [HttpPost]
         public ActionResult AddVendor(int workgroupId, WorkgroupVendor vendor)
         {

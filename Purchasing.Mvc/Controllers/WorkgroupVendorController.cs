@@ -24,13 +24,14 @@ namespace Purchasing.Mvc.Controllers
     {
         private readonly IRepository<Vendor> _vendorRepository;
         private readonly IRepository<VendorAddress> _vendorAddressRepository;
+        private readonly IRepository<WorkgroupVendor> _workgroupVendorRepository;
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISearchService _searchService;
         private readonly ISecurityService _securityService;
         private readonly IWorkgroupService _workgroupService;
         private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
-        public WorkgroupVendorController(IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository, IRepositoryFactory repositoryFactory, ISearchService searchService, ISecurityService securityService, IWorkgroupService workgroupService, IAggieEnterpriseService aggieEnterpriseService)
+        public WorkgroupVendorController(IRepository<Vendor> vendorRepository, IRepository<VendorAddress> vendorAddressRepository,  IRepositoryFactory repositoryFactory, ISearchService searchService, ISecurityService securityService, IWorkgroupService workgroupService, IAggieEnterpriseService aggieEnterpriseService, IRepository<WorkgroupVendor> workgroupVendorRepository)
         {
             _vendorRepository = vendorRepository;
             _vendorAddressRepository = vendorAddressRepository;
@@ -39,6 +40,7 @@ namespace Purchasing.Mvc.Controllers
             _securityService = securityService;
             _workgroupService = workgroupService;
             _aggieEnterpriseService = aggieEnterpriseService;
+            _workgroupVendorRepository = workgroupVendorRepository;
         }
 
         public async Task<JsonNetResult> SearchVendor(string searchTerm)
@@ -58,6 +60,19 @@ namespace Purchasing.Mvc.Controllers
             var results = await _aggieEnterpriseService.SearchSupplierAddress(vendorId);
 
             return new JsonNetResult(results.Select(a => new { Id = a.Id, Name = a.Name }));
+        }
+
+        public JsonNetResult CheckDuplicateVendor(int workgrougpId, string name, string line1)
+        {
+            var message = string.Empty;
+            name = name.Trim();
+            line1 = line1 != null ? line1.Trim() : string.Empty;
+            if (_workgroupVendorRepository.Queryable.Any(
+                    a => a.Workgroup.Id == workgrougpId && a.Name == name && a.Line1 == line1 && a.IsActive))
+            {
+                message = "It appears this vendor has already been added to this workgroup.";
+            }
+            return new JsonNetResult(new { message });
         }
 
         /// <summary>
