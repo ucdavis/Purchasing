@@ -144,7 +144,7 @@ namespace Purchasing.Core.Domain
         [Display(Name ="Order Arrived")]
         public virtual bool PurchaserOrderArrive { get; set; }
 
-        [Display(Name = "KFS Item Received")]
+        [Display(Name = "Aggie Enterprise Item Received")]
         public virtual bool PurchaserKfsItemReceived { get; set; }
 
         [Display(Name = "P Card Item Received")]
@@ -153,7 +153,7 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Campus Services Item Received")]
         public virtual bool PurchaserCampusServicesItemReceived { get; set; }
 
-        [Display(Name = "KFS Item Paid")]
+        [Display(Name = "Aggie Enterprise Item Paid")]
         public virtual bool PurchaserKfsItemPaid { get; set; }
 
         [Display(Name = "P Card Item Paid")]
