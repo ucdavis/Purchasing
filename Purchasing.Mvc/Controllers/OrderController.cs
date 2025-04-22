@@ -767,7 +767,7 @@ namespace Purchasing.Mvc.Controllers
                             }
                         }
                     }
-                    validationWarningsDict.Add("KFS Accounts", "KFS Accounts are being used. In the near future these will stop being converted.");
+                    validationWarningsDict.Add("KFS Accounts", "<h2>KFS Accounts are being used. On July 1, 2025 these will stop being automatically converted and the order will not be able to be approved without picking a Chart String.</h2>");
                 }
                 if (uniqueFinancialSegments.Any())
                 {

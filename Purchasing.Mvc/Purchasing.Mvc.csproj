@@ -19,7 +19,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
-    <AssemblyVersion>2.0.0.6</AssemblyVersion>
+    <AssemblyVersion>2.0.0.7</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2234,11 +2234,11 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("PurchaserKfsItemPaid", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"KFS Item Paid\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Aggie Enterprise Item Paid\")]"
             }));
             expectedFields.Add(new NameAndType("PurchaserKfsItemReceived", "System.Boolean", new List<string>
             {
-                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"KFS Item Received\")]"
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Aggie Enterprise Item Received\")]"
             }));
             expectedFields.Add(new NameAndType("PurchaserKualiApproved", "System.Boolean", new List<string>
             {
