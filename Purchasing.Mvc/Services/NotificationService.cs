@@ -421,6 +421,21 @@ namespace Purchasing.Mvc.Services
         public void OrderAddNote(Order order, User actor, string comment)
         {
             var users = order.OrderTrackings.Select(a => a.User).Distinct().ToList();
+            //The above gets users who have acted on the order, but adding a note doesn't add to this list.
+            //So, we also need to grab the user who may be currently assigned to this order and check the level to see if it matches.
+            //Do we want to only grab it if a specific user is assigned, or do we want to grab all users who are at the same level if it is anyone?
+
+            var approval = order.Approvals.Where(a => a.StatusCode.Level == order.StatusCode.Level);
+            if (approval.Any(a => a.User == null))
+            {
+                //Ok, there was an approval with no one assigned, so lets get all the users that can act on the order.
+                var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == order.StatusCode.Level && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(a => a.User);
+                users.AddRange(peeps);
+            }
+            users.AddRange(approval.Where(a => a.User != null).Select(a => a.User));
+            //Remove duplicates
+            users = users.Distinct().ToList();
+
             var shortComment = comment ?? string.Empty;
             if (comment != null && comment.Length > 100)
             {
@@ -708,6 +723,7 @@ namespace Purchasing.Mvc.Services
                             switch (orderType.Id)
                             {
                                 case "KFS": return preference.PurchaserKfsItemReceived;
+                                case "AE": return preference.PurchaserKfsItemReceived;
                                 case "PC": return preference.PurchaserPCardItemReceived;
                                 case "CS": return preference.PurchaserCampusServicesItemReceived;
                                 default: return false;
@@ -717,6 +733,7 @@ namespace Purchasing.Mvc.Services
                             switch (orderType.Id)
                             {
                                 case "KFS": return preference.PurchaserKfsItemPaid;
+                                case "AE": return preference.PurchaserKfsItemPaid;
                                 case "PC": return preference.PurchaserPCardItemPaid;
                                 case "CS": return preference.PurchaserCampusServicesItemPaid;
                                 default: return false;
