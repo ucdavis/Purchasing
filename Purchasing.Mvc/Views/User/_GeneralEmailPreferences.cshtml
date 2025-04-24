@@ -27,7 +27,7 @@
                 <div class="editor-label">
                     @Html.LabelFor(model => model.IncludeNotesNotAssigned)
                 </div>
-                <div class="editor-field showTip" title="Someone adds a new order, you have Note Added checked above, and you are included as someone who can act on the order but are not directly assigned at that level.">
+                <div class="editor-field showTip" title="Someone adds a note to an order, you have Note Added checked above, and you are included as someone who can act on the order but are not directly assigned at that level.">
                     @Html.EditorFor(model => model.IncludeNotesNotAssigned)
                     @Html.ValidationMessageFor(model => model.IncludeNotesNotAssigned)
                 </div>
