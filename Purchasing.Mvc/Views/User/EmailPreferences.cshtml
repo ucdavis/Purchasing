@@ -41,6 +41,19 @@
             });
         });
     </script>
+
+    <script type="text/javascript">
+        $(function () {
+            // Show or hide the IncludeNotesNotAssigned checkbox based on the AddNote checkbox
+            $('#AddNote').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#IncludeNotesNotAssignedSection').hide();
+                } else {
+                    $('#IncludeNotesNotAssignedSection').show();                    
+                }
+            });
+        });
+    </script>
 }
 
 @using (Html.BeginForm())

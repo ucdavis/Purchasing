@@ -3,6 +3,7 @@
     <header class="ui-widget-header ui-corner-top">General</header>
     
     <div class="section-contents">
+        
         <ul>
             <li>
                 <div class="editor-label">
@@ -22,11 +23,11 @@
                     @Html.ValidationMessageFor(model => model.AddNote)
                 </div>
             </li>
-            <li>
+            <li id="IncludeNotesNotAssignedSection" style="@(Model.AddNote ? "" : "display: none")">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.IncludeNotesNotAssigned)
                 </div>
-                <div class="editor-field showTip" title="Someone adds a new order, you have Add Note checked above, and you are included as someone who can act on the order but are not directly assigned at that level.">
+                <div class="editor-field showTip" title="Someone adds a new order, you have Note Added checked above, and you are included as someone who can act on the order but are not directly assigned at that level.">
                     @Html.EditorFor(model => model.IncludeNotesNotAssigned)
                     @Html.ValidationMessageFor(model => model.IncludeNotesNotAssigned)
                 </div>
@@ -34,3 +35,4 @@
         </ul>
     </div>
 </section>
+
