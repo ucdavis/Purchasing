@@ -34,8 +34,11 @@
     [PurchaserKfsItemPaid]                BIT          DEFAULT ((0)) NOT NULL,
     [PurchaserPCardItemPaid]              BIT          DEFAULT ((0)) NOT NULL,
     [PurchaserCampusServicesItemPaid]     BIT          DEFAULT ((0)) NOT NULL,
+    [IncludeNotesNotAssigned]             BIT          CONSTRAINT [DF_EmailPreferences_IncludeNotesNotAssigned] DEFAULT ((1)) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC) WITH (STATISTICS_NORECOMPUTE = ON)
 );
+
+
 
 
 
