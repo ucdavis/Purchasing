@@ -44,7 +44,7 @@
 
     <script type="text/javascript">
         $(function () {
-            // Show or hide the IncludeNotesNotAssigned checkbox based on the AddNote checkbox
+            // Show or hide the IncludeNotesNotAssigned checkbox based on the AddNote checkbox. Not sure why the logic needs to be reversed to work. Maybe because the slider checkbox we use.
             $('#AddNote').change(function () {
                 if ($(this).is(':checked')) {
                     $('#IncludeNotesNotAssignedSection').hide();
