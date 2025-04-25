@@ -443,14 +443,14 @@ namespace Purchasing.Mvc.Services
 
             users.AddRange(peeps);
 
-            var count = users.Count();
-            users = users.Distinct().ToList();
-            if(users.Count() != count)
-            {
-                //Log that we had duplicates
-                var log = Log.ForContext("userId", actor.Id);
-                log.Information("Duplicate users found in OrderAddNote");
-            }
+            //var count = users.Count();
+            //users = users.Distinct().ToList();
+            //if(users.Count() != count)
+            //{
+            //    //Log that we had duplicates
+            //    var log = Log.ForContext("userId", actor.Id);
+            //    log.Information("Duplicate users found in OrderAddNote");
+            //}
 
 
             var shortComment = comment ?? string.Empty;
