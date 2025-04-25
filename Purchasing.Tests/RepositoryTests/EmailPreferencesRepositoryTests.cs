@@ -2223,6 +2223,10 @@ namespace Purchasing.Tests.RepositoryTests
                 "[Newtonsoft.Json.JsonPropertyAttribute()]", 
                 "[System.Xml.Serialization.XmlIgnoreAttribute()]"
             }));
+            expectedFields.Add(new NameAndType("IncludeNotesNotAssigned", "System.Boolean", new List<string>
+            {
+                "[System.ComponentModel.DataAnnotations.DisplayAttribute(Name = \"Include Notes If Not Assigned\")]"
+            }));
             expectedFields.Add(new NameAndType("NotificationType", "Purchasing.Core.Domain.EmailPreferences+NotificationTypes", new List<string>()));
             expectedFields.Add(new NameAndType("PurchaserCampusServicesItemPaid", "System.Boolean", new List<string>
             {
