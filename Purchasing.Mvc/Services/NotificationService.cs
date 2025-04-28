@@ -423,18 +423,35 @@ namespace Purchasing.Mvc.Services
             var users = order.OrderTrackings.Select(a => a.User).Distinct().ToList();
             //The above gets users who have acted on the order, but adding a note doesn't add to this list.
             //So, we also need to grab the user who may be currently assigned to this order and check the level to see if it matches.
-            //Do we want to only grab it if a specific user is assigned, or do we want to grab all users who are at the same level if it is anyone?
+            //Do we want to only grab it if a specific user is assigned, or do we want to grab all users who are at the same level if it is anyone?           
 
             var approval = order.Approvals.Where(a => a.StatusCode.Level == order.StatusCode.Level);
-            if (approval.Any(a => a.User == null))
-            {
-                //Ok, there was an approval with no one assigned, so lets get all the users that can act on the order.
-                var peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == order.StatusCode.Level && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(a => a.User);
-                users.AddRange(peeps);
-            }
             users.AddRange(approval.Where(a => a.User != null).Select(a => a.User));
             //Remove duplicates
             users = users.Distinct().ToList();
+
+            var peeps = new List<User>();
+            if (approval.Any(a => a.User == null))
+            {
+                //Ok, there was an approval with no one assigned, so lets get all the users that can act on the order.
+                peeps = order.Workgroup.Permissions.Where(a => a.Role.Level == order.StatusCode.Level && (!a.IsAdmin || (a.IsAdmin && a.IsFullFeatured))).Select(a => a.User).ToList();
+                //remove any peeps that are in users  or are null
+                peeps = peeps.Where(a => !users.Contains(a) && a != null).ToList();
+            }
+
+            //peeps should be empty or only contain users that are not in users
+
+            users.AddRange(peeps);
+
+            //var count = users.Count();
+            //users = users.Distinct().ToList();
+            //if(users.Count() != count)
+            //{
+            //    //Log that we had duplicates
+            //    var log = Log.ForContext("userId", actor.Id);
+            //    log.Information("Duplicate users found in OrderAddNote");
+            //}
+
 
             var shortComment = comment ?? string.Empty;
             if (comment != null && comment.Length > 100)
@@ -453,6 +470,15 @@ namespace Purchasing.Mvc.Services
 
                 if (preference.AddNote)
                 {
+                    if(peeps.Contains(ot))
+                    {
+                        //This user is in the workgroup, but not assigned to the order.  We need to check if they want to see notes for orders they are not assigned to.
+                        if (!preference.IncludeNotesNotAssigned)
+                        {
+                            continue;
+                        }
+                    }
+
                     //var emailQueue = new EmailQueue(order, preference.NotificationType, string.Format(AddNoteMessage, GenerateLink(_serverLink.Address, order.OrderRequestNumber()), order.Vendor == null ? "Unspecified Vendor" : order.Vendor.Name, actor.FullName), ot);
                     var emailQueue2 = new EmailQueueV2(order, preference.NotificationType, "Note Added", string.Format("By {0} with the note \"{1}\".", actor.FullName, shortComment), ot);
                     order.AddEmailQueue(emailQueue2);
