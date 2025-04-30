@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # Mount the repo inside the container
+      - ..:/workspace:cached
+    # Network-alias lets the app reach SQL via "db"
+    networks:
+      - backend
+    depends_on:
+      - db
+    # Override entrypoint so the shell opens instantly;
+    # your usual `dotnet watch run` lives in VS Code tasks.
+    command: sleep infinity
+
+  # Sidecar SQL Server
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Passw0rd!LocalDev"    # change or move to .env
+      MSSQL_AGENT_ENABLED: "true"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql           # persists between restarts
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  sql_data:
