@@ -24,7 +24,7 @@
   // Run when the container first boots
   "postCreateCommand": "dotnet restore",
   "portsAttributes": {
-    "5001": {
+    "44396": {
       "protocol": "https"
     }
   }
