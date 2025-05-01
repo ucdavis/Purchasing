@@ -8,6 +8,8 @@ services:
     volumes:
       # Mount the repo inside the container
       - ..:/workspace:cached
+      # mount the dev cert (created with dotnet dev-certs https -ep ~/.aspnet/https/aspnetapp.pfx -p SecurePwdGoesHere)
+      - ~/.aspnet/https:/home/vscode/.aspnet/https:ro
     # Network-alias lets the app reach SQL via "db"
     networks:
       - backend
