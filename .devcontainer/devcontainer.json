@@ -1,0 +1,31 @@
+{
+  "name": "prepurchasing",
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [
+    44396,
+    44395
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-mssql.mssql"
+      ]
+    }
+  },
+  "containerEnv": {
+    "ASPNETCORE_Kestrel__Certificates__Default__Path": "/home/vscode/.aspnet/https/aspnetapp.pfx",
+    "ASPNETCORE_Kestrel__Certificates__Default__Password": "CaesLocalDevCertPW"
+  },
+  // Run when the container first boots
+  "postCreateCommand": "dotnet restore",
+  "portsAttributes": {
+    "44396": {
+      "protocol": "https"
+    }
+  }
+}
