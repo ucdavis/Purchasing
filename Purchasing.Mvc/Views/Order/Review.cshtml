@@ -61,6 +61,10 @@
         #print-menu li a {display: block;font-size: .6em;font-weight: bold;background: #033366;color: #fff !important;padding: 10px 6px 6px;width: 55px;text-align: center;}
         #print-menu li a:hover { background: #427ba5; }
         nav.col2 #print-menu li {display: block;padding: 0px;}
+
+        #fav-button-star {
+            vertical-align: middle; /* Aligns the icon with the text */
+        }
     </style>
 
 }
@@ -69,7 +73,7 @@
 {
     <ul class="navigation">
 
-        <li><a href="#" class="button" id="toggle-fav">Favorite</a></li>
+        <li><a href="#" class="button" id="toggle-fav"><span id="fav-button-star" class="@(Model.Favorite.IsActive ? "ui-icon ui-icon-star" : "")"></span> Favorite</a></li>
 
         @if (Model.CanEditOrder)
         {
@@ -153,6 +157,7 @@
     $(function () {
         purchasing.options({
             AddCommentUrl: "@Url.Action("AddComment", "Order", new {id = Model.Order.Id})",
+            UpdateFavoriteUrl: "@Url.Action("ToggleFavorite", "Order", new { orderId = Model.Order.Id })",
             UpdateReferenceNumberUrl: '@Url.Action("UpdateReferenceNumber", "Order", new {id = Model.Order.Id})',
             UpdatePoNumberUrl: '@Url.Action("UpdatePoNumber", "Order", new {id = Model.Order.Id})',
             UpdateTagUrl: '@Url.Action("UpdateTag", "Order", new {id = Model.Order.Id})',

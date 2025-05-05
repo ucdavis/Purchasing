@@ -357,14 +357,105 @@
     }
 
     function attachFavEvents() {
+        //public JsonNetResult ToggleFavorite(int orderId, bool favorite, string category, string notes)
         $("#favs-dialog").dialog({
             modal: true,
             autoOpen: false,
             width: 400,
             buttons: {
-                "Toggle Favorite": function () { },
-                "Update": function () { },
-                "Cancel": function () { $(this).dialog("close"); }
+                "Toggle Favorite": function () {
+
+                    var url = options.UpdateFavoriteUrl;
+
+                    //get the category and notes from the dialog
+                    var category = $("#fav-category").val();
+                    var notes = $("#fav-notes").val();
+
+                    var isActive = $('#fav-is-active').data('is-active');
+
+                    // Convert the string value to a boolean
+                    isActive = (isActive === "True" || isActive === "true" || isActive === true) ? true : false;
+
+
+                    $.post(url, { favorite: !isActive, category: category, notes: notes, __RequestVerificationToken: options.AntiForgeryToken },
+                        function (result) {
+
+                            if (result == false) {
+                                alert("There was a problem .");
+                            }
+                            else {
+                                
+                                if (result.success == true) {
+                                    $("#fav-category").val(result.category);
+                                    $("#fav-notes").val(result.notes);
+                                    $("#fav-status-text").text(result.isActive ? "Updated to a favorite" : "Updated to not a favorite");
+                                    //set the data-is-active attribute to the result.isActive value
+                                    $('#fav-is-active').data('is-active', result.isActive);
+                                    if (result.isActive == true) {
+                                        $('#fav-button-star').addClass('ui-icon')
+                                        $('#fav-button-star').addClass('ui-icon-star');
+                                    }
+                                    else {
+                                        $('#fav-button-star').removeClass('ui-icon');
+                                        $('#fav-button-star').removeClass('ui-icon-star');
+                                    }
+                                    //if (result.isActive == false) {
+                                    //    alert("This order is no longer a favorite.");
+                                    //}
+                                }
+
+                                //console.log(result);
+
+                            }
+
+                        }
+                    );
+
+                    $(this).dialog("close");
+                },
+                "Update": function () {
+
+                    var url = options.UpdateFavoriteUrl;
+
+                    //get the category and notes from the dialog
+                    var category = $("#fav-category").val();
+                    var notes = $("#fav-notes").val();
+
+                    var isActive = $('#fav-is-active').data('is-active');
+
+                    // Convert the string value to a boolean
+                    isActive = (isActive === "True" || isActive === "true" || isActive === true) ? true : false;
+
+                    //Same as toggle above except not !isActive, just isActive
+                    $.post(url, { favorite: isActive, category: category, notes: notes, __RequestVerificationToken: options.AntiForgeryToken },
+                        function (result) {
+
+                            if (result == false) {
+                                alert("There was a problem .");
+                            }
+                            else {
+
+                                if (result.success == true) {
+                                    $("#fav-category").val(result.category);
+                                    $("#fav-notes").val(result.notes);
+                                    //$("#fav-status-text").text(result.isActive ? "Updated to a favorite" : "Updated to not a favorite");
+                                    //set the data-is-active attribute to the result.isActive value
+                                    //$('#fav-is-active').data('is-active', result.isActive);
+
+                                    //if (result.isActive == false) {
+                                    //    alert("This order is no longer a favorite.");
+                                    //}
+                                }
+
+                                console.log(result);
+
+                            }
+
+                        }
+                    );
+
+                    $(this).dialog("close"); },
+                "Close": function () { $(this).dialog("close"); }
             }
         });
         $("#toggle-fav").click(function () {

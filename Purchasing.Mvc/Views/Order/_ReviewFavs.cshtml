@@ -3,19 +3,33 @@
 
 
 <div id="favs-dialog" title="Favorites" style="display:none;">
-    <div>Order is: @(Model.Favorite.IsActive ? "A Favorite" : "Not A Favorite")</div>
-    <div class="editor-label">Category: </div>
-    <div class="editor-field">
-        <input id="fav-category" name="fav-category" type="text" title="A way to categorize and filter your favs" value="@Model.Favorite.Category"
-               maxlength="50" />
-    </div>
+    <input type="hidden" id="fav-is-active" name="fav-is-active" data-is-active="@Model.Favorite.IsActive" />
+    <form>
+        <div class="section-contents">
+            <div class="section-text">
+                <h3>
+                    Order is: <div id="fav-status-text">@(Model.Favorite.IsActive ? "a favorite" : "not a favorite")</div>
+                </h3>
+            </div>
+        </div>
+        <ul>
+            <li>
 
-    <div class="editor-label">Notes: </div>
-    <div class="editor-field">
-        <textarea id="fav-notes" name="fav-notes" style="width: 370px; height: 110px;">@Model.Favorite.Notes</textarea>
-    </div>
+                <div class="editor-label"><strong>Category:</strong> </div>
+                <div class="editor-field">
+                    <input id="fav-category" name="fav-category" type="text" title="A way to categorize and filter your favs" value="@Model.Favorite.Category"
+                           maxlength="50" />
+                </div>
+            </li>
+            <li>
+                <div class="editor-label"><strong>Notes: </strong></div>
+                <div class="editor-field">
+                    <textarea id="fav-notes" name="fav-notes" style="width: 370px; height: 110px;">@Model.Favorite.Notes</textarea>
+                </div>
+            </li>
+        </ul>
 
-
+    </form>
 </div>
 
 
