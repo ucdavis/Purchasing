@@ -23,9 +23,9 @@ namespace Purchasing.Core.Domain
 
         //public virtual int Id { get; set; }
         [Required]
-        public User UserId { get; set; }
+        public virtual User User { get; set; }
         [Required]
-        public virtual int OrderId { get; set; }
+        public virtual Order Order { get; set; }
         public virtual DateTime DateAdded { get; set; }
         [StringLength(50)]
         public virtual string Category { get; set; }
@@ -39,8 +39,8 @@ namespace Purchasing.Core.Domain
         {
             Table("Favorites");
             Id(x => x.Id);
-            References(x => x.UserId).Column("UserId"); //Should these just be simple Maps? I'll only ever get this when getting the order.
-            References(x => x.OrderId).Column("OrderId");
+            References(x => x.User).Column("UserId"); //Should these just be simple Maps? I'll only ever get this when getting the order.
+            References(x => x.Order).Column("OrderId");
             Map(x => x.DateAdded);
             Map(x => x.Category).Length(50);
             Map(x => x.Notes).Length(int.MaxValue);
