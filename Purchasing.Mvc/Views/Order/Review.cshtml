@@ -68,6 +68,9 @@
 @section SubNav
 {
     <ul class="navigation">
+
+        <li><a href="#" class="button" id="toggle-fav">Favorite</a></li>
+
         @if (Model.CanEditOrder)
         {
             <li>@Html.ActionLink("Edit", "Edit", new { Model.Order.Id }, new { @class = "button" })</li>
@@ -137,6 +140,8 @@
 @await Html.PartialAsync("_ReviewSubmit")
 
 @await Html.PartialAsync("_ReviewFpdComplete")
+
+@await Html.PartialAsync("_ReviewFavs")
 
 @section AdditionalScripts
 {

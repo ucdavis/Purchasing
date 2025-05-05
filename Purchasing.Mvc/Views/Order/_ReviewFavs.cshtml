@@ -1,0 +1,21 @@
+﻿@model ReviewOrderViewModel
+
+
+
+<div id="favs-dialog" title="Favorites" style="display:none;">
+    <div>Order is: @(Model.Favorite.IsActive ? "A Favorite" : "Not A Favorite")</div>
+    <div class="editor-label">Category: </div>
+    <div class="editor-field">
+        <input id="fav-category" name="fav-category" type="text" title="A way to categorize and filter your favs" value="@Model.Favorite.Category"
+               maxlength="50" />
+    </div>
+
+    <div class="editor-label">Notes: </div>
+    <div class="editor-field">
+        <textarea id="fav-notes" name="fav-notes" style="width: 370px; height: 110px;">@Model.Favorite.Notes</textarea>
+    </div>
+
+
+</div>
+
+

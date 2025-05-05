@@ -22,6 +22,8 @@
         attachPeepsEvents();
         attachFileEvents();
 
+        attachFavEvents();
+
         if (options.CanEdit) {
             attachApprovalEvents();
             attachSubmitEvents();
@@ -354,6 +356,22 @@
         });
     }
 
+    function attachFavEvents() {
+        $("#favs-dialog").dialog({
+            modal: true,
+            autoOpen: false,
+            width: 400,
+            buttons: {
+                "Toggle Favorite": function () { },
+                "Update": function () { },
+                "Cancel": function () { $(this).dialog("close"); }
+            }
+        });
+        $("#toggle-fav").click(function () {
+            $("#favs-dialog").dialog("open");
+            return false;
+        });
+    }
     function attachNoteEvents() {
         $("#notes-dialog").dialog({
             modal: true,

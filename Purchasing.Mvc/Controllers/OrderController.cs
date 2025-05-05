@@ -588,9 +588,23 @@ namespace Purchasing.Mvc.Controllers
                                   .Fetch(x => x.Organization)
                                   .Single();
 
+            var fav = _repositoryFactory.FavoriteRepository.Queryable
+                .Where(x => x.User.Id == CurrentUser.Identity.Name && x.Order.Id == id)
+                .SingleOrDefault();
+            if(fav == null)
+            {
+                fav = new Favorite
+                {
+                    User = _repositoryFactory.UserRepository.GetNullableById(CurrentUser.Identity.Name),
+                    Order = orderQuery,
+                    IsActive = false
+                };
+            }
+
             var model = new ReviewOrderViewModel
                 {
                     Order = orderQuery,
+                    Favorite = fav,
                     Complete = orderQuery.StatusCode.IsComplete,
                     Status = orderQuery.StatusCode.Name,
                     WorkgroupName = orderQuery.Workgroup.Name,
@@ -1271,6 +1285,50 @@ namespace Purchasing.Mvc.Controllers
             return
                 new JsonNetResult(
                     new {Date = DateTime.UtcNow.ToPacificTime().ToShortDateString(), Text = comment, User = orderComment.User.FullName});
+        }
+
+        [HttpPost]
+        public JsonNetResult ToggleFavorite(int orderId, string category, string notes)
+        {
+            var fav = _repositoryFactory.FavoriteRepository.Queryable
+                .Where(x => x.User.Id == CurrentUser.Identity.Name && x.Order.Id == orderId)
+                .SingleOrDefault();
+            var order = _repositoryFactory.OrderRepository.GetById(orderId);
+            if(order == null)
+            {
+                throw new Exception("Order Not Found");
+            }
+            if(fav == null)
+            {
+                fav = new Favorite
+                {
+                    Category = category,
+                    Notes = notes,
+                    User = _repositoryFactory.UserRepository.GetNullableById(CurrentUser.Identity.Name),
+                    Order = order,
+                    IsActive = true,
+                    DateAdded = DateTime.UtcNow
+                };
+            }
+            else
+            {
+                if (fav.IsActive)
+                {
+                    fav.IsActive = false;
+                    fav.Category = category;
+                    fav.Notes = notes;
+                }
+                else
+                {
+                    fav.IsActive = true;
+                    fav.DateAdded = DateTime.UtcNow;
+                    fav.Category = category;
+                    fav.Notes = notes;
+                }
+            }
+            _repositoryFactory.FavoriteRepository.EnsurePersistent(fav);
+
+            return new JsonNetResult(new { fav });
         }
 
         [HttpPost]
