@@ -388,7 +388,7 @@
                                 if (result.success == true) {
                                     $("#fav-category").val(result.category);
                                     $("#fav-notes").val(result.notes);
-                                    $("#fav-status-text").text(result.isActive ? "a favorite" : "not a favorite");
+         
                                     //set the data-is-active attribute to the result.isActive value
                                     $('#fav-is-active').data('is-active', result.isActive);
                                     if (result.isActive == true) {
@@ -403,12 +403,7 @@
                                         //change the button text to "Add Favorite" for #toggle-favorite-btn
                                         $('#toggle-favorite-btn span').text("Add Favorite");
                                     }
-                                    //if (result.isActive == false) {
-                                    //    alert("This order is no longer a favorite.");
-                                    //}
                                 }
-
-                                //console.log(result);
 
                             }
 
@@ -442,16 +437,9 @@
                                 if (result.success == true) {
                                     $("#fav-category").val(result.category);
                                     $("#fav-notes").val(result.notes);
-                                    //$("#fav-status-text").text(result.isActive ? "Updated to a favorite" : "Updated to not a favorite");
-                                    //set the data-is-active attribute to the result.isActive value
-                                    //$('#fav-is-active').data('is-active', result.isActive);
 
-                                    //if (result.isActive == false) {
-                                    //    alert("This order is no longer a favorite.");
-                                    //}
                                 }
 
-                                console.log(result);
 
                             }
 
