@@ -59,7 +59,7 @@ namespace Purchasing.Mvc.Controllers
                     Status = a.Order.StatusCode.Name,
                     WorkgroupName = a.Order.Workgroup.Name,
                     DateAdded = a.DateAdded
-                })
+                }).OrderByDescending(a => a.DateAdded)
                 .ToList();
 
             return View(favorites);

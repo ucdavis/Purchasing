@@ -361,7 +361,7 @@
         $("#favs-dialog").dialog({
             modal: true,
             autoOpen: false,
-            width: 400,
+            width: 400,          
             buttons: {
                 "Toggle Favorite": function () {
 
@@ -394,10 +394,14 @@
                                     if (result.isActive == true) {
                                         $('#fav-button-star').addClass('ui-icon')
                                         $('#fav-button-star').addClass('ui-icon-star');
+                                        //change the button text to "Remove Favorite" for #toggle-favorite-btn
+                                        $('#toggle-favorite-btn span').text("Remove Favorite");
                                     }
                                     else {
                                         $('#fav-button-star').removeClass('ui-icon');
                                         $('#fav-button-star').removeClass('ui-icon-star');
+                                        //change the button text to "Add Favorite" for #toggle-favorite-btn
+                                        $('#toggle-favorite-btn span').text("Add Favorite");
                                     }
                                     //if (result.isActive == false) {
                                     //    alert("This order is no longer a favorite.");
@@ -456,6 +460,15 @@
 
                     $(this).dialog("close"); },
                 "Close": function () { $(this).dialog("close"); }
+            },
+            create: function () {
+                // Assign IDs to the buttons
+                $(this).parent().find(".ui-dialog-buttonpane button:contains('Toggle Favorite')")
+                    .attr("id", "toggle-favorite-btn");
+                $(this).parent().find(".ui-dialog-buttonpane button:contains('Update')")
+                    .attr("id", "update-favorite-btn");
+                $(this).parent().find(".ui-dialog-buttonpane button:contains('Close')")
+                    .attr("id", "close-favorite-btn");
             }
         });
         $("#toggle-fav").click(function () {

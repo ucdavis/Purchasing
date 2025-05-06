@@ -203,4 +203,21 @@
                 .buttonset();
         });
     </script>
+
+    <script>
+        $(document).ready(function () {
+            // Check if the favorite is active based on the model
+            var isActive = $('#fav-is-active').data('is-active');
+            // Convert the string value to a boolean
+            isActive = (isActive === "True" || isActive === "true" || isActive === true) ? true : false;
+
+            // Set the button text based on the active status
+            if (isActive) {
+                $('#toggle-favorite-btn span').text("Remove Favorite");
+            } else {
+                $('#toggle-favorite-btn span').text("Add Favorite");
+            }
+        });
+    </script>
+
 }
