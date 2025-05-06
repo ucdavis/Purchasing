@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FluentNHibernate.Mapping;
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.RegularExpressions;
-using FluentNHibernate.Mapping;
-using FluentNHibernate.MappingModel;
-using Purchasing.Core.Helpers;
 using UCDArch.Core.DomainModel;
-using UCDArch.Core.Utils;
 
 namespace Purchasing.Core.Domain
 {

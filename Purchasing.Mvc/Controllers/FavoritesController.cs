@@ -1,33 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
-using Purchasing.Core.Helpers;
-using Purchasing.Mvc.App_GlobalResources;
-using Purchasing.Mvc.Attributes;
-using Purchasing.Mvc.Services;
-using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Purchasing.WS;
-using Serilog;
-using UCDArch.Core.PersistanceSupport;
-using UCDArch.Core.Utils;
+using System;
+using System.Linq;
 using UCDArch.Web.ActionResults;
-using UCDArch.Web.Attributes;
-using UCDArch.Web.Helpers;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Purchasing.Mvc.Helpers;
-using Purchasing.Core.Services;
-using AggieEnterpriseApi.Validation;
-using NHibernate.Util;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -77,16 +54,17 @@ namespace Purchasing.Mvc.Controllers
         [HttpPost]
         public JsonNetResult ToggleFavorite(int orderId, string action, string category, string notes)
         {
-            var fav = _repositoryFactory.FavoriteRepository.Queryable
-                .Where(x => x.User.Id == CurrentUser.Identity.Name && x.Order.Id == orderId)
-                .SingleOrDefault();
             var order = _repositoryFactory.OrderRepository.GetById(orderId);
-
             if (order == null)
             {
                 //getById will probably throw an exception if not found
                 throw new Exception("Order Not Found");
             }
+
+            var fav = _repositoryFactory.FavoriteRepository.Queryable
+                .Where(x => x.User.Id == CurrentUser.Identity.Name && x.Order.Id == orderId)
+                .SingleOrDefault();
+
             if (fav == null)
             {
                 if (action == "Add" || action == "Update")
@@ -108,7 +86,7 @@ namespace Purchasing.Mvc.Controllers
             }
             else
             {
-                if(action == "Remove")
+                if (action == "Remove")
                 {
                     fav.IsActive = false;
                 }
