@@ -24,7 +24,7 @@
         }
         @foreach (var item in Model)
         {
-            <tr class="@(odd ? "odd" : "even")">
+            <tr class="@(odd ? "odd" : "even")" data-url="@Url.Action("Review", "Order", new { id = item.OrderId })">
                 <td>
                     <a href='@Url.Action("Review","Order", new {id = item.OrderId})' class="ui-icon ui-icon-document">
                     </a>
@@ -45,3 +45,24 @@
         }
     </tbody>
 </table>
+
+@section AdditionalStyles {
+    <style>
+        .datatable tbody tr {
+            cursor: pointer;
+        }
+    </style>
+}
+
+@section AdditionalScripts {
+    <script type="text/javascript">
+        $(function () {
+            $(".datatable tbody tr").click(function (event) {
+                var url = $(this).data("url");
+                if (url) {
+                    window.location = url;
+                }
+            });
+        });
+    </script>
+}
