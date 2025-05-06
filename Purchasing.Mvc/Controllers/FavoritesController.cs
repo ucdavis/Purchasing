@@ -65,20 +65,31 @@ namespace Purchasing.Mvc.Controllers
             return View(favorites);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="action">Add/Remove/Update</param>
+        /// <param name="category"></param>
+        /// <param name="notes"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [HttpPost]
-        public JsonNetResult ToggleFavorite(int orderId, bool favorite, string category, string notes)
+        public JsonNetResult ToggleFavorite(int orderId, string action, string category, string notes)
         {
             var fav = _repositoryFactory.FavoriteRepository.Queryable
                 .Where(x => x.User.Id == CurrentUser.Identity.Name && x.Order.Id == orderId)
                 .SingleOrDefault();
             var order = _repositoryFactory.OrderRepository.GetById(orderId);
+
             if (order == null)
             {
+                //getById will probably throw an exception if not found
                 throw new Exception("Order Not Found");
             }
             if (fav == null)
             {
-                if (favorite)
+                if (action == "Add" || action == "Update")
                 {
                     fav = new Favorite
                     {
@@ -86,7 +97,7 @@ namespace Purchasing.Mvc.Controllers
                         Notes = notes,
                         User = _repositoryFactory.UserRepository.GetNullableById(CurrentUser.Identity.Name),
                         Order = order,
-                        IsActive = true,
+                        IsActive = action == "Add" ? true : false,
                         DateAdded = DateTime.UtcNow
                     };
                 }
@@ -97,17 +108,19 @@ namespace Purchasing.Mvc.Controllers
             }
             else
             {
-
-                if (fav.IsActive)
+                if(action == "Remove")
                 {
-                    fav.IsActive = favorite;
+                    fav.IsActive = false;
+                }
+                else if (action == "Add")
+                {
+                    fav.IsActive = true;
+                    fav.DateAdded = DateTime.UtcNow;
                     fav.Category = category;
                     fav.Notes = notes;
                 }
-                else
+                else //Update
                 {
-                    fav.IsActive = favorite;
-                    fav.DateAdded = DateTime.UtcNow;
                     fav.Category = category;
                     fav.Notes = notes;
                 }

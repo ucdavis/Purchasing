@@ -376,8 +376,9 @@
                     // Convert the string value to a boolean
                     isActive = (isActive === "True" || isActive === "true" || isActive === true) ? true : false;
 
+                    var action = isActive ? "Remove" : "Add";
 
-                    $.post(url, { favorite: !isActive, category: category, notes: notes, __RequestVerificationToken: options.AntiForgeryToken },
+                    $.post(url, { action: action, category: category, notes: notes, __RequestVerificationToken: options.AntiForgeryToken },
                         function (result) {
 
                             if (result == false) {
@@ -426,7 +427,7 @@
                     isActive = (isActive === "True" || isActive === "true" || isActive === true) ? true : false;
 
                     //Same as toggle above except not !isActive, just isActive
-                    $.post(url, { favorite: isActive, category: category, notes: notes, __RequestVerificationToken: options.AntiForgeryToken },
+                    $.post(url, { action: "Update", category: category, notes: notes, __RequestVerificationToken: options.AntiForgeryToken },
                         function (result) {
 
                             if (result == false) {
