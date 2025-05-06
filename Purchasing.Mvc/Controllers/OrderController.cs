@@ -1287,58 +1287,7 @@ namespace Purchasing.Mvc.Controllers
                     new {Date = DateTime.UtcNow.ToPacificTime().ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
 
-        [HttpPost]
-        public JsonNetResult ToggleFavorite(int orderId, bool favorite, string category, string notes)
-        {
-            var fav = _repositoryFactory.FavoriteRepository.Queryable
-                .Where(x => x.User.Id == CurrentUser.Identity.Name && x.Order.Id == orderId)
-                .SingleOrDefault();
-            var order = _repositoryFactory.OrderRepository.GetById(orderId);
-            if(order == null)
-            {
-                throw new Exception("Order Not Found");
-            }
-            if (fav == null)
-            {
-                if (favorite)
-                {
-                    fav = new Favorite
-                    {
-                        Category = category,
-                        Notes = notes,
-                        User = _repositoryFactory.UserRepository.GetNullableById(CurrentUser.Identity.Name),
-                        Order = order,
-                        IsActive = true,
-                        DateAdded = DateTime.UtcNow
-                    };
-                }
-                else
-                {
-                    return new JsonNetResult(new { success = false });
-                }
-            }
-            else
-            {
-
-                if (fav.IsActive)
-                {
-                    fav.IsActive = favorite;
-                    fav.Category = category;
-                    fav.Notes = notes;
-                }
-                else
-                {
-                    fav.IsActive = favorite;
-                    fav.DateAdded = DateTime.UtcNow;
-                    fav.Category = category;
-                    fav.Notes = notes;
-                }
-            }
-
-            _repositoryFactory.FavoriteRepository.EnsurePersistent(fav);
-
-            return new JsonNetResult(new { success = true, category = fav.Category, notes = fav.Notes, isActive = fav.IsActive });
-        }
+       
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]

@@ -157,7 +157,7 @@
     $(function () {
         purchasing.options({
             AddCommentUrl: "@Url.Action("AddComment", "Order", new {id = Model.Order.Id})",
-            UpdateFavoriteUrl: "@Url.Action("ToggleFavorite", "Order", new { orderId = Model.Order.Id })",
+            UpdateFavoriteUrl: "@Url.Action("ToggleFavorite", "Favorites", new { orderId = Model.Order.Id })",
             UpdateReferenceNumberUrl: '@Url.Action("UpdateReferenceNumber", "Order", new {id = Model.Order.Id})',
             UpdatePoNumberUrl: '@Url.Action("UpdatePoNumber", "Order", new {id = Model.Order.Id})',
             UpdateTagUrl: '@Url.Action("UpdateTag", "Order", new {id = Model.Order.Id})',

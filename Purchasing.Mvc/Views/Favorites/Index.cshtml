@@ -1,0 +1,47 @@
+﻿@using Purchasing.Core.Helpers
+@model IEnumerable<Purchasing.Mvc.Models.FavoriteViewModel>
+@{
+    ViewBag.Title = "Favorite Orders";
+}
+
+
+<table class="datatable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Request #</th>
+            <th>Status</th>
+            <th>Workgroup</th>
+            <th>Favorited</th>
+            <th>Category</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var odd = false;
+        }
+        @foreach (var item in Model)
+        {
+            <tr class="@(odd ? "odd" : "even")">
+                <td>
+                    <a href='@Url.Action("Review","Order", new {id = item.OrderId})' class="ui-icon ui-icon-document">
+                    </a>
+                </td>
+                <td>@item.RequestNumber</td>
+                <td>@item.Status</td>
+                <td>@item.WorkgroupName</td>
+                <th>@item.DateAdded.ToPacificTime().ToShortDateString()</th>
+                <td>@item.Category</td>
+                <td>@item.Notes</td>
+                <td>
+
+                    <a href='@Url.Action("Delete", new {id = item.Id})' class="ui-icon ui-icon-trash" title="Delete Favorite">
+                    </a>
+                </td>
+            </tr>
+            odd = !odd;
+        }
+    </tbody>
+</table>
