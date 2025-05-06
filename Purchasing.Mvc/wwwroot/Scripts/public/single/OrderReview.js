@@ -388,7 +388,7 @@
                                 if (result.success == true) {
                                     $("#fav-category").val(result.category);
                                     $("#fav-notes").val(result.notes);
-                                    $("#fav-status-text").text(result.isActive ? "Updated to a favorite" : "Updated to not a favorite");
+                                    $("#fav-status-text").text(result.isActive ? "a favorite" : "not a favorite");
                                     //set the data-is-active attribute to the result.isActive value
                                     $('#fav-is-active').data('is-active', result.isActive);
                                     if (result.isActive == true) {
