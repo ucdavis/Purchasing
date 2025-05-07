@@ -1,35 +1,71 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Purchasing.Core.Domain;
 using Purchasing.Tests.Core;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UCDArch.Core.PersistanceSupport;
+using UCDArch.Data.NHibernate;
+
 
 namespace Purchasing.Tests.RepositoryTests
 {
     [TestClass]
     public class FavoritesRepositoryTests : AbstractRepositoryTests<Favorite, int, FavoriteMap>
     {
+        public IRepository<Favorite> FavoriteRepository { get; set; }
+        public IRepositoryWithTypedId<User, string> UserRepository { get; set; }
+        public IRepository<Order> OrderRepository { get; set; }
+        public FavoritesRepositoryTests()
+        {
+            //SetUp();
+            FavoriteRepository = new Repository<Favorite>();
+            UserRepository = new RepositoryWithTypedId<User, string>();
+            OrderRepository = new Repository<Order>();
+        }
+
         protected override void FoundEntityComparison(Favorite entity, int counter)
         {
-            throw new NotImplementedException();
+            Assert.AreEqual(counter, entity.Id);
         }
 
         protected override IQueryable<Favorite> GetQuery(int numberAtEnd)
         {
-            throw new NotImplementedException();
+            return FavoriteRepository.Queryable.Where(a => a.Id == numberAtEnd);
         }
 
         protected override Favorite GetValid(int? counter)
         {
-            throw new NotImplementedException();
+            var rtValue = CreateValidEntities.Favorite(counter);
+            rtValue.User = UserRepository.Queryable.First();
+            rtValue.Order = OrderRepository.Queryable.First();
+
+            return rtValue;
         }
 
         protected override void UpdateUtility(Favorite entity, ARTAction action)
         {
-            throw new NotImplementedException();
+            const bool updateValue = true;
+            switch (action)
+            {
+                case ARTAction.Compare:
+                    Assert.AreEqual(updateValue, entity.IsActive);
+                    break;
+                case ARTAction.Restore:
+                    entity.IsActive = BoolRestoreValue;
+                    break;
+                case ARTAction.Update:
+                    BoolRestoreValue = entity.IsActive;
+                    entity.IsActive = updateValue;
+                    break;
+            }
+        }
+
+        protected override void LoadData()
+        {
+            LoadUsers(3);
+            LoadOrders(3);
+
+            LoadRecords(5);
         }
 
         #region Reflection of Database.
