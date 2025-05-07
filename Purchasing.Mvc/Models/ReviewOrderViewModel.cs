@@ -16,6 +16,8 @@ namespace Purchasing.Mvc.Models
 
         public Order Order { get; set; }
 
+        public Favorite Favorite { get; set; }
+
         public bool CanEditOrder { get; set; }
         public bool CanCancelOrder { get; set; }
         public bool CanCancelCompletedOrder { get; set; }

@@ -588,9 +588,23 @@ namespace Purchasing.Mvc.Controllers
                                   .Fetch(x => x.Organization)
                                   .Single();
 
+            var fav = _repositoryFactory.FavoriteRepository.Queryable
+                .Where(x => x.User.Id == CurrentUser.Identity.Name && x.Order.Id == id)
+                .SingleOrDefault();
+            if(fav == null)
+            {
+                fav = new Favorite
+                {
+                    User = _repositoryFactory.UserRepository.GetNullableById(CurrentUser.Identity.Name),
+                    Order = orderQuery,
+                    IsActive = false
+                };
+            }
+
             var model = new ReviewOrderViewModel
                 {
                     Order = orderQuery,
+                    Favorite = fav,
                     Complete = orderQuery.StatusCode.IsComplete,
                     Status = orderQuery.StatusCode.Name,
                     WorkgroupName = orderQuery.Workgroup.Name,
@@ -1272,6 +1286,8 @@ namespace Purchasing.Mvc.Controllers
                 new JsonNetResult(
                     new {Date = DateTime.UtcNow.ToPacificTime().ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
+
+       
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]

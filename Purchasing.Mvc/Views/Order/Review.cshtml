@@ -61,6 +61,10 @@
         #print-menu li a {display: block;font-size: .6em;font-weight: bold;background: #033366;color: #fff !important;padding: 10px 6px 6px;width: 55px;text-align: center;}
         #print-menu li a:hover { background: #427ba5; }
         nav.col2 #print-menu li {display: block;padding: 0px;}
+
+        #fav-button-star {
+            vertical-align: middle; /* Aligns the icon with the text */
+        }
     </style>
 
 }
@@ -68,6 +72,9 @@
 @section SubNav
 {
     <ul class="navigation">
+
+        <li><a href="#" class="button" id="toggle-fav"><span id="fav-button-star" class="@(Model.Favorite.IsActive ? "ui-icon ui-icon-star" : "")"></span> Favorite</a></li>
+
         @if (Model.CanEditOrder)
         {
             <li>@Html.ActionLink("Edit", "Edit", new { Model.Order.Id }, new { @class = "button" })</li>
@@ -138,6 +145,8 @@
 
 @await Html.PartialAsync("_ReviewFpdComplete")
 
+@await Html.PartialAsync("_ReviewFavs")
+
 @section AdditionalScripts
 {
     @await Html.PartialAsync("_JsBundle", "~/bundles/orderreview")
@@ -148,6 +157,7 @@
     $(function () {
         purchasing.options({
             AddCommentUrl: "@Url.Action("AddComment", "Order", new {id = Model.Order.Id})",
+            UpdateFavoriteUrl: "@Url.Action("ToggleFavorite", "Favorites", new { orderId = Model.Order.Id })",
             UpdateReferenceNumberUrl: '@Url.Action("UpdateReferenceNumber", "Order", new {id = Model.Order.Id})',
             UpdatePoNumberUrl: '@Url.Action("UpdatePoNumber", "Order", new {id = Model.Order.Id})',
             UpdateTagUrl: '@Url.Action("UpdateTag", "Order", new {id = Model.Order.Id})',
@@ -193,4 +203,21 @@
                 .buttonset();
         });
     </script>
+
+    <script>
+        $(document).ready(function () {
+            // Check if the favorite is active based on the model
+            var isActive = $('#fav-is-active').data('is-active');
+            // Convert the string value to a boolean
+            isActive = (isActive === "True" || isActive === "true" || isActive === true) ? true : false;
+
+            // Set the button text based on the active status
+            if (isActive) {
+                $('#toggle-favorite-btn span').text("Remove Favorite");
+            } else {
+                $('#toggle-favorite-btn span').text("Add Favorite");
+            }
+        });
+    </script>
+
 }
