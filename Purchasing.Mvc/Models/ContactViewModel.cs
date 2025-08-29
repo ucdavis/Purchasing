@@ -19,10 +19,10 @@ namespace Purchasing.Mvc.Models
             if (user != null)
             {
                 // check for the workgroups the user is in
-                viewModel.Workgroups = user.WorkgroupPermissions.Select(a => a.Workgroup.Name).Distinct().ToList();
+                viewModel.Workgroups = user.WorkgroupPermissions.Where(a => a.Workgroup.IsActive).Select(a => a.Workgroup.Name).Distinct().ToList();
 
                 // contacts for the workgroups
-                var wkids = user.WorkgroupPermissions.Select(a => a.Workgroup.Id).ToList();
+                var wkids = user.WorkgroupPermissions.Where(a => a.Workgroup.IsActive).Select(a => a.Workgroup.Id).ToList();
                 viewModel.Contacts = queryRepository.WorkgroupAdminRepository.Queryable.Where(a => wkids.Contains(a.WorkgroupId)).Select(a => new KeyValuePair<string, string>(string.Format("{0} {1}", a.FirstName, a.LastName), a.Email)).ToList();
 
                 if (!viewModel.Workgroups.Any())
