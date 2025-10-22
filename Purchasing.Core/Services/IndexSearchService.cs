@@ -98,6 +98,37 @@ namespace Purchasing.Core.Services
 
             var index = IndexHelper.GetIndexName(Indexes.Comments);
 
+            //If we wanted to do this in each method.
+            //if (allowedIds.Length > 30000)
+            //{
+
+
+            //    // We will try to batch this into chunks of 10,000 IDs to avoid ES errors
+            //    var allResults = new List<SearchResults.CommentResult>();
+            //    var batches = (int)Math.Ceiling(allowedIds.Length / 30000.0);
+            //    for (var i = 0; i < batches; i++)
+            //    {
+            //        var batchIds = allowedIds.Skip(i * 30000).Take(30000).ToArray();
+            //        var batchResults = _client.Search<SearchResults.CommentResult>(
+            //            s =>
+            //                s.Index(index)
+            //                    .Query(
+            //                        q => q.QueryString(qs => qs.Query(searchTerm))
+            //                    )
+            //                    .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(batchIds)))))
+            //                    .Sort(sort => sort.Descending(d => d.DateCreated))
+            //                    .Size(MaxSeachResults));
+            //        allResults.AddRange(batchResults.Hits.Select(h => h.Source).ToList());
+            //        if (allResults.Count >= MaxSeachResults)
+            //        {
+            //            break; 
+            //        }
+            //    }
+            //    return allResults.Take(MaxSeachResults).ToList();
+            //}
+
+
+
             var results = _client.Search<SearchResults.CommentResult>(
                 s =>
                     s.Index(index)
