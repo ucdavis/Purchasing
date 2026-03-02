@@ -134,7 +134,14 @@
                             <div class="fn">@Model.Vendor.Name
                                 @if (!string.IsNullOrEmpty(Model.Vendor.AeSupplierNumber))
                                 {
-                                    <div class="green" >(Supplier #: @Model.Vendor.AeSupplierNumber Site Code: @Model.Vendor.AeSupplierSiteCode)</div>
+                                    if(Model.Vendor.IsValidInAggieEnterprise)
+                                    {
+                                        <div class="green" >(Supplier #: @Model.Vendor.AeSupplierNumber Site Code: @Model.Vendor.AeSupplierSiteCode)</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="red">(Supplier #: @Model.Vendor.AeSupplierNumber Site Code: @Model.Vendor.AeSupplierSiteCode)</div>
+                                    }
                                 }else if (!string.IsNullOrEmpty(Model.Vendor.VendorId))
                                 {
                                     //TODO: Change /kfs-prd/ to /fin/

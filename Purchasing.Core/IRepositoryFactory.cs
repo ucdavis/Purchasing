@@ -39,6 +39,8 @@ namespace Purchasing.Core
         IRepository<ServiceMessage> ServiceMessageRepository { get; set; }
         IRepository<HistoryReceivedLineItem> HistoryReceivedLineItemRepository { get; set; }
         IRepositoryWithTypedId<Organization, string> OrganizationRepository { get; set; }
+
+        IRepository<Favorite> FavoriteRepository { get; set; }
     }
 
     public class RepositoryFactory : IRepositoryFactory
@@ -75,6 +77,8 @@ namespace Purchasing.Core
         public IRepository<Building> BuildingRepository { get; set; }
         public IRepository<ServiceMessage> ServiceMessageRepository { get; set; }
         public IRepository<HistoryReceivedLineItem> HistoryReceivedLineItemRepository { get; set; }
-        public IRepositoryWithTypedId<Organization, string> OrganizationRepository { get; set; }     
+        public IRepositoryWithTypedId<Organization, string> OrganizationRepository { get; set; }
+
+        public IRepository<Favorite> FavoriteRepository { get; set; }
     }
 }

@@ -355,6 +355,7 @@ namespace Purchasing.Mvc.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         public new async Task<ActionResult> Request(OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
@@ -418,6 +419,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeEditOrder]
+        [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         public async Task<ActionResult> Edit(int id, OrderViewModel model)
         {
             var order = _repositoryFactory.OrderRepository.GetNullableById(id);
@@ -532,6 +534,7 @@ namespace Purchasing.Mvc.Controllers
 
         [HttpPost]
         [AuthorizeReadOrEditOrder]
+        [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         public async Task<ActionResult> Copy(int id, OrderViewModel model)
         {
             var canCreateOrderInWorkgroup =
@@ -585,9 +588,23 @@ namespace Purchasing.Mvc.Controllers
                                   .Fetch(x => x.Organization)
                                   .Single();
 
+            var fav = _repositoryFactory.FavoriteRepository.Queryable
+                .Where(x => x.User.Id == CurrentUser.Identity.Name && x.Order.Id == id)
+                .SingleOrDefault();
+            if(fav == null)
+            {
+                fav = new Favorite
+                {
+                    User = _repositoryFactory.UserRepository.GetNullableById(CurrentUser.Identity.Name),
+                    Order = orderQuery,
+                    IsActive = false
+                };
+            }
+
             var model = new ReviewOrderViewModel
                 {
                     Order = orderQuery,
+                    Favorite = fav,
                     Complete = orderQuery.StatusCode.IsComplete,
                     Status = orderQuery.StatusCode.Name,
                     WorkgroupName = orderQuery.Workgroup.Name,
@@ -605,6 +622,18 @@ namespace Purchasing.Mvc.Controllers
             }
             
             model.Vendor = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Vendor).Single();
+            if(model.Vendor != null && !string.IsNullOrWhiteSpace( model.Vendor.AeSupplierNumber ))
+            {
+                var aeVendor = await _aggieEnterpriseService.GetSupplier(model.Vendor);
+                if(aeVendor != null)
+                {
+                    model.Vendor.IsValidInAggieEnterprise = true;
+                }
+                else
+                {
+                    model.Vendor.IsValidInAggieEnterprise = false;
+                }
+            }
             model.Address = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Address).Single();
             model.LineItems =
                 _repositoryFactory.LineItemRepository.Queryable.Fetch(x => x.Commodity).Where(x => x.Order.Id == id).ToList();
@@ -729,6 +758,7 @@ namespace Purchasing.Mvc.Controllers
                 var uniqueFinancialSegments = model.Order.Splits.Where(x => x.FinancialSegmentString != null).Select(x => x.FinancialSegmentString).Distinct().ToList();
                 var uniqueKfsAccounts = model.Order.Splits.Where(a => a.FinancialSegmentString == null  && a.KfsAccount != null && a.KfsAccount != string.Empty).Select(a => a.KfsAccount).Distinct().ToList();
                 var validationDict = new Dictionary<string, string>();
+                var validationWarningsDict = new Dictionary<string, string>();
                 if (uniqueKfsAccounts.Any())
                 {
                     foreach (var account in uniqueKfsAccounts)
@@ -745,8 +775,13 @@ namespace Purchasing.Mvc.Controllers
                             {
                                 validationDict.Add(account, $"Converted KFS account ({convertedAccount}) has validation errors in AE: {validated.Message}");
                             }
+                            if(validated.Warnings.Any())
+                            {
+                                validationWarningsDict.Add(account, $"Converted KFS account ({convertedAccount}) has validation warnings in AE: {string.Join(", ", validated.Warnings)}");
+                            }
                         }
                     }
+                    validationWarningsDict.Add("KFS Accounts", "<h2>KFS Accounts are being used. On July 1, 2025 these will stop being automatically converted and the order will not be able to be approved without picking a Chart String.</h2>");
                 }
                 if (uniqueFinancialSegments.Any())
                 {
@@ -756,6 +791,10 @@ namespace Purchasing.Mvc.Controllers
                         if (!validated.IsValid)
                         {
                             validationDict.Add(financialSegment, validated.Message);
+                        }
+                        if(validated.Warnings.Any())
+                        {
+                            validationWarningsDict.Add(financialSegment, string.Join(", ", validated.Warnings));
                         }
                     }
                 }
@@ -769,6 +808,16 @@ namespace Purchasing.Mvc.Controllers
 
                     model.HasInvalidAccounts = true;
                     model.InvalidAccountsMessage = msg;
+                }
+                if(validationWarningsDict.Any())
+                {
+                    var msg = "The following accounts/CoA have warnings: <br/>";
+                    foreach (var item in validationWarningsDict)
+                    {
+                        msg = $"{msg}Account/CoA:{item.Key}<br/>Warning: {item.Value}<br/><br/>";
+                    }
+
+                    model.AccountsWarningsMessage = msg;
                 }
             }
             
@@ -1238,6 +1287,8 @@ namespace Purchasing.Mvc.Controllers
                     new {Date = DateTime.UtcNow.ToPacificTime().ToShortDateString(), Text = comment, User = orderComment.User.FullName});
         }
 
+       
+
         [HttpPost]
         [AuthorizeReadOrEditOrder]
         public JsonNetResult UpdateReferenceNumber(int id, string referenceNumber)
@@ -1448,7 +1499,24 @@ namespace Purchasing.Mvc.Controllers
             return Json(new { success = false, message = rtValue.Message});
 
         }
-        
+
+        public async Task<JsonNetResult> SearchAddress(string searchTerm)
+        {
+            var results = await _aggieEnterpriseService.SearchShippingAddress(searchTerm);
+
+            return new JsonNetResult(results.Select(a => new { a.Id, a.Name }));
+        }
+
+        public async Task<JsonNetResult> GetAddress(string searchTerm)
+        {
+            var workgroupAddress = new WorkgroupAddress();
+            workgroupAddress.AeLocationCode = searchTerm;
+            var results = await _aggieEnterpriseService.GetShippingAddress(workgroupAddress);
+
+            return new JsonNetResult(new { results.Room, results.Building, results.City, results.State, results.Zip, results.Address });
+
+        }
+
         [HttpPost]
         public ActionResult AddVendor(int workgroupId, WorkgroupVendor vendor)
         {

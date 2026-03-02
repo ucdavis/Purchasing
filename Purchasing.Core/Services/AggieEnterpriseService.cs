@@ -1,4 +1,4 @@
-﻿using AggieEnterpriseApi;
+using AggieEnterpriseApi;
 using AggieEnterpriseApi.Extensions;
 using AggieEnterpriseApi.Types;
 using AggieEnterpriseApi.Validation;
@@ -73,91 +73,102 @@ namespace Purchasing.Core.Services
 
         public async Task<AccountValidationModel> ValidateAccount(string financialSegmentString, bool validateCVRs = true)
         {
-            var _aggieClient = GetClient();
-            var rtValue = new AccountValidationModel();
-            var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(financialSegmentString);
-
-            if (segmentStringType == FinancialChartStringType.Gl)
+            try
             {
-                var result = await _aggieClient.GlValidateChartstring.ExecuteAsync(financialSegmentString, validateCVRs);
+                var _aggieClient = GetClient();
+                var rtValue = new AccountValidationModel();
+                var segmentStringType = FinancialChartValidation.GetFinancialChartStringType(financialSegmentString);
 
-                var data = result.ReadData();
-
-                rtValue.IsValid = data.GlValidateChartstring.ValidationResponse.Valid;
-                rtValue.IsPpm = false;
-
-                if (!rtValue.IsValid)
+                if (segmentStringType == FinancialChartStringType.Gl)
                 {
-                    foreach (var err in data.GlValidateChartstring.ValidationResponse.ErrorMessages)
+                    var result = await _aggieClient.GlValidateChartstring.ExecuteAsync(financialSegmentString, validateCVRs);
+
+                    var data = result.ReadData();
+
+                    rtValue.IsValid = data.GlValidateChartstring.ValidationResponse.Valid;
+                    rtValue.IsPpm = false;
+
+                    if (!rtValue.IsValid)
                     {
-                        rtValue.Messages.Add(err);
+                        foreach (var err in data.GlValidateChartstring.ValidationResponse.ErrorMessages)
+                        {
+                            rtValue.Messages.Add(err);
+                        }
+                    }
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Entity", $"{data.GlValidateChartstring.SegmentNames.EntityName} ({data.GlValidateChartstring.Segments.Entity})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Fund", $"{data.GlValidateChartstring.SegmentNames.FundName} ({data.GlValidateChartstring.Segments.Fund})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Department", $"{data.GlValidateChartstring.SegmentNames.DepartmentName} ({data.GlValidateChartstring.Segments.Department})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Account", $"{data.GlValidateChartstring.SegmentNames.AccountName} ({data.GlValidateChartstring.Segments.Account})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Purpose", $"{data.GlValidateChartstring.SegmentNames.PurposeName} ({data.GlValidateChartstring.Segments.Purpose})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Project", $"{data.GlValidateChartstring.SegmentNames.ProjectName} ({data.GlValidateChartstring.Segments.Project})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Program", $"{data.GlValidateChartstring.SegmentNames.ProgramName} ({data.GlValidateChartstring.Segments.Program})"));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Activity", $"{data.GlValidateChartstring.SegmentNames.ActivityName} ({data.GlValidateChartstring.Segments.Activity})"));
+
+                    if (data.GlValidateChartstring.Warnings != null)
+                    {
+                        foreach (var warn in data.GlValidateChartstring.Warnings)
+                        {
+                            rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
+                        }
+                    }
+
+                    return rtValue;
+                }
+
+                if (segmentStringType == FinancialChartStringType.Ppm)
+                {
+                    var result = await _aggieClient.PpmSegmentStringValidate.ExecuteAsync(financialSegmentString);
+
+                    var data = result.ReadData();
+
+                    rtValue.IsValid = data.PpmSegmentStringValidate.ValidationResponse.Valid;
+                    rtValue.IsPpm = true;
+                    if (!rtValue.IsValid)
+                    {
+                        foreach (var err in data.PpmSegmentStringValidate.ValidationResponse.ErrorMessages)
+                        {
+                            rtValue.Messages.Add(err);
+                        }
+                    }
+
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Project", data.PpmSegmentStringValidate.Segments.Project));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Task", data.PpmSegmentStringValidate.Segments.Task));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Organization", data.PpmSegmentStringValidate.Segments.Organization));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Expenditure Type", data.PpmSegmentStringValidate.Segments.ExpenditureType));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Award", data.PpmSegmentStringValidate.Segments.Award));
+                    rtValue.Details.Add(new KeyValuePair<string, string>("Funding Source", data.PpmSegmentStringValidate.Segments.FundingSource));
+
+                    if (data.PpmSegmentStringValidate.Warnings != null)
+                    {
+                        foreach (var warn in data.PpmSegmentStringValidate.Warnings)
+                        {
+                            rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
+                        }
+                    }
+
+                    return rtValue;
+                }
+
+                if (segmentStringType == FinancialChartStringType.Invalid)
+                {
+                    {
+                        rtValue.Messages.Add("Invalid Financial Chart String format");
+                        rtValue.IsValid = false;
                     }
                 }
-                rtValue.Details.Add(new KeyValuePair<string, string>("Entity", $"{data.GlValidateChartstring.SegmentNames.EntityName} ({data.GlValidateChartstring.Segments.Entity})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Fund", $"{data.GlValidateChartstring.SegmentNames.FundName} ({data.GlValidateChartstring.Segments.Fund})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Department", $"{data.GlValidateChartstring.SegmentNames.DepartmentName} ({data.GlValidateChartstring.Segments.Department})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Account", $"{data.GlValidateChartstring.SegmentNames.AccountName} ({data.GlValidateChartstring.Segments.Account})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Purpose", $"{data.GlValidateChartstring.SegmentNames.PurposeName} ({data.GlValidateChartstring.Segments.Purpose})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Project", $"{data.GlValidateChartstring.SegmentNames.ProjectName} ({data.GlValidateChartstring.Segments.Project})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Program", $"{data.GlValidateChartstring.SegmentNames.ProgramName} ({data.GlValidateChartstring.Segments.Program})"));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Activity", $"{data.GlValidateChartstring.SegmentNames.ActivityName} ({data.GlValidateChartstring.Segments.Activity})"));
 
-                if (data.GlValidateChartstring.Warnings != null)
-                {
-                    foreach (var warn in data.GlValidateChartstring.Warnings)
-                    {
-                        rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
-                    }
-                }
 
+                rtValue.IsValid = false;
+                return rtValue; //It isn't a GL or PPM string, so it's not valid
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error validating account {financialSegmentString}", financialSegmentString);
+                var rtValue = new AccountValidationModel();
+                rtValue.IsValid = true;
+                rtValue.Warnings.Add(new KeyValuePair<string, string>("Account", "Warning, there was an error trying to validate this account. You may be able to continue, but may see errors if trying to upload a requisition to Aggie Enterprise.  The order can be edited to update the account used.  If this problem persists, please use the Help menu to submit a help ticket."));
                 return rtValue;
             }
-
-            if (segmentStringType == FinancialChartStringType.Ppm)
-            {
-                var result = await _aggieClient.PpmSegmentStringValidate.ExecuteAsync(financialSegmentString);
-
-                var data = result.ReadData();
-
-                rtValue.IsValid = data.PpmSegmentStringValidate.ValidationResponse.Valid;
-                rtValue.IsPpm = true;
-                if (!rtValue.IsValid)
-                {
-                    foreach (var err in data.PpmSegmentStringValidate.ValidationResponse.ErrorMessages)
-                    {
-                        rtValue.Messages.Add(err);
-                    }
-                }
-
-                rtValue.Details.Add(new KeyValuePair<string, string>("Project", data.PpmSegmentStringValidate.Segments.Project));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Task", data.PpmSegmentStringValidate.Segments.Task));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Organization", data.PpmSegmentStringValidate.Segments.Organization));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Expenditure Type", data.PpmSegmentStringValidate.Segments.ExpenditureType));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Award", data.PpmSegmentStringValidate.Segments.Award));
-                rtValue.Details.Add(new KeyValuePair<string, string>("Funding Source", data.PpmSegmentStringValidate.Segments.FundingSource));
-
-                if (data.PpmSegmentStringValidate.Warnings != null)
-                {
-                    foreach (var warn in data.PpmSegmentStringValidate.Warnings)
-                    {
-                        rtValue.Warnings.Add(new KeyValuePair<string, string>(warn.SegmentName, warn.Warning));
-                    }
-                }
-
-                return rtValue;
-            }
-
-            if(segmentStringType == FinancialChartStringType.Invalid)
-            {
-                {
-                    rtValue.Messages.Add("Invalid Financial Chart String format");
-                    rtValue.IsValid = false;
-                }
-            }
-
-
-            rtValue.IsValid = false;
-            return rtValue; //It isn't a GL or PPM string, so it's not valid
         }
 
         public async Task<SubmitResult> UploadOrder(Order order, string purchaserEmail, string purchaserKerb)
@@ -215,6 +226,7 @@ namespace Purchasing.Core.Services
                     NoteToBuyer = line.Notes.SafeTruncate(1000),
                     //RequestedDeliveryDate = order.DateNeeded.ToString("yyyy-MM-dd"),  //Don't pass. Oracle will default to 7 days in the future.   
                     LineType = ScmPurchaseRequisitionLineType.Quantity,
+                    SupplierItem = line.CatalogNumber.SafeRegexRemove().SafeTruncate(300),
                 };
                 if (shippingLocation != null && !string.IsNullOrWhiteSpace(shippingLocation.AeLocationCode))
                 {
@@ -340,7 +352,7 @@ namespace Purchasing.Core.Services
 
             var result = await _aggieClient.ErpUserSearch.ExecuteAsync(filter);
             var data = result.ReadData();
-            var users = data.ErpUserSearch.Data.Where(a => a.Active == true).ToArray();
+            var users = data.ErpUserSearch.Data.Where(a => a.Active == true).Distinct().ToArray();
             if(users.Length > 1)
             {
                 throw new Exception($"Multiple Active Aggie Enterprise users found for {purchaserKerb}");
@@ -628,8 +640,8 @@ namespace Purchasing.Core.Services
                     search = new ScmSupplierFilterInput { SupplierNumber = new StringFilterInput { Eq = vendor.AeSupplierNumber } };
                     var searchResult1 = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
                     var searchData1 = searchResult1.ReadData();
-                    rtValue.SupplierNumber = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.SupplierNumber.ToString();
-                    rtValue.SupplierSiteCode = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.Sites.Where(a => a.SupplierSiteCode.Equals(vendor.AeSupplierSiteCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault()?.SupplierSiteCode;
+                    rtValue.SupplierNumber = searchData1.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).FirstOrDefault()?.SupplierNumber.ToString();
+                    rtValue.SupplierSiteCode = searchData1.ScmSupplierSearch.Data.FirstOrDefault()?.Sites.Where(a => a.SupplierSiteCode.Equals(vendor.AeSupplierSiteCode, StringComparison.OrdinalIgnoreCase) && a.EligibleForUse).FirstOrDefault()?.SupplierSiteCode;
                 }
                 else
                 {
@@ -637,9 +649,10 @@ namespace Purchasing.Core.Services
                     var searchResult = await _aggieClient.ScmSupplierSearch.ExecuteAsync(search);
                     var searchData = searchResult.ReadData();
 
-                    rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.First().SupplierNumber.ToString();
+                    rtValue.SupplierNumber = searchData.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).First().SupplierNumber.ToString();
 
                     rtValue.SupplierSiteCode = searchData.ScmSupplierSearch.Data.First().Sites.Where(a =>
+                        a.EligibleForUse &&
                         a.SupplierSiteCode.Contains("PUR") &&
                         a.Location.City.Equals(vendor.City, System.StringComparison.OrdinalIgnoreCase) &&
                         a.Location.State.Equals(vendor.State, System.StringComparison.OrdinalIgnoreCase) &&
@@ -731,7 +744,7 @@ namespace Purchasing.Core.Services
             var result = await _aggieClient.SupplierNameAndNumberSupplierSearch.ExecuteAsync(filter, query.Trim());
             var data = result.ReadData();
 
-            if (data.ScmSupplierByNumber != null)
+            if (data.ScmSupplierByNumber != null && data.ScmSupplierByNumber.EligibleForUse)
             {
                 rtValue.Add(new IdAndName(
                 
@@ -740,9 +753,9 @@ namespace Purchasing.Core.Services
                 ));
 
             }
-            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0)
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).Count() > 0)
             {
-                rtValue.AddRange(data.ScmSupplierSearch.Data.Select(a => new IdAndName(a.SupplierNumber.ToString(), a.Name)));
+                rtValue.AddRange(data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).Select(a => new IdAndName(a.SupplierNumber.ToString(), a.Name)));
 
             }
 
@@ -767,15 +780,15 @@ namespace Purchasing.Core.Services
             var data = result.ReadData();
 
             var rtValue = new List<IdAndName>();
-            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0 && data.ScmSupplierSearch.Data.First().Sites != null)
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).Count() > 0 && data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).First().Sites != null)
             {
-                var temp = data.ScmSupplierSearch.Data.First().Sites;
+                var temp = data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).First().Sites;
 
                 //Do it this way so we can order the results
-                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("DF PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
-                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("DF PAY")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
-                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
-                rtValue.AddRange(temp.Where(a => a.SupplierSiteCode.StartsWith("PAY")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => a.EligibleForUse && a.SupplierSiteCode.StartsWith("DF PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => a.EligibleForUse && a.SupplierSiteCode.StartsWith("DF PAY")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => a.EligibleForUse && a.SupplierSiteCode.StartsWith("PUR")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
+                rtValue.AddRange(temp.Where(a => a.EligibleForUse && a.SupplierSiteCode.StartsWith("PAY")).OrderBy(a => a.SupplierSiteCode).Select(a => new IdAndName(a.SupplierSiteCode, $"({a.SupplierSiteCode}) Name: {a.Location.AddressLine1} Address: {a.Location.AddressLine2} {a.Location.AddressLine3} {a.Location.City} {a.Location.State} {a.Location.PostalCode} {a.Location.CountryCode}")));
 
                 //This was wrong because they added site codes with more than PUR and PAY
                 //We need both PUR and PAY addresses. But only PUR can be used with AE
@@ -799,20 +812,22 @@ namespace Purchasing.Core.Services
             var result = await _aggieClient.ScmSupplierSearch.ExecuteAsync(filter);
             var data = result.ReadData();
 
-            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Count > 0)
+            if (data.ScmSupplierSearch != null && data.ScmSupplierSearch.Data != null && data.ScmSupplierSearch.Data.Where(a => a.EligibleForUse).Count() > 0)
             {
-                var supplier = data.ScmSupplierSearch.Data.First();
+                var supplier = data.ScmSupplierSearch.Data.First(a => a.EligibleForUse);
 
-                var address = supplier.Sites.Where(a => a.SupplierSiteCode == workgroupVendor.AeSupplierSiteCode).FirstOrDefault().Location;
+                var address = supplier.Sites.Where(a => a.SupplierSiteCode == workgroupVendor.AeSupplierSiteCode && a.EligibleForUse).FirstOrDefault()?.Location;
+
+                //For AE completed orders, it looks like several of their fields are optional. When we upload we just send the code not these other values. So put in a non null value when needed
 
                 workgroupVendor.Name        = supplier.Name.SafeTruncate(45);
-                workgroupVendor.Line1       = address.AddressLine1.SafeTruncate(40);
-                workgroupVendor.Line2       = address.AddressLine2.SafeTruncate(40);
-                workgroupVendor.Line3       = address.AddressLine3.SafeTruncate(40);
-                workgroupVendor.City        = address.City.SafeTruncate(40);
-                workgroupVendor.State       = address.State.SafeTruncate(2);
-                workgroupVendor.Zip         = address.PostalCode.SafeTruncate(11);
-                workgroupVendor.CountryCode = address.CountryCode.SafeTruncate(2);
+                workgroupVendor.Line1       = address?.AddressLine1.SafeTruncate(40) ?? "na";
+                workgroupVendor.Line2       = address?.AddressLine2.SafeTruncate(40);
+                workgroupVendor.Line3       = address?.AddressLine3.SafeTruncate(40);
+                workgroupVendor.City        = address?.City.SafeTruncate(40);
+                workgroupVendor.State       = address?.State.SafeTruncate(2) ?? "--"; //Can be null in AE
+                workgroupVendor.Zip         = address?.PostalCode.SafeTruncate(11) ?? "na";
+                workgroupVendor.CountryCode = address?.CountryCode.SafeTruncate(2);
             }
 
             return workgroupVendor;
@@ -929,45 +944,54 @@ namespace Purchasing.Core.Services
                 return String.Empty;
             }
 
-            var _aggieClient = GetClient();
 
-            var parts = account.Split('-');
-            
-            var chart = parts[0];
-            var accountPart = parts[1];
-            var subAcct = parts.Length > 2 ? parts[2] : null;
+            try
+            {
+                var _aggieClient = GetClient();
 
-            var result = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, accountPart, subAcct);
-            var data = result.ReadData();
-            if (data.KfsConvertAccount.GlSegments != null)
-            {
-                var tempGlSegments = new GlSegments(data.KfsConvertAccount.GlSegments);
-                if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000"))
+                var parts = account.Split('-');
+
+                var chart = parts[0].ToUpper();
+                var accountPart = parts[1].ToUpper();
+                var subAcct = parts.Length > 2 ? parts[2].ToUpper() : null;
+
+                var result = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, accountPart, subAcct);
+                var data = result.ReadData();
+                if (data.KfsConvertAccount.GlSegments != null)
                 {
-                    //770000
-                    Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                    tempGlSegments.Account = _options.DefaultNaturalAccount;
-                }
-                return tempGlSegments.ToSegmentString();
-            }
-            else
-            {
-                if (data.KfsConvertAccount.PpmSegments != null)
-                {
-                    //rtValue.IsPPm = true; //Maybe want to return and store this?
-                    var tempPpmSegments = new PpmSegments(data.KfsConvertAccount.PpmSegments);
-                    if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000"))
+                    var tempGlSegments = new GlSegments(data.KfsConvertAccount.GlSegments);
+                    if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000"))
                     {
                         //770000
-                        Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                        tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                        Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                        tempGlSegments.Account = _options.DefaultNaturalAccount;
                     }
-                    return tempPpmSegments.ToSegmentString();
+                    return tempGlSegments.ToSegmentString();
                 }
                 else
                 {
-                    return String.Empty;
+                    if (data.KfsConvertAccount.PpmSegments != null)
+                    {
+                        //rtValue.IsPPm = true; //Maybe want to return and store this?
+                        var tempPpmSegments = new PpmSegments(data.KfsConvertAccount.PpmSegments);
+                        if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000"))
+                        {
+                            //770000
+                            Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
+                            tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
+                        }
+                        return tempPpmSegments.ToSegmentString();
+                    }
+                    else
+                    {
+                        return String.Empty;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error converting KFS Account {account}", account);
+                return String.Empty;
             }
         }
 

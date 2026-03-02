@@ -282,6 +282,7 @@ namespace Purchasing.Mvc.Services
         private void ProcessLineItems(Table table, Order order, bool forVendor)
         {
             var count = 1;
+            var hasProjects = order.Splits.Any(x => !string.IsNullOrEmpty(x.Project));
             foreach (var li in order.LineItems)
             {
                 table.AddCell(InitializeCell(count++.ToString(), _font));
@@ -338,7 +339,7 @@ namespace Purchasing.Mvc.Services
                 {
                     if (order.HasLineSplits)
                     {
-                        var accountTable = SplitAccountingInformation(li.Splits);
+                        var accountTable = SplitAccountingInformation(li.Splits, hasProjects);
                         var acell = InitializeCell(colspan: 7, bottomBorder: false).SetPaddingBottom(0);
                         acell.Add(accountTable);
                         table.AddCell(acell);
@@ -347,20 +348,28 @@ namespace Purchasing.Mvc.Services
             }
         }
         
-        private Table SplitAccountingInformation(IEnumerable<Split> splits)
+        private Table SplitAccountingInformation(IEnumerable<Split> splits, bool hasProjects )
         {
-            var table = InitializeTable(4).SetHorizontalAlignment(HorizontalAlignment.CENTER).SetFontSize(10);
+            var columns = hasProjects ? 4 : 3;
+
+            var table = InitializeTable(columns).SetHorizontalAlignment(HorizontalAlignment.CENTER).SetFontSize(10);
             table.SetWidth(_pageWidth * .75f);
 
             table.AddCell(InitializeCell("Account", _tableHeaderFont,header: true, backgroundColor: _subTableHeaderColor, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
-            table.AddCell(InitializeCell("Project", _tableHeaderFont, header: true, backgroundColor: _subTableHeaderColor, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
+            if (hasProjects)
+            {
+                table.AddCell(InitializeCell("Project", _tableHeaderFont, header: true, backgroundColor: _subTableHeaderColor, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
+            }
             table.AddCell(InitializeCell("Amount", _tableHeaderFont, header: true, backgroundColor: _subTableHeaderColor, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
             table.AddCell(InitializeCell("Distribution", _tableHeaderFont, header: true, backgroundColor: _subTableHeaderColor, bottomBorder: true).SetFontColor(ColorConstants.WHITE));
 
             foreach (var split in splits)
             {
                 table.AddCell(InitializeCell(split.FullAccountDisplay, _font, bottomBorder: false));
-                table.AddCell(InitializeCell(split.Project, _font, bottomBorder: false));
+                if (hasProjects)
+                {
+                    table.AddCell(InitializeCell(split.Project, _font, bottomBorder: false));
+                }
                 table.AddCell(InitializeCell(split.Amount.ToString("c"), _font, bottomBorder: false));
 
                 if (split.LineItem == null)
@@ -378,10 +387,11 @@ namespace Purchasing.Mvc.Services
 
         private void AddBottomSection(Document doc, Order order)
         {
+            var hasProjects = order.Splits.Any(x => !string.IsNullOrEmpty(x.Project));
             // order level splits
             if (order.Splits.Count > 1 && !order.HasLineSplits)
             {
-                var accountingTable = SplitAccountingInformation(order.Splits);
+                var accountingTable = SplitAccountingInformation(order.Splits, hasProjects);
                 doc.Add(accountingTable);
             }
             // just one account
@@ -389,13 +399,15 @@ namespace Purchasing.Mvc.Services
             {
                 var split = order.Splits.First();
 
-                var accountingTable = InitializeTable(2).SetFontSize(10);
+                var accountingTable = InitializeTable(hasProjects? 2 : 1).SetFontSize(10);
 
                 accountingTable.AddCell(InitializeCell("Account:", _boldFont, bottomBorder: false, width: 10));
                 accountingTable.AddCell(InitializeCell(split.FullAccountDisplay, _font, bottomBorder: false, width: 50));
-                accountingTable.AddCell(InitializeCell("Project:", _boldFont, width: 10));
-                accountingTable.AddCell(InitializeCell(split.Project, _font, width: 50));
-
+                if (hasProjects)
+                {
+                    accountingTable.AddCell(InitializeCell("Project:", _boldFont, width: 10));
+                    accountingTable.AddCell(InitializeCell(split.Project, _font, width: 50));
+                }
                 doc.Add(accountingTable);
             }
         }

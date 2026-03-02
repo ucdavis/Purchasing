@@ -15,3 +15,9 @@
         @Html.ActionLink("Please edit this order", "Edit", new {Model.Order.Id}) and rectify the issue before proceeding.
     </div>
 }
+@if (Model.CanEditOrder && Model.CanSubmitOrder && Model.HasAccountWarnings)
+{
+    <div id="warning-message-account">
+        <span>@Html.Raw(Model.AccountsWarningsMessage)</span>
+    </div>
+}

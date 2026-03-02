@@ -15,7 +15,7 @@
             <li>
                 <div class="editor-label required">Request Type</div>
                 <div class="editor-field">
-                    @Html.Select("requestType", o => o.Options(new [] { "Purchasing", "Payment/Refund", "Travel or Entertainment", "PCARD Receipt", "Other" }).Class("request-types").Selected(Model.Order.RequestType ?? "Purchasing"))
+                    @Html.Select("requestType", o => o.Options(new[] { "Purchasing", "Payment/Refund", "Travel or Entertainment", "PCARD Receipt", "Ledger Review", "Other" }).Class("request-types").Selected(Model.Order.RequestType ?? "Purchasing"))
                 </div>
             </li>
             <li>

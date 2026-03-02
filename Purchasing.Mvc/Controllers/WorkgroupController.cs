@@ -567,7 +567,7 @@ namespace Purchasing.Mvc.Controllers
                 var newWorkgroupAccount = new WorkgroupAccount()
                 {
                     Workgroup = workgroup,
-                    Name = workgroupAccount.Name,
+                    Name = workgroupAccount.Name.SafeTruncate(64),
                     FinancialSegmentString = workgroupAccount.ChartString,
                     AccountManager = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.AccountManager)?.User,
                     Approver = defaults.SingleOrDefault(a => a.Role.Id == Role.Codes.Approver)?.User,
@@ -2161,6 +2161,7 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(results);
         }
 
+        //This is also in the order controller as it is needed to add a shipping address from within an order.
         public async Task<JsonNetResult> SearchAddress(string searchTerm)
         {
 
@@ -2169,6 +2170,7 @@ namespace Purchasing.Mvc.Controllers
             return new JsonNetResult(results.Select(a => new { a.Id, a.Name }));
         }
 
+        //This is also in the order controller as it is needed to add a shipping address from within an order.
         public async Task<JsonNetResult> GetAddress(string searchTerm)
         {
             var workgroupAddress = new WorkgroupAddress();

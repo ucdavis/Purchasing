@@ -603,5 +603,17 @@ namespace Purchasing.Tests.Core
 
             return rtValue;
         }
+
+        public static Favorite Favorite(int? counter)
+        {
+            var rtValue = new Favorite();
+            rtValue.User = new User();
+            rtValue.Order = new Order();
+            rtValue.DateAdded = DateTime.UtcNow;
+            rtValue.IsActive = true;
+            rtValue.Category = "Category" + counter.Extra();
+
+            return rtValue;
+        }
     }
 }

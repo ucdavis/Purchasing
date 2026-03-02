@@ -45,6 +45,7 @@ namespace Purchasing.Core.Domain
 
             AddAttachment = true;
             AddNote = true;
+            IncludeNotesNotAssigned = true; 
         }
         public EmailPreferences(string id) : this() {Id = id;}
 
@@ -144,7 +145,7 @@ namespace Purchasing.Core.Domain
         [Display(Name ="Order Arrived")]
         public virtual bool PurchaserOrderArrive { get; set; }
 
-        [Display(Name = "KFS Item Received")]
+        [Display(Name = "Aggie Enterprise Item Received")]
         public virtual bool PurchaserKfsItemReceived { get; set; }
 
         [Display(Name = "P Card Item Received")]
@@ -153,7 +154,7 @@ namespace Purchasing.Core.Domain
         [Display(Name = "Campus Services Item Received")]
         public virtual bool PurchaserCampusServicesItemReceived { get; set; }
 
-        [Display(Name = "KFS Item Paid")]
+        [Display(Name = "Aggie Enterprise Item Paid")]
         public virtual bool PurchaserKfsItemPaid { get; set; }
 
         [Display(Name = "P Card Item Paid")]
@@ -169,6 +170,9 @@ namespace Purchasing.Core.Domain
         public virtual bool AddAttachment { get; set; }
         [Display(Name = "Note Added")]
         public virtual bool AddNote { get; set; }
+
+        [Display(Name = "Include Notes If Not Assigned")]
+        public virtual bool IncludeNotesNotAssigned { get; set; } //If someone has AddNote checked, this will include the notes for orders they have not acted on and are not directly assigned to, but it is at a level they can act on it.
         #endregion
 
         public virtual NotificationTypes NotificationType { get; set; }
@@ -227,6 +231,7 @@ namespace Purchasing.Core.Domain
 
             Map(x => x.AddAttachment);
             Map(x => x.AddNote);
+            Map(x => x.IncludeNotesNotAssigned);
         }
     }
 }
