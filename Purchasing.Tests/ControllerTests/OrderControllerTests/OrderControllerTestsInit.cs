@@ -15,7 +15,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
-using Purchasing.WS;
+//using Purchasing.WS;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
@@ -32,7 +32,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         public IOrderService OrderService;
         public ISecurityService SecurityService;
         public IDirectorySearchService DirectorySearchService;
-        public IFinancialSystemService FinancialSystemService;
+        //public IFinancialSystemService FinancialSystemService;
         public IQueryRepositoryFactory QueryRepositoryFactory;
         public IEventService EventService;
         public IBugTrackingService BugTrackingService;
@@ -62,7 +62,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
             OrderService = Mock.Of<IOrderService>();
             SecurityService = Mock.Of<ISecurityService>();
             DirectorySearchService = Mock.Of<IDirectorySearchService>();
-            FinancialSystemService = Mock.Of<IFinancialSystemService>();
+            //FinancialSystemService = Mock.Of<IFinancialSystemService>();
             ColumnPreferencesRepository = Mock.Of<IRepositoryWithTypedId<ColumnPreferences, string>>();
             OrderStatusCodeRepository = Mock.Of<IRepositoryWithTypedId<OrderStatusCode, string>>();
             QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
@@ -109,7 +109,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
                 OrderService,
                 SecurityService,
                 DirectorySearchService,
-                FinancialSystemService,
+                //FinancialSystemService,
                 QueryRepositoryFactory,
                 EventService,
                 BugTrackingService,
