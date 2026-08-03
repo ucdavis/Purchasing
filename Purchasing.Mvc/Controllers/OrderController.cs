@@ -620,6 +620,8 @@ namespace Purchasing.Mvc.Controllers
             {
                 return ViewHelper.NotAuthorized(Resources.Authorization_PermissionDenied);
             }
+
+            await _orderService.TryPopulatePoNumberFromAggieEnterprise(model.Order);
             
             model.Vendor = _repositoryFactory.OrderRepository.Queryable.Where(x=>x.Id == id).Select(x=>x.Vendor).Single();
             if(model.Vendor != null && !string.IsNullOrWhiteSpace( model.Vendor.AeSupplierNumber ))

@@ -71,6 +71,8 @@ namespace Purchasing.Mvc.Services
         /// <returns>String array of error messages, non-empty if completion didn't succeed</returns>
         Task<string[]> Complete(Order order, OrderType newOrderType, string kfsDocType = null);
 
+        Task<bool> TryPopulatePoNumberFromAggieEnterprise(Order order);
+
         /// <summary>
         /// Get the current user's list of orders.
         /// </summary>
@@ -646,6 +648,29 @@ namespace Purchasing.Mvc.Services
             _eventService.OrderCompleted(order);
 
             return new string[0]; //return no errors
+        }
+
+        public async Task<bool> TryPopulatePoNumberFromAggieEnterprise(Order order)
+        {
+            if (order.StatusCode?.Id != OrderStatusCode.Codes.Complete ||
+                order.OrderType?.Id?.Trim() != OrderType.Types.AggieEnterprise ||
+                string.IsNullOrWhiteSpace(order.ReferenceNumber) ||
+                !string.IsNullOrWhiteSpace(order.PoNumber))
+            {
+                return false;
+            }
+
+            var status = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
+            if (string.IsNullOrWhiteSpace(status?.PoNumber))
+            {
+                return false;
+            }
+
+            order.PoNumber = status.PoNumber.Trim();
+            _eventService.OrderUpdated(order, $"PO # automatically populated from Aggie Enterprise: {order.PoNumber}");
+            _orderRepository.EnsurePersistent(order);
+
+            return true;
         }
 
         /// <summary>
