@@ -652,25 +652,33 @@ namespace Purchasing.Mvc.Services
 
         public async Task<bool> TryPopulatePoNumberFromAggieEnterprise(Order order)
         {
-            if (order.StatusCode?.Id != OrderStatusCode.Codes.Complete ||
-                order.OrderType?.Id?.Trim() != OrderType.Types.AggieEnterprise ||
-                string.IsNullOrWhiteSpace(order.ReferenceNumber) ||
-                !string.IsNullOrWhiteSpace(order.PoNumber))
+            try
             {
+                if (order.StatusCode?.Id != OrderStatusCode.Codes.Complete ||
+                    order.OrderType?.Id?.Trim() != OrderType.Types.AggieEnterprise ||
+                    string.IsNullOrWhiteSpace(order.ReferenceNumber) ||
+                    !string.IsNullOrWhiteSpace(order.PoNumber))
+                {
+                    return false;
+                }
+
+                var status = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
+                if (string.IsNullOrWhiteSpace(status?.PoNumber))
+                {
+                    return false;
+                }
+
+                order.PoNumber = status.PoNumber.Trim();
+                _eventService.OrderUpdated(order, $"PO # automatically populated from Aggie Enterprise: {order.PoNumber}");
+                _orderRepository.EnsurePersistent(order);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //swallow it.
                 return false;
             }
-
-            var status = await _aggieEnterpriseService.LookupOrderStatus(order.ReferenceNumber.Trim());
-            if (string.IsNullOrWhiteSpace(status?.PoNumber))
-            {
-                return false;
-            }
-
-            order.PoNumber = status.PoNumber.Trim();
-            _eventService.OrderUpdated(order, $"PO # automatically populated from Aggie Enterprise: {order.PoNumber}");
-            _orderRepository.EnsurePersistent(order);
-
-            return true;
         }
 
         /// <summary>
