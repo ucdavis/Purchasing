@@ -22,12 +22,7 @@
     </header>
     
     <div class="contents">
-        
-        <p>Help make PrePurchasing better with your ideas</p>
-        <ul>
-            <li>See a suggestion you like?  Vote for it!</li>
-            <li>Make your own suggestions</li>
-        </ul>
+        <p>Share ideas and vote for improvements suggested by other users.</p>
     </div>
 
 </section>
@@ -39,9 +34,7 @@
         </header>
     
         <div class="contents">
-        
-            <p>Need some help?  Try submitting a ticket to our help desk.</p>
-
+            <p>Submit a help ticket for technical problems or unexpected behavior.</p>
         </div>
 
     </section>
@@ -54,14 +47,7 @@
         </header>
     
         <div class="contents">
-        
-            <p>Who should I contact?</p>
-            <ul>
-                <li>What Workgroups do you belong to?</li>
-                <li>Who are the Departmental Admins for those workgroups?</li>
-                <li>Have a technical questions instead? Try the other help button.</li>
-            </ul>
-
+            <p>Find your workgroups and the departmental admins who support them.</p>
         </div>
 
     </section>
@@ -73,9 +59,7 @@
         </header>
     
         <div class="contents">
-        
-            <p>Try our knowledge base.</p>
-
+            <p>Browse guides and answers to common PrePurchasing questions.</p>
         </div>
 
     </section>
@@ -86,7 +70,10 @@
     <style type="text/css">
         .container { display: inline-block;margin: .5em 0;padding: 1em;}
         .split {width: 47%;float: left;}
-        .container header { margin: auto;padding: 0;color: #014A81; }
-        .container ul { margin: 0 20px;}
+        #keeper::after { content: ""; display: block; clear: both; }
+        .split header, .split .contents { width: 350px; margin-left: auto; margin-right: auto; }
+        .container header { padding: 0;color: #014A81; }
+        .split .contents { box-sizing: border-box; margin-top: .75em; padding: 0 .25em; color: #3f4f5a; font-size: .95em; line-height: 1.4; text-align: center; }
+        .split .contents p { margin: 0; }
     </style>
 }
