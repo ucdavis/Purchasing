@@ -38,6 +38,19 @@
 			<div class="display-details">@Model.TypeName</div>
 		</li>
 		<li>
+			<div class="display-label">Parent Org</div>
+			<div class="display-details">
+                @if (Model.Parent != null)
+                {
+                    @Html.ActionLink($"{Model.Parent.Name} ({Model.Parent.Id})", "Details", "Organization", new { id = Model.Parent.Id }, new { })
+                }
+                else
+                {
+                    @:n/a
+                }
+			</div>
+		</li>
+		<li>
 			<div class="display-label">Is Active</div>
 			<div class="display-details">@Model.IsActive</div>
 		</li>
