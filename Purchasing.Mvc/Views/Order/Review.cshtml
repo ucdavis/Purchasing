@@ -108,10 +108,10 @@
 
 @await Html.PartialAsync("_ReviewOrderDetails")
 
-@if (Model.Order.IsValidKfs())
+@* @if (Model.Order.IsValidKfs())
 {
     @await Html.PartialAsync("_ReviewKfs")
-}
+} *@
 @if (Model.Order.IsValidAe())
 {
     @await Html.PartialAsync("_ReviewAe")

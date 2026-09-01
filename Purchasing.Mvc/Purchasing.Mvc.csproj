@@ -48,7 +48,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj" />
-    <ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj" />
     <ProjectReference Include="..\UCDArch\UCDArch.csproj" />
   </ItemGroup>
 

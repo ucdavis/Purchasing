@@ -13,7 +13,7 @@ using Purchasing.Mvc.Attributes;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Models;
-using Purchasing.WS;
+//using Purchasing.WS;
 using Serilog;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
@@ -40,7 +40,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly ISecurityService _securityService;
         private readonly IDirectorySearchService _directorySearchService; //TODO: Review if this is needed
-        private readonly IFinancialSystemService _financialSystemService;
+        //private readonly IFinancialSystemService _financialSystemService;
         private readonly IQueryRepositoryFactory _queryRepository;
         private readonly IEventService _eventService;
         private readonly IBugTrackingService _bugTrackingService;
@@ -53,7 +53,7 @@ namespace Purchasing.Mvc.Controllers
             IOrderService orderService, 
             ISecurityService securityService, 
             IDirectorySearchService directorySearchService, 
-            IFinancialSystemService financialSystemService,
+            //IFinancialSystemService financialSystemService,
             IQueryRepositoryFactory queryRepository,
             IEventService eventService,
             IBugTrackingService bugTrackingService, 
@@ -65,7 +65,7 @@ namespace Purchasing.Mvc.Controllers
             _repositoryFactory = repositoryFactory;
             _securityService = securityService;
             _directorySearchService = directorySearchService;
-            _financialSystemService = financialSystemService;
+            //_financialSystemService = financialSystemService;
             _queryRepository = queryRepository;
             _eventService = eventService;
             _bugTrackingService = bugTrackingService;
@@ -2527,24 +2527,25 @@ namespace Purchasing.Mvc.Controllers
         /// <returns></returns>
         public JsonNetResult GetKfsStatus(int id)
         {
-            // load the order
-            var order = _repositoryFactory.OrderRepository.GetNullableById(id);
+            return new JsonNetResult(null);
+            //// load the order
+            //var order = _repositoryFactory.OrderRepository.GetNullableById(id);
 
-            try
-            {
-                // make the call
-                var i = 0;
-                if (!int.TryParse(order.ReferenceNumber.Trim(), out i))
-                {
-                    return new JsonNetResult(null);
-                }
-                var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber.Trim());
-                return new JsonNetResult(result);
-            }
-            catch (Exception)
-            {
-                return new JsonNetResult(null);
-            }
+            //try
+            //{
+            //    // make the call
+            //    var i = 0;
+            //    if (!int.TryParse(order.ReferenceNumber.Trim(), out i))
+            //    {
+            //        return new JsonNetResult(null);
+            //    }
+            //    var result = _financialSystemService.GetOrderStatus(order.ReferenceNumber.Trim());
+            //    return new JsonNetResult(result);
+            //}
+            //catch (Exception)
+            //{
+            //    return new JsonNetResult(null);
+            //}
             
         }
 

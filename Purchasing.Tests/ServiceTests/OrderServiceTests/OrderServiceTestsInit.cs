@@ -7,7 +7,7 @@ using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Services;
 using Purchasing.Tests.Core;
-using Purchasing.WS;
+//using Purchasing.WS;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
@@ -21,7 +21,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
     {
         public IRepositoryFactory RepositoryFactory;
         public IQueryRepositoryFactory QueryRepositoryFactory;
-        public IFinancialSystemService FinancialSystemService;
+        //public IFinancialSystemService FinancialSystemService;
         public IIndexService IndexService;
         public IEventService EventService;
         public IUserIdentity UserIdentity;
@@ -50,7 +50,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
         {
             RepositoryFactory = Mock.Of<IRepositoryFactory>();
             QueryRepositoryFactory = Mock.Of<IQueryRepositoryFactory>();
-            FinancialSystemService = Mock.Of<IFinancialSystemService>();
+            //FinancialSystemService = Mock.Of<IFinancialSystemService>();
             IndexService = Mock.Of<IIndexService>();
             EventService = Mock.Of<IEventService>();
             UserIdentity = Mock.Of<IUserIdentity>();
@@ -92,7 +92,7 @@ namespace Purchasing.Tests.ServiceTests.OrderServiceTests
                 OrderRepository,
                 QueryRepositoryFactory,
                 AccessQueryService,
-                FinancialSystemService,
+                //FinancialSystemService,
                 IndexService,
                 AggieEnterpriseService);
 

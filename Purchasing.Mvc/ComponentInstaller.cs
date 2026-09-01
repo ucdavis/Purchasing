@@ -7,7 +7,7 @@ using Purchasing.Core;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
 using Purchasing.Mvc.Helpers;
-using Purchasing.WS;
+//using Purchasing.WS;
 using UCDArch.Core.CommonValidator;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.DataAnnotationsValidator.CommonValidatorAdapter;
@@ -65,7 +65,7 @@ namespace Purchasing.Mvc
             container.Register(Component.For<IWorkgroupService>().ImplementedBy<WorkgroupService>().Named("workgroupService")); //Common methods for Workgroup and wizard controllers
             //container.Register(Component.For<IReportService>().ImplementedBy<ReportService>().Named("reportService")); //I moved this to start up - JCS
 
-            container.Register(Component.For<IFinancialSystemService>().ImplementedBy<FinancialSystemService>().Named("financialSystemService"));
+            //container.Register(Component.For<IFinancialSystemService>().ImplementedBy<FinancialSystemService>().Named("financialSystemService"));
             container.Register(Component.For<IBugTrackingService>().ImplementedBy<BugTrackingService>().Named("bugTrackingService"));
             container.Register(Component.For<IRoleService>().ImplementedBy<RoleService>().Named("roleService"));
 
