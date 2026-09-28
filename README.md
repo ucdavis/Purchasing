@@ -23,9 +23,9 @@ http://ucdavis.github.com/Purchasing/index.html
 
 This project uses devcontainers, so make sure you have docker setup and then install the devcontainer extension for VSCode if necessary.
 
-## SSL certs (required one time setup)
+## SSL certs (one time setup for HTTPS)
 
-You need to setup your dev certs the first time you run a local .net project. This is a one time setup for your machine, and you can use the same cert for all your projects.
+For HTTPS, set up your dev certs the first time you run a local .NET project. This is a one time setup for your machine, and you can use the same cert for all your projects. For local HTTP without certificates, see [Local login](#local-login).
 
 The setup is different for Windows and Mac/Linux, so make sure to follow the instructions for your OS:
 
@@ -88,12 +88,24 @@ This will start the application on `https://localhost:44396` using your ssl cert
 
 ### Local login
 
-The local launch profiles enable `LocalLogin__Enabled=true`. In the `Development`
+The profiles in `Purchasing.Mvc/Properties/launchSettings.json` enable
+`LocalLogin__Enabled=true`. In the `Development`
 environment, `/LogOn` then offers normal CAS sign-in or passwordless sign-in using
 an existing, active user's login ID. The selected user keeps their normal database
 permissions. No users or seed data are created; the configured database must
 already contain the user.
 
-Set `LocalLogin__Enabled=false` to go straight to CAS. The local login endpoint is
+Set `LocalLogin__Enabled=false` in the selected launch profile to go straight to
+CAS. The local login endpoint is
 unavailable outside `Development`, even when the flag is enabled. Keep this mode
 on your local machine: anyone who can reach it can sign in as an active user.
+
+For local HTTP without certificate setup, run this from `Purchasing.Mvc` in a
+bash or zsh shell:
+
+```bash
+ASPNETCORE_ENVIRONMENT=Development LocalLogin__Enabled=true dotnet run --no-launch-profile --urls http://localhost:44395
+```
+
+Open `http://localhost:44395/LogOn`. When launching without a profile, including
+from a debugger, both settings must be supplied explicitly to enable local login.
