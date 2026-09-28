@@ -9,6 +9,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using UCDArch.Core.PersistanceSupport;
 using NHibernate.Linq;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Purchasing.Mvc.Models;
 
 namespace Purchasing.Mvc.Controllers
 {
@@ -18,15 +22,18 @@ namespace Purchasing.Mvc.Controllers
     public class AccountController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
+        private readonly bool _localLoginEnabled;
 
         public string Message
         {
             set { TempData["Message"] = value; }
         }
 
-        public AccountController(IRepositoryWithTypedId<User,string> userRepository)
+        public AccountController(IRepositoryWithTypedId<User,string> userRepository,
+            IWebHostEnvironment environment, IConfiguration configuration)
         {
             _userRepository = userRepository;
+            _localLoginEnabled = environment.IsDevelopment() && configuration.GetValue<bool>("LocalLogin:Enabled");
         }
         
 
@@ -38,12 +45,53 @@ namespace Purchasing.Mvc.Controllers
         }
 
         [AllowAnonymous]
-        [Route("LogOn")]
-        public async Task LogOn(string returnUrl)
+        [HttpGet("LogOn")]
+        public ActionResult LogOn(string returnUrl, bool useCas = false)
         {
-            var props = new AuthenticationProperties { RedirectUri = returnUrl };
-            await HttpContext.ChallengeAsync(CasDefaults.AuthenticationScheme, props);
+            var redirectUrl = LocalReturnUrl(returnUrl);
+            if (_localLoginEnabled && !useCas)
+            {
+                ModelState.Remove(nameof(LocalLoginModel.ReturnUrl));
+                return View(new LocalLoginModel { ReturnUrl = redirectUrl });
+            }
+
+            return Challenge(new AuthenticationProperties { RedirectUri = redirectUrl }, CasDefaults.AuthenticationScheme);
         }
+
+        [AllowAnonymous]
+        [HttpPost("LogOn/Local")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LocalLogOn(LocalLoginModel model)
+        {
+            if (!_localLoginEnabled) return NotFound();
+
+            model.ReturnUrl = LocalReturnUrl(model.ReturnUrl);
+            // Render the sanitized destination even when redisplaying a failed POST.
+            ModelState.Remove(nameof(model.ReturnUrl));
+            if (!ModelState.IsValid) return View("LogOn", model);
+
+            var userId = model.UserId?.Trim().ToLowerInvariant();
+            var user = string.IsNullOrEmpty(userId) ? null : _userRepository.GetNullableById(userId);
+            if (user == null || !user.IsActive)
+            {
+                ModelState.AddModelError(nameof(model.UserId), "Enter the login ID of an existing, active user.");
+                return View("LogOn", model);
+            }
+
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.Id),
+                new Claim(ClaimTypes.GivenName, user.FirstName ?? string.Empty),
+                new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
+            }, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+            return LocalRedirect(model.ReturnUrl);
+        }
+
+        private string LocalReturnUrl(string returnUrl) => Url.IsLocalUrl(returnUrl) ? returnUrl : "/Home/Landing";
 
         /// <summary>
         /// Emulate a specific user, for Emulation Users only

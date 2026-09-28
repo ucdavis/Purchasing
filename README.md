@@ -85,3 +85,15 @@ dotnet watch
 ```
 
 This will start the application on `https://localhost:44396` using your ssl cert.
+
+### Local login
+
+The local launch profiles enable `LocalLogin__Enabled=true`. In the `Development`
+environment, `/LogOn` then offers normal CAS sign-in or passwordless sign-in using
+an existing, active user's login ID. The selected user keeps their normal database
+permissions. No users or seed data are created; the configured database must
+already contain the user.
+
+Set `LocalLogin__Enabled=false` to go straight to CAS. The local login endpoint is
+unavailable outside `Development`, even when the flag is enabled. Keep this mode
+on your local machine: anyone who can reach it can sign in as an active user.
