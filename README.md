@@ -88,24 +88,35 @@ This will start the application on `https://localhost:44396` using your ssl cert
 
 ### Local login
 
-The profiles in `Purchasing.Mvc/Properties/launchSettings.json` enable
-`LocalLogin__Enabled=true`. In the `Development`
-environment, `/LogOn` then offers normal CAS sign-in or passwordless sign-in using
-an existing, active user's login ID. The selected user keeps their normal database
-permissions. No users or seed data are created; the configured database must
-already contain the user.
-
-Set `LocalLogin__Enabled=false` in the selected launch profile to go straight to
-CAS. The local login endpoint is
-unavailable outside `Development`, even when the flag is enabled. Keep this mode
-on your local machine: anyone who can reach it can sign in as an active user.
-
-For local HTTP without certificate setup, run this from `Purchasing.Mvc` in a
-bash or zsh shell:
+Local login is off by default. To enable it for your own machine, run this from
+`Purchasing.Mvc`:
 
 ```bash
-ASPNETCORE_ENVIRONMENT=Development LocalLogin__Enabled=true dotnet run --no-launch-profile --urls http://localhost:44395
+dotnet user-secrets set "LocalLogin:Enabled" "true"
 ```
 
-Open `http://localhost:44395/LogOn`. When launching without a profile, including
-from a debugger, both settings must be supplied explicitly to enable local login.
+This setting is stored outside the repository, so developers do not need to edit
+tracked launch settings. In the `Development` environment, `/LogOn` then offers
+normal CAS sign-in or passwordless sign-in using an existing, active user's login
+ID. The selected user keeps their normal database permissions. No users or seed
+data are created; the configured database must already contain the user.
+
+To return to normal CAS-only login:
+
+```bash
+dotnet user-secrets remove "LocalLogin:Enabled"
+```
+
+Restart the app after changing the setting. The local login endpoint is unavailable
+outside `Development`, even when the flag is enabled. Keep this mode on your local
+machine: anyone who can reach it can sign in as an active user.
+
+For local HTTP without certificate setup, run this from `Purchasing.Mvc` in a
+bash or zsh shell after setting the user secret above:
+
+```bash
+ASPNETCORE_ENVIRONMENT=Development dotnet run --no-launch-profile --urls http://localhost:44395
+```
+
+Open `http://localhost:44395/LogOn`. Without a launch profile, set `Development`
+explicitly; the local-login preference still comes from your user secrets.
