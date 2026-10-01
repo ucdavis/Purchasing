@@ -72,7 +72,7 @@
     <PackageReference Include="ietws" Version="0.2.8" />
     <PackageReference Include="itext7" Version="7.2.1" />
     <PackageReference Include="jQuery" Version="3.6.0" />
-    <PackageReference Include="jQuery.Validation" Version="1.19.3" />
+    <PackageReference Include="jQuery.Validation" Version="1.19.4" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="3.2.12" />
     <PackageReference Include="Modernizr" Version="2.8.3" />
