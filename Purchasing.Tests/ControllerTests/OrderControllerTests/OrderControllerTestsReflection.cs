@@ -14,7 +14,7 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
-using Purchasing.WS;
+//using Purchasing.WS;
 using Microsoft.AspNetCore.Authorization;
 using Purchasing.Tests.Extensions;
 

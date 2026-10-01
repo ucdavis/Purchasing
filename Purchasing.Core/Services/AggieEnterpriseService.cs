@@ -509,44 +509,8 @@ namespace Purchasing.Core.Services
             var rtValue = new KfsToAeCoa { Split = split };
             if (string.IsNullOrWhiteSpace(split.FinancialSegmentString))
             {
-                var chart = split.Account.Split('-')[0];
-                var account = split.Account.Split('-')[1];
-               
-
-                var distributionResult = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, account, split.SubAccount);
-                var distributionData = distributionResult.ReadData();
-                if (distributionData.KfsConvertAccount.GlSegments != null)
-                {
-                    var tempGlSegments = new GlSegments(distributionData.KfsConvertAccount.GlSegments);
-                    if (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000")
-                    {
-                        //770000
-                        Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                        tempGlSegments.Account = _options.DefaultNaturalAccount;
-                    }
-                    rtValue.FinincialSegmentString = tempGlSegments.ToSegmentString();
-                }
-                else
-                {
-                    if (distributionData.KfsConvertAccount.PpmSegments != null)
-                    {
-                        rtValue.IsPPm = true;
-                        var tempPpmSegments = new PpmSegments(distributionData.KfsConvertAccount.PpmSegments);
-                        if (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000")
-                        {
-                            //770000
-                            Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                            tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
-                        }
-                        rtValue.FinincialSegmentString = tempPpmSegments.ToSegmentString();
-                    }
-                    else
-                    {
-                        //TODO: REMOVE THIS!!!!
-                        Log.Error("No GL Segments found for {chart}-{account}-{subAccount} FAKING IT!!!!", chart, account, split.SubAccount);
-                        rtValue.FinincialSegmentString = $"3110-13U02-ADNO006-{_options.DefaultNaturalAccount}-43-000-0000000000-000000-0000-000000-000000";
-                    }
-                }
+                throw new Exception("FinancialSegmentString is null or whitespace. This should have been caught in validation. If you are seeing this error, please contact support.");
+           
             }
             else
             {
@@ -944,55 +908,9 @@ namespace Purchasing.Core.Services
                 return String.Empty;
             }
 
+            return String.Empty;
 
-            try
-            {
-                var _aggieClient = GetClient();
-
-                var parts = account.Split('-');
-
-                var chart = parts[0].ToUpper();
-                var accountPart = parts[1].ToUpper();
-                var subAcct = parts.Length > 2 ? parts[2].ToUpper() : null;
-
-                var result = await _aggieClient.KfsConvertAccount.ExecuteAsync(chart, accountPart, subAcct);
-                var data = result.ReadData();
-                if (data.KfsConvertAccount.GlSegments != null)
-                {
-                    var tempGlSegments = new GlSegments(data.KfsConvertAccount.GlSegments);
-                    if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempGlSegments.Account) || tempGlSegments.Account == "000000"))
-                    {
-                        //770000
-                        Log.Warning($"Natural Account of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                        tempGlSegments.Account = _options.DefaultNaturalAccount;
-                    }
-                    return tempGlSegments.ToSegmentString();
-                }
-                else
-                {
-                    if (data.KfsConvertAccount.PpmSegments != null)
-                    {
-                        //rtValue.IsPPm = true; //Maybe want to return and store this?
-                        var tempPpmSegments = new PpmSegments(data.KfsConvertAccount.PpmSegments);
-                        if (updateNaturalAccount && (string.IsNullOrWhiteSpace(tempPpmSegments.ExpenditureType) || tempPpmSegments.ExpenditureType == "000000"))
-                        {
-                            //770000
-                            Log.Warning($"Natural Account (ExpenditureType) of 000000 detected. Substituting {_options.DefaultNaturalAccount}");
-                            tempPpmSegments.ExpenditureType = _options.DefaultNaturalAccount;
-                        }
-                        return tempPpmSegments.ToSegmentString();
-                    }
-                    else
-                    {
-                        return String.Empty;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error converting KFS Account {account}", account);
-                return String.Empty;
-            }
+           
         }
 
         private IAggieEnterpriseClient GetClient()

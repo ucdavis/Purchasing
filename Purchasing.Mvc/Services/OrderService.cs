@@ -10,7 +10,7 @@ using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Services;
-using Purchasing.WS;
+//using Purchasing.WS;
 using UCDArch.Core.PersistanceSupport;
 using UCDArch.Core.Utils;
 
@@ -118,7 +118,7 @@ namespace Purchasing.Mvc.Services
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IAccessQueryService _accessQueryService;
-        private readonly IFinancialSystemService _financialSystemService;
+        //private readonly IFinancialSystemService _financialSystemService;
         private readonly IIndexService _indexService;
         private readonly IEventService _eventService;
         private readonly IUserIdentity _userIdentity;
@@ -144,7 +144,7 @@ namespace Purchasing.Mvc.Services
                             IRepository<Order> orderRepository, 
                             IQueryRepositoryFactory queryRepositoryFactory, 
                             IAccessQueryService accessQueryService,
-                            IFinancialSystemService financialSystemService,
+                            //IFinancialSystemService financialSystemService,
                             IIndexService indexService,
                             IAggieEnterpriseService aggieEnterpriseService)
         {
@@ -160,7 +160,7 @@ namespace Purchasing.Mvc.Services
             _orderRepository = orderRepository;
             _queryRepositoryFactory = queryRepositoryFactory;
             _accessQueryService = accessQueryService;
-            _financialSystemService = financialSystemService;
+            //_financialSystemService = financialSystemService;
             _indexService = indexService;
             _aggieEnterpriseService = aggieEnterpriseService;
         }
@@ -587,10 +587,10 @@ namespace Purchasing.Mvc.Services
 
         public bool WillOrderBeSentToKfs(OrderType newOrderType, string kfsDocType = null)
         {
-            if (newOrderType.Id == OrderType.Types.KfsDocument && _financialSystemService.AllowedType(kfsDocType))
-            {
-                return true;
-            }
+            //if (newOrderType.Id == OrderType.Types.KfsDocument && _financialSystemService.AllowedType(kfsDocType))
+            //{
+            //    return true;
+            //}
             return false;
         }
 
@@ -605,20 +605,20 @@ namespace Purchasing.Mvc.Services
             order.KfsDocType = kfsDocType;
 
             //TODO: Replace this if with the new method.
-            if (newOrderType.Id == OrderType.Types.KfsDocument && _financialSystemService.AllowedType(kfsDocType))
-            {
-                //Note in this case newOrderType.DocType should be either PR or DPO
-                var result = _financialSystemService.SubmitOrder(order, _userIdentity.Current, kfsDocType);
+            //if (newOrderType.Id == OrderType.Types.KfsDocument && _financialSystemService.AllowedType(kfsDocType))
+            //{
+            //    //Note in this case newOrderType.DocType should be either PR or DPO
+            //    var result = _financialSystemService.SubmitOrder(order, _userIdentity.Current, kfsDocType);
                 
-                if (result.Success)
-                {
-                    order.ReferenceNumber = result.DocNumber;    
-                }
-                else
-                {
-                    return result.Messages.ToArray();
-                }
-            }
+            //    if (result.Success)
+            //    {
+            //        order.ReferenceNumber = result.DocNumber;    
+            //    }
+            //    else
+            //    {
+            //        return result.Messages.ToArray();
+            //    }
+            //}
 
             if(newOrderType.Id.Trim() == OrderType.Types.AggieEnterprise)
             {
