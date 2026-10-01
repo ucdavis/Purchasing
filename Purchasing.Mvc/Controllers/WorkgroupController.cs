@@ -246,7 +246,6 @@ namespace Purchasing.Mvc.Controllers
                 ModelState.AddModelError("Workgroup.Administrative", "If Full Featured, workgroup must be administrative.");
             }
 
-            //TODO: Test this.
             if(!ModelState.IsValid)
             {
                 //Moved here because if you just pass workgroup, it doesn't have any selected organizations.

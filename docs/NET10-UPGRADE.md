@@ -4,7 +4,7 @@ This upgrade removes AutoMapper, then updates the web app, libraries, tests and 
 
 ## AutoMapper replacement
 
-The eight active calls are replaced by typed field assignments in `Purchasing.Core/Helpers/EditableValues.cs` and `SearchResults.OrderResult.FromHistory`. AutoMapper's package, profiles, container registration and injected `IMapper` parameters are removed. Test fixtures no longer initialize AutoMapper.
+Explicit mapping was chosen for this small footprint to avoid the newer AutoMapper licensing requirements. Seven methods replace the eight active calls: six in [EditableValues](../Purchasing.Core/Helpers/EditableValues.cs) and [SearchResults.OrderResult.FromHistory](../Purchasing.Core/Queries/SearchResults.cs). AutoMapper's package, profiles, container registration and injected `IMapper` parameters are removed. Test fixtures no longer initialize AutoMapper.
 
 | ID | Original call site | Replacement and behavior | Manual check |
 | --- | --- | --- | --- |
@@ -25,7 +25,7 @@ Workgroup create/edit owns primary and additional organization selection; `CopyW
 
 ## Framework and dependency changes
 
-All 14 C# projects target `net10.0`. `global.json` selects SDK 10.0.401 with patch roll-forward. Azure Pipelines reads that file, restores the local tools, runs tests in Release and publishes the same web/jobs artifact layout. The devcontainer uses the .NET 10 Noble image, and VS Code launch paths use `net10.0`.
+All 14 C# projects target `net10.0`. [global.json](../global.json) owns the SDK version and roll-forward policy. Azure Pipelines reads that file and is configured to restore the local tools, run tests in Release and publish the same web/jobs artifact layout. The devcontainer uses the .NET 10 Noble image, and VS Code launch paths use `net10.0`.
 
 - BundlerMinifier moves from 4.5.15 to 8.0.2, so Release builds no longer require a .NET 6 runtime. Two Razor `#pragma` directives are moved onto separate lines for the newer compiler.
 - NHibernate 5.6.2 and FluentNHibernate 3.4.1 retain the current SQL Server provider and mappings. System.Data.SqlClient moves to 4.9.1. No migration or schema change is included.
@@ -45,7 +45,7 @@ dotnet build Purchasing.sln --configuration Release
 dotnet test Purchasing.Tests/Purchasing.Tests.csproj --configuration Release --no-build
 ```
 
-On macOS, exclude `RepositoryTests` with `--filter 'FullyQualifiedName!~RepositoryTests'`; their native System.Data.SQLite provider requires Windows. Azure Pipelines runs the unfiltered suite on Windows. The solution also contains legacy SSDT projects, so run `dotnet list <project.csproj> package --vulnerable --include-transitive` for each C# project rather than running package listing against the solution.
+On macOS, exclude `RepositoryTests` with `--filter 'FullyQualifiedName!~RepositoryTests'`; their native System.Data.SQLite provider requires Windows. Azure Pipelines is configured to run the unfiltered suite on Windows; its result remains pending as recorded below. The solution also contains legacy SSDT projects, so run `dotnet list <project.csproj> package --vulnerable --include-transitive` for each C# project rather than running package listing against the solution.
 
 ## Automated checks
 
