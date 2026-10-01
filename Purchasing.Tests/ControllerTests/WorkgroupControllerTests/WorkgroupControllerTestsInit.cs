@@ -17,7 +17,6 @@ using UCDArch.Core.PersistanceSupport;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 using UCDArch.Core;
 using Moq;
 using Purchasing.Core.Services;
@@ -108,13 +107,13 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
                 RepositoryFactory,
                 WorkgroupAddressService,
                 WorkgroupService,
-                SmartServiceLocator<IMapper>.GetService(),
+
                 AggieEnterpriseService);
         }
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            container.Install(new AutoMapperInstaller());
+
 
             //Fixes problem where .Fetch is used in a query
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));

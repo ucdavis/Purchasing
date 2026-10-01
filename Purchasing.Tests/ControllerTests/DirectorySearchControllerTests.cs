@@ -42,11 +42,6 @@ namespace Purchasing.Tests.ControllerTests
             Controller = new DirectorySearchController(DirectorySearchService, UserRepository);            
         }
 
-        protected override void RegisterAdditionalServices(IWindsorContainer container)
-        {
-            container.Install(new AutoMapperInstaller());
-            base.RegisterAdditionalServices(container);
-        }
 
         #endregion Init
 

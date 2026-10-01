@@ -175,70 +175,58 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
         #region Edit Post Tests
 
-        [Ignore("Net6Upgrade regression - to be fixed later")]
+        [TestMethod]
         public void TestEditPostReturnsViewWhenInvalid1()
         {
-            #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
-            Controller.ModelState.AddModelError("Fake", "Error");
-            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
-            #endregion Arrange
+            new FakeOrganizationDescendants(0, OrganizationDescendantRepository);
+            var existing = WorkgroupRepository.GetNullableById(3);
+            existing.PrimaryOrganization = OrganizationRepository.Queryable.Single(x => x.Id == "3");
+            existing.AddAccount(new WorkgroupAccount { Id = 42 });
+            var accounts = existing.Accounts;
+            var posted = new Workgroup { Name = "Edited name", PrimaryOrganization = existing.PrimaryOrganization };
+            Controller.ModelState.AddModelError("Name", "Invalid input");
 
-            #region Act
-            var result = Controller.Edit(3, WorkgroupRepository.GetNullableById(3), null)
-                .AssertViewRendered()
-                .WithViewData<WorkgroupModifyModel>();
-            #endregion Act
+            var result = Controller.Edit(3, posted, null)
+                .AssertViewRendered().WithViewData<WorkgroupModifyModel>();
 
-            #region Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(6, result.Organizations.Count());
-            Assert.AreEqual("Name1 (1)", result.Organizations[0].Text);
-            Assert.AreEqual("Name3 ()", result.Organizations[1].Text);
-            Assert.AreEqual("Name3 (3)", result.Organizations[2].Text);
-            Assert.AreEqual("Name4 (4)", result.Organizations[3].Text);
-            Assert.AreEqual("Name5 (5)", result.Organizations[4].Text);
-            Assert.AreEqual("Name6 (6)", result.Organizations[5].Text);
-            Assert.IsNotNull(result.Workgroup);
-            Assert.AreEqual("Name3", result.Workgroup.Name);
-            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
-            #endregion Assert	
+            Assert.AreSame(existing, result.Workgroup);
+            Assert.AreEqual(3, result.Workgroup.Id);
+            Assert.AreEqual("Edited name", result.Workgroup.Name);
+            Assert.AreSame(accounts, result.Workgroup.Accounts);
+            Assert.AreEqual(42, result.Workgroup.Accounts.Single().Id);
+            CollectionAssert.AreEquivalent(new[] { "1", "3" }, result.Workgroup.Organizations.Select(x => x.Id).ToArray());
+            foreach (var organization in result.Workgroup.Organizations)
+                Assert.IsTrue(result.Organizations.Any(x => x.Value == organization.Id && x.Selected));
+            Mock.Get(WorkgroupRepository).Verify(x => x.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
         }
 
-        [Ignore("Net6Upgrade regression - to be fixed later")]
+        [TestMethod]
         public void TestEditPostReturnsViewWhenInvalid2()
         {
-            #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
-            Controller.ModelState.AddModelError("Fake", "Error");
-            var orgs = new[] {"2", "4"};
-            new FakeOrganizationDescendants(3, OrganizationDescendantRepository);
-            #endregion Arrange
+            new FakeOrganizationDescendants(0, OrganizationDescendantRepository);
+            var existing = WorkgroupRepository.GetNullableById(3);
+            existing.PrimaryOrganization = OrganizationRepository.Queryable.Single(x => x.Id == "3");
+            existing.AddAccount(new WorkgroupAccount { Id = 42 });
+            var accounts = existing.Accounts;
+            var posted = new Workgroup { Name = "Edited name", PrimaryOrganization = existing.PrimaryOrganization };
+            Controller.ModelState.AddModelError("Name", "Invalid input");
 
-            #region Act
-            var result = Controller.Edit(3, WorkgroupRepository.GetNullableById(3), orgs)
-                .AssertViewRendered()
-                .WithViewData<WorkgroupModifyModel>();
-            #endregion Act
+            var result = Controller.Edit(3, posted, new[] { "2", "4" })
+                .AssertViewRendered().WithViewData<WorkgroupModifyModel>();
 
-            #region Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(5, result.Organizations.Count());
-            Assert.AreEqual("Name2 (2)", result.Organizations[0].Text);
-            Assert.AreEqual("Name3 ()", result.Organizations[1].Text); 
-            Assert.AreEqual("Name4 (4)", result.Organizations[2].Text);
-            Assert.AreEqual("Name5 (5)", result.Organizations[3].Text);
-            Assert.AreEqual("Name6 (6)", result.Organizations[4].Text);
-            Assert.IsNotNull(result.Workgroup);
-            Assert.AreEqual("Name3", result.Workgroup.Name);
-            Assert.AreEqual(3, result.Workgroup.Organizations.Count);
-            Assert.AreEqual("Name2", result.Workgroup.Organizations[0].Name);
-            Assert.AreEqual("Name4", result.Workgroup.Organizations[1].Name);
-            Assert.AreEqual("Name3", result.Workgroup.Organizations[2].Name);
-            Mock.Get(WorkgroupRepository).Verify(a => a.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
-            #endregion Assert
+            Assert.AreSame(existing, result.Workgroup);
+            Assert.AreEqual(3, result.Workgroup.Id);
+            Assert.AreEqual("Edited name", result.Workgroup.Name);
+            Assert.AreSame(accounts, result.Workgroup.Accounts);
+            Assert.AreEqual(42, result.Workgroup.Accounts.Single().Id);
+            CollectionAssert.AreEquivalent(new[] { "2", "4", "3" }, result.Workgroup.Organizations.Select(x => x.Id).ToArray());
+            foreach (var organization in result.Workgroup.Organizations)
+                Assert.IsTrue(result.Organizations.Any(x => x.Value == organization.Id && x.Selected));
+            Mock.Get(WorkgroupRepository).Verify(x => x.EnsurePersistent(It.IsAny<Workgroup>()), Times.Never());
         }
 
 
@@ -300,6 +288,8 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
             #region Arrange
             Controller.ControllerContext.HttpContext.Setup(new[] { "" }, "2");
             SetupDataForWorkgroupActions1();
+            WorkgroupRepository.GetNullableById(3).PrimaryOrganization = OrganizationRepository.Queryable.Single(x => x.Id == "3");
+            WorkgroupRepository.GetNullableById(3).PrimaryOrganization = OrganizationRepository.Queryable.Single(x => x.Id == "3");
             var orgs = new[] { "1", "3" };
             Workgroup args = default;
             Mock.Get(WorkgroupRepository).Setup(a => a.EnsurePersistent(It.IsAny<Workgroup>()))
@@ -317,10 +307,9 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
 
             Assert.IsNotNull(args);
             Assert.AreEqual("Name3", args.Name);
-            Assert.AreEqual(3, args.Organizations.Count());
+            Assert.AreEqual(2, args.Organizations.Count());
             Assert.AreEqual("Name1", args.Organizations[0].Name);
             Assert.AreEqual("Name3", args.Organizations[1].Name);
-            Assert.AreEqual("Name3", args.Organizations[2].Name); //Limitation of the test, this doesn't happen when running normally which is correct
             #endregion Assert
         }
         #endregion Edit Post Tests

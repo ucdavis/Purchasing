@@ -52,8 +52,7 @@ namespace Purchasing.Mvc
             ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
             NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Approval).Assembly);
             container.Install(
-                new ComponentInstaller(),
-                new AutoMapperInstaller());
+                new ComponentInstaller());
         }
 
         public void ConfigureServices(IServiceCollection services)

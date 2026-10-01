@@ -47,11 +47,6 @@ namespace Purchasing.Tests.ControllerTests
             Controller = new AccountsController(SubAccountRepository, SearchService);
         }
 
-        protected override void RegisterAdditionalServices(IWindsorContainer container)
-        {
-            container.Install(new AutoMapperInstaller());
-            base.RegisterAdditionalServices(container);
-        }
 
  
         #endregion Init

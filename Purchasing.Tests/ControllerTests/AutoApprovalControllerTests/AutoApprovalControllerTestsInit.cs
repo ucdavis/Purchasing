@@ -13,7 +13,6 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 using UCDArch.Core;
 using Moq;
 
@@ -38,15 +37,10 @@ namespace Purchasing.Tests.ControllerTests.AutoApprovalControllerTests
             UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
 
             //ExampleService = Mock.Of<IExampleService>();  
-            Controller = new AutoApprovalController(AutoApprovalRepository, UserRepository, SmartServiceLocator<IMapper>.GetService());
+            Controller = new AutoApprovalController(AutoApprovalRepository, UserRepository);
             //Controller = new AutoApprovalController(AutoApprovalRepository, ExampleService);
         }
 
-        protected override void RegisterAdditionalServices(IWindsorContainer container)
-        {
-            container.Install(new AutoMapperInstaller());
-            base.RegisterAdditionalServices(container);
-        }
 
         public AutoApprovalControllerTests()
         {

@@ -120,3 +120,8 @@ ASPNETCORE_ENVIRONMENT=Development dotnet run --no-launch-profile --urls http://
 
 Open `http://localhost:44395/LogOn`. Without a launch profile, set `Development`
 explicitly; the local-login preference still comes from your user secrets.
+
+## .NET 10 upgrade validation
+
+See [the upgrade and manual testing plan](docs/NET10-UPGRADE.md) for the eight
+AutoMapper replacements, the combined acceptance checklist, and deployment checks.

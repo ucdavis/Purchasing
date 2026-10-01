@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using AutoMapper;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Mvc.Controllers;
@@ -23,13 +22,12 @@ namespace Purchasing.Mvc.Controllers
 
 	    private readonly IRepository<ServiceMessage> _serviceMessageRepository;
 
-        private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
 
-        public ServiceMessageController(IRepository<ServiceMessage> serviceMessageRepository, IMapper mapper, IMemoryCache cache)
+        public ServiceMessageController(IRepository<ServiceMessage> serviceMessageRepository, IMemoryCache cache)
         {
             _serviceMessageRepository = serviceMessageRepository;
-            _mapper = mapper;
+
             _cache = cache;
         }
     
@@ -137,8 +135,8 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         private void TransferValues(ServiceMessage source, ServiceMessage destination)
         {
-			//Recommendation: Use AutoMapper
-            _mapper.Map(source, destination);
+
+            EditableValues.CopyServiceMessage(source, destination);
             //throw new NotImplementedException();
         }
 
