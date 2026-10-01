@@ -21,6 +21,10 @@ http://ucdavis.github.com/Purchasing/index.html
 
 # Development
 
+Install the .NET 10 SDK selected by `global.json` (10.0.401, with patch roll-forward),
+then run `dotnet tool restore` from the repository root before a Release build.
+The devcontainer and Azure build use .NET 10 as well.
+
 This project uses devcontainers, so make sure you have docker setup and then install the devcontainer extension for VSCode if necessary.
 
 ## SSL certs (one time setup for HTTPS)

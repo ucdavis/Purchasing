@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Purchasing.Mvc.Logging;
 using Elastic.Apm.NetCoreAll;
+using Castle.Windsor.MsDependencyInjection;
 
 namespace Purchasing.Mvc
 {
@@ -58,7 +59,7 @@ namespace Purchasing.Mvc
         public static IHostBuilder CreateHostBuilder(string[] args, bool addUserSecrets) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog()
-                .UseWindsorContainerServiceProvider()
+                .UseServiceProviderFactory(new WindsorServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

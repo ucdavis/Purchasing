@@ -1,6 +1,6 @@
 # .NET 10 upgrade and manual testing plan
 
-This upgrade removes AutoMapper, then updates the web app, libraries, tests and six scheduled jobs to .NET 10. The final acceptance pass covers the combined change. The application keeps MVC, NHibernate, its existing SQL schema and Windows App Service hosting.
+This upgrade removes AutoMapper, then updates the web app, libraries, tests and six WebJobs to .NET 10. Five jobs have schedules; CreateOrderIndexes is manual. The final acceptance pass covers the combined change. The application keeps MVC, NHibernate, its existing SQL schema and Windows App Service hosting.
 
 ## AutoMapper replacement
 
@@ -22,6 +22,30 @@ The eight active calls are replaced by typed field assignments in `Purchasing.Co
 The old same-type profiles could recursively copy users, roles, organizations and workgroup accounts, even though those entities have their own persistence and edit workflows. The replacement deliberately preserves database identity and tracked workgroup collections. It does not clone related users or organizations. Selected user/account/building references remain the existing entities supplied by model binding.
 
 Workgroup create/edit owns primary and additional organization selection; `CopyWorkgroup` does not modify either relationship. The existing permission-update workflow still runs after setting changes. This distinction must be checked with a populated test workgroup, not just empty fixtures.
+
+## Framework and dependency changes
+
+All 14 C# projects target `net10.0`. `global.json` selects SDK 10.0.401 with patch roll-forward. Azure Pipelines reads that file, restores the local tools, runs tests in Release and publishes the same web/jobs artifact layout. The devcontainer uses the .NET 10 Noble image, and VS Code launch paths use `net10.0`.
+
+- BundlerMinifier moves from 4.5.15 to 8.0.2, so Release builds no longer require a .NET 6 runtime. Two Razor `#pragma` directives are moved onto separate lines for the newer compiler.
+- NHibernate 5.6.2 and FluentNHibernate 3.4.1 retain the current SQL Server provider and mappings. System.Data.SqlClient moves to 4.9.1. No migration or schema change is included.
+- Castle Windsor moves to 6.0.0 with Castle.Core 5.2.1. The host uses `Castle.Windsor.MsDependencyInjection` 6.0.0 and its `WindsorServiceProviderFactory`. The existing `Startup.ConfigureContainer` registrations remain. The former adapter's 6.0.0 release compiled but failed on the first HTTP request with `No scope available`; the replacement passes actual HTTP tests. See the [upstream scope issue](https://github.com/castleproject/Windsor/issues/646) and [replacement adapter documentation](https://github.com/volosoft/castle-windsor-ms-adapter).
+- ASP.NET Newtonsoft integration and directory services use 10.0.12; Newtonsoft.Json uses 13.0.4. Azure.Storage.Blobs moves to 12.30.0, and NPOI to 2.7.6 for legacy Excel vendor imports.
+- Serilog.AspNetCore uses 10.0.0, Serilog.Exceptions 8.4.0, ClientInfo 2.9.0 and the jobs' console sink 6.1.1. User-Agent enrichment keeps the `ClientAgent` property with the newer header API. Elastic APM uses 1.35.0 and its Serilog enricher 9.0.0. Existing Elasticsearch destinations and query/index contracts are unchanged.
+- The jobs explicitly reference Microsoft.Extensions.Caching.Memory 10.0.12 to override the older AE SDK's vulnerable transitive dependency. MVC gets the cache implementation from the ASP.NET shared framework. The AE SDK and legacy KFS integration are otherwise unchanged.
+- MSTest stays on its compatible 3.x API at 3.11.1, with Test SDK 18.0.1, Moq 4.20.72 and SQLite 1.0.119. ASP.NET TestHost 10.0.12 exercises the real host and Windsor adapter without live credentials or service calls.
+
+## Repeating local checks
+
+Use the SDK selected by `global.json`:
+
+```sh
+dotnet tool restore
+dotnet build Purchasing.sln --configuration Release
+dotnet test Purchasing.Tests/Purchasing.Tests.csproj --configuration Release --no-build
+```
+
+On macOS, exclude `RepositoryTests` with `--filter 'FullyQualifiedName!~RepositoryTests'`; their native System.Data.SQLite provider requires Windows. Azure Pipelines runs the unfiltered suite on Windows. The solution also contains legacy SSDT projects, so run `dotnet list <project.csproj> package --vulnerable --include-transitive` for each C# project rather than running package listing against the solution.
 
 ## Automated checks
 
@@ -50,7 +74,7 @@ Run this after the final code and package versions are deployed to Azure test. U
 - [ ] Development-only login works when opted in and remains unavailable in hosted non-Development environments
 - [ ] Order creation, save, submit, approval, reassignment, purchase and completion
 - [ ] Attachments upload/download and existing attachments
-- [ ] PDF and Excel exports, including non-ASCII content and dates/amounts
+- [ ] PDF and Excel exports, including non-ASCII content and dates/amounts, plus bulk vendor `.xls` import
 - [ ] Aggie Enterprise validation and submission against the test integration
 - [ ] CSS/JavaScript bundles, form validation and browser console on key pages
 - [ ] Logging and APM receive expected requests/errors without startup or serialization failures
@@ -77,4 +101,9 @@ After cutover, check real application requests, job outcomes and indexed data. A
 
 - Before changes, the .NET 6 non-repository suite passed 1,134 tests on macOS; 14 tests were skipped. Native SQLite repository tests require the Windows run.
 - After AutoMapper removal, all 434 runnable tests in the affected controller/service suites passed on .NET 6; four existing skips remained. This includes eight new value-transfer tests and the two restored workgroup validation-failure scenarios.
-- Further automated results and final package decisions will be recorded after the combined code changes.
+- On .NET 10, five new runtime checks pass: production CAS challenge and protected-page redirect; opted-in Development login rendering and antiforgery rejection; internal and vendor PDF content; and actual `.xls` vendor import into the selected workgroup. The host tests reproduce the failure with the former Windsor 6 adapter and pass with its replacement.
+- Release publish succeeds for the web and all six jobs. The job artifacts contain their DLLs, .NET 10 runtime configuration and `run.cmd`; the five scheduled jobs retain their existing `settings.job` schedules. CreateOrderIndexes correctly has no schedule.
+- The combined .NET 10 Release suite passes 1,149 tests, with zero failures and 14 existing skips on macOS. The entire solution builds in Release with zero errors; existing compiler warnings and MSTest modernization warnings remain.
+- Final Release publishing and artifact checks pass for the web and all six jobs, including all 26 configured CSS/JavaScript bundles, IIS `web.config`, runtime configurations, launch scripts and schedules. No AutoMapper package remains in the restored dependency graph.
+- The final NuGet audit reports zero known vulnerable packages across all 14 C# projects, including transitive dependencies. This is the advisory feed result at verification time, not a guarantee against undisclosed defects.
+- Windows repository tests, hosted manual acceptance and Azure runtime configuration remain pending. No live job was executed or cloud configuration changed during local verification.

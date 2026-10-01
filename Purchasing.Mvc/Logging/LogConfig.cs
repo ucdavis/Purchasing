@@ -34,7 +34,7 @@ namespace Purchasing.Mvc.Logging
                 .WriteTo.Console()
                 .WriteToElasticSearchCustom(configuration)
                 .Enrich.WithClientIp()
-                .Enrich.WithClientAgent()
+                .Enrich.WithRequestHeader("User-Agent", "ClientAgent")
                 .Enrich.WithExceptionDetails()
                 .Enrich.WithProperty("Application", configuration["Stackify.AppName"])
                 .Enrich.WithProperty("AppEnvironment", configuration["Stackify.Environment"])
