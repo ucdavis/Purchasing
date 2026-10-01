@@ -25,7 +25,7 @@ namespace Purchasing.Tests.ControllerTests
         [TestMethod]
         public void TestLogOnMapping()
         {
-            "~/Account/LogOn/".ShouldMapTo<AccountController>(a => a.LogOn(null), true);
+            "~/Account/LogOn/".ShouldMapTo<AccountController>(a => a.LogOn(null, false), true);
         }
 
         [TestMethod]
@@ -111,7 +111,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(5, result.Count(), "It looks like a method was added or removed from the controller.");
+            Assert.AreEqual(6, result.Count(), "It looks like a method was added or removed from the controller.");
             #endregion Assert
         }
 
@@ -129,7 +129,7 @@ namespace Purchasing.Tests.ControllerTests
             #endregion Act
 
             #region Assert
-            Assert.AreEqual(3, allAttributes.Count());
+            Assert.AreEqual(2, allAttributes.Count());
             #endregion Assert
         }
 

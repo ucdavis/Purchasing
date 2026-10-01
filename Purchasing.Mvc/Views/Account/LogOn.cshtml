@@ -1,5 +1,40 @@
-﻿@{
-    ViewBag.Title = "Access Denied";
+@model LocalLoginModel
+@{
+    Layout = null;
 }
-
- <h2>You do not have access to view this page</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign in - PrePurchasing</title>
+    <style>
+        body { font: 1rem/1.5 system-ui, sans-serif; color: #172b4d; background: #f5f6f8; }
+        main { max-width: 32rem; margin: 3rem auto; padding: 1.5rem; background: white; }
+        h1 { font-size: 1.5rem; }
+        h2 { font-size: 1.15rem; }
+        label, .validation { display: block; }
+        input, button { font: inherit; padding: .5rem; }
+        button { margin-top: 1rem; cursor: pointer; }
+        .validation { color: #a31515; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Sign in to PrePurchasing</h1>
+        <p><a asp-action="LogOn" asp-route-useCas="true" asp-route-returnUrl="@Model.ReturnUrl">Sign in with CAS</a></p>
+        <hr />
+        <h2>Local development login</h2>
+        <p>Sign in as an existing, active user with their normal permissions.</p>
+        <form asp-action="LocalLogOn" method="post">
+            <input asp-for="ReturnUrl" type="hidden" />
+            <div>
+                <label asp-for="UserId"></label>
+                <input asp-for="UserId" autocomplete="off" required maxlength="10" />
+                <span asp-validation-for="UserId" class="validation"></span>
+            </div>
+            <button type="submit">Sign in as user</button>
+        </form>
+    </main>
+</body>
+</html>

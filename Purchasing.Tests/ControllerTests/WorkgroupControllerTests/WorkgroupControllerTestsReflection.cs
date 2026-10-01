@@ -380,11 +380,11 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Edit");
+            var controllerMethod = controllerClass.GetMethod("Edit", new[] { typeof(int) });
             #endregion Arrange
 
             #region Act
-            var allAttributes = controllerMethod.ElementAt(0).GetFilteredCustomAttributes(true);
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
@@ -400,13 +400,12 @@ namespace Purchasing.Tests.ControllerTests.WorkgroupControllerTests
         {
             #region Arrange
             var controllerClass = ControllerClass;
-            var controllerMethod = controllerClass.GetMethods().Where(a => a.Name == "Edit");
+            var controllerMethod = controllerClass.GetMethod("Edit", new[] { typeof(int), typeof(Purchasing.Core.Domain.Workgroup), typeof(string[]) });
             #endregion Arrange
 
             #region Act
-            var element = controllerMethod.ElementAt(1);
-            var expectedAttribute = element.GetFilteredCustomAttributes(true).OfType<HttpPostAttribute>();
-            var allAttributes = element.GetFilteredCustomAttributes(true);
+            var expectedAttribute = controllerMethod.GetFilteredCustomAttributes(true).OfType<HttpPostAttribute>();
+            var allAttributes = controllerMethod.GetFilteredCustomAttributes(true);
             #endregion Act
 
             #region Assert
