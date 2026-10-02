@@ -13,7 +13,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Purchasing.Mvc.Logging;
-using Elastic.Apm.NetCoreAll;
+using Elastic.Apm.AspNetCore.DiagnosticListener;
+using Elastic.Apm.Azure.Storage;
+using Elastic.Apm.DiagnosticSource;
+using Elastic.Apm.Extensions.Hosting;
+using Elastic.Apm.Instrumentations.SqlClient;
 using Castle.Windsor.MsDependencyInjection;
 
 namespace Purchasing.Mvc
@@ -69,6 +73,11 @@ namespace Purchasing.Mvc
                         webBuilder.ConfigureAppConfiguration(builder => builder.AddUserSecrets<Program>());
                     }
                 })
-                .UseAllElasticApm();
+                // Keep instrumentation scoped so APM cannot upgrade the Bonsai search transport.
+                .UseElasticApm(
+                    new AspNetCoreDiagnosticSubscriber(),
+                    new HttpDiagnosticsSubscriber(),
+                    new SqlClientDiagnosticSubscriber(),
+                    new AzureBlobStorageDiagnosticsSubscriber());
     }
 }
