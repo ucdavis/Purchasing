@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>
@@ -9,11 +9,11 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App"/>
 	</ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
     <PackageReference Include="CommonServiceLocator" Version="2.0.6"/>
-    <PackageReference Include="FluentNHibernate" Version="3.1.0"/>
-    <PackageReference Include="NHibernate" Version="5.3.11"/>
-    <PackageReference Include="Castle.Windsor" Version="5.1.1"/>
+    <PackageReference Include="FluentNHibernate" Version="3.4.1"/>
+    <PackageReference Include="NHibernate" Version="5.6.2"/>
+    <PackageReference Include="Castle.Windsor" Version="6.0.0"/>
   </ItemGroup>
 
 </Project>

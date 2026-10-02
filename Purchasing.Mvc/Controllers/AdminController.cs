@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 using AzureActiveDirectorySearcher;
 using Ietws;
 using Microsoft.AspNetCore.Authorization;
@@ -123,7 +122,6 @@ namespace Purchasing.Mvc.Controllers
 
             departmentalAdminModel.User.Roles = user.Roles;
 
-            //_mapper.Map(departmentalAdminModel.User, user); // This was causing problems if an existing DA was saved.
             user.FirstName = departmentalAdminModel.User.FirstName;
             user.LastName = departmentalAdminModel.User.LastName;
             user.Email = departmentalAdminModel.User.Email;
@@ -205,7 +203,6 @@ namespace Purchasing.Mvc.Controllers
             userToSave.Email = user.Email;
             userToSave.IsActive = user.IsActive;
 
-            //_mapper.Map(user, userToSave);
 
 
             var isAdmin = userToSave.Roles.Any(x => x.Id == Role.Codes.Admin);
@@ -255,7 +252,6 @@ namespace Purchasing.Mvc.Controllers
             userToSave.Email = user.Email;
             userToSave.IsActive = user.IsActive;
 
-            //_mapper.Map(user, userToSave);
 
 
             var isAdmin = userToSave.Roles.Any(x => x.Id == Role.Codes.SscAdmin);

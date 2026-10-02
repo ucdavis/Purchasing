@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Encodings.Web;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NPOI.HSSF.UserModel;
@@ -53,7 +52,7 @@ namespace Purchasing.Mvc.Controllers
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IWorkgroupAddressService _workgroupAddressService;
         private readonly IWorkgroupService _workgroupService;
-        private readonly IMapper _mapper;
+
         private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
         public WorkgroupController(IRepository<Workgroup> workgroupRepository, 
@@ -71,7 +70,7 @@ namespace Purchasing.Mvc.Controllers
             IRepositoryFactory repositoryFactory,
             IWorkgroupAddressService workgroupAddressService,
             IWorkgroupService workgroupService,
-            IMapper mapper, 
+
             IAggieEnterpriseService aggieEnterpriseService)
         {
             _workgroupRepository = workgroupRepository;
@@ -90,7 +89,7 @@ namespace Purchasing.Mvc.Controllers
             _repositoryFactory = repositoryFactory;
             _workgroupAddressService = workgroupAddressService;
             _workgroupService = workgroupService;
-            _mapper = mapper;
+
             _aggieEnterpriseService = aggieEnterpriseService;
         }
 
@@ -194,7 +193,7 @@ namespace Purchasing.Mvc.Controllers
             whatWasChanged.OriginalSubOrgIds = workgroupToEdit.Organizations.Select(a => a.Id).ToList();
 
 
-            _mapper.Map(workgroup, workgroupToEdit);
+            EditableValues.CopyWorkgroup(workgroup, workgroupToEdit);
             workgroupToEdit.PrimaryOrganization = workgroup.PrimaryOrganization;
 
             if (selectedOrganizations != null)
@@ -247,7 +246,6 @@ namespace Purchasing.Mvc.Controllers
                 ModelState.AddModelError("Workgroup.Administrative", "If Full Featured, workgroup must be administrative.");
             }
 
-            //TODO: Test this.
             if(!ModelState.IsValid)
             {
                 //Moved here because if you just pass workgroup, it doesn't have any selected organizations.
@@ -397,7 +395,7 @@ namespace Purchasing.Mvc.Controllers
 
 
             var workgroupAccountToCreate = new WorkgroupAccount() {Workgroup = workgroup};
-            //_mapper.Map(workgroupAccount, workgroupAccountToCreate); //Mapper was causing me an exception JCS
+
             workgroupAccountToCreate.Account                = workgroupAccount.Account;
             workgroupAccountToCreate.AccountManager         = workgroupAccount.AccountManager;
             workgroupAccountToCreate.Approver               = workgroupAccount.Approver;
@@ -695,7 +693,6 @@ namespace Purchasing.Mvc.Controllers
             accountToEdit.Name = workgroupAccount.Name?.Trim();
             accountToEdit.FinancialSegmentString = workgroupAccount.FinancialSegmentString?.Trim()?.ToUpper();
 
-            // _mapper.Map(workgroupAccount, accountToEdit); //I was getting an exception on test, planet express workgroup when using the mapper. JCS
 
             ModelState.Clear();
             accountToEdit.TransferValidationMessagesTo(ModelState);
@@ -1798,7 +1795,7 @@ namespace Purchasing.Mvc.Controllers
             {
                 Message = "Address updated.";
                 var newAddress = new WorkgroupAddress();
-                _mapper.Map(workgroupAddress, newAddress);
+                EditableValues.CopyAddress(workgroupAddress, newAddress);
                 newAddress.Workgroup = workgroup;
                 workgroup.AddAddress(newAddress);
             }

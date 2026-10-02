@@ -17,7 +17,6 @@ using UCDArch.Core.Utils;
 using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Testing.Fakes;
-using AutoMapper;
 using Moq;
 using Purchasing.Core.Services;
 
@@ -38,16 +37,11 @@ namespace Purchasing.Tests.ServiceTests
         public IRepositoryFactory RepositoryFactory;
         public IQueryRepositoryFactory QueryRepositoryFactory;
         public IUserIdentity UserIdentity;
-        public IMapper Mapper;
         public IAggieEnterpriseService AggieEnterpriseService;
 
         #region Init
         public WorkgroupServiceTests()
         {
-            Mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ViewModelProfile>();
-            }).CreateMapper();
             VendorRepository = Mock.Of<IRepositoryWithTypedId<Vendor, string>>();
             VendorAddressRepository = Mock.Of<IRepositoryWithTypedId<VendorAddress, Guid>>();
             UserRepository = Mock.Of<IRepositoryWithTypedId<User, string>>();
@@ -78,7 +72,6 @@ namespace Purchasing.Tests.ServiceTests
                 RepositoryFactory,
                 QueryRepositoryFactory,
                 UserIdentity,
-                Mapper,
                 AggieEnterpriseService);
         }
         #endregion Init

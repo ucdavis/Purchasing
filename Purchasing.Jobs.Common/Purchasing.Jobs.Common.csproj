@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<OutputType>Library</OutputType>
 		<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
 		<RestorePackages>true</RestorePackages>
@@ -14,15 +14,17 @@
     <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix)-$(VersionSuffix)</Version>
     <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
   </PropertyGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj"/>
+  <ItemGroup>
+    <ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj"/>
 	</ItemGroup>
 	<ItemGroup>
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+    <!-- Override the legacy AE SDK dependency in console hosts. MVC uses the shared framework. -->
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.12" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
 		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1"/>
 		<PackageReference Include="CommonServiceLocator" Version="2.0.6"/>
 		<PackageReference Include="Ninject" Version="3.3.4"/>
-    <PackageReference Include="Serilog.Exceptions" Version="8.1.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
 		<PackageReference Include="Serilog.Sinks.ElmahIO" Version="4.1.12"/>
 	</ItemGroup>
 	<ItemGroup>

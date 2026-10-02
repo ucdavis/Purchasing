@@ -12,7 +12,6 @@ using UCDArch.Testing;
 using UCDArch.Testing.Extensions;
 using UCDArch.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 using UCDArch.Core;
 using Moq;
 //using Purchasing.Controllers.Filters;
@@ -42,16 +41,10 @@ namespace Purchasing.Tests.ControllerTests.CustomFieldControllerTests
 
             Controller = new CustomFieldController(CustomFieldRepository,
                 OrganazationRepository,
-                SecurityService,
-                SmartServiceLocator<IMapper>.GetService());
+                SecurityService);
             //Controller = new CustomFieldController(CustomFieldRepository, ExampleService);
         }
 
-        protected override void RegisterAdditionalServices(IWindsorContainer container)
-        {
-            container.Install(new AutoMapperInstaller());
-            base.RegisterAdditionalServices(container);
-        }
 
         public CustomFieldControllerTests()
         {

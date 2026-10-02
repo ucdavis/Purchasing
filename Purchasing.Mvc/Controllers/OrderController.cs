@@ -2281,7 +2281,6 @@ namespace Purchasing.Mvc.Controllers
             var workgroup = _repositoryFactory.WorkgroupRepository.GetById(model.Workgroup);
             var workgroupAccounts = _repositoryFactory.WorkgroupAccountRepository.Queryable.Where(a => a.Workgroup.Id == workgroup.Id).ToArray();
 
-            //TODO: automapper?
             order.Vendor = model.Vendor == 0 ? null : _repositoryFactory.WorkgroupVendorRepository.GetById(model.Vendor);
             order.Address = _repositoryFactory.WorkgroupAddressRepository.GetById(model.ShipAddress);
             order.ShippingType = _repositoryFactory.ShippingTypeRepository.GetById(model.ShippingType);
@@ -2369,7 +2368,6 @@ namespace Purchasing.Mvc.Controllers
                             commodity = _repositoryFactory.CommodityRepository.Queryable.SingleOrDefault(a => a.Id == lineItem.CommodityCode && a.IsActive);
                         }
 
-                        //TODO: could use automapper later, but need to do validation
                         var orderLineItem = new LineItem
                         {
                             CatalogNumber = lineItem.CatalogNumber,
