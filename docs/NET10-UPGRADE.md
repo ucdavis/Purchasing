@@ -45,7 +45,7 @@ dotnet build Purchasing.sln --configuration Release
 dotnet test Purchasing.Tests/Purchasing.Tests.csproj --configuration Release --no-build
 ```
 
-On macOS, exclude `RepositoryTests` with `--filter 'FullyQualifiedName!~RepositoryTests'`; their native System.Data.SQLite provider requires Windows. Azure Pipelines is configured to run the unfiltered suite on Windows; its result remains pending as recorded below. The solution also contains legacy SSDT projects, so run `dotnet list <project.csproj> package --vulnerable --include-transitive` for each C# project rather than running package listing against the solution.
+On macOS, exclude `RepositoryTests` with `--filter 'FullyQualifiedName!~RepositoryTests'`; their native System.Data.SQLite provider requires Windows. Azure Pipelines runs the unfiltered suite on Windows; results are recorded below. The solution also contains legacy SSDT projects, so run `dotnet list <project.csproj> package --vulnerable --include-transitive` for each C# project rather than running package listing against the solution.
 
 ## Automated checks
 
@@ -57,6 +57,7 @@ On macOS, exclude `RepositoryTests` with `--filter 'FullyQualifiedName!~Reposito
 - Audit direct and transitive packages. Record remaining advisories and their scope rather than suppressing them.
 - Check published CSS/JavaScript bundles and each job's DLL, runtime configuration, `run.cmd` and schedule.
 - Smoke-test application startup and authentication redirects without executing production jobs.
+- Translate the unit-of-measure query used by AE submission through NHibernate's SQL Server provider, including empty, single-unit and repeated-unit inputs. C# 14 can bind array `.Contains` calls to `MemoryExtensions.Contains`, which NHibernate 5.6.2 cannot translate. `QueryOrderUnitsOfMeasure` must use explicit `Enumerable.Contains`; see [Microsoft's compatibility guidance](https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/10.0/csharp-overload-resolution) and [NHibernate issue 3651](https://github.com/nhibernate/nhibernate-core/issues/3651). These offline translation tests do not submit a requisition.
 
 ## Combined manual acceptance pass
 
@@ -75,7 +76,7 @@ Run this after the final code and package versions are deployed to Azure test. U
 - [ ] Order creation, save, submit, approval, reassignment, purchase and completion
 - [ ] Attachments upload/download and existing attachments
 - [ ] PDF and Excel exports, including non-ASCII content and dates/amounts, plus bulk vendor `.xls` import
-- [ ] Aggie Enterprise validation and submission against the test integration
+- [ ] Aggie Enterprise validation and submission against the test integration, including an order with multiple unit codes and repeated codes. Confirm the outgoing requisition has the correct unit names and reaches the API without an NHibernate translation error.
 - [ ] CSS/JavaScript bundles, form validation and browser console on key pages
 - [ ] Logging and APM receive expected requests/errors without startup or serialization failures
 - [ ] EmailNotifications and DailyEmailNotifications produce the expected test messages without duplicates
@@ -106,4 +107,7 @@ After cutover, check real application requests, job outcomes and indexed data. A
 - The combined .NET 10 Release suite passes 1,149 tests, with zero failures and 14 existing skips on macOS. The entire solution builds in Release with zero errors; existing compiler warnings and MSTest modernization warnings remain.
 - Final Release publishing and artifact checks pass for the web and all six jobs, including all 26 configured CSS/JavaScript bundles, IIS `web.config`, runtime configurations, launch scripts and schedules. No AutoMapper package remains in the restored dependency graph.
 - The final NuGet audit reports zero known vulnerable packages across all 14 C# projects, including transitive dependencies. This is the advisory feed result at verification time, not a guarantee against undisclosed defects.
-- Windows repository tests, hosted manual acceptance and Azure runtime configuration remain pending. No live job was executed or cloud configuration changed during local verification.
+- Before the AE query follow-up, [Windows CI build 15052](https://dev.azure.com/ucdavis/Purchasing/_build/results?buildId=15052) passed 3,211 tests with 14 not applicable/skipped and zero failures on commit `a8ca80c5`. This included the native SQLite repository suite.
+- The AE unit lookup regression was reproduced on .NET 10: all three `AggieEnterpriseServiceTests` cases failed with NHibernate's `Evaluation failure on op_Implicit(value(System.String[]))` before the fix and passed after explicit `Enumerable.Contains`. The tests prepare the actual submission query using NHibernate 5.6.2 and the SQL Server dialect without opening a database connection or calling AE. They establish query translation, not end-to-end submission acceptance.
+- After the AE query fix, the macOS Release non-repository suite passes 1,152 tests with zero failures and the same 14 existing skips.
+- Hosted manual acceptance and Azure runtime configuration remain pending. No live job was executed or cloud configuration changed during local verification.
