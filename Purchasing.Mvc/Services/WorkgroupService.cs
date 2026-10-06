@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
 using Purchasing.Core;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -52,7 +51,7 @@ namespace Purchasing.Mvc.Services
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly IQueryRepositoryFactory _queryRepositoryFactory;
         private readonly IUserIdentity _userIdentity;
-        private readonly IMapper _mapper;
+
         private readonly IAggieEnterpriseService _aggieEnterpriseService;
 
         public WorkgroupService(IRepositoryWithTypedId<Vendor, string> vendorRepository, 
@@ -63,7 +62,7 @@ namespace Purchasing.Mvc.Services
             IRepository<Workgroup> workgroupRepository,
             IRepositoryWithTypedId<Organization, string> organizationRepository,
             IDirectorySearchService searchService, IRepositoryFactory repositoryFactory, IQueryRepositoryFactory queryRepositoryFactory, IUserIdentity userIdentity,
-            IMapper mapper,
+
             IAggieEnterpriseService aggieEnterpriseService)
         {
             _vendorRepository = vendorRepository;
@@ -77,7 +76,7 @@ namespace Purchasing.Mvc.Services
             _repositoryFactory = repositoryFactory;
             _queryRepositoryFactory = queryRepositoryFactory;
             _userIdentity = userIdentity;
-            _mapper = mapper;
+
             _aggieEnterpriseService = aggieEnterpriseService;
         }
 
@@ -121,7 +120,7 @@ namespace Purchasing.Mvc.Services
         /// <param name="destination">Note, this is a ref so tests work</param>
         public void TransferValues(WorkgroupVendor source, ref WorkgroupVendor destination)
         {
-            _mapper.Map(source, destination);
+            EditableValues.CopyVendor(source, destination);
 
             // existing vendor, set the values
             if (!string.IsNullOrWhiteSpace(source.VendorId) && !string.IsNullOrWhiteSpace(source.VendorAddressTypeCode))
@@ -305,7 +304,7 @@ namespace Purchasing.Mvc.Services
         {
             var workgroupToCreate = new Workgroup();
 
-            _mapper.Map(workgroup, workgroupToCreate);
+            EditableValues.CopyWorkgroup(workgroup, workgroupToCreate);
             workgroupToCreate.PrimaryOrganization = workgroup.PrimaryOrganization;
 
             if(selectedOrganizations != null)

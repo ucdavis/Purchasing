@@ -29,11 +29,6 @@ namespace Purchasing.Tests.ControllerTests
             Controller = new ErrorController();
         }
 
-        protected override void RegisterAdditionalServices(IWindsorContainer container)
-        {
-            container.Install(new AutoMapperInstaller());
-            base.RegisterAdditionalServices(container);
-        }
 
         #endregion Init
 

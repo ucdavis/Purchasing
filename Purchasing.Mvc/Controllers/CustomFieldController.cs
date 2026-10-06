@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Purchasing.Core.Helpers;
+using System;
 using System.Collections.Generic;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core.Domain;
@@ -22,14 +22,14 @@ namespace Purchasing.Mvc.Controllers
 	    private readonly IRepository<CustomField> _customFieldRepository;
         private readonly IRepositoryWithTypedId<Organization, string> _organizationRepository;
         private readonly ISecurityService _securityService;
-        private readonly IMapper _mapper;
 
-        public CustomFieldController(IRepository<CustomField> customFieldRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, ISecurityService securityService,IMapper mapper)
+
+        public CustomFieldController(IRepository<CustomField> customFieldRepository, IRepositoryWithTypedId<Organization, string> organizationRepository, ISecurityService securityService)
         {
             _customFieldRepository = customFieldRepository;
             _organizationRepository = organizationRepository;
             _securityService = securityService;
-            _mapper = mapper;
+
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         private void TransferValues(CustomField source, CustomField destination)
         {
-            _mapper.Map(source, destination);
+            EditableValues.CopyCustomField(source, destination);
         }
     }
 }

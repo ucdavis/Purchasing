@@ -1,5 +1,4 @@
 ﻿using System;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
@@ -18,13 +17,13 @@ namespace Purchasing.Mvc.Controllers
     {
 	    private readonly IRepository<AutoApproval> _autoApprovalRepository;
         private readonly IRepositoryWithTypedId<User, string> _userRepository;
-        private readonly IMapper _mapper;
 
-        public AutoApprovalController(IRepository<AutoApproval> autoApprovalRepository, IRepositoryWithTypedId<User,string> userRepository, IMapper mapper)
+
+        public AutoApprovalController(IRepository<AutoApproval> autoApprovalRepository, IRepositoryWithTypedId<User,string> userRepository)
         {
             _autoApprovalRepository = autoApprovalRepository;
             _userRepository = userRepository;
-            _mapper = mapper;
+
         }
 
         /// <summary>
@@ -294,7 +293,7 @@ namespace Purchasing.Mvc.Controllers
         /// </summary>
         private void TransferValues(AutoApproval source, AutoApproval destination)
         {
-            _mapper.Map(source, destination);
+            EditableValues.CopyAutoApproval(source, destination);
         }
 
 

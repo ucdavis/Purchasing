@@ -204,9 +204,7 @@ namespace Purchasing.Core.Services
                 Description = $"{order.RequestNumber} {order.Justification?.Trim()}{bp}".SafeTruncate(240),
             };
                 
-            var unitCodes = order.LineItems.Select(a => a.Unit).Distinct().ToArray();
-
-            var unitsOfMeasure = _repositoryFactory.UnitOfMeasureRepository.Queryable.Where(a => unitCodes.Contains(a.Id)).ToArray();
+            var unitsOfMeasure = QueryOrderUnitsOfMeasure(order).ToArray();
 
             var shippingLocation = await GetShippingAddress(order.Address); //Verify still good.
 
@@ -993,6 +991,13 @@ namespace Purchasing.Core.Services
                 Log.Error(ex, "Error converting KFS Account {account}", account);
                 return String.Empty;
             }
+        }
+
+        internal IQueryable<UnitOfMeasure> QueryOrderUnitsOfMeasure(Order order)
+        {
+            var unitCodes = order.LineItems.Select(a => a.Unit).Distinct().ToArray();
+            // C# 14 binds array.Contains to a span overload that NHibernate cannot translate.
+            return _repositoryFactory.UnitOfMeasureRepository.Queryable.Where(a => Enumerable.Contains(unitCodes, a.Id));
         }
 
         private IAggieEnterpriseClient GetClient()

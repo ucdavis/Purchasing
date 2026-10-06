@@ -16,10 +16,11 @@ variables:
 
 steps:
   - task: UseDotNet@2
-    displayName: "Use net6.0"
+    displayName: "Use .NET 10 SDK"
     inputs:
       packageType: "sdk"
-      version: "6.0.x"
+      useGlobalJson: true
+      workingDirectory: $(Build.SourcesDirectory)
 
   - task: DotNetCoreCLI@2
     displayName: Restore nuget packages
@@ -41,6 +42,7 @@ steps:
     inputs:
       command: "test"
       projects: "./Purchasing.Tests/Purchasing.Tests.csproj"
+      arguments: "--configuration $(buildConfiguration) --no-restore"
 
   - task: DotNetCoreCLI@2
     displayName: "Assemble Purchasing.Mvc"

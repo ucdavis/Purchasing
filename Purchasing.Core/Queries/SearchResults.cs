@@ -6,6 +6,29 @@ namespace Purchasing.Core.Queries
     {
         public class OrderResult
         {
+            public static OrderResult FromHistory(OrderHistory source)
+            {
+                if (source == null) return null;
+
+                return new OrderResult
+                {
+                    Id = source.OrderId,
+                    DateCreated = source.DateCreated,
+                    DeliverTo = source.ShipTo,
+                    DeliverToEmail = source.ShipToEmail,
+                    Justification = source.Justification,
+                    BusinessPurpose = source.BusinessPurpose,
+                    CreatedBy = source.CreatedBy,
+                    RequestNumber = source.RequestNumber,
+                    PoNumber = source.PoNumber,
+                    Tag = source.Tag,
+                    ReferenceNumber = source.ReferenceNumber,
+                    Approver = source.Approver,
+                    AccountManager = source.AccountManager,
+                    Purchaser = source.Purchaser
+                };
+            }
+
             public static readonly string[] SearchableFields = { "requestnumber", "justification", "businesspurpose","shipto", "shiptoemail", "ponumber", "tag","referencenumber", "workgroupid" };
 
             public int Id { get; set; }

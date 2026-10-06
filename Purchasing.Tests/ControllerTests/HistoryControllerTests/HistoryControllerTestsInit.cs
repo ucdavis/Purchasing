@@ -66,7 +66,7 @@ namespace Purchasing.Tests.ControllerTests.HistoryControllerTests
 
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            container.Install(new AutoMapperInstaller());
+
             
             //Fixes problem where .Fetch is used in a query
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));

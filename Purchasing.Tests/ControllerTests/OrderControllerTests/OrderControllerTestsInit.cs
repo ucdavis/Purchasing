@@ -119,7 +119,7 @@ namespace Purchasing.Tests.ControllerTests.OrderControllerTests
         }
         protected override void RegisterAdditionalServices(IWindsorContainer container)
         {
-            container.Install(new AutoMapperInstaller());
+
             container.Register(Component.For<ISecurityService>().ImplementedBy<FakeSecurityService>().Named("securityService"));
             container.Register(Component.For<IQueryExtensionProvider>().ImplementedBy<QueryExtensionFakes>().Named("queryExtensionProvider"));
             base.RegisterAdditionalServices(container);

@@ -580,7 +580,6 @@ namespace Purchasing.Mvc.Controllers
 
             var workgroupAccountToCreate = new WorkgroupAccount { Workgroup = workgroup };
 
-            //_mapper.Map(workgroupAccount, workgroupAccountToCreate);//Mapper was causing me an exception JCS
             workgroupAccountToCreate.Account                = workgroupAccount.Account;
             workgroupAccountToCreate.AccountManager         = workgroupAccount.AccountManager;
             workgroupAccountToCreate.Approver               = workgroupAccount.Approver;
