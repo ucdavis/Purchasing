@@ -67,7 +67,7 @@ namespace UCDArch.Web.Attributes
             if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
             {
                 return controllerActionDescriptor.MethodInfo.GetCustomAttributes(inherit: true)
-                .Any(a => a.GetType().Equals(typeof(TransactionalActionBaseAttribute)));
+                .Any(a => a is TransactionalActionBaseAttribute);
 
             }
 

@@ -5,6 +5,7 @@ namespace UCDArch.Core.PersistanceSupport
     public class TransactionScope : IDisposable
     {
         private readonly IDbContext _dbContext;
+        private bool _completed;
         
         public TransactionScope()
         {
@@ -15,12 +16,14 @@ namespace UCDArch.Core.PersistanceSupport
 
         public void RollBackTransaction()
         {
+            _completed = true;
             _dbContext.RollbackTransaction();
         }
 
         public void CommitTransaction()
         {
             _dbContext.CommitTransaction();
+            _completed = true;
         }
 
         public bool HasOpenTransaction
@@ -30,7 +33,7 @@ namespace UCDArch.Core.PersistanceSupport
 
         public void Dispose()
         {
-            if (_dbContext.IsActive) //Rollback the transaction if it has not been committed 
+            if (!_completed && _dbContext.IsActive) // Roll back incomplete transactions.
             {
                 _dbContext.RollbackTransaction();
             }
