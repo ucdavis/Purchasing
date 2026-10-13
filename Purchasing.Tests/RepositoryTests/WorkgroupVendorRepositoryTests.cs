@@ -2722,7 +2722,7 @@ namespace Purchasing.Tests.RepositoryTests
             }));
             expectedFields.Add(new NameAndType("AeSupplierSiteCode", "System.String", new List<string>
             {
-                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)15)]"
+                 "[System.ComponentModel.DataAnnotations.StringLengthAttribute((Int32)240)]"
             }));
             expectedFields.Add(new NameAndType("City", "System.String", new List<string>
             {
