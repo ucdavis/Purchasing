@@ -28,7 +28,7 @@ namespace Purchasing.Core.Domain
         [StringLength(30)] //Docs say 30, so we either need to increase vendorId size, or just use it here... 
         public virtual string AeSupplierNumber { get;set;}
 
-        [StringLength(15)] //Length confirmed in Slack.
+        [StringLength(240)] //Length from AE Schema. Was 15, probably will never be more than 15
         public virtual string AeSupplierSiteCode { get; set; }
 
         [NotMapped]
