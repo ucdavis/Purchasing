@@ -92,8 +92,14 @@ To convert another page in a later change:
 1. Set `Layout = "_ModernLayout"` in that page.
 2. Rewrite its markup and partials with shared daisyUI components and Tailwind.
 3. Preserve its controller, form field names, authorization, validation, and links.
-4. Add a page entry to `client/vite.config.ts` only if it needs browser behavior.
+4. Create a `.ts` or `.tsx` entry under `client/src/pages/` only if it needs browser behavior.
 5. Load that entry in the page's `Scripts` section using `vite-entry`.
+
+Vite discovers page entries under `src/pages/`, including subfolders. There is no
+per-page configuration list. Every `.ts` and `.tsx` file there is an entry, except
+TypeScript declarations (`.d.ts`). Keep shared components and helpers under
+`src/components/` and import them from page entries. The shared CSS entry stays
+explicit in `vite.config.ts` and loads independently of page scripts.
 
 The modern layout renders the page h1 from `ViewBag.Title`, optional subtitle, and
 optional `SubNav`. It does not load jQuery or legacy CSS. Old widgets need explicit
@@ -115,8 +121,8 @@ retain the existing server semantics. SQL remains responsible for `IsAway`.
 ## Add React when a page needs it
 
 React, React DOM, TypeScript, and Vite's React plugin are configured. Create a TSX
-entry, mount into an explicitly owned element with `createRoot`, and register the
-entry in `vite.config.ts`. Load it with:
+entry under `client/src/pages/` and mount into an explicitly owned element with
+`createRoot`. Vite discovers the entry automatically. Load it with:
 
 ```cshtml
 @section Scripts {

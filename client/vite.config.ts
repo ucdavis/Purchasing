@@ -1,7 +1,11 @@
+import { globSync } from "node:fs";
+import { resolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+
+const clientRoot = fileURLToPath(new URL(".", import.meta.url));
 
 // The existing Project and IIS Express profiles use different HTTP/HTTPS ports.
 const backendOrigins = process.env.FRONTEND_BACKEND_URL
@@ -57,12 +61,16 @@ export default defineConfig({
     manifest: true,
     modulePreload: { polyfill: false },
     rollupOptions: {
-      input: {
-        styles: fileURLToPath(new URL("./src/styles.css", import.meta.url)),
-        awayStatus: fileURLToPath(
-          new URL("./src/pages/away-status.ts", import.meta.url),
-        ),
-      },
+      input: [
+        resolve(clientRoot, "src/styles.css"),
+        // Each page script is an entry; imported helpers belong in components/.
+        ...globSync("src/pages/**/*.{ts,tsx}", {
+          cwd: clientRoot,
+          exclude: ["**/*.d.ts"],
+        })
+          .sort()
+          .map((file) => resolve(clientRoot, file)),
+      ],
     },
   },
 });
