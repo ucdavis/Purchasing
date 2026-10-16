@@ -23,6 +23,7 @@ using Purchasing.Core.Domain;
 using Purchasing.Mvc;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Helpers;
+using Purchasing.Mvc.Infrastructure.ModernUi;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 
@@ -37,10 +38,14 @@ namespace Purchasing.Tests.Support
         {
             FirstName = "Away", LastName = "Tester", Email = "away@example.test", IsActive = true
         };
-        public User OtherUser { get; } = new("other-test");
+        public User OtherUser { get; } = new("other-test")
+        {
+            FirstName = "Other", LastName = "Tester", Email = "other@example.test", IsActive = true
+        };
         public List<string> Roles { get; } = new() { Role.Codes.Requester };
         public Mock<IRepositoryWithTypedId<User, string>> Users { get; } = new(MockBehavior.Strict);
         public IHost Host { get; private set; }
+        public IConfiguration Configuration => Host.Services.GetRequiredService<IConfiguration>();
 
         public AwayStatusWebHost()
         {
@@ -85,7 +90,9 @@ namespace Purchasing.Tests.Support
                         services.AddSession();
                         services.AddHttpContextAccessor();
                         services.AddAuthentication("Test").AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>("Test", _ => { });
-                        services.AddControllersWithViews().AddApplicationPart(typeof(Startup).Assembly);
+                        services.AddControllersWithViews()
+                            .AddApplicationPart(typeof(Startup).Assembly)
+                            .AddRazorOptions(options => options.ViewLocationExpanders.Add(new ModernUiViewLocationExpander()));
                         services.AddSingleton(Users.Object);
                         services.AddSingleton(Mock.Of<IRepositoryWithTypedId<EmailPreferences, string>>());
                         services.AddSingleton(Mock.Of<IRepositoryWithTypedId<ColumnPreferences, string>>());
@@ -108,7 +115,8 @@ namespace Purchasing.Tests.Support
                         app.UseSession();
                         app.Use(async (context, next) =>
                         {
-                            context.Session.SetObject(string.Format(Resources.Role_CacheId, CurrentUser.Id), Roles);
+                            var login = context.Request.Headers["X-Test-User"].FirstOrDefault() ?? CurrentUser.Id;
+                            context.Session.SetObject(string.Format(Resources.Role_CacheId, login), Roles);
                             await next();
                         });
                         app.UseAuthentication();
@@ -135,7 +143,8 @@ namespace Purchasing.Tests.Support
             protected override Task<AuthenticateResult> HandleAuthenticateAsync()
             {
                 if (Request.Headers.ContainsKey("X-Test-Anonymous")) return Task.FromResult(AuthenticateResult.NoResult());
-                var identity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, "away-test") }, Scheme.Name);
+                var login = Request.Headers["X-Test-User"].FirstOrDefault() ?? "away-test";
+                var identity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, login) }, Scheme.Name);
                 return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name)));
             }
         }

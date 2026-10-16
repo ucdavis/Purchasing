@@ -35,6 +35,39 @@ namespace Purchasing.Tests.ControllerTests
             _site?.Dispose();
         }
 
+        private void ConfigureUi(bool enabled, string login = "away-test")
+        {
+            _site.Configuration["ModernUi:Enabled"] = enabled.ToString();
+            _site.Configuration["ModernUi:AllowedLogins:0"] = login;
+        }
+
+        private async Task AssertAwayInterface(bool modern, string login = "away-test")
+        {
+            _client.DefaultRequestHeaders.Remove("X-Test-User");
+            _client.DefaultRequestHeaders.Add("X-Test-User", login);
+            using var response = await _client.GetAsync("/User/AwayStatus");
+            var html = await response.Content.ReadAsStringAsync();
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, html);
+            AssertInterface(html, modern);
+        }
+
+        private static void AssertInterface(string html, bool modern)
+        {
+            if (modern)
+            {
+                StringAssert.Contains(html, "http://localhost:5178/src/styles.css");
+                StringAssert.Contains(html, "http://localhost:5178/src/pages/away-status.ts");
+                StringAssert.Contains(html, "type=\"date\"");
+                Assert.IsFalse(html.Contains("jqueryui"));
+            }
+            else
+            {
+                Assert.IsFalse(html.Contains("http://localhost:5178"));
+                StringAssert.Contains(html, "jquery");
+                StringAssert.Contains(html, "class=\"datepicker\"");
+            }
+        }
+
         private async Task<string> GetFormToken()
         {
             using var response = await _client.GetAsync("/User/AwayStatus");
@@ -47,9 +80,42 @@ namespace Purchasing.Tests.ControllerTests
             return WebUtility.HtmlDecode(token.Groups[1].Value);
         }
 
+        [DataTestMethod]
+        [DataRow(null, null, false)]
+        [DataRow("false", "away-test", false)]
+        [DataRow("true", null, false)]
+        [DataRow("true", "someone-else", false)]
+        [DataRow("true", "AWAY-TEST", true)]
+        public async Task InterfaceRequiresBothGlobalEnableAndMatchingLogin(string enabled, string allowedLogin, bool modern)
+        {
+            if (enabled != null) _site.Configuration["ModernUi:Enabled"] = enabled;
+            if (allowedLogin != null) _site.Configuration["ModernUi:AllowedLogins:0"] = allowedLogin;
+
+            await AssertAwayInterface(modern);
+        }
+
+        [TestMethod]
+        public async Task CachedViewsStayIsolatedAcrossUsersAndConfigurationChanges()
+        {
+            ConfigureUi(true);
+            await AssertAwayInterface(true);
+            await AssertAwayInterface(false, "other-test");
+            await AssertAwayInterface(true);
+
+            ConfigureUi(false);
+            await AssertAwayInterface(false);
+            ConfigureUi(true);
+            await AssertAwayInterface(true);
+
+            ConfigureUi(true, "other-test");
+            await AssertAwayInterface(false);
+            await AssertAwayInterface(true, "other-test");
+        }
+
         [TestMethod]
         public async Task AwayPageUsesModernAssetsAndRoleAwareNavigationWhileProfileRetainsLegacyAssets()
         {
+            ConfigureUi(true);
             using var away = await _client.GetAsync("/User/AwayStatus?id=other-test");
             var html = await away.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.OK, away.StatusCode, html);
@@ -70,12 +136,16 @@ namespace Purchasing.Tests.ControllerTests
             var profileHtml = await profile.Content.ReadAsStringAsync();
             Assert.AreEqual(HttpStatusCode.OK, profile.StatusCode, profileHtml);
             Assert.IsFalse(profileHtml.Contains("/modern/"));
+            Assert.IsFalse(profileHtml.Contains("http://localhost:5178"));
             StringAssert.Contains(profileHtml, "jquery");
         }
 
-        [TestMethod]
-        public async Task InvalidBoundDateRedisplaysErrorsAndNeverWritesTheUser()
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public async Task InvalidBoundDateRedisplaysErrorsAndNeverWritesTheUser(bool modern)
         {
+            ConfigureUi(modern);
             _site.CurrentUser.IsAway = true;
             _site.CurrentUser.AwayUntil = new DateTime(2030, 6, 12);
             var token = await GetFormToken();
@@ -87,6 +157,7 @@ namespace Purchasing.Tests.ControllerTests
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             var html = await response.Content.ReadAsStringAsync();
+            AssertInterface(html, modern);
             StringAssert.Contains(html, "not-a-date");
             StringAssert.Contains(html, "Return");
             Assert.AreEqual(new DateTime(2030, 6, 12), _site.CurrentUser.AwayUntil);
@@ -95,11 +166,15 @@ namespace Purchasing.Tests.ControllerTests
         }
 
         [DataTestMethod]
-        [DataRow("")]
-        [DataRow("2000-01-02")]
-        [DataRow("2030-06-12")]
-        public async Task OrdinaryRazorPostOnlySavesCurrentUsersDateAndRedirects(string date)
+        [DataRow(false, "")]
+        [DataRow(false, "2000-01-02")]
+        [DataRow(false, "2030-06-12")]
+        [DataRow(true, "")]
+        [DataRow(true, "2000-01-02")]
+        [DataRow(true, "2030-06-12")]
+        public async Task OrdinaryRazorPostOnlySavesCurrentUsersDateAndRedirects(bool modern, string date)
         {
+            ConfigureUi(modern);
             _site.CurrentUser.AwayUntil = new DateTime(2030, 1, 1);
             var token = await GetFormToken();
 
@@ -118,9 +193,12 @@ namespace Purchasing.Tests.ControllerTests
             _site.Users.Verify(x => x.EnsurePersistent(_site.CurrentUser), Times.Once);
         }
 
-        [TestMethod]
-        public async Task PostRequiresAntiforgeryAndPageRequiresAuthentication()
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public async Task PostRequiresAntiforgeryAndPageRequiresAuthentication(bool modern)
         {
+            ConfigureUi(modern);
             using var post = await _client.PostAsync("/User/AwayStatus", new FormUrlEncodedContent(new Dictionary<string, string> { ["AwayUntil"] = "2030-06-12" }));
             Assert.AreEqual(HttpStatusCode.BadRequest, post.StatusCode);
             _site.Users.Verify(x => x.EnsurePersistent(It.IsAny<User>()), Times.Never);

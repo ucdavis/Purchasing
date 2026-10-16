@@ -1,8 +1,53 @@
 # Frontend assets and gradual page migration
 
-Away Status is the first page using the modern Razor layout. Other pages still use
-`_Layout.cshtml` and their existing assets. The page remains a normal MVC form;
-React is available for future components but is not loaded by Away Status.
+Away Status has both legacy and modern Razor views. Configuration selects the
+modern view for allowed users; the default is the legacy interface. Other pages
+still use `_Layout.cshtml` and their existing assets. Both Away Status views use
+the same controller and form handling. React is available for future components
+but is not loaded by Away Status.
+
+## Select the interface
+
+The checked-in `appsettings.json` defaults are:
+
+```json
+"ModernUi": {
+  "Enabled": false,
+  "AllowedLogins": []
+}
+```
+
+Both settings must permit the modern interface. When `Enabled` is true, an
+authenticated user's login must match an entry in `AllowedLogins`, ignoring case.
+Disabled, empty, or unlisted means legacy. These settings only select views;
+existing authorization still controls access to each action.
+
+To preview the modern Away Status view locally, run from the repository root,
+replacing `your-login-id` with the login used to sign in:
+
+```sh
+dotnet user-secrets set "ModernUi:Enabled" "true" --project Purchasing.Mvc
+dotnet user-secrets set "ModernUi:AllowedLogins:0" "your-login-id" --project Purchasing.Mvc
+```
+
+To switch everyone back to the legacy interface, set `ModernUi:Enabled` to false.
+For the local override:
+
+```sh
+dotnet user-secrets set "ModernUi:Enabled" "false" --project Purchasing.Mvc
+```
+
+Deployment environment variables use `ModernUi__Enabled` and indexed entries such
+as `ModernUi__AllowedLogins__0`. Restart the application after changing deployment
+configuration. Keep personal login IDs out of tracked settings.
+
+`Infrastructure/ModernUi/ModernUiViewLocationExpander.cs` selects a view under
+`Views/Modern/{Controller}/{Action}.cshtml` when the user is allowed and that view
+exists. Otherwise MVC uses the original view and layout. Controllers continue to
+return `View(model)`, including when validation fails on POST. There are no separate
+routes, controller actions, or user-preference records. This convention applies to
+normal controller main views. Explicit view paths and shared partials are not
+automatically replaced.
 
 ## Develop
 
@@ -17,8 +62,8 @@ npm start
 ```
 
 This runs `dotnet watch` with the `http-cli` profile at `http://localhost:44395`.
-Purchasing starts Vite at `http://localhost:5178`. Visit `/User/AwayStatus` using
-your normal development login and configuration. Debug and Release builds run
+Purchasing starts Vite at `http://localhost:5178`. Enable the modern interface for
+your login as described above, then visit `/User/AwayStatus`. Debug and Release builds run
 `npm ci` on first checkout and when `client/package.json` or its lockfile changes.
 There is no root npm install step and no separate frontend terminal.
 
@@ -90,11 +135,19 @@ and legacy layout are unchanged.
 
 To convert another page in a later change:
 
-1. Set `Layout = "_ModernLayout"` in that page.
-2. Rewrite its markup and partials with shared daisyUI components and Tailwind.
-3. Preserve its controller, form field names, authorization, validation, and links.
-4. Create a `.ts` or `.tsx` entry under `client/src/pages/` only if it needs browser behavior.
-5. Load that entry in the page's `Scripts` section using `vite-entry`.
+1. Keep its original view at `Views/{Controller}/{Action}.cshtml`.
+2. Add its alternative at `Views/Modern/{Controller}/{Action}.cshtml` and set
+   `Layout = "_ModernLayout"` there.
+3. Rewrite the alternative's markup with shared daisyUI components and Tailwind.
+   Preserve its view model, controller, form field names, authorization, validation,
+   and links. Keep markup specific to the new interface in separate partials.
+4. Create a `.ts` or `.tsx` entry under `client/src/pages/` only if new browser
+   behavior needs one, and load it in the page's `Scripts` section using `vite-entry`.
+
+The new view is available to allowed users automatically. Unconverted pages keep
+their original layout even for those users. A styles-only conversion can remain
+Razor and retain its existing JavaScript, provided the modern layout or view loads
+the libraries and widget styles it needs. TypeScript and React are optional.
 
 Vite discovers page entries under `src/pages/`, including subfolders. There is no
 per-page configuration list. Every `.ts` and `.tsx` file there is an entry, except
@@ -103,19 +156,23 @@ TypeScript declarations (`.d.ts`). Keep shared components and helpers under
 explicit in `vite.config.ts` and loads independently of page scripts.
 
 The modern layout renders the page h1 from `ViewBag.Title`, optional subtitle, and
-optional `SubNav`. It does not load jQuery or legacy CSS. Old widgets need explicit
-migration; loading both global stylesheets is not a compatibility strategy.
+optional `SubNav`. It does not load jQuery or legacy CSS. Include any retained
+widget's dependencies explicitly and check them against the shared theme. Avoid
+loading the complete Bootstrap and Tailwind stylesheets together.
 
 ## Calendar and forms
 
-Away Status uses a native `type="date"` field as its submitted form control.
+The modern Away Status view uses a native `type="date"` field as its submitted form control.
 The reusable `_Calendar` partial adds a Cally picker, styled by daisyUI, only after
 `client/src/components/date-picker.ts` has loaded and registered the components.
 If JavaScript or the bundle fails, the native input and submit buttons still work.
-Dates stay `YYYY-MM-DD` strings in the browser; there is no UTC conversion.
+Dates stay `YYYY-MM-DD` strings in the browser; there is no UTC conversion. The
+legacy view retains its jQuery date picker and existing layout.
 
-Return from absence is a separate normal POST with an empty date. The narrow
-`AwayStatusViewModel` prevents unrelated User validation from interfering and
+The modern view returns from absence with a separate normal POST containing an
+empty date. The legacy view keeps its existing jQuery behavior, clearing the date
+before submitting the same form. Both views use the narrow `AwayStatusViewModel`,
+which prevents unrelated User validation from interfering and
 rejects malformed dates before persistence. Blank, past, current, and future dates
 retain the existing server semantics. SQL remains responsible for `IsAway`.
 

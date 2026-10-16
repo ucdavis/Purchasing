@@ -137,7 +137,9 @@ AutoMapper replacements, the combined acceptance checklist, and deployment check
 
 ## Modern frontend
 
-Away Status uses the shared Tailwind/daisyUI Razor layout and a progressively enhanced
-Cally date picker. Other pages retain the existing layout. See
-[frontend development and migration](docs/FRONTEND.md) for Vite setup, shared styles,
-optional React entries, and publishing.
+Away Status has an optional Tailwind/daisyUI Razor view with a Cally date picker.
+The legacy interface remains the default. Set `ModernUi:Enabled` to true and add
+login IDs to `ModernUi:AllowedLogins` to select the modern view for those users.
+Both views share the same controller; unconverted pages retain their existing
+views and layouts. See [frontend development and migration](docs/FRONTEND.md) for
+configuration examples, Vite setup, shared styles, optional React, and publishing.
