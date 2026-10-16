@@ -113,7 +113,7 @@
     <UpToDateCheckOutput Include="$(FrontendRoot)node_modules/.purchasing-restore" />
   </ItemGroup>
   <Target Name="RestoreFrontend" BeforeTargets="Build"
-          Condition="'$(Configuration)' == 'Debug' And '$(DesignTimeBuild)' != 'true'"
+          Condition="'$(DesignTimeBuild)' != 'true'"
           Inputs="$(FrontendRoot)package.json;$(FrontendRoot)package-lock.json"
           Outputs="$(FrontendRoot)node_modules/.purchasing-restore">
     <Exec WorkingDirectory="$(FrontendRoot)" Command="npm ci" />

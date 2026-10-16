@@ -18,9 +18,9 @@ npm start
 
 This runs `dotnet watch` with the `http-cli` profile at `http://localhost:44395`.
 Purchasing starts Vite at `http://localhost:5178`. Visit `/User/AwayStatus` using
-your normal development login and configuration. The Debug build runs `npm ci`
-on first checkout and when `client/package.json` or its lockfile changes. There
-is no root npm install step and no separate frontend terminal.
+your normal development login and configuration. Debug and Release builds run
+`npm ci` on first checkout and when `client/package.json` or its lockfile changes.
+There is no root npm install step and no separate frontend terminal.
 
 In Visual Studio, select Purchasing.Mvc as the startup project and use its
 Purchasing.Mvc or IIS Express launch profile, then press F5 or Ctrl+F5. Existing
@@ -45,7 +45,8 @@ local port.
 
 `npm start` sets `DOTNET_WATCH_SUPPRESS_STATIC_FILE_HANDLING=true` before running
 .NET's watcher. Legacy NuGet assets are not physical files under `wwwroot`; Vite
-handles CSS/JS updates. C# and Razor hot reload and browser refresh remain enabled.
+handles modern CSS/JS updates. Refresh the browser manually after editing legacy
+CSS or JavaScript. C# and Razor hot reload and browser refresh remain enabled.
 
 ### Run with built assets
 
@@ -63,10 +64,10 @@ plain `dotnet run` that selects the standard development profile starts Vite.
 Production ignores development-server settings and never starts Node.
 `npm --prefix client run dev` is an alias for root `npm start`.
 
-CSS updates in place. Razor updates are owned by `dotnet watch`, which reloads the
-page after compilation. A small Vite hook prevents Tailwind's Razor-source watcher
-from reloading the page before .NET has applied the changes. Check both behaviors
-when upgrading Vite or Tailwind.
+Modern CSS updates in place. Razor updates are owned by `dotnet watch`, which
+reloads the page after compilation. A small Vite hook prevents Tailwind's
+Razor-source watcher from reloading the page before .NET has applied the changes.
+Check both behaviors when upgrading Vite or Tailwind.
 
 ## Share styles and markup
 

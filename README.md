@@ -86,8 +86,9 @@ npm start
 ```
 
 This starts `dotnet watch` at `http://localhost:44395`; Purchasing starts Vite for
-frontend hot reload. The Debug build installs client dependencies automatically
-on first checkout and after package changes. No separate npm install is required.
+frontend hot reload. Debug and Release builds install client dependencies
+automatically on first checkout and after package changes. No separate npm
+install is required.
 
 In Visual Studio, set Purchasing.Mvc as the startup project and press F5 using
 the Purchasing.Mvc or IIS Express profile. The existing HTTPS application URLs
