@@ -28,7 +28,7 @@ namespace Purchasing.Mvc.Components
             _cache = cache;
         }
 
-        public Task<IViewComponentResult> InvokeAsync()
+        public Task<IViewComponentResult> InvokeAsync(bool modern = false)
         {
             var serviceMessageList = _cache.GetOrCreate(CacheKey, entry =>
             {
@@ -44,7 +44,7 @@ namespace Purchasing.Mvc.Components
                 }
             });
 
-            return Task.FromResult<IViewComponentResult>(View(serviceMessageList));
+            return Task.FromResult<IViewComponentResult>(View(modern ? "Modern" : "Default", serviceMessageList));
         }
     }
 }

@@ -153,14 +153,27 @@ namespace Purchasing.Mvc.Controllers
         {
             var user = GetCurrent();
 
-            return View(user);
+            return View(new AwayStatusViewModel
+            {
+                AwayUntil = user.AwayUntil,
+                IsAway = user.IsAway,
+                CurrentAwayUntil = user.AwayUntil
+            });
         }
         
         [HttpPost]
-        public ActionResult AwayStatus(User user)
+        public ActionResult AwayStatus(AwayStatusViewModel model)
         {
             var currentUser = GetCurrent();
-            currentUser.AwayUntil = user.AwayUntil;
+            model.IsAway = currentUser.IsAway;
+            model.CurrentAwayUntil = currentUser.AwayUntil;
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            currentUser.AwayUntil = model.AwayUntil;
 
             Message = "Your away status has been set";
 

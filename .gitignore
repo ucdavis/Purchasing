@@ -53,3 +53,9 @@ newrelic.cmd
 Purchasing.Mvc.Azure/ServiceDefinition.build.csdef
 .vs/
 **/wwwroot/bundles/*
+
+# Vite build output and local browser verification
+client/node_modules/
+Purchasing.Mvc/wwwroot/modern/
+.playwright-cli/
+output/playwright/

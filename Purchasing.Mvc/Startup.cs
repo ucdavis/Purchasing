@@ -35,6 +35,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Core.Models.Configuration;
 using Purchasing.Core.Services;
+using Purchasing.Mvc.Infrastructure.Vite;
 
 namespace Purchasing.Mvc
 {
@@ -57,6 +58,8 @@ namespace Purchasing.Mvc
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHostedService<ViteDevelopmentServer>();
+
             services.AddMvc(options =>
             {
                 // place EntityModelBinderProvider just before the ComplexObjectModelBinderProvider

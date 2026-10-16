@@ -99,4 +99,36 @@
     <Exec Command="dotnet bundle" />
   </Target>
 
+  <PropertyGroup>
+    <FrontendRoot>$(MSBuildProjectDirectory)/../client/</FrontendRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Publish the fresh Vite build explicitly, never a stale discovered hash. -->
+    <Content Remove="wwwroot/modern/**" />
+    <Watch Remove="wwwroot/modern/**" />
+    <None Include="../client/**" Exclude="../client/node_modules/**"
+          Link="Client/%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+    <UpToDateCheckInput Include="$(FrontendRoot)package.json;$(FrontendRoot)package-lock.json" />
+    <UpToDateCheckOutput Include="$(FrontendRoot)node_modules/.purchasing-restore" />
+  </ItemGroup>
+  <Target Name="RestoreFrontend" BeforeTargets="Build"
+          Condition="'$(Configuration)' == 'Debug' And '$(DesignTimeBuild)' != 'true'"
+          Inputs="$(FrontendRoot)package.json;$(FrontendRoot)package-lock.json"
+          Outputs="$(FrontendRoot)node_modules/.purchasing-restore">
+    <Exec WorkingDirectory="$(FrontendRoot)" Command="npm ci" />
+    <Touch Files="$(FrontendRoot)node_modules/.purchasing-restore" AlwaysCreate="true" />
+  </Target>
+  <Target Name="PublishFrontend" AfterTargets="ComputeFilesToPublish">
+    <Exec WorkingDirectory="$(FrontendRoot)" Command="npm ci" />
+    <Touch Files="$(FrontendRoot)node_modules/.purchasing-restore" AlwaysCreate="true" />
+    <Exec WorkingDirectory="$(FrontendRoot)" Command="npm run build" />
+    <ItemGroup>
+      <FrontendAssets Include="wwwroot/modern/**" />
+      <ResolvedFileToPublish Include="@(FrontendAssets->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>wwwroot/modern/%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 </Project>
