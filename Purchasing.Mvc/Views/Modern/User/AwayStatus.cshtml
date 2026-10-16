@@ -1,0 +1,61 @@
+@model AwayStatusViewModel
+@{
+    Layout = "_ModernLayout";
+    ViewBag.Title = "Away Status";
+    ViewBag.SubTitle = "Manage your availability for purchase requests.";
+}
+
+@section SubNav {
+    <a class="btn btn-ghost" href="@Url.Action("Profile", "User")">Back to Profile</a>
+}
+
+@section Scripts {
+    <vite-entry src="src/pages/away-status.ts" />
+}
+
+<div class="max-w-2xl space-y-6">
+    <section class="card border border-base-300 bg-base-100 shadow-sm" aria-labelledby="current-status-heading">
+        <div class="card-body gap-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <h2 id="current-status-heading" class="card-title">Current status</h2>
+                <span class="badge @(Model.IsAway ? "badge-warning" : "badge-success")">@(Model.IsAway ? "Away" : "Available")</span>
+            </div>
+            @if (Model.IsAway)
+            {
+                <p>You are currently away until <strong>@Model.CurrentAwayUntil?.ToShortDateString()</strong>.</p>
+                <form asp-action="AwayStatus" asp-controller="User" method="post">
+                    <input type="hidden" name="AwayUntil" value="" />
+                    <button class="btn btn-outline btn-primary" type="submit">Return from absence</button>
+                </form>
+            }
+            else
+            {
+                <p>You are currently available.</p>
+            }
+        </div>
+    </section>
+
+    <section class="card border border-base-300 bg-base-100 shadow-sm" aria-labelledby="away-date-heading">
+        <div class="card-body gap-5">
+            <div>
+                <h2 id="away-date-heading" class="card-title">@(Model.IsAway ? "Update your absence" : "Set your away date")</h2>
+                <p class="mt-2 text-sm">Choose the date to use for your away status. Leave it blank to clear your absence.</p>
+            </div>
+            <form asp-action="AwayStatus" asp-controller="User" method="post" class="space-y-6">
+                <div asp-validation-summary="ModelOnly" role="alert"></div>
+                <div data-date-picker>
+                    <label asp-for="AwayUntil" class="mb-2 block text-sm font-semibold"></label>
+                    <div class="flex flex-wrap items-start gap-2">
+                        <input asp-for="AwayUntil" type="date" asp-format="{0:yyyy-MM-dd}" class="input input-bordered w-full max-w-xs" aria-describedby="away-date-error" />
+                        @await Html.PartialAsync("_Calendar")
+                    </div>
+                    <span asp-validation-for="AwayUntil" id="away-date-error" class="mt-2 block text-sm" role="alert"></span>
+                </div>
+                <div class="flex flex-wrap gap-3 border-t border-base-300 pt-5">
+                    <button class="btn btn-primary" type="submit">@(Model.IsAway ? "Extend absence" : "Set away status")</button>
+                    <a class="btn btn-ghost" href="@Url.Action("Profile", "User")">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
