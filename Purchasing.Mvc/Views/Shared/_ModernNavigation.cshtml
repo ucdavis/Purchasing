@@ -1,0 +1,94 @@
+@using Purchasing.Core.Domain
+@{
+    var roles = Purchasing.Mvc.Services.UserSecurityService.UserRoles(User.Identity.Name);
+    var hasAdmin = roles.Any(role => role == Role.Codes.Admin || role == Role.Codes.DepartmentalAdmin || role == Role.Codes.Approver);
+}
+
+<header class="border-b-2 border-secondary bg-primary text-primary-content">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+        <img src="@Url.Image("PrePurchasing-Logo.png")" alt="UCD PrePurchasing" class="h-auto w-96 max-w-full" />
+        <div class="flex flex-wrap items-center gap-2 text-sm">
+            <span class="mr-2 w-full break-all sm:w-auto text-primary-content/80">Hello <span class="font-medium text-primary-content">@User.Identity.Name</span></span>
+            <details class="dropdown dropdown-start sm:dropdown-end">
+                <summary class="btn btn-ghost btn-sm text-primary-content">Profile</summary>
+                <ul class="menu dropdown-content z-50 mt-2 w-56 rounded-box border border-base-300 bg-base-100 p-2 text-base-content shadow-lg">
+                    <li><a href="@Url.Action("Profile", "User")">Profile</a></li>
+                    <li><a href="@Url.Action("EmailPreferences", "User", new { id = User.Identity.Name })">Email Preferences</a></li>
+                    <li><a href="@Url.Action("ColumnPreferences", "User", new { id = User.Identity.Name })">Column Preferences</a></li>
+                    <li><a href="@Url.Action("EditEmail", "User")">Email Address</a></li>
+                    <li><a href="@Url.Action("AwayStatus", "User")">Away Status</a></li>
+                </ul>
+            </details>
+            <a class="btn btn-ghost btn-sm text-primary-content" href="@Url.Action("LogOut", "Account")">Logout</a>
+        </div>
+    </div>
+
+    <div class="bg-primary text-primary-content">
+        <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
+            <nav aria-label="Main navigation" class="flex flex-wrap items-center gap-1">
+                <a class="btn btn-ghost btn-sm text-primary-content" href="@Url.Action("Landing", "Home")">Home</a>
+                <details class="dropdown">
+                    <summary class="btn btn-ghost btn-sm text-primary-content">Orders</summary>
+                    <ul class="menu dropdown-content z-50 mt-2 w-56 sm:w-60 rounded-box border border-base-300 bg-base-100 p-2 text-base-content shadow-lg">
+                        @if (roles.Contains(Role.Codes.Requester))
+                        {
+                            <li><a href="@Url.Action("SelectWorkgroup", "Order")">Place Order</a></li>
+                        }
+                        <li><a href="@Url.Action("Index", "History")">Order History</a></li>
+                        <li><a href="@Url.Action("Index", "Favorites")">Favorites</a></li>
+                        @if (roles.Contains(Role.Codes.Requester))
+                        {
+                            <li><a href="@Url.Action("SavedOrderRequests", "Order")">Saved Requests</a></li>
+                        }
+                        @if (roles.Contains(Role.Codes.AdminWorkgroup))
+                        {
+                            <li><a href="@Url.Action("AdminOrders", "History")">Admin Order History</a></li>
+                        }
+                        @if (roles.Contains(Role.Codes.Reviewer))
+                        {
+                            <li><a href="@Url.Action("AccountsPayableOrders", "History")">AP Order History</a></li>
+                        }
+                    </ul>
+                </details>
+                @if (hasAdmin)
+                {
+                    <details class="dropdown dropdown-center sm:dropdown-start">
+                        <summary class="btn btn-ghost btn-sm text-primary-content">Admin</summary>
+                        <ul class="menu dropdown-content z-50 mt-2 w-56 sm:w-64 rounded-box border border-base-300 bg-base-100 p-2 text-base-content shadow-lg">
+                            @if (roles.Contains(Role.Codes.Approver))
+                            {
+                                <li><a href="@Url.Action("Index", "AutoApproval")">Auto Approvals</a></li>
+                            }
+                            @if (roles.Contains(Role.Codes.DepartmentalAdmin))
+                            {
+                                <li><a href="@Url.Action("Index", "Workgroup")">Workgroup</a></li>
+                                <li><a href="@Url.Action("Index", "Organization")">Orgs</a></li>
+                                <li><a href="@Url.Action("Index", "Report")">Reports</a></li>
+                            }
+                            @if (roles.Contains(Role.Codes.Admin))
+                            {
+                                <li><a href="@Url.Action("Index", "Admin")">Administrators</a></li>
+                                <li><a href="@Url.Action("Index", "DepartmentalAdminRequest")">Dept Admin Requests</a></li>
+                                <li><a href="@Url.Action("AddOrg", "Admin")">Add Manual Org</a></li>
+                                <li><a href="@Url.Action("Index", "ServiceMessage")">Service Messages</a></li>
+                                <li><a href="@Url.Action("UpdateChildWorkgroups", "Admin")">Update Child Workgroups</a></li>
+                                <li><a href="@Url.Action("ValidateChildWorkgroups", "Admin")">Validate Child Workgroups</a></li>
+                                <li><a href="@Url.Action("Index", "System")">System</a></li>
+                            }
+                        </ul>
+                    </details>
+                }
+                @if (ViewBag.ShowTour != null && ViewBag.ShowTour)
+                {
+                    <a id="tour-intro" class="btn btn-ghost btn-sm text-primary-content" href="#">Tour</a>
+                }
+                <a class="btn btn-ghost btn-sm text-primary-content" href="@Url.Action("Index", "Help")">Help</a>
+            </nav>
+            <form action="@Url.Action("Results", "Search")" method="get" role="search" class="flex w-full gap-2 sm:w-auto">
+                <label for="order-search" class="sr-only">Search your orders</label>
+                <input id="order-search" type="search" name="q" placeholder="Search your orders" class="input input-sm min-w-0 flex-1 bg-base-100 text-base-content sm:w-56" />
+                <button type="submit" class="btn btn-secondary btn-sm">Search</button>
+            </form>
+        </div>
+    </div>
+</header>

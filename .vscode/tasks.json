@@ -27,15 +27,15 @@
     },
     {
       "label": "watch",
-      "command": "dotnet",
-      "type": "process",
+      "command": "npm",
+      "type": "shell",
       "args": [
-        "watch",
-        "run",
-        "--project",
-        "${workspaceFolder}/Purchasing.Mvc/Purchasing.Mvc.csproj"
+        "start"
       ],
-      "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
     }
   ]
 }
