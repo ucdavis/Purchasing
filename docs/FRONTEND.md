@@ -26,8 +26,6 @@ In Visual Studio, select Purchasing.Mvc as the startup project and use its
 Purchasing.Mvc or IIS Express launch profile, then press F5 or Ctrl+F5. Existing
 HTTPS and HTTP application ports are preserved. The client source appears under
 `Client` in Solution Explorer. The development VS Code launch also enables Vite.
-Windows Visual Studio startup and debugger-stop behavior still need verification
-on Windows.
 
 ### Development server ownership
 
@@ -36,7 +34,7 @@ when the environment is `Development` and `Vite:UseDevServer` is true. The track
 development profiles set that flag. It starts Node directly, waits until Vite is
 listening before starting the application, and forwards frontend output to the
 application log. Node runs Vite in process and watches its connection to .NET, so
-an abrupt debugger stop also closes the server. No extra NuGet package is used.
+an abrupt debugger stop also closes the server.
 
 An occupied Vite port or startup timeout fails application startup with a useful
 error. The launcher does not stop or adopt an existing server on that port.
@@ -63,8 +61,7 @@ Alternatively set `Vite:UseDevServer=false` in a local IDE launch configuration.
 The application then uses the same manifest and files as a published build. A
 plain `dotnet run` that selects the standard development profile starts Vite.
 Production ignores development-server settings and never starts Node.
-The previous `npm --prefix client run dev` command remains an alias for root
-`npm start`.
+`npm --prefix client run dev` is an alias for root `npm start`.
 
 CSS updates in place. Razor updates are owned by `dotnet watch`, which reloads the
 page after compilation. A small Vite hook prevents Tailwind's Razor-source watcher
@@ -150,52 +147,9 @@ emitted once per page. Built imports are relative, and helper links respect
 ```sh
 npm --prefix client run build
 dotnet test Purchasing.Tests --filter 'FullyQualifiedName~AwayStatus|FullyQualifiedName~ViteEntryTagHelper|FullyQualifiedName~ViteDevelopmentServer'
-dotnet publish Purchasing.Mvc -c Release -o /tmp/purchasing-publish
+dotnet publish Purchasing.Mvc -c Release
 ```
 
 The focused MVC tests use an isolated host with real Razor, model binding,
 authorization filters and antiforgery, plus in-memory repositories. They do not
-connect to a database or CAS. Test-only helpers live in `Purchasing.Tests`, never
-the shipped app. Do not submit browser test forms against production data.
-
-### Local verification, October 16, 2026
-
-The local .NET launcher was subsequently verified with:
-
-- All 28 focused tests passing, including 10 process lifecycle cases covering
-  readiness, failure, timeout, occupied ports, unexpected exit and shutdown.
-- Root `npm start` launching the real application and Vite. A Razor edit applied
-  through hot reload; a watcher restart started a fresh Vite process; Ctrl+C
-  stopped both services.
-- The standard Purchasing.Mvc launch profile serving HTTPS and HTTP with Vite
-  ready before the application accepted requests. An HTTPS browser fixture loaded
-  the real shared CSS and calendar module without console errors; CSS hot reload
-  preserved the document. Actual Visual Studio on Windows remains untested.
-- Force-killing the .NET application closed its stdin pipe and released Vite's
-  port. An unrelated listener was never terminated.
-- Release publishing including the same two asset entries and excluding the
-  development Node launcher. No new NuGet or npm dependencies were added.
-
-The Mac checks used the required .NET 10.0.401 SDK from a local installation;
-developers must have the SDK selected by `global.json` available on their PATH.
-
-Earlier page-migration verification:
-
-- All 18 focused controller, real-MVC HTTP, and asset-helper cases passed.
-- Browser checks covered Cally mouse and keyboard selection, Escape/focus return,
-  saving and clearing absence, native-input submission with JavaScript disabled,
-  and fallback when the calendar module was unavailable. All writes used fake data.
-- Desktop and 320px mobile layout/menu/calendar bounds were checked. The published
-  assets rendered with Vite stopped and no browser console errors.
-- CSS changed without a document reload; a temporary React counter retained state
-  through Fast Refresh; Razor changes refreshed after .NET applied them. Temporary
-  React fixtures were removed. The production entries contain no React runtime.
-- Release publishing passed before and after changed CSS hashes. The final package
-  includes the manifest and both entries. The original development runner
-  started the real app, returned its authentication redirect, and released both
-  ports when interrupted. The .NET-owned launcher is verified separately below.
-- Independent code review found no blockers.
-
-The full legacy test suite could not complete on this Mac because its native
-`SQLite.Interop` dependency is unavailable. Windows CI and hosted deployment have
-not been exercised for this branch.
+connect to a database or CAS. Use test data for browser checks that submit forms.
