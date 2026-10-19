@@ -100,7 +100,7 @@ To run without Vite, build the frontend and omit the development launch profile:
 ```sh
 npm --prefix client ci
 npm --prefix client run build
-dotnet run --project Purchasing.Mvc --no-launch-profile -- --environment Development --urls http://localhost:44395
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project Purchasing.Mvc --no-launch-profile --urls http://localhost:44395
 ```
 
 Alternatively set `Vite:UseDevServer=false` in a local IDE launch configuration.
