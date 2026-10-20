@@ -37,6 +37,9 @@ using Purchasing.Core.Models.Configuration;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Infrastructure.Vite;
 using Purchasing.Mvc.Infrastructure.ModernUi;
+using UCD.Rosetta.Client.Core;
+using UCD.Rosetta.Client.Core.Extensions;
+using IClient = UCD.Rosetta.Client.Generated.IClient;
 
 namespace Purchasing.Mvc
 {
@@ -54,7 +57,7 @@ namespace Purchasing.Mvc
             ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
             NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Approval).Assembly);
             container.Install(
-                new ComponentInstaller());
+                new ComponentInstaller(Configuration.GetValue<bool>("RosettaDirectorySearch:Enabled")));
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -128,6 +131,12 @@ namespace Purchasing.Mvc
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IReportService, ReportService>();
+
+            if (Configuration.GetValue<bool>("RosettaDirectorySearch:Enabled"))
+            {
+                services.AddRosettaClient(options => Configuration.GetSection("RosettaClient").Bind(options));
+                services.AddSingleton<IClient>(provider => provider.GetRequiredService<RosettaClient>().Api);
+            }
 
             services.Configure<LDAPSettings>(Configuration);
             services.Configure<SendGridSettings>(Configuration);

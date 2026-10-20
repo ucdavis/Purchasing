@@ -17,6 +17,13 @@ namespace Purchasing.Mvc
 {
     public class ComponentInstaller : IWindsorInstaller
     {
+        private readonly bool _useRosettaDirectorySearch;
+
+        public ComponentInstaller(bool useRosettaDirectorySearch = false)
+        {
+            _useRosettaDirectorySearch = useRosettaDirectorySearch;
+        }
+
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             AddGenericRepositoriesTo(container);
@@ -51,7 +58,14 @@ namespace Purchasing.Mvc
             container.Register(Component.For<IServerLink>().ImplementedBy<ServerLink>().Named("serverLink"));
 
             container.Register(Component.For<IOrderService>().ImplementedBy<OrderService>().Named("orderService"));
-            container.Register(Component.For<IDirectorySearchService>().ImplementedBy<IetWsDirectorySearchService>().Named("directorySearch"));
+            if (_useRosettaDirectorySearch)
+            {
+                container.Register(Component.For<IDirectorySearchService>().ImplementedBy<RosettaDirectorySearchService>().Named("directorySearch"));
+            }
+            else
+            {
+                container.Register(Component.For<IDirectorySearchService>().ImplementedBy<IetWsDirectorySearchService>().Named("directorySearch"));
+            }
             //container.Register(Component.For<IDirectorySearchService>().ImplementedBy<AzureDirectorySearchService>().Named("directorySearch"));
             //container.Register(Component.For<IDirectorySearchService>().ImplementedBy<DirectorySearchService>().Named("directorySearch"));
             container.Register(Component.For<IInterceptor>().ImplementedBy<AuditInterceptor>().Named("audit"));
