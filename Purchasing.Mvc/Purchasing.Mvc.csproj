@@ -19,7 +19,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
-    <AssemblyVersion>2.1.0.1</AssemblyVersion>
+    <AssemblyVersion>2.1.0.2</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -93,6 +93,7 @@
     <PackageReference Include="Castle.Windsor.MsDependencyInjection" Version="6.0.0" />
     <PackageReference Include="AspNetCore.Security.CAS" Version="2.0.5" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.30.0" />
+    <PackageReference Include="UCD.Rosetta.Client" Version="1.0.6" />
   </ItemGroup>
 
   <Target Name="BundleMinify" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' ">
@@ -106,16 +107,11 @@
     <!-- Publish the fresh Vite build explicitly, never a stale discovered hash. -->
     <Content Remove="wwwroot/modern/**" />
     <Watch Remove="wwwroot/modern/**" />
-    <None Include="../client/**" Exclude="../client/node_modules/**"
-          Link="Client/%(RecursiveDir)%(Filename)%(Extension)"
-          CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+    <None Include="../client/**" Exclude="../client/node_modules/**" Link="Client/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
     <UpToDateCheckInput Include="$(FrontendRoot)package.json;$(FrontendRoot)package-lock.json" />
     <UpToDateCheckOutput Include="$(FrontendRoot)node_modules/.purchasing-restore" />
   </ItemGroup>
-  <Target Name="RestoreFrontend" BeforeTargets="Build"
-          Condition="'$(DesignTimeBuild)' != 'true'"
-          Inputs="$(FrontendRoot)package.json;$(FrontendRoot)package-lock.json"
-          Outputs="$(FrontendRoot)node_modules/.purchasing-restore">
+  <Target Name="RestoreFrontend" BeforeTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'" Inputs="$(FrontendRoot)package.json;$(FrontendRoot)package-lock.json" Outputs="$(FrontendRoot)node_modules/.purchasing-restore">
     <Exec WorkingDirectory="$(FrontendRoot)" Command="npm ci" />
     <Touch Files="$(FrontendRoot)node_modules/.purchasing-restore" AlwaysCreate="true" />
   </Target>
