@@ -110,10 +110,11 @@ namespace Purchasing.Tests.ControllerTests
             fixture.WriteServerScript(ignoreInputEnd: true);
             using var server = fixture.CreateServer();
             await server.StartAsync(CancellationToken.None);
+            using var child = Process.GetProcessById(int.Parse(File.ReadAllText(fixture.PidFile)));
 
             await server.StopAsync(CancellationToken.None);
 
-            await fixture.AssertProcessExited();
+            Assert.IsTrue(child.HasExited, "StopAsync must wait for the forced termination to finish.");
             fixture.AssertPortAvailable();
             fixture.Lifetime.Verify(x => x.StopApplication(), Times.Never);
         }
@@ -215,12 +216,29 @@ namespace Purchasing.Tests.ControllerTests
                     {
                         using var process = Process.GetProcessById(int.Parse(File.ReadAllText(PidFile)));
                         if (!process.HasExited) process.Kill(entireProcessTree: true);
-                        process.WaitForExit(5000);
+                        if (!process.WaitForExit(5000))
+                            throw new TimeoutException("The test Vite process did not exit during cleanup.");
                     }
                     catch (ArgumentException) { }
                     catch (InvalidOperationException) { }
                 }
-                Directory.Delete(_root, recursive: true);
+                var cleanup = Stopwatch.StartNew();
+                while (true)
+                {
+                    try
+                    {
+                        Directory.Delete(_root, recursive: true);
+                        break;
+                    }
+                    catch (IOException exception) when (
+                        OperatingSystem.IsWindows() &&
+                        ((exception.HResult & 0xffff) == 32 || (exception.HResult & 0xffff) == 33) &&
+                        cleanup.Elapsed < TimeSpan.FromSeconds(5))
+                    {
+                        // Windows can briefly retain a directory lock after the child exits.
+                        Thread.Sleep(100);
+                    }
+                }
             }
         }
     }
