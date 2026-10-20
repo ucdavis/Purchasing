@@ -110,12 +110,97 @@ namespace Purchasing.Tests.ControllerTests
             fixture.WriteServerScript(ignoreInputEnd: true);
             using var server = fixture.CreateServer();
             await server.StartAsync(CancellationToken.None);
+            using var child = Process.GetProcessById(int.Parse(File.ReadAllText(fixture.PidFile)));
 
             await server.StopAsync(CancellationToken.None);
 
-            await fixture.AssertProcessExited();
+            Assert.IsTrue(child.HasExited, "StopAsync must wait for the forced termination to finish.");
             fixture.AssertPortAvailable();
             fixture.Lifetime.Verify(x => x.StopApplication(), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task CleanupRetriesUntilATransientWindowsSharingLockIsReleased()
+        {
+            if (!OperatingSystem.IsWindows()) Assert.Inconclusive("Requires Windows file-sharing semantics.");
+            var fixture = new ServerFixture();
+            var lockedPath = Path.Combine(fixture.ClientDirectory, "locked.txt");
+            var heldFile = new FileStream(lockedPath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var cleanup = Task.Run(() =>
+            {
+                started.TrySetResult();
+                fixture.Dispose();
+            });
+            try
+            {
+                await started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                await Task.Delay(250);
+                Assert.IsFalse(cleanup.IsCompleted, "Cleanup must retry while the file remains locked.");
+
+                heldFile.Dispose();
+                await cleanup.WaitAsync(TimeSpan.FromSeconds(6));
+
+                Assert.IsFalse(Directory.Exists(fixture.ClientDirectory));
+            }
+            finally
+            {
+                heldFile.Dispose();
+                try { await cleanup.WaitAsync(TimeSpan.FromSeconds(6)); }
+                finally
+                {
+                    if (Directory.Exists(fixture.ClientDirectory)) fixture.Dispose();
+                }
+            }
+        }
+
+        [TestMethod]
+        public void CleanupRetainsPersistentWindowsSharingLockFailureAfterFiveSeconds()
+        {
+            if (!OperatingSystem.IsWindows()) Assert.Inconclusive("Requires Windows file-sharing semantics.");
+            var fixture = new ServerFixture();
+            var lockedPath = Path.Combine(fixture.ClientDirectory, "locked.txt");
+            var heldFile = new FileStream(lockedPath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            try
+            {
+                var elapsed = Stopwatch.StartNew();
+                var exception = Assert.ThrowsException<IOException>(() => fixture.Dispose());
+                elapsed.Stop();
+
+                Assert.AreEqual(32, exception.HResult & 0xffff, "The original sharing violation must be retained.");
+                Assert.IsTrue(elapsed.Elapsed >= TimeSpan.FromSeconds(5), "Cleanup must allow the retry window.");
+                Assert.IsTrue(elapsed.Elapsed < TimeSpan.FromSeconds(7), "Cleanup must stop retrying after five seconds, with scheduling tolerance.");
+                Assert.IsTrue(File.Exists(lockedPath), "Cleanup must not report success while the file remains locked.");
+            }
+            finally
+            {
+                heldFile.Dispose();
+                fixture.Dispose();
+            }
+        }
+
+        [TestMethod]
+        public void CleanupDoesNotRetryWindowsAccessDeniedErrors()
+        {
+            if (!OperatingSystem.IsWindows()) Assert.Inconclusive("Requires Windows read-only-file deletion semantics.");
+            var fixture = new ServerFixture();
+            var readOnlyPath = Path.Combine(fixture.ClientDirectory, "read-only.txt");
+            File.WriteAllText(readOnlyPath, "Cleanup must preserve this failure.");
+            File.SetAttributes(readOnlyPath, FileAttributes.ReadOnly);
+            try
+            {
+                var elapsed = Stopwatch.StartNew();
+                Assert.ThrowsException<UnauthorizedAccessException>(() => fixture.Dispose());
+                elapsed.Stop();
+
+                Assert.IsTrue(elapsed.Elapsed < TimeSpan.FromSeconds(4), "Access-denied errors must fail without the five-second retry window.");
+                Assert.IsTrue(File.Exists(readOnlyPath));
+            }
+            finally
+            {
+                File.SetAttributes(readOnlyPath, FileAttributes.Normal);
+                fixture.Dispose();
+            }
         }
 
         [DataTestMethod]
@@ -215,12 +300,29 @@ namespace Purchasing.Tests.ControllerTests
                     {
                         using var process = Process.GetProcessById(int.Parse(File.ReadAllText(PidFile)));
                         if (!process.HasExited) process.Kill(entireProcessTree: true);
-                        process.WaitForExit(5000);
+                        if (!process.WaitForExit(5000))
+                            throw new TimeoutException("The test Vite process did not exit during cleanup.");
                     }
                     catch (ArgumentException) { }
                     catch (InvalidOperationException) { }
                 }
-                Directory.Delete(_root, recursive: true);
+                var cleanup = Stopwatch.StartNew();
+                while (true)
+                {
+                    try
+                    {
+                        Directory.Delete(_root, recursive: true);
+                        break;
+                    }
+                    catch (IOException exception) when (
+                        OperatingSystem.IsWindows() &&
+                        ((exception.HResult & 0xffff) == 32 || (exception.HResult & 0xffff) == 33) &&
+                        cleanup.Elapsed < TimeSpan.FromSeconds(5))
+                    {
+                        // Windows can briefly retain a directory lock after the child exits.
+                        Thread.Sleep(100);
+                    }
+                }
             }
         }
     }
