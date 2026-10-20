@@ -81,6 +81,10 @@ listening before starting the application, and forwards frontend output to the
 application log. Node runs Vite in process and watches its connection to .NET, so
 an abrupt debugger stop also closes the server.
 
+After requesting forced termination, the host waits up to five seconds for its
+Node process to exit before completing shutdown. If that wait expires, shutdown
+raises a timeout error.
+
 An occupied Vite port or startup timeout fails application startup with a useful
 error. The launcher does not stop or adopt an existing server on that port.
 Stop the other application or choose another port using `Vite:DevServerUrl`.
