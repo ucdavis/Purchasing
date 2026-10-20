@@ -91,12 +91,14 @@ namespace Purchasing.Tests.ControllerTests
         public async Task UnexpectedExitStopsTheApplicationInsteadOfLeavingBrokenAssetLinks()
         {
             using var fixture = new ServerFixture();
-            fixture.WriteServerScript("console.log('PURCHASING_VITE_READY:' + process.env.PURCHASING_VITE_TOKEN); setTimeout(() => process.exit(43), 250);");
+            fixture.WriteServerScript();
             var stopped = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             fixture.Lifetime.Setup(x => x.StopApplication()).Callback(() => stopped.TrySetResult());
             using var server = fixture.CreateServer();
 
             await server.StartAsync(CancellationToken.None);
+            using var child = Process.GetProcessById(int.Parse(File.ReadAllText(fixture.PidFile)));
+            child.Kill(entireProcessTree: true);
             await stopped.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
             fixture.Lifetime.Verify(x => x.StopApplication(), Times.Once);
