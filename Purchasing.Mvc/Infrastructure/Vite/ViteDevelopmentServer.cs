@@ -138,7 +138,13 @@ namespace Purchasing.Mvc.Infrastructure.Vite
         {
             try
             {
-                if (_process != null && !_process.HasExited) _process.Kill(entireProcessTree: true);
+                if (_process != null && !_process.HasExited)
+                {
+                    _process.Kill(entireProcessTree: true);
+                    // Kill requests termination; wait before releasing the process or returning from shutdown.
+                    if (!_process.WaitForExit(5000))
+                        throw new TimeoutException("The owned Vite process did not exit after it was killed.");
+                }
             }
             catch (InvalidOperationException) { /* Already exited. */ }
             catch (Win32Exception exception)
