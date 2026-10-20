@@ -53,6 +53,7 @@ namespace Purchasing.Mvc
             catch (Exception ex)
             {
                 Log.Fatal(ex, "Host terminated unexpectedly");
+                Environment.ExitCode = 1;
             }
             finally
             {

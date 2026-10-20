@@ -79,15 +79,21 @@ You'll want to update your appsettings.Development.json file with all of the con
 
 ## Running the app
 
-Just hit F5 (or Ctrl+F5) in VSCode and it will build the project and start the app. 
+Install Node.js 22.18 or newer as well as the .NET SDK. From the repository root:
 
-Alternately, you can also navigate to the "Purchasing.Mvc" folder and run the following command:
-
-```bash
-dotnet watch
+```sh
+npm start
 ```
 
-This will start the application on `https://localhost:44396` using your ssl cert.
+This starts `dotnet watch` at `http://localhost:44395`; Purchasing starts Vite for
+frontend hot reload. Debug and Release builds install client dependencies
+automatically on first checkout and after package changes. No separate npm
+install is required.
+
+In Visual Studio, set Purchasing.Mvc as the startup project and press F5 using
+the Purchasing.Mvc or IIS Express profile. The existing HTTPS application URLs
+remain available. The development VS Code launch also starts Vite. See
+[frontend development](docs/FRONTEND.md) for configuration and built-asset mode.
 
 ### Local login
 
@@ -128,3 +134,12 @@ explicitly; the local-login preference still comes from your user secrets.
 
 See [the upgrade and manual testing plan](docs/NET10-UPGRADE.md) for the eight
 AutoMapper replacements, the combined acceptance checklist, and deployment checks.
+
+## Modern frontend
+
+Away Status has an optional Tailwind/daisyUI Razor view with a Cally date picker.
+The legacy interface remains the default. Set `ModernUi:Enabled` to true and add
+login IDs to `ModernUi:AllowedLogins` to select the modern view for those users.
+Both views share the same controller; unconverted pages retain their existing
+views and layouts. See [frontend development and migration](docs/FRONTEND.md) for
+configuration examples, Vite setup, shared styles, optional React, and publishing.

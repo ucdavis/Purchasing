@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="purchasing">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Purchasing - @ViewBag.Title</title>
+    <link rel="author" type="text/plain" href="@Url.Content("~/humans.txt")" />
+    <link rel="icon" href="@Url.Content("~/favicon.ico")" />
+    <vite-entry src="src/styles.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GHQXSM337H"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-GHQXSM337H');
+    </script>
+</head>
+<body class="flex min-h-screen flex-col bg-base-200 text-base-content">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-base-100 focus:p-3">
+        Skip to main content
+    </a>
+
+    @await Component.InvokeAsync("ServiceMessages", new { modern = true })
+    @await Html.PartialAsync("_ModernNavigation")
+
+    <main id="main-content" tabindex="-1" class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        @{
+            var errorMessage = TempData["ErrorMessage"] as string;
+            var statusMessage = TempData["Message"] as string;
+        }
+        @if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div id="error-message" role="alert" class="alert alert-error mb-6">@errorMessage</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(statusMessage))
+        {
+            <div id="status-message" role="status" class="alert alert-success mb-6">@statusMessage</div>
+        }
+
+        <header class="mb-8 flex flex-wrap items-start justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-semibold tracking-tight text-primary">@ViewBag.Title</h1>
+                @if (!string.IsNullOrWhiteSpace(ViewBag.SubTitle as string))
+                {
+                    <p class="mt-2 text-base-content/70">@ViewBag.SubTitle</p>
+                }
+            </div>
+            @if (IsSectionDefined("SubNav"))
+            {
+                <nav aria-label="Page navigation">
+                    @await RenderSectionAsync("SubNav", required: false)
+                </nav>
+            }
+        </header>
+
+        @RenderBody()
+    </main>
+
+    <footer class="border-t border-base-300 bg-base-100">
+        <div class="mx-auto max-w-7xl px-4 py-6 text-sm text-base-content/70 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <nav aria-label="Footer navigation" class="flex gap-5">
+                    <a class="link link-hover" href="@Url.Action("Landing", "Home")">Home</a>
+                    <a class="link link-hover" href="https://caeshelp.ucdavis.edu/?appname=OPP" target="_blank" rel="noopener">Help</a>
+                </nav>
+                <span>Version #@ViewBag.Version</span>
+            </div>
+            <p class="mt-4">
+                Developed By <a class="link link-hover" href="@Url.Content("~/humans.txt")" target="_blank" rel="noopener">A Team Of Programmers Across UC Davis</a>
+            </p>
+            <p class="mt-1">Copyright The Regents of the University of California, Davis campus, 2005-@(DateTime.UtcNow.Date.ToString("yy")). All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

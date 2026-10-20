@@ -1,0 +1,13 @@
+@model IEnumerable<Purchasing.Core.Domain.ServiceMessage>
+
+@if (Model != null && Model.Any())
+{
+    <section id="system-messages" aria-label="Service announcements" class="bg-base-100">
+        <div class="mx-auto grid max-w-7xl gap-3 px-4 py-4 sm:px-6 lg:px-8">
+            @foreach (var message in Model.OrderByDescending(message => message.Critical))
+            {
+                <p role="@(message.Critical ? "alert" : "status")" class="alert @(message.Critical ? "alert-error" : "alert-info")">@message.Message</p>
+            }
+        </div>
+    </section>
+}

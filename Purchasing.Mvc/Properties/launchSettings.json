@@ -12,16 +12,27 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Vite__UseDevServer": "true"
       }
     },
     "Purchasing.Mvc": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Vite__UseDevServer": "true"
       },
       "applicationUrl": "https://localhost:44396;http://localhost:44395"
+    },
+    "http-cli": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Vite__UseDevServer": "true"
+      },
+      "applicationUrl": "http://localhost:44395"
     }
   }
 }

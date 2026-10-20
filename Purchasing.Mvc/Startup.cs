@@ -35,6 +35,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Purchasing.Mvc.Attributes;
 using Purchasing.Core.Models.Configuration;
 using Purchasing.Core.Services;
+using Purchasing.Mvc.Infrastructure.Vite;
+using Purchasing.Mvc.Infrastructure.ModernUi;
 
 namespace Purchasing.Mvc
 {
@@ -57,6 +59,8 @@ namespace Purchasing.Mvc
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHostedService<ViteDevelopmentServer>();
+
             services.AddMvc(options =>
             {
                 // place EntityModelBinderProvider just before the ComplexObjectModelBinderProvider
@@ -74,7 +78,8 @@ namespace Purchasing.Mvc
                 options.SerializerSettings.ContractResolver = new EntityJsonContractResolver();
             })
             // Allow standard Windsor behavior for services injected into controllers...
-            .AddControllersAsServices();
+            .AddControllersAsServices()
+            .AddRazorOptions(options => options.ViewLocationExpanders.Add(new ModernUiViewLocationExpander()));
 
 
             // add cas auth backed by a cookie signin scheme
