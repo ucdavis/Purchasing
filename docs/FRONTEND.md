@@ -1,10 +1,10 @@
 # Frontend assets and gradual page migration
 
-Away Status has both legacy and modern Razor views. Configuration selects the
-modern view for allowed users; the default is the legacy interface. Other pages
-still use `_Layout.cshtml` and their existing assets. Both Away Status views use
-the same controller and form handling. React is available for future components
-but is not loaded by Away Status.
+Away Status and Order Review have both legacy and modern Razor views. Configuration
+selects the modern view for allowed users; the default is the legacy interface.
+Other pages still use `_Layout.cshtml` and their existing assets. Both interfaces
+use the same controllers and form handling. React is available for future
+components but is not loaded by these pages.
 
 ## Select the interface
 
@@ -120,11 +120,19 @@ Check both behaviors when upgrading Vite or Tailwind.
 
 ## Share styles and markup
 
-`client/src/styles.css` is the common CSS entry. It contains the Tailwind import,
-daisyUI configuration, and the `purchasing` light theme. Change shared colors,
-radii, and component defaults there. It scans all Razor views for class names;
-scanning a view does not load CSS into that view. Use complete class names in Razor
-and React so Tailwind can discover them.
+`client/src/styles.css` is the common CSS entry. It imports Tailwind and
+[`@ucdavis/gunrock-tailwind`](https://www.npmjs.com/package/@ucdavis/gunrock-tailwind)
+and configures daisyUI. `_ModernLayout.cshtml` selects `data-theme="gunrock"`.
+Gunrock supplies the shared UC Davis palette, Proxima Nova fonts, radii, and
+component defaults. Fonts load from the UC Davis CDN, with system-font fallbacks.
+Use its semantic tokens and Tailwind utilities instead of duplicating brand values.
+The small local theme extension uses dark text on bright component backgrounds
+for readable badges and alerts. Standalone validation text uses the error color;
+`*-content` colors belong on their matching colored backgrounds.
+
+The CSS entry scans all Razor views for class names; scanning a view does not load
+CSS into that view. Use complete class names in Razor and React so Tailwind can
+discover them.
 
 `_ModernLayout.cshtml` loads that CSS independently:
 
@@ -163,6 +171,20 @@ The modern layout renders the page h1 from `ViewBag.Title`, optional subtitle, a
 optional `SubNav`. It does not load jQuery or legacy CSS. Include any retained
 widget's dependencies explicitly and check them against the shared theme. Avoid
 loading the complete Bootstrap and Tailwind stylesheets together.
+
+Order Review adds a request summary, section links, responsive cards and tables
+under `Views/Modern/Order/Review.cshtml`. It shares the existing `_Review*` partials,
+permissions, forms and review handlers. Its optional `Styles` section loads only
+the retained widget styles before the modern theme. Its `Scripts` section loads
+the required jQuery widgets explicitly, without the legacy global startup or site
+stylesheet. `SkipNavigation` disables the legacy floating navigation for this view;
+the original view keeps its existing navigation. Review styles are scoped to
+`.modern-order-review` and `.modern-order-review-dialog` in the shared CSS entry.
+
+To preview it, enable the same Modern UI settings and open an existing order's
+Review link. Check requester, approver and purchaser actions, completed orders,
+account warnings, notes, attachments, favorites, print variants and a narrow
+viewport. Unlisted users continue to see `Views/Order/Review.cshtml`.
 
 ## Calendar and forms
 
