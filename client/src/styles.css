@@ -1,44 +1,21 @@
 @import "tailwindcss";
-@source "../../Purchasing.Mvc/Views/**/*.cshtml";
 
 @plugin "daisyui" {
   themes: false;
 }
 
-/* Shared by modern Razor pages and future React components. */
+@import "@ucdavis/gunrock-tailwind/imports.css";
+@source "../../Purchasing.Mvc/Views/**/*.cshtml";
+
+/* Keep small text readable on Gunrock's brighter component backgrounds. */
 @plugin "daisyui/theme" {
-  name: "purchasing";
-  default: true;
-  prefersdark: false;
+  name: "gunrock";
   color-scheme: light;
-  --color-base-100: #ffffff;
-  --color-base-200: #f4f6f8;
-  --color-base-300: #d9e0e7;
-  --color-base-content: #1c3042;
-  --color-primary: #022851;
-  --color-primary-content: #ffffff;
-  --color-secondary: #ffbf00;
-  --color-secondary-content: #022851;
-  --color-accent: #087e8b;
-  --color-accent-content: #ffffff;
-  --color-neutral: #233747;
-  --color-neutral-content: #ffffff;
-  --color-info: #dceef9;
-  --color-info-content: #154365;
-  --color-success: #dcefe2;
-  --color-success-content: #18552c;
-  --color-warning: #fff0c2;
-  --color-warning-content: #644400;
-  --color-error: #fbe3e3;
-  --color-error-content: #8f2020;
-  --radius-selector: 0.375rem;
-  --radius-field: 0.375rem;
-  --radius-box: 0.75rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 1px;
-  --depth: 0;
-  --noise: 0;
+  --color-secondary-content: var(--color-dark-font);
+  --color-accent-content: var(--color-dark-font);
+  --color-info-content: var(--color-dark-font);
+  --color-success-content: var(--color-dark-font);
+  --color-warning-content: var(--color-dark-font);
 }
 
 @layer base {
@@ -50,10 +27,10 @@
 @layer components {
   .field-validation-error,
   .validation-summary-errors {
-    color: var(--color-error-content);
+    color: var(--color-error);
   }
   .input-validation-error {
-    border-color: var(--color-error-content);
+    border-color: var(--color-error);
   }
   .validation-summary-valid,
   .field-validation-valid {
@@ -176,11 +153,11 @@
 }
 
 .modern-order-review .green {
-  color: var(--color-success-content);
+  color: var(--color-ucd-redwood);
 }
 
 .modern-order-review .red {
-  color: var(--color-error-content);
+  color: var(--color-error);
 }
 
 .modern-order-review a:not(.btn):not(.ui-button):not(.ui-icon) {
@@ -231,15 +208,15 @@
 .modern-order-review-dialog .ui-button:hover,
 .modern-order-review .qq-upload-button-hover {
   background: var(--color-neutral);
-  color: var(--color-primary-content);
+  color: var(--color-neutral-content);
 }
 
 .modern-order-review #deny-order,
 .modern-order-review #cancel-order,
 .modern-order-review #cancel-completed-order {
-  border-color: var(--color-error-content);
+  border-color: var(--color-error);
   background: var(--color-base-100);
-  color: var(--color-error-content);
+  color: var(--color-error);
 }
 
 .modern-order-review #notes > header .col2 {
@@ -416,6 +393,10 @@
   margin: 1rem 1.5rem 0;
   background: var(--color-info);
   color: var(--color-info-content);
+}
+
+.modern-order-review :is(#error-message, #error-message-account, #warning-message-account, #status-message) a {
+  color: inherit;
 }
 
 .modern-order-review-dialog.ui-dialog {

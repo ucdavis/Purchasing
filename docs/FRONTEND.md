@@ -120,11 +120,19 @@ Check both behaviors when upgrading Vite or Tailwind.
 
 ## Share styles and markup
 
-`client/src/styles.css` is the common CSS entry. It contains the Tailwind import,
-daisyUI configuration, and the `purchasing` light theme. Change shared colors,
-radii, and component defaults there. It scans all Razor views for class names;
-scanning a view does not load CSS into that view. Use complete class names in Razor
-and React so Tailwind can discover them.
+`client/src/styles.css` is the common CSS entry. It imports Tailwind and
+[`@ucdavis/gunrock-tailwind`](https://www.npmjs.com/package/@ucdavis/gunrock-tailwind)
+and configures daisyUI. `_ModernLayout.cshtml` selects `data-theme="gunrock"`.
+Gunrock supplies the shared UC Davis palette, Proxima Nova fonts, radii, and
+component defaults. Fonts load from the UC Davis CDN, with system-font fallbacks.
+Use its semantic tokens and Tailwind utilities instead of duplicating brand values.
+The small local theme extension uses dark text on bright component backgrounds
+for readable badges and alerts. Standalone validation text uses the error color;
+`*-content` colors belong on their matching colored backgrounds.
+
+The CSS entry scans all Razor views for class names; scanning a view does not load
+CSS into that view. Use complete class names in Razor and React so Tailwind can
+discover them.
 
 `_ModernLayout.cshtml` loads that CSS independently:
 
