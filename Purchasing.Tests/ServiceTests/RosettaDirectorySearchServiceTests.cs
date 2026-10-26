@@ -256,6 +256,7 @@ namespace Purchasing.Tests.ServiceTests
             // Startup configures NHibernate mappings but these tests never open a session.
             configuration["ConnectionStrings:MainDB"] = "Server=localhost;Database=Unused;Integrated Security=true";
             configuration["MainDB:Schema"] = "dbo";
+            configuration["Search:Bonsai:Url"] = "http://localhost:9200";
             var services = new ServiceCollection();
             services.AddSingleton(configuration);
             new Startup(configuration).ConfigureServices(services);

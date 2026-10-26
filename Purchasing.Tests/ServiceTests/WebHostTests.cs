@@ -30,6 +30,7 @@ namespace Purchasing.Tests.ServiceTests
                         ["CasUrl"] = "https://cas.example.test/cas",
                         ["ConnectionStrings:MainDB"] = "Server=127.0.0.1;Database=Unused;User ID=unused;Password=unused;Connect Timeout=1",
                         ["MainDB:Schema"] = "dbo",
+                        ["Search:Bonsai:Url"] = "http://localhost:9200",
                         ["ElasticApm:Enabled"] = "false",
                         ["LocalLogin:Enabled"] = "true"
                     });
