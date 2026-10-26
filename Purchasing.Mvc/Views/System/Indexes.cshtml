@@ -1,4 +1,4 @@
-﻿@model Dictionary<string,DateTime>
+@model Dictionary<string,DateTime>
 
 @{
 	ViewBag.Title = "Index Modification Info";
@@ -27,7 +27,7 @@
         {
             <tr>
                 <td>@index.Key</td>
-                <td>@ViewBag.ModifiedDates[index.Key]</td>
+                <td>Not tracked</td>
                 <td>@ViewBag.NumRecords[index.Key]</td>
                 <td>@Html.ActionLink("Overwrite Index", "Overwrite", new { index = index.Key})</td>
             </tr>

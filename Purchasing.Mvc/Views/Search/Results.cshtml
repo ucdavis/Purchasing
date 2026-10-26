@@ -1,4 +1,4 @@
-﻿@model Purchasing.Mvc.Controllers.SearchResultModel
+@model Purchasing.Mvc.Controllers.SearchResultModel
 
 @{
     ViewBag.Title = "Search Results";
@@ -38,6 +38,12 @@
     <input type="search" id="query" name="q" placeholder="Enter search term" value="@Model.Query" class="searchbox" />
     <input type="submit" class="button searchbutton" value="Go!"/>
 }
+@if (Model.IsUnavailable)
+{
+    <p class="alert alert-danger" role="alert">Search is temporarily unavailable. Please try again.</p>
+}
+else
+{
 <section class="display-form">
 <header class="ui-corner-top ui-widget-header">Search Results</header>
 <div class="section-text">
@@ -185,3 +191,4 @@
         });
     });
 </script>
+}

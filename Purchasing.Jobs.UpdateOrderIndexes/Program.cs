@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Ninject;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
@@ -18,14 +18,16 @@ namespace Purchasing.Jobs.UpdateOrderIndexes
             try
             {
                 Log.Information("Updating Order Indexes");
-                indexService.UpdateOrderIndexes();
-                indexService.UpdateCommentsIndex();
+                IndexingFailures.RunAll(
+                    indexService.UpdateOrderIndexes,
+                    indexService.UpdateCommentsIndex);
 
                 Log.Information("Order indexes updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "FAILED: Indexes failed because {0}", ex.Message);
+                throw; // Surface the failure only after every operation and target has been attempted.
             }
         }
     }

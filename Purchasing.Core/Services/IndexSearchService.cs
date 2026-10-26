@@ -1,306 +1,153 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using Nest;
+using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Queries;
-
 
 namespace Purchasing.Core.Services
 {
     public class ElasticSearchService : ISearchService
     {
-        private readonly IIndexService _indexService;
-        private ElasticClient _client;
-        private const int MaxSeachResults = 1000;
+        private readonly IndexBackend _backend;
+        public ElasticSearchService(SearchBackendSet backends) { _backend = backends.Reader; }
 
-
-        public ElasticSearchService(IIndexService indexService)
+        private static JObject Permissions(int[] ids) => JObject.FromObject(new
         {
-            _indexService = indexService;
-            _client = indexService.GetIndexClient();
+            constant_score = new { filter = new { terms = new { orderId = ids } } }
+        });
 
+        private List<T> Search<T>(Indexes index, string term, int[] allowedIds = null, string sort = null, int size = 1000)
+        {
+            if (allowedIds != null && allowedIds.Length == 0) return new List<T>();
+            var query = new JObject { ["size"] = size };
+            if (term != null) query["query"] = JObject.FromObject(new { query_string = new { query = term } });
+            if (allowedIds != null) query["post_filter"] = Permissions(allowedIds);
+            if (sort != null) query["sort"] = new JArray(new JObject { [sort] = "desc" });
+            return IndexBackend.Hits<T>(_backend.Search(index, query));
         }
 
-        public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds)
+        public IList<SearchResults.OrderResult> SearchOrders(string searchTerm, int[] allowedIds) =>
+            Search<OrderHistory>(Indexes.OrderHistory, searchTerm, allowedIds, "lastActionDate").Select(SearchResults.OrderResult.FromHistory).ToList();
+        public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds) =>
+            Search<SearchResults.LineResult>(Indexes.LineItems, searchTerm, allowedIds, "orderId");
+        public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, int[] allowedIds) =>
+            Search<SearchResults.CustomFieldResult>(Indexes.CustomAnswers, searchTerm, allowedIds, "orderId");
+        public IList<SearchResults.CommentResult> SearchComments(string searchTerm, int[] allowedIds) =>
+            Search<SearchResults.CommentResult>(Indexes.Comments, searchTerm, allowedIds, "dateCreated");
+        public IList<SearchResults.CommentResult> GetLatestComments(int count, int[] allowedIds) =>
+            Search<SearchResults.CommentResult>(Indexes.Comments, null, allowedIds, "dateCreated", count);
+        public IList<IdAndName> SearchCommodities(string searchTerm) =>
+            Search<Commodity>(Indexes.Commodities, searchTerm, size: 10).Select(x => new IdAndName(x.Id, x.Name)).ToList();
+        public IList<IdAndName> SearchVendors(string searchTerm) =>
+            Search<Vendor>(Indexes.Vendors, searchTerm, size: 10).Select(x => new IdAndName(x.Id, x.Name)).ToList();
+        public IList<IdAndName> SearchAccounts(string searchTerm) =>
+            Search<Account>(Indexes.Accounts, searchTerm, size: 10).Select(x => new IdAndName(x.Id, x.Name)).ToList();
+        public IList<IdAndName> SearchBuildings(string searchTerm) =>
+            Search<Building>(Indexes.Buildings, searchTerm, size: 10).Select(x => new IdAndName(x.Id, x.BuildingName)).ToList();
+
+        public IndexedList<OrderHistory> GetOrderHistory(int[] orderIds, DateTime? startDate, DateTime? endDate,
+            DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId)
         {
-            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
+            if (orderIds.Length == 0) return new IndexedList<OrderHistory> { Results = new List<OrderHistory>() };
+            var filters = new JArray();
+            if (startLastActionDate.HasValue)
+                filters.Add(Range("lastActionDate", "gte", startLastActionDate.Value, "lte", endLastActionDate ?? DateTime.UtcNow.AddDays(1)));
+            if (startDate.HasValue) filters.Add(Range("dateCreated", "gte", startDate.Value));
+            if (endDate.HasValue) filters.Add(Range("dateCreated", "lte", endDate.Value));
+            if (!string.IsNullOrWhiteSpace(statusId))
+                filters.Add(JObject.FromObject(new { term = new { statusId = new { value = statusId.ToLowerInvariant() } } }));
+            var query = new JObject
             {
-                return new List<SearchResults.OrderResult>();
-            }
-
-            var index = IndexHelper.GetIndexName(Indexes.OrderHistory);
-
-            var results = _client.Search<OrderHistory>(
-                s =>
-                    s.Index(index)
-                        .Query(
-                            q => q.QueryString(qs => qs.Query(searchTerm))
-                        )
-                        .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(allowedIds)))))
-                        .Sort(sort => sort.Descending(d => d.LastActionDate))
-                        .Size(MaxSeachResults));
-
-            return results.Hits.Select(h => SearchResults.OrderResult.FromHistory(h.Source)).ToList();
+                ["query"] = new JObject { ["bool"] = new JObject { ["must"] = filters } },
+                ["post_filter"] = Permissions(orderIds),
+                ["sort"] = new JArray(new JObject { ["lastActionDate"] = "desc" }),
+                ["size"] = Math.Min(orderIds.Length, 10000)
+            };
+            // There is no durable freshness checkpoint. Do not invent a "current as of" date.
+            return new IndexedList<OrderHistory> { Results = IndexBackend.Hits<OrderHistory>(_backend.Search(Indexes.OrderHistory, query)) };
         }
 
-        public IList<SearchResults.LineResult> SearchLineItems(string searchTerm, int[] allowedIds)
+        private static JObject Range(string field, string comparison, DateTime value, string otherComparison = null, DateTime? otherValue = null)
         {
-            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
-            {
-                return new List<SearchResults.LineResult>();
-            }
-
-            var index = IndexHelper.GetIndexName(Indexes.LineItems);
-
-            var results = _client.Search<SearchResults.LineResult>(
-                s =>
-                    s.Index(index)
-                        .Query(
-                            q => q.QueryString(qs => qs.Query(searchTerm))
-                        )
-                        .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(allowedIds)))))
-                        .Sort(sort => sort.Descending(d => d.OrderId))
-                        .Size(MaxSeachResults));
-
-            return results.Hits.Select(h => h.Source).ToList();
+            var bounds = new JObject { [comparison] = value.ToString("O", CultureInfo.InvariantCulture) };
+            if (otherComparison != null) bounds[otherComparison] = otherValue.Value.ToString("O", CultureInfo.InvariantCulture);
+            return new JObject { ["range"] = new JObject { [field] = bounds } };
         }
 
-        public IList<SearchResults.CustomFieldResult> SearchCustomFieldAnswers(string searchTerm, int[] allowedIds)
+        private static JObject WorkgroupQuery(int[] workgroups, string dateField, DateTime after, DateTime before, int size, JObject extra = null)
         {
-            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
-            {
-                return new List<SearchResults.CustomFieldResult>();
-            }
-
-            var index = IndexHelper.GetIndexName(Indexes.CustomAnswers);
-
-            var results = _client.Search<SearchResults.CustomFieldResult>(
-                s =>
-                    s.Index(index)
-                        .Query(
-                            q => q.QueryString(qs => qs.Query(searchTerm))
-                        )
-                        .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(allowedIds)))))
-                        .Sort(sort => sort.Descending(d => d.OrderId))
-                        .Size(MaxSeachResults));
-
-            return results.Hits.Select(h => h.Source).ToList();
-        }
-
-        public IList<SearchResults.CommentResult> SearchComments(string searchTerm, int[] allowedIds)
-        {
-            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
-            {
-                return new List<SearchResults.CommentResult>();
-            }
-
-            var index = IndexHelper.GetIndexName(Indexes.Comments);
-
-            //If we wanted to do this in each method.
-            //if (allowedIds.Length > 30000)
-            //{
-
-
-            //    // We will try to batch this into chunks of 10,000 IDs to avoid ES errors
-            //    var allResults = new List<SearchResults.CommentResult>();
-            //    var batches = (int)Math.Ceiling(allowedIds.Length / 30000.0);
-            //    for (var i = 0; i < batches; i++)
-            //    {
-            //        var batchIds = allowedIds.Skip(i * 30000).Take(30000).ToArray();
-            //        var batchResults = _client.Search<SearchResults.CommentResult>(
-            //            s =>
-            //                s.Index(index)
-            //                    .Query(
-            //                        q => q.QueryString(qs => qs.Query(searchTerm))
-            //                    )
-            //                    .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(batchIds)))))
-            //                    .Sort(sort => sort.Descending(d => d.DateCreated))
-            //                    .Size(MaxSeachResults));
-            //        allResults.AddRange(batchResults.Hits.Select(h => h.Source).ToList());
-            //        if (allResults.Count >= MaxSeachResults)
-            //        {
-            //            break; 
-            //        }
-            //    }
-            //    return allResults.Take(MaxSeachResults).ToList();
-            //}
-
-
-
-            var results = _client.Search<SearchResults.CommentResult>(
-                s =>
-                    s.Index(index)
-                        .Query(
-                            q => q.QueryString(qs => qs.Query(searchTerm))
-                        )
-                        .PostFilter(f=>f.ConstantScore(c=>c.Filter(x=>x.Terms(t=>t.Field(q=>q.OrderId).Terms(allowedIds)))))
-                        .Sort(sort => sort.Descending(d => d.DateCreated))
-                        .Size(MaxSeachResults));
-
-            return results.Hits.Select(h => h.Source).ToList();
-        }
-
-        public IList<SearchResults.CommentResult> GetLatestComments(int count, int[] allowedIds)
-        {
-            if (allowedIds.Length == 0) // no results if you aren't allowed to see anything
-            {
-                return new List<SearchResults.CommentResult>();
-            }
-
-            var index = IndexHelper.GetIndexName(Indexes.Comments);
-
-            var results = _client.Search<SearchResults.CommentResult>(
-                s =>
-                    s.Index(index)
-                        .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(allowedIds)))))
-                        .Sort(sort => sort.Descending(d => d.DateCreated))
-                        .Size(count));
-
-            return results.Hits.Select(h => h.Source).ToList();
-        }
-
-        public IList<IdAndName> SearchCommodities(string searchTerm)
-        {
-            var index = IndexHelper.GetIndexName(Indexes.Commodities);
-
-            var results = _client.Search<Commodity>(
-                s => s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm))));
-
-            return results.Hits.Select(h => new IdAndName(h.Source.Id, h.Source.Name)).ToList();
-        }
-
-        public IList<IdAndName> SearchVendors(string searchTerm)
-        {
-            var index = IndexHelper.GetIndexName(Indexes.Vendors);
-
-            var results = _client.Search<Vendor>(
-                s => s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm))));
-
-            return results.Hits.Select(h => new IdAndName(h.Source.Id, h.Source.Name)).ToList();
-        }
-
-        public IList<IdAndName> SearchAccounts(string searchTerm)
-        {
-            var index = IndexHelper.GetIndexName(Indexes.Accounts);
-
-            var results = _client.Search<Account>(
-                s => s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm))));
-
-            return results.Hits.Select(h => new IdAndName(h.Source.Id, h.Source.Name)).ToList();
-        }
-
-        public IList<IdAndName> SearchBuildings(string searchTerm)
-        {
-            var index = IndexHelper.GetIndexName(Indexes.Buildings);
-
-            var results = _client.Search<Building>(
-                s => s.Index(index).Query(q => q.QueryString(qs => qs.Query(searchTerm))));
-
-            return results.Hits.Select(h => new IdAndName(h.Source.Id, h.Source.BuildingName)).ToList();
+            var filters = new JArray(Range(dateField, "gt", after, "lt", before),
+                JObject.FromObject(new { terms = new { workgroupId = workgroups } }));
+            if (extra != null) filters.Add(extra);
+            return new JObject { ["size"] = size, ["query"] = new JObject { ["bool"] = new JObject { ["filter"] = filters } } };
         }
 
         public IList<OrderHistory> GetOrdersByWorkgroups(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createdBefore, int size = 1000)
         {
-            var index = IndexHelper.GetIndexName(Indexes.OrderHistory);
-            var workgroupIds = workgroups.Select(w => w.Id).ToArray();
-            var results = _client.Search<OrderHistory>(
-                s =>
-                    s.Index(index)
-                        .Size(size)
-                        .Query(f => f.DateRange(r => r.Field(o => o.DateCreated).GreaterThan(createdAfter).LessThan(createdBefore))
-                        && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))
-                        
-                );
-
-            return results.Hits.Select(h => h.Source).ToList();
+            var ids = workgroups.Select(w => w.Id).ToArray();
+            if (ids.Length == 0) return new List<OrderHistory>();
+            return IndexBackend.Hits<OrderHistory>(_backend.Search(Indexes.OrderHistory, WorkgroupQuery(ids, "dateCreated", createdAfter, createdBefore, size)));
         }
 
-        public OrderTrackingAggregation GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups,
-            DateTime createdAfter, DateTime createBefore, int size = 1000)
+        private static JObject Average(string field) => new JObject { ["avg"] = new JObject { ["field"] = field } };
+        private static double? AverageValue(JObject result, string name) => result["aggregations"]?[name]?["value"]?.Value<double?>();
+
+        public OrderTrackingAggregation GetOrderTrackingEntities(IEnumerable<Workgroup> workgroups, DateTime createdAfter, DateTime createBefore, int size = 1000)
         {
-            var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
-            var workgroupIds = workgroups.Select(w => w.Id).ToArray();
-
-            var results = _client.Search<OrderTrackingEntity>(
-                s => s.Index(index)
-                    .Size(size)
-                    .Query(f => f.DateRange(r => r.Field(o => o.OrderCreated).GreaterThan(createdAfter).LessThan(createBefore))
-                                    && f.Term(x => x.IsComplete, true)
-                                    && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))
-                    .Aggregations(
-                        a =>
-                            a.Average("AverageTimeToCompletion", avg => avg.Field(x => x.MinutesToCompletion))
-                                .Average("AverageTimeToRoleComplete", avg => avg.Field(x => x.MinutesToApprove))
-                                .Average("AverageTimeToAccountManagers",
-                                    avg => avg.Field(x => x.MinutesToAccountManagerComplete))
-                                .Average("AverageTimeToPurchaser", avg => avg.Field(x => x.MinutesToPurchaserComplete)))
-                );
-            
-
+            var ids = workgroups.Select(w => w.Id).ToArray();
+            if (ids.Length == 0) return new OrderTrackingAggregation { OrderTrackingEntities = new List<OrderTrackingEntity>() };
+            var query = WorkgroupQuery(ids, "orderCreated", createdAfter, createBefore, size, JObject.FromObject(new { term = new { isComplete = true } }));
+            query["aggs"] = new JObject
+            {
+                ["AverageTimeToCompletion"] = Average("minutesToCompletion"),
+                ["AverageTimeToRoleComplete"] = Average("minutesToApprove"),
+                ["AverageTimeToAccountManagers"] = Average("minutesToAccountManagerComplete"),
+                ["AverageTimeToPurchaser"] = Average("minutesToPurchaserComplete")
+            };
+            var result = _backend.Search(Indexes.OrderTracking, query);
             return new OrderTrackingAggregation
             {
-                OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
-                AverageTimeToAccountManagers = results.Aggregations.Average("AverageTimeToAccountManagers").Value,
-                AverageTimeToApprover = results.Aggregations.Average("AverageTimeToRoleComplete").Value,
-                AverageTimeToCompletion = results.Aggregations.Average("AverageTimeToCompletion").Value,
-                AverageTimeToPurchaser = results.Aggregations.Average("AverageTimeToPurchaser").Value
+                OrderTrackingEntities = IndexBackend.Hits<OrderTrackingEntity>(result),
+                AverageTimeToCompletion = AverageValue(result, "AverageTimeToCompletion"),
+                AverageTimeToApprover = AverageValue(result, "AverageTimeToRoleComplete"),
+                AverageTimeToAccountManagers = AverageValue(result, "AverageTimeToAccountManagers"),
+                AverageTimeToPurchaser = AverageValue(result, "AverageTimeToPurchaser")
             };
         }
 
         public OrderTrackingAggregationByRole GetOrderTrackingEntitiesByRole(IEnumerable<Workgroup> workgroups,
             DateTime createdAfter, DateTime createBefore, string role, int size)
         {
-            var index = IndexHelper.GetIndexName(Indexes.OrderTracking);
-            var workgroupIds = workgroups.Select(w => w.Id).ToArray();
-            
-            string roleNames = "purchaserId";
-            string timeField = "minutesToPurchaserComplete";
-
-            if (role == "Approver")
+            var ids = workgroups.Select(w => w.Id).ToArray();
+            if (ids.Length == 0) return new OrderTrackingAggregationByRole
             {
-                roleNames = "approverId";
-                timeField = "minutesToApprove";
-            }
-            if (role == "AccountManager")
+                OrderTrackingEntities = new List<OrderTrackingEntity>(), NamesInRole = Array.Empty<string>(), PercentilesForRole = new List<double[]>()
+            };
+            var roleField = role == "Approver" ? "approverId" : role == "AccountManager" ? "accountManagerId" : "purchaserId";
+            var timeField = role == "Approver" ? "minutesToApprove" : role == "AccountManager" ? "minutesToAccountManagerComplete" : "minutesToPurchaserComplete";
+            var query = WorkgroupQuery(ids, "orderCreated", createdAfter, createBefore, size, JObject.FromObject(new { term = new { status = "complete" } }));
+            query["aggs"] = new JObject
             {
-                roleNames = "accountManagerId";
-                timeField = "minutesToAccountManagerComplete";
-            }
-
-            // get the .keyword version of the index, for aggregates (since we aren't full text searching against the field)
-            roleNames = roleNames + ".keyword";
-
-            var results = _client.Search<OrderTrackingEntity>(
-                s => s.Index(index)
-                    .Size(size)
-                    .Query(f => f.DateRange(r => r.Field(o => o.OrderCreated).GreaterThan(createdAfter).LessThan(createBefore))
-                                 && f.Term(x => x.Status, "complete")
-                                 && f.Terms(o => o.Field(field => field.WorkgroupId).Terms(workgroupIds)))
-                    .Aggregations(
-                        a =>
-                            a.Terms("RolePercentiles", t => t.Field(roleNames)
-                                    .Aggregations(b=> b.Percentiles("PercentileTimes", p=> p.Field(timeField)
-                                    .Percents(new double[] {0,25,50,75,100})))
-                                )
-                             .Average("AverageTimeToRoleComplete", avg => avg.Field(timeField)))
-                );
-            var names = results.Aggregations.Terms("RolePercentiles").Buckets.Select(n => n.Key + "; n=" + n.DocCount.ToString()).ToArray();
-            var percentilesInRole =
-                results.Aggregations.Terms("RolePercentiles")
-                    .Buckets.Select(user => user.PercentilesBucket("PercentileTimes"))
-                    .Select(
-                        uservalue => uservalue.Items.OrderBy(o => o.Percentile).Select(a => (a.Value.HasValue ? a.Value.Value : 0) / 1440).ToArray() // converted to days to help with scale
-                            )
-                    .ToList();
-
-
+                ["RolePercentiles"] = JObject.FromObject(new
+                {
+                    terms = new { field = roleField + ".keyword" },
+                    aggs = new { PercentileTimes = new { percentiles = new { field = timeField, percents = new[] { 0, 25, 50, 75, 100 } } } }
+                }),
+                ["AverageTimeToRoleComplete"] = Average(timeField)
+            };
+            var result = _backend.Search(Indexes.OrderTracking, query);
+            var buckets = result["aggregations"]?["RolePercentiles"]?["buckets"] as JArray
+                ?? throw new SearchBackendException($"{_backend.Name}: tracking report returned no aggregation buckets.");
             return new OrderTrackingAggregationByRole
             {
-                OrderTrackingEntities = results.Hits.Select(h => h.Source).ToList(),
-                AverageTimeToRoleComplete = results.Aggregations.Average("AverageTimeToRoleComplete").Value / 1440,
-                NamesInRole = names,
-                PercentilesForRole = percentilesInRole
+                OrderTrackingEntities = IndexBackend.Hits<OrderTrackingEntity>(result),
+                AverageTimeToRoleComplete = AverageValue(result, "AverageTimeToRoleComplete") / 1440,
+                NamesInRole = buckets.Select(b => b.Value<string>("key") + "; n=" + b.Value<long>("doc_count")).ToArray(),
+                PercentilesForRole = buckets.Select(b => ((JObject)b["PercentileTimes"]["values"]).Properties()
+                    .OrderBy(p => double.Parse(p.Name, CultureInfo.InvariantCulture))
+                    .Select(p => (p.Value.Value<double?>() ?? 0) / 1440).ToArray()).ToList()
             };
         }
     }

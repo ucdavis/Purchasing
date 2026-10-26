@@ -57,7 +57,7 @@ namespace Purchasing.Mvc
             ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
             NHibernateSessionConfiguration.Mappings.UseFluentMappings(typeof(Approval).Assembly);
             container.Install(
-                new ComponentInstaller(Configuration.GetValue<bool>("RosettaDirectorySearch:Enabled")));
+                new ComponentInstaller(new SearchBackendSet(Configuration), Configuration.GetValue<bool>("RosettaDirectorySearch:Enabled")));
         }
 
         public void ConfigureServices(IServiceCollection services)

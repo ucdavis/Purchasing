@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Ninject;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
@@ -19,16 +19,18 @@ namespace Purchasing.Jobs.UpdateLookupIndexes
             try
             {
                 Log.Information("Updating Lookup Indexes");
-                indexService.CreateAccountsIndex();
-                indexService.CreateBuildingsIndex();
-                indexService.CreateCommoditiesIndex();
-                indexService.CreateVendorsIndex();
+                IndexingFailures.RunAll(
+                    indexService.CreateAccountsIndex,
+                    indexService.CreateBuildingsIndex,
+                    indexService.CreateCommoditiesIndex,
+                    indexService.CreateVendorsIndex);
 
                 Log.Information("Lookup indexes updated successfully at {0}", DateTime.UtcNow.ToPacificTime());
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "FAILED: Indexes failed because {0}", ex.Message);
+                throw; // Surface the failure only after every operation and target has been attempted.
             }
         }
     }
