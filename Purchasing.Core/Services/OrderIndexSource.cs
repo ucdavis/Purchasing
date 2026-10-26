@@ -15,11 +15,12 @@ namespace Purchasing.Core.Services
 
     internal sealed class OrderIndexBatch
     {
-        public List<OrderHistory> History { get; set; } = new List<OrderHistory>();
-        public List<SearchResults.LineResult> Lines { get; set; } = new List<SearchResults.LineResult>();
-        public List<SearchResults.CustomFieldResult> Answers { get; set; } = new List<SearchResults.CustomFieldResult>();
-        public List<OrderTrackingEntity> Tracking { get; set; } = new List<OrderTrackingEntity>();
-        public List<SearchResults.CommentResult> Comments { get; set; } = new List<SearchResults.CommentResult>();
+        public List<OrderHistory> History { get; set; }
+        public List<SearchResults.LineResult> Lines { get; set; }
+        public List<SearchResults.CustomFieldResult> Answers { get; set; }
+        public List<OrderTrackingEntity> Tracking { get; set; }
+        public List<SearchResults.CommentResult> Comments { get; set; }
+        public IndexingFailures Failures { get; } = new IndexingFailures();
     }
 
     internal sealed class SqlOrderIndexSource : IOrderIndexSource
@@ -41,16 +42,34 @@ namespace Purchasing.Core.Services
             using var connection = _db.GetConnection();
             // Values come only from integer SQL IDs and batches stay within SQL's 1,000-row VALUES limit.
             var values = string.Join(",", orderIds.Select(id => $"({id})"));
-            var result = new OrderIndexBatch
-            {
-                History = connection.Query<OrderHistory>($"DECLARE @OrderIds OrderIdsTableType; INSERT INTO @OrderIds VALUES {values}; SELECT * FROM udf_GetOrderHistoryForOrderIds(@OrderIds)").ToList(),
-                Lines = connection.Query<SearchResults.LineResult>(LinesSql + " WHERE OrderId IN @orderIds", new { orderIds }).ToList(),
-                Answers = connection.Query<SearchResults.CustomFieldResult>(AnswersSql + " WHERE OrderId IN @orderIds", new { orderIds }).ToList(),
-                Comments = connection.Query<SearchResults.CommentResult>(CommentsSql + " WHERE OrderId IN @orderIds", new { orderIds }).ToList(),
-                Tracking = ElasticSearchIndexService.ProcessTrackingEntities(connection.Query<OrderTrackingDto>(
-                    "SELECT * FROM vOrderTrackingIndex WHERE OrderId IN @orderIds ORDER BY ActionDate DESC", new { orderIds })).ToList()
-            };
+            var result = new OrderIndexBatch();
+            result.History = ReadProjection(() => connection.Query<OrderHistory>(
+                $"DECLARE @OrderIds OrderIdsTableType; INSERT INTO @OrderIds VALUES {values}; SELECT * FROM udf_GetOrderHistoryForOrderIds(@OrderIds)"),
+                Indexes.OrderHistory, orderIds, result.Failures);
+            result.Lines = ReadProjection(() => connection.Query<SearchResults.LineResult>(LinesSql + " WHERE OrderId IN @orderIds", new { orderIds }),
+                Indexes.LineItems, orderIds, result.Failures);
+            result.Answers = ReadProjection(() => connection.Query<SearchResults.CustomFieldResult>(AnswersSql + " WHERE OrderId IN @orderIds", new { orderIds }),
+                Indexes.CustomAnswers, orderIds, result.Failures);
+            result.Comments = ReadProjection(() => connection.Query<SearchResults.CommentResult>(CommentsSql + " WHERE OrderId IN @orderIds", new { orderIds }),
+                Indexes.Comments, orderIds, result.Failures);
+            result.Tracking = ReadProjection(() => ElasticSearchIndexService.ProcessTrackingEntities(connection.Query<OrderTrackingDto>(
+                "SELECT * FROM vOrderTrackingIndex WHERE OrderId IN @orderIds ORDER BY ActionDate DESC", new { orderIds })),
+                Indexes.OrderTracking, orderIds, result.Failures);
             return result;
+        }
+
+        private static List<T> ReadProjection<T>(Func<IEnumerable<T>> read, Indexes index, int[] orderIds, IndexingFailures failures)
+        {
+            List<T> documents = null;
+            failures.Attempt(() =>
+            {
+                try { documents = read().ToList(); }
+                catch (Exception exception)
+                {
+                    throw new InvalidOperationException($"SQL {index} extraction failed ({exception.GetType().Name}).");
+                }
+            }, $"SQL/{index} extraction", orderIds: orderIds);
+            return documents;
         }
 
         public IEnumerable<SearchResults.CommentResult> RecentComments(DateTime since)

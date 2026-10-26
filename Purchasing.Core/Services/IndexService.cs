@@ -91,13 +91,14 @@ namespace Purchasing.Core.Services
                     var batch = _orders.ReadBatch(batchIds);
                     foreach (var target in _backends.Writers)
                     {
-                        failures.Attempt(() => target.Reconcile(Indexes.OrderHistory, batchIds, batch.History), $"{target.Name} order history");
-                        failures.Attempt(() => target.Reconcile(Indexes.LineItems, batchIds, batch.Lines), $"{target.Name} lines");
-                        failures.Attempt(() => target.Reconcile(Indexes.CustomAnswers, batchIds, batch.Answers), $"{target.Name} answers");
-                        failures.Attempt(() => target.Reconcile(Indexes.OrderTracking, batchIds, batch.Tracking), $"{target.Name} tracking");
-                        failures.Attempt(() => target.Reconcile(Indexes.Comments, batchIds, batch.Comments), $"{target.Name} comments");
+                        if (batch.History != null) failures.Attempt(() => target.Reconcile(Indexes.OrderHistory, batchIds, batch.History), $"{target.Name} order history");
+                        if (batch.Lines != null) failures.Attempt(() => target.Reconcile(Indexes.LineItems, batchIds, batch.Lines), $"{target.Name} lines");
+                        if (batch.Answers != null) failures.Attempt(() => target.Reconcile(Indexes.CustomAnswers, batchIds, batch.Answers), $"{target.Name} answers");
+                        if (batch.Tracking != null) failures.Attempt(() => target.Reconcile(Indexes.OrderTracking, batchIds, batch.Tracking), $"{target.Name} tracking");
+                        if (batch.Comments != null) failures.Attempt(() => target.Reconcile(Indexes.Comments, batchIds, batch.Comments), $"{target.Name} comments");
                     }
-                }, $"extract/index order IDs {string.Join(",", batchIds)}");
+                    batch.Failures.ThrowIfAny();
+                }, "extract/index orders", orderIds: batchIds);
             }
             failures.ThrowIfAny();
         }

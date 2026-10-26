@@ -89,6 +89,19 @@ namespace Purchasing.Core.Services
 
         public void Write<T>(Indexes index, IEnumerable<T> documents, bool recreate = false) where T : class
         {
+            var materialized = documents as IReadOnlyCollection<T> ?? documents.ToList();
+            try { WriteIndex(index, materialized, recreate); }
+            catch (Exception exception)
+            {
+                foreach (var batch in materialized.Partition(1000))
+                    Log.Error(exception, "Indexing operation failed: {Operation}; documents {@Documents}",
+                        $"{Name}/{index} write", batch.Select(document => DocumentIdentity(document)).ToArray());
+                throw;
+            }
+        }
+
+        private void WriteIndex<T>(Indexes index, IEnumerable<T> documents, bool recreate) where T : class
+        {
             var alias = IndexName(index);
             var destination = recreate ? $"{alias}-{Guid.NewGuid():N}" : alias;
             if (recreate)
@@ -164,15 +177,12 @@ namespace Purchasing.Core.Services
             var errors = new IndexingFailures();
             foreach (var document in documents)
             {
-                var identity = new Dictionary<string, object>();
+                var identity = DocumentIdentity(document);
                 errors.Attempt(() =>
                 {
                     try
                     {
-                        var contract = (JsonObjectContract)DocumentSettings.ContractResolver.ResolveContract(document.GetType());
                         var idProperty = document is OrderHistory || document is OrderTrackingEntity ? "orderId" : "id";
-                        identity["DocumentId"] = contract.Properties.GetProperty(idProperty, StringComparison.Ordinal)?.ValueProvider.GetValue(document);
-                        identity["OrderId"] = contract.Properties.GetProperty("orderId", StringComparison.Ordinal)?.ValueProvider.GetValue(document);
                         var source = JObject.FromObject(document, JsonSerializer.Create(DocumentSettings));
                         var id = source[idProperty];
                         if (id == null || string.IsNullOrWhiteSpace(id.ToString()))
@@ -214,6 +224,22 @@ namespace Purchasing.Core.Services
                 }, $"{Name}/{index} bulk request", submitted);
             }
             errors.ThrowIfAny();
+        }
+
+        private static Dictionary<string, object> DocumentIdentity(object document)
+        {
+            var identity = new Dictionary<string, object>();
+            var idProperty = document is OrderHistory || document is OrderTrackingEntity ? "orderId" : "id";
+            foreach (var (name, property) in new[] { ("DocumentId", idProperty), ("OrderId", "orderId") })
+            {
+                try
+                {
+                    var contract = (JsonObjectContract)DocumentSettings.ContractResolver.ResolveContract(document.GetType());
+                    identity[name] = contract.Properties.GetProperty(property, StringComparison.Ordinal)?.ValueProvider.GetValue(document);
+                }
+                catch (Exception) { identity[name] = null; }
+            }
+            return identity;
         }
 
         internal static JObject Mapping<T>()

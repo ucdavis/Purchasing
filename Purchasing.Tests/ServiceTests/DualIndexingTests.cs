@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Moq.Protected;
 using Nest;
 using Nest.JsonNetSerializer;
 using Newtonsoft.Json;
@@ -76,6 +80,110 @@ namespace Purchasing.Tests.ServiceTests
                 Assert.AreEqual(15, backend.Deletes.Count);
                 Assert.IsTrue(backend.Documents.Any(d => d.Index.EndsWith("-comments") && d.Id == "2001"));
             }
+        }
+
+        [DataTestMethod]
+        [DataRow(Indexes.OrderHistory, true)]
+        [DataRow(Indexes.LineItems, true)]
+        [DataRow(Indexes.CustomAnswers, true)]
+        [DataRow(Indexes.Comments, true)]
+        [DataRow(Indexes.OrderTracking, true)]
+        [DataRow(Indexes.OrderHistory, false)]
+        [DataRow(Indexes.LineItems, false)]
+        [DataRow(Indexes.CustomAnswers, false)]
+        [DataRow(Indexes.Comments, false)]
+        [DataRow(Indexes.OrderTracking, false)]
+        public void SqlProjectionFailurePreservesOtherWorkAndDiffersFromEmptyResults(Indexes affectedIndex, bool fail)
+        {
+            using var logs = new CapturedLogs();
+            var queries = new Dictionary<Indexes, string>
+            {
+                [Indexes.OrderHistory] = "udf_GetOrderHistoryForOrderIds",
+                [Indexes.LineItems] = "vLineResults",
+                [Indexes.CustomAnswers] = "vCustomFieldResults",
+                [Indexes.Comments] = "vCommentResults",
+                [Indexes.OrderTracking] = "vOrderTrackingIndex"
+            };
+            var reads = queries.Keys.ToDictionary(index => index, _ => 0);
+            var db = Database(command =>
+            {
+                if (command.CommandText.StartsWith("SELECT DISTINCT OrderId FROM OrderTracking"))
+                {
+                    var changed = new DataTable();
+                    changed.Columns.Add("OrderId", typeof(int));
+                    foreach (var id in Enumerable.Range(1, 1001)) changed.Rows.Add(id);
+                    return changed.CreateDataReader();
+                }
+                var index = queries.Single(q => command.CommandText.Contains(q.Value)).Key;
+                var batchNumber = ++reads[index];
+                if (index == affectedIndex && batchNumber == 1)
+                {
+                    if (fail) throw new DataException("private database row and credentials");
+                    return ProjectionRows(Array.Empty<int>());
+                }
+                return ProjectionRows(batchNumber == 1 ? Enumerable.Range(1, 1000) : new[] { 1001 });
+            });
+            var bonsai = new RecordingBackend("Bonsai");
+            var cloud = new RecordingBackend("ElasticCloud");
+            var service = new ElasticSearchIndexService(db.Object, new SearchBackendSet(bonsai, bonsai, cloud));
+
+            if (fail)
+            {
+                var error = Assert.ThrowsExactly<AggregateException>(() => service.UpdateOrderIndexes());
+                Assert.AreEqual(1, error.Flatten().InnerExceptions.Count);
+                var extraction = logs.Events.Single(e => Operation(e) == $"SQL/{affectedIndex} extraction");
+                CollectionAssert.AreEqual(Enumerable.Range(1, 1000).ToArray(), OrderIds(extraction));
+            }
+            else
+            {
+                service.UpdateOrderIndexes();
+                Assert.IsFalse(logs.Events.Any(e => e.Level == LogEventLevel.Error));
+            }
+
+            db.Verify(d => d.GetConnection(null), Times.Exactly(3));
+            foreach (var index in queries.Keys)
+            {
+                Assert.AreEqual(2, reads[index]);
+                foreach (var backend in new[] { bonsai, cloud })
+                {
+                    var expectedOrders = index == affectedIndex ? new[] { 1001 } : Enumerable.Range(1, 1001).ToArray();
+                    CollectionAssert.AreEqual(expectedOrders, backend.Documents.Where(d => d.Index == backend.IndexName(index))
+                        .Select(d => d.Source.Value<int>("orderId")).ToArray());
+                    var deletions = backend.Calls.Where(c => c.Path.StartsWith($"/{backend.IndexName(index)}/_delete_by_query")).ToArray();
+                    Assert.AreEqual(fail && index == affectedIndex ? 1 : 2, deletions.Length);
+                    var deletedOrders = deletions.SelectMany(c => JObject.Parse(c.Body)["query"]["terms"]["orderId"].Values<int>()).ToArray();
+                    CollectionAssert.AreEqual(fail && index == affectedIndex ? new[] { 1001 } : Enumerable.Range(1, 1001).ToArray(), deletedOrders);
+                }
+            }
+            AssertSafeLogs(logs);
+        }
+
+        [TestMethod]
+        public void EverySqlProjectionFailureIsReportedWithoutReconcilingMissingData()
+        {
+            using var logs = new CapturedLogs();
+            var attempts = 0;
+            var db = Database(command =>
+            {
+                if (command.CommandText.StartsWith("SELECT DISTINCT OrderId FROM OrderTracking"))
+                {
+                    var changed = new DataTable();
+                    changed.Columns.Add("OrderId", typeof(int));
+                    changed.Rows.Add(42);
+                    return changed.CreateDataReader();
+                }
+                attempts++;
+                throw new DataException("private database row and credentials");
+            });
+            var bonsai = new RecordingBackend("Bonsai");
+            var cloud = new RecordingBackend("ElasticCloud");
+            var service = new ElasticSearchIndexService(db.Object, new SearchBackendSet(bonsai, bonsai, cloud));
+            var error = Assert.ThrowsExactly<AggregateException>(() => service.UpdateOrderIndexes());
+            Assert.AreEqual(5, error.Flatten().InnerExceptions.Count);
+            Assert.AreEqual(5, attempts);
+            Assert.AreEqual(0, bonsai.Calls.Count);
+            Assert.AreEqual(0, cloud.Calls.Count);
+            AssertSafeLogs(logs);
         }
 
         [DataTestMethod]
@@ -209,13 +317,21 @@ namespace Purchasing.Tests.ServiceTests
             AssertSafeLogs(logs);
         }
 
-        [TestMethod]
-        public void RecentCommentFailureLogsIdentifiersAndStillWritesHealthyDestination()
+        [DataTestMethod]
+        [DataRow("bulk")]
+        [DataRow("exists")]
+        [DataRow("missing-create")]
+        public void RecentCommentFailureLogsIdentifiersAndStillWritesHealthyDestination(string stage)
         {
             using var logs = new CapturedLogs();
             var unavailable = new RecordingBackend("ElasticCloud")
             {
-                ResponseOverride = (method, path, body) => path == "/_bulk" ? (503, "private response detail") : null
+                ResponseOverride = (method, path, body) =>
+                {
+                    if (stage == "bulk" && path == "/_bulk" || stage == "exists" && method == "HEAD" || stage == "missing-create" && method == "PUT")
+                        return (503, "private response detail");
+                    return stage == "missing-create" && method == "HEAD" ? (404, "{}") : null;
+                }
             };
             var healthy = new RecordingBackend("Bonsai");
             var source = new FakeOrderSource(0)
@@ -225,8 +341,98 @@ namespace Purchasing.Tests.ServiceTests
             var service = new ElasticSearchIndexService(null, new SearchBackendSet(healthy, unavailable, healthy), source);
             Assert.ThrowsExactly<AggregateException>(() => service.UpdateCommentsIndex());
             Assert.AreEqual("7", healthy.Documents.Single().Id);
-            var failure = logs.Events.Single(e => Operation(e) == "ElasticCloud/test-comments bulk request");
+            var failure = logs.Events.Single(e => Operation(e) == "ElasticCloud/Comments write");
             CollectionAssert.AreEqual(new object[] { 7 }, DocumentValues(failure, "DocumentId"));
+            CollectionAssert.AreEqual(new object[] { 42 }, DocumentValues(failure, "OrderId"));
+            AssertSafeLogs(logs);
+        }
+
+        [DataTestMethod]
+        [DataRow("create")]
+        [DataRow("refresh")]
+        [DataRow("alias-lookup")]
+        [DataRow("promotion")]
+        [DataRow("promotion-errors")]
+        [DataRow("cleanup-lookup")]
+        [DataRow("cleanup-delete")]
+        public void ReplacementLifecycleFailuresLogStableIdentifiers(string stage)
+        {
+            var cases = new (Indexes Index, object Document, object Id, object OrderId)[]
+            {
+                (Indexes.OrderHistory, new OrderHistory { Id = 900, OrderId = 42, Justification = "private document body" }, 42, 42),
+                (Indexes.OrderTracking, new OrderTrackingEntity { OrderId = 42, WorkgroupName = "private document body" }, 42, 42),
+                (Indexes.Comments, new SearchResults.CommentResult { Id = 7, OrderId = 42, Text = "private document body" }, 7, 42),
+                (Indexes.Accounts, new Account { Id = "A1", Name = "private document body" }, "A1", null)
+            };
+            foreach (var test in cases)
+            {
+                using var logs = new CapturedLogs();
+                var backend = new RecordingBackend("ElasticCloud");
+                var alias = backend.IndexName(test.Index);
+                var previous = alias + "-old";
+                backend.ResponseOverride = (method, path, body) =>
+                {
+                    if (stage == "create" && method == "PUT" || stage == "refresh" && path.EndsWith("/_refresh") ||
+                        stage == "alias-lookup" && path == $"/{alias}/_alias" || stage == "promotion" && path == "/_aliases" ||
+                        stage == "cleanup-lookup" && path == $"/{previous}/_alias" || stage == "cleanup-delete" && method == "DELETE")
+                        return (503, "private response detail");
+                    if (stage == "promotion-errors" && path == "/_aliases") return (200, "{\"errors\":true}");
+                    if (stage.StartsWith("cleanup") && path == $"/{alias}/_alias")
+                        return (200, new JObject { [previous] = new JObject { ["aliases"] = new JObject { [alias] = new JObject() } } }.ToString());
+                    return null;
+                };
+
+                Assert.ThrowsExactly<SearchBackendException>(() => backend.Write(test.Index, new[] { test.Document }, recreate: true));
+
+                var failure = logs.Events.Single(e => Operation(e) == $"ElasticCloud/{test.Index} write");
+                CollectionAssert.AreEqual(new[] { test.Id }, DocumentValues(failure, "DocumentId"));
+                CollectionAssert.AreEqual(new[] { test.OrderId }, DocumentValues(failure, "OrderId"));
+                Assert.AreEqual(stage == "create" ? 0 : 1, backend.Documents.Count);
+                Assert.AreEqual(stage.StartsWith("promotion") || stage.StartsWith("cleanup"), backend.Calls.Any(c => c.Path == "/_aliases"));
+                AssertSafeLogs(logs);
+            }
+        }
+
+        [TestMethod]
+        public void InitializationFailureLogsEveryIdentifierWithoutReenumeratingOrSerializingDocuments()
+        {
+            using var logs = new CapturedLogs();
+            var enumerations = 0;
+            IEnumerable<SearchResults.CommentResult> Documents()
+            {
+                enumerations++;
+                foreach (var id in Enumerable.Range(1, 1001))
+                    yield return new BrokenComment { Id = id, OrderId = 2000 + id };
+            }
+            var backend = new RecordingBackend("Bonsai") { ThrowOnRequest = true };
+            Assert.ThrowsExactly<SearchBackendException>(() => backend.Write(Indexes.Comments, Documents()));
+            Assert.AreEqual(1, enumerations);
+            Assert.AreEqual(1, backend.Calls.Count);
+            var failures = logs.Events.Where(e => Operation(e) == "Bonsai/Comments write").ToArray();
+            CollectionAssert.AreEqual(new[] { 1000, 1 }, failures.Select(e => DocumentValues(e, "DocumentId").Length).ToArray());
+            CollectionAssert.AreEqual(Enumerable.Range(1, 1001).Select(i => (object)i).ToArray(), failures.SelectMany(e => DocumentValues(e, "DocumentId")).ToArray());
+            CollectionAssert.AreEqual(Enumerable.Range(2001, 1001).Select(i => (object)i).ToArray(), failures.SelectMany(e => DocumentValues(e, "OrderId")).ToArray());
+            AssertSafeLogs(logs);
+        }
+
+        [TestMethod]
+        public void FullTrackingPromotionFailureLogsOrderIdsAndStillWritesOtherTarget()
+        {
+            using var logs = new CapturedLogs();
+            var reads = 0;
+            var db = Database(command => { reads++; return ProjectionRows(new[] { 42 }); });
+            var unavailable = new RecordingBackend("ElasticCloud")
+            {
+                ResponseOverride = (method, path, body) => path == "/_aliases" ? (503, "private response detail") : null
+            };
+            var healthy = new RecordingBackend("Bonsai");
+            var service = new ElasticSearchIndexService(db.Object, new SearchBackendSet(healthy, unavailable, healthy));
+            Assert.ThrowsExactly<AggregateException>(() => service.CreateTrackingIndex());
+            Assert.AreEqual(1, reads);
+            Assert.AreEqual("42", healthy.Documents.Single().Id);
+            Assert.IsTrue(healthy.Calls.Any(c => c.Path == "/_aliases"));
+            var failure = logs.Events.Single(e => Operation(e) == "ElasticCloud/OrderTracking write");
+            CollectionAssert.AreEqual(new object[] { 42 }, DocumentValues(failure, "DocumentId"));
             CollectionAssert.AreEqual(new object[] { 42 }, DocumentValues(failure, "OrderId"));
             AssertSafeLogs(logs);
         }
@@ -451,6 +657,44 @@ namespace Purchasing.Tests.ServiceTests
         private static void AssertSafeLogs(CapturedLogs logs)
         {
             Assert.IsFalse(logs.Events.Any(e => (e.RenderMessage() + e.Exception).Contains("private")));
+        }
+
+        private static Mock<IDbService> Database(Func<DbCommand, DbDataReader> read)
+        {
+            var db = new Mock<IDbService>();
+            db.Setup(d => d.GetConnection(null)).Returns(() =>
+            {
+                var connection = new Mock<DbConnection>();
+                connection.Setup(c => c.State).Returns(ConnectionState.Open);
+                connection.Protected().Setup<DbCommand>("CreateDbCommand").Returns(() =>
+                {
+                    var command = new Mock<DbCommand>();
+                    command.SetupAllProperties();
+                    command.Protected().SetupGet<DbParameterCollection>("DbParameterCollection").Returns(new SqlCommand().Parameters);
+                    command.Protected().Setup<DbParameter>("CreateDbParameter").Returns(() => new SqlParameter());
+                    command.Protected().Setup<DbDataReader>("ExecuteDbDataReader", ItExpr.IsAny<CommandBehavior>())
+                        .Returns(() => read(command.Object));
+                    return command.Object;
+                });
+                return connection.Object;
+            });
+            return db;
+        }
+
+        private static DbDataReader ProjectionRows(IEnumerable<int> orderIds)
+        {
+            var table = new DataTable();
+            table.Columns.Add("Id", typeof(int));
+            table.Columns.Add("OrderId", typeof(int));
+            table.Columns.Add("OrderCreated", typeof(DateTime));
+            table.Columns.Add("ActionDate", typeof(DateTime));
+            table.Columns.Add("Description", typeof(string));
+            table.Columns.Add("TrackingStatusComplete", typeof(bool));
+            table.Columns.Add("CurrentStatusCodeId", typeof(string));
+            table.Columns.Add("CurrentStatusCode", typeof(string));
+            foreach (var id in orderIds)
+                table.Rows.Add(id + 10000, id, new DateTime(2026, 10, 26), new DateTime(2026, 10, 26), "created", false, "OP", "Open");
+            return table.CreateDataReader();
         }
 
         private sealed class CapturedLogs : IDisposable
