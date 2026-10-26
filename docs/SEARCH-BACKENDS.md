@@ -18,7 +18,7 @@ Set these values independently in the MVC and jobs applications. App Service env
 
 Only enabled read/write backends require configuration. Invalid selections, endpoints, prefixes, and credential combinations fail service initialization. No network request is needed for configuration validation. Credentials belong in the existing secret configuration, not committed JSON. Search settings are separate from `Stackify.ElasticUrl` and logging/APM settings.
 
-Settings are captured at process startup. Restart each affected application after changes. Slot swaps use the settings attached to the destination slot; verify slot settings explicitly. A swap does not copy indexes, establish freshness, or make manual jobs in staging safe. In particular, staging and production may share SQL and search endpoints.
+Settings are captured at process startup. Restart each affected application after changes. Verify slot-specific settings before a swap. A swap does not copy indexes, establish freshness, or make manual jobs in staging safe. In particular, staging and production may share SQL and search endpoints.
 
 To enable dual writes while continuing to read Bonsai, configure both endpoints and set `Search:WriteTargets=Both`, leaving `Search:ReadBackend=Bonsai`. Later, selecting `ElasticCloud` or returning to `Bonsai` changes the reader after restart. There is no automatic fallback. These examples describe configuration behavior, not authorization or readiness for a production switch.
 
