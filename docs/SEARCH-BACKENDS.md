@@ -32,7 +32,7 @@ Each target's bulk items and delete responses are checked. Refresh or deletion f
 
 The existing full-index operations write a fresh physical index, refresh it, and promote its alias only after successful writes. The first promotion can atomically replace a legacy concrete index. Later promotions remove previous generations in the same namespace after confirming no other aliases use them. Failed builds leave their physical indexes for inspection; operators must review and remove failed generations to reclaim storage. This is not a coordinated migration runner. Run full rebuilds separately from other writers until cross-process coordination is implemented.
 
-Search timeouts, shard failures, and unsuccessful responses throw an error. The search page returns HTTP 503 and shows an unavailable message. It does not turn an outage into zero matches or try another backend. Other callers use their existing error handling.
+Malformed query-string syntax returns HTTP 400 with an invalid-search-syntax message. Other search errors, including mapping/configuration HTTP 400 responses, remain backend failures. Search timeouts, shard failures, and unsuccessful responses throw an error. For backend failures, the search page returns HTTP 503 and shows an unavailable message. It does not turn an outage into zero matches or try another backend. Other callers use their existing error handling.
 
 ## Limits and follow-up work
 

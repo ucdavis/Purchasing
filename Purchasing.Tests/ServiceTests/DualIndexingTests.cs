@@ -632,6 +632,91 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(0, other.Calls.Count);
         }
 
+        private static string QuerySyntaxErrorResponse() => new JObject
+        {
+            ["error"] = new JObject
+            {
+                ["type"] = "search_phase_execution_exception",
+                ["failed_shards"] = new JArray(new JObject
+                {
+                    ["reason"] = new JObject
+                    {
+                        ["type"] = "query_shard_exception",
+                        ["reason"] = "Failed to parse query [private query]",
+                        ["caused_by"] = new JObject { ["type"] = "parse_exception", ["reason"] = "private parser details" }
+                    }
+                })
+            }
+        }.ToString();
+
+        [DataTestMethod]
+        [DataRow("Bonsai")]
+        [DataRow("ElasticCloud")]
+        public void QuerySyntaxErrorsAreClassifiedWithoutChangingInputOrFallingBack(string name)
+        {
+            var reader = new RecordingBackend(name) { ResponseOverride = (_, _, _) => (400, QuerySyntaxErrorResponse()) };
+            var other = new RecordingBackend("Other");
+            var search = new ElasticSearchService(new SearchBackendSet(reader, other));
+            const string query = "\"unterminated";
+
+            var error = Assert.ThrowsExactly<SearchBackendException>(() => search.SearchOrders(query, new[] { 42 }));
+
+            Assert.IsTrue(error.IsInvalidQuery);
+            Assert.IsFalse(error.Message.Contains("private"));
+            Assert.AreEqual(query, JObject.Parse(reader.Calls.Single().Body)["query"]["query_string"].Value<string>("query"));
+            Assert.AreEqual(0, other.Calls.Count);
+        }
+
+        [DataTestMethod]
+        [DataRow(400, "{\"error\":{\"type\":\"parsing_exception\",\"reason\":\"unknown query field\"}}")]
+        [DataRow(400, "{\"error\":{\"type\":\"query_shard_exception\",\"reason\":\"analyzer not found\",\"caused_by\":{\"type\":\"illegal_argument_exception\"}}}")]
+        [DataRow(400, "{\"error\":{\"type\":\"parse_exception\",\"reason\":\"failed to parse date field\"}}")]
+        [DataRow(400, "{\"error\":\"bad request\"}")]
+        [DataRow(400, "not JSON")]
+        [DataRow(400, "")]
+        [DataRow(503, null)]
+        public void OtherSearchFailuresAreNotInvalidQueries(int status, string response)
+        {
+            var reader = new RecordingBackend("Bonsai") { ResponseOverride = (_, _, _) => (status, response ?? QuerySyntaxErrorResponse()) };
+            var search = new ElasticSearchService(new SearchBackendSet(reader, reader));
+            var error = Assert.ThrowsExactly<SearchBackendException>(() => search.SearchOrders("paper", new[] { 42 }));
+            Assert.IsFalse(error.IsInvalidQuery);
+        }
+
+        [TestMethod]
+        public void NonSearchParserErrorsRemainBackendFailures()
+        {
+            var reader = new RecordingBackend("Bonsai") { ResponseOverride = (_, _, _) => (400, QuerySyntaxErrorResponse()) };
+            var error = Assert.ThrowsExactly<SearchBackendException>(() => reader.Count(Indexes.OrderHistory));
+            Assert.IsFalse(error.IsInvalidQuery);
+        }
+
+        [DataTestMethod]
+        [DataRow(true, 400)]
+        [DataRow(false, 503)]
+        public void SearchControllerDistinguishesInvalidQueriesFromUnavailable(bool invalidQuery, int status)
+        {
+            using var logs = new CapturedLogs();
+            var search = new Mock<ISearchService>();
+            search.Setup(s => s.SearchOrders("paper", It.IsAny<int[]>()))
+                .Throws(new SearchBackendException("Search failed", isInvalidQuery: invalidQuery));
+            var access = new Mock<IAccessQueryService>();
+            access.Setup(a => a.GetOrderAccess(It.IsAny<string>())).Returns(Array.Empty<Access>());
+            var controller = new SearchController(search.Object, null, Mock.Of<IUserIdentity>(), access.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
+            };
+
+            var result = (ViewResult)controller.Results("paper");
+            var model = (SearchResultModel)result.Model;
+            Assert.AreEqual(invalidQuery, model.IsInvalidQuery);
+            Assert.AreEqual(!invalidQuery, model.IsUnavailable);
+            Assert.AreEqual("paper", model.Query);
+            Assert.AreEqual(0, model.ResultCount);
+            Assert.AreEqual(status, controller.Response.StatusCode);
+            Assert.AreEqual(invalidQuery ? LogEventLevel.Warning : LogEventLevel.Error, logs.Events.Single().Level);
+        }
+
         [TestMethod]
         public void SearchControllerReportsUnavailableInsteadOfZeroResults()
         {

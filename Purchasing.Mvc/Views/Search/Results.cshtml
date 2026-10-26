@@ -38,7 +38,11 @@
     <input type="search" id="query" name="q" placeholder="Enter search term" value="@Model.Query" class="searchbox" />
     <input type="submit" class="button searchbutton" value="Go!"/>
 }
-@if (Model.IsUnavailable)
+@if (Model.IsInvalidQuery)
+{
+    <p class="alert alert-warning" role="alert">Invalid search syntax. Please check your quotes, parentheses, and other search operators.</p>
+}
+else if (Model.IsUnavailable)
 {
     <p class="alert alert-danger" role="alert">Search is temporarily unavailable. Please try again.</p>
 }

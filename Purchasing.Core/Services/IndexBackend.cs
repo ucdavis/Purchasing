@@ -13,7 +13,11 @@ namespace Purchasing.Core.Services
 {
     public sealed class SearchBackendException : Exception
     {
-        public SearchBackendException(string message) : base(message) { }
+        public bool IsInvalidQuery { get; }
+        public SearchBackendException(string message, bool isInvalidQuery = false) : base(message)
+        {
+            IsInvalidQuery = isInvalidQuery;
+        }
     }
 
     // Both transports use the same Elasticsearch JSON contract. Domain documents retain
@@ -52,6 +56,9 @@ namespace Purchasing.Core.Services
                 throw new SearchBackendException($"{Name}: {method} {path} could not complete ({exception.GetType().Name}).");
             }
             if (allowNotFound && response.Status == 404) return null;
+            if (response.Status == 400 && path.Split('?')[0].EndsWith("/_search", StringComparison.Ordinal) &&
+                IsQuerySyntaxError(response.Body))
+                throw new SearchBackendException($"{Name}: invalid search syntax.", isInvalidQuery: true);
             if (response.Status < 200 || response.Status >= 300 || !response.Status.HasValue)
                 throw new SearchBackendException($"{Name}: {method} {path} failed with HTTP {response.Status?.ToString() ?? "unavailable"}.");
             try
@@ -65,6 +72,25 @@ namespace Purchasing.Core.Services
             catch (JsonException)
             {
                 throw new SearchBackendException($"{Name}: {method} {path} returned invalid JSON.");
+            }
+        }
+
+        private static bool IsQuerySyntaxError(string body)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(body) || JObject.Parse(body)["error"] is not JObject error)
+                    return false;
+                // Query-string syntax errors wrap Lucene's parser error. Other shard errors
+                // (missing analyzers, invalid mappings, etc.) are still backend failures.
+                return error.DescendantsAndSelf().OfType<JObject>().Any(cause =>
+                    cause["type"]?.ToString() == "query_shard_exception" &&
+                    cause["reason"]?.ToString().StartsWith("Failed to parse query [", StringComparison.Ordinal) == true &&
+                    cause["caused_by"] is JObject parser && parser["type"]?.ToString() == "parse_exception");
+            }
+            catch (JsonException)
+            {
+                return false;
             }
         }
 

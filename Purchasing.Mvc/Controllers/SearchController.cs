@@ -123,6 +123,12 @@ namespace Purchasing.Mvc.Controllers
                     model.CustomFields = _searchService.SearchCustomFieldAnswers(q, orderIds);
                 }
             }
+            catch (SearchBackendException ex) when (ex.IsInvalidQuery)
+            {
+                Log.Warning("Invalid search syntax");
+                model = new SearchResultModel { Query = q, IsInvalidQuery = true };
+                Response.StatusCode = 400;
+            }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error searching for {query}", q);
@@ -151,6 +157,7 @@ namespace Purchasing.Mvc.Controllers
         public IList<SearchResults.CustomFieldResult> CustomFields { get; set; }
         public string Query { get; set; }
         public bool IsUnavailable { get; set; }
+        public bool IsInvalidQuery { get; set; }
         public int ResultCount { get { return (Orders.Count + LineItems.Count + Comments.Count + CustomFields.Count); } }
 
     }

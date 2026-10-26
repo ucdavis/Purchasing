@@ -151,7 +151,8 @@ namespace Purchasing.Tests.ServiceTests
 
                 backend.Write(Indexes.Commodities, new[] { new Commodity { Id = "C2", Name = "Replacement paper" } }, recreate: true);
                 Assert.AreEqual(1, search.SearchCommodities("replacement").Count);
-                Assert.ThrowsExactly<SearchBackendException>(() => search.SearchOrders("\"unterminated", new[] { 42 }));
+                var invalidQuery = Assert.ThrowsExactly<SearchBackendException>(() => search.SearchOrders("\"unterminated", new[] { 42 }));
+                Assert.IsTrue(invalidQuery.IsInvalidQuery);
             }
             finally
             {
