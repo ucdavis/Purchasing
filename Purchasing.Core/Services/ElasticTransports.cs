@@ -12,7 +12,7 @@ namespace Purchasing.Core.Services
         {
             // Keep the 7.13.2 NEST transport: later versions reject Bonsai's 7.10.2 OSS response.
             var settings = new ConnectionSettings(new SingleNodeConnectionPool(endpoint.Url), JsonNetSerializer.Default)
-                .RequestTimeout(endpoint.RequestTimeout);
+                .RequestTimeout(TimeSpan.FromSeconds(60));
             if (endpoint.Username != null) settings.BasicAuthentication(endpoint.Username, endpoint.Password);
             if (!string.IsNullOrEmpty(endpoint.ApiKey)) settings.ApiKeyAuthentication(new ApiKeyAuthenticationCredentials(endpoint.ApiKey));
             _client = new ElasticClient(settings);
@@ -48,7 +48,7 @@ namespace Purchasing.Core.Services
         public ElasticCloudIndexBackend(SearchEndpoint endpoint) : base("ElasticCloud", endpoint.IndexPrefix)
         {
             var settings = new Elastic.Clients.Elasticsearch.ElasticsearchClientSettings(endpoint.Url)
-                .RequestTimeout(endpoint.RequestTimeout);
+                .RequestTimeout(TimeSpan.FromSeconds(60));
             if (endpoint.Username != null)
                 settings.Authentication(new Elastic.Transport.BasicAuthentication(endpoint.Username, endpoint.Password));
             if (!string.IsNullOrEmpty(endpoint.ApiKey))

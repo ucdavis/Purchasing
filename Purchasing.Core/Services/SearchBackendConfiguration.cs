@@ -42,7 +42,6 @@ namespace Purchasing.Core.Services
         public string Username { get; }
         public string Password { get; }
         public string ApiKey { get; }
-        public TimeSpan RequestTimeout { get; }
 
         public SearchEndpoint(IConfiguration configuration, SearchBackend backend)
         {
@@ -73,10 +72,6 @@ namespace Purchasing.Core.Services
             IndexPrefix = section["IndexPrefix"] ?? "opp";
             if (!Regex.IsMatch(IndexPrefix, "^[a-z0-9][a-z0-9_-]{0,79}$"))
                 throw new ArgumentException($"Search:{backend}:IndexPrefix must contain 1 to 80 lowercase letters, digits, hyphens or underscores and start with a letter or digit.");
-            var timeout = section.GetValue("RequestTimeoutSeconds", 60);
-            if (timeout < 1 || timeout > 600)
-                throw new ArgumentException($"Search:{backend}:RequestTimeoutSeconds must be between 1 and 600.");
-            RequestTimeout = TimeSpan.FromSeconds(timeout);
         }
     }
 

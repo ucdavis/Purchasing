@@ -136,14 +136,19 @@ namespace Purchasing.Core.Services
         public void Reconcile<T>(Indexes index, int[] orderIds, IEnumerable<T> documents) where T : class
         {
             if (orderIds.Length == 0) return;
-            EnsureIndex<T>(IndexName(index));
+            var errors = new IndexingFailures();
+            errors.Attempt(() => EnsureIndex<T>(IndexName(index)), $"{Name}/{index} ensure index", orderIds: orderIds);
             // Refresh before deletion so a repeat run sees the previous run's writes.
-            Request("POST", $"/{IndexName(index)}/_refresh");
-            var result = Request("POST", $"/{IndexName(index)}/_delete_by_query?refresh=true",
-                new { query = new { terms = new { orderId = orderIds } } });
-            if (result["failures"]?.Any() == true || result.Value<long?>("version_conflicts") > 0)
-                throw new SearchBackendException($"{Name}: deleting stale {index} documents failed for order IDs {string.Join(",", orderIds)}.");
-            Write(index, documents);
+            errors.Attempt(() => Request("POST", $"/{IndexName(index)}/_refresh"), $"{Name}/{index} refresh", orderIds: orderIds);
+            errors.Attempt(() =>
+            {
+                var result = Request("POST", $"/{IndexName(index)}/_delete_by_query?refresh=true",
+                    new { query = new { terms = new { orderId = orderIds } } });
+                if (result["failures"]?.Any() == true || result.Value<long?>("version_conflicts") > 0)
+                    throw new SearchBackendException($"{Name}: deleting stale {index} documents failed.");
+            }, $"{Name}/{index} delete", orderIds: orderIds);
+            errors.Attempt(() => Write(index, documents), $"{Name}/{index} replacements", orderIds: orderIds);
+            errors.ThrowIfAny();
         }
 
         private void EnsureIndex<T>(string index)
@@ -155,31 +160,44 @@ namespace Purchasing.Core.Services
         private void WriteBatch<T>(string index, IEnumerable<T> documents) where T : class
         {
             var body = new StringBuilder();
-            var submittedCount = 0;
+            var submitted = new List<Dictionary<string, object>>();
             var errors = new IndexingFailures();
             foreach (var document in documents)
             {
+                var identity = new Dictionary<string, object>();
                 errors.Attempt(() =>
                 {
-                    var source = JObject.FromObject(document, JsonSerializer.Create(DocumentSettings));
-                    var id = document is OrderHistory || document is OrderTrackingEntity ? source["orderId"] : source["id"];
-                    if (id == null || string.IsNullOrWhiteSpace(id.ToString()))
-                        throw new SearchBackendException($"{Name}/{index}: document has no stable ID.");
-                    // SQL's history Id is a row number that changes with batch boundaries.
-                    if (document is OrderHistory) source["id"] = id.DeepClone();
-                    var metadata = new JObject { ["index"] = new JObject { ["_index"] = index, ["_id"] = id.ToString() } };
-                    body.AppendLine(metadata.ToString(Formatting.None));
-                    body.AppendLine(source.ToString(Formatting.None));
-                    submittedCount++;
-                }, $"{Name}/{index} serialization");
+                    try
+                    {
+                        var contract = (JsonObjectContract)DocumentSettings.ContractResolver.ResolveContract(document.GetType());
+                        var idProperty = document is OrderHistory || document is OrderTrackingEntity ? "orderId" : "id";
+                        identity["DocumentId"] = contract.Properties.GetProperty(idProperty, StringComparison.Ordinal)?.ValueProvider.GetValue(document);
+                        identity["OrderId"] = contract.Properties.GetProperty("orderId", StringComparison.Ordinal)?.ValueProvider.GetValue(document);
+                        var source = JObject.FromObject(document, JsonSerializer.Create(DocumentSettings));
+                        var id = source[idProperty];
+                        if (id == null || string.IsNullOrWhiteSpace(id.ToString()))
+                            throw new SearchBackendException($"{Name}/{index}: document has no stable ID.");
+                        // SQL's history Id is a row number that changes with batch boundaries.
+                        if (document is OrderHistory) source["id"] = id.DeepClone();
+                        var metadata = new JObject { ["index"] = new JObject { ["_index"] = index, ["_id"] = id.ToString() } };
+                        var serialized = source.ToString(Formatting.None);
+                        body.AppendLine(metadata.ToString(Formatting.None));
+                        body.AppendLine(serialized);
+                        submitted.Add(identity);
+                    }
+                    catch (Exception exception)
+                    {
+                        throw new SearchBackendException($"{Name}/{index}: document serialization failed ({exception.GetType().Name}).");
+                    }
+                }, $"{Name}/{index} serialization", new[] { identity });
             }
             if (body.Length > 0)
             {
                 errors.Attempt(() =>
                 {
-                    Log.Information("Indexing {DocumentCount} documents into {Backend}/{Index}", submittedCount, Name, index);
+                    Log.Information("Indexing {DocumentCount} documents into {Backend}/{Index}", submitted.Count, Name, index);
                     var result = Request("POST", "/_bulk", body.ToString());
-                    if (result["items"] is not JArray items || items.Count != submittedCount)
+                    if (result["items"] is not JArray items || items.Count != submitted.Count)
                         throw new SearchBackendException($"{Name}/{index}: bulk response does not account for every submitted document.");
                     var failed = false;
                     foreach (var item in items.Select(i => ((JObject)i).Properties().Single().Value))
@@ -193,7 +211,7 @@ namespace Purchasing.Core.Services
                     }
                     if (failed || result.Value<bool?>("errors") == true)
                         throw new SearchBackendException($"{Name}/{index}: bulk indexing failed for one or more documents.");
-                }, $"{Name}/{index} bulk request");
+                }, $"{Name}/{index} bulk request", submitted);
             }
             errors.ThrowIfAny();
         }
@@ -224,12 +242,13 @@ namespace Purchasing.Core.Services
     public sealed class IndexingFailures
     {
         private readonly List<Exception> _errors = new List<Exception>();
-        public void Attempt(Action action, string operation)
+        public void Attempt(Action action, string operation, object documents = null, int[] orderIds = null)
         {
             try { action(); }
             catch (Exception exception)
             {
-                Log.Error(exception, "Indexing operation failed: {Operation}", operation);
+                Log.Error(exception, "Indexing operation failed: {Operation}; order IDs {OrderIds}; documents {@Documents}",
+                    operation, orderIds, documents);
                 _errors.Add(exception);
             }
         }

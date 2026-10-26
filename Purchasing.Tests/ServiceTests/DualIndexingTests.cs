@@ -16,10 +16,14 @@ using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Controllers;
 using Purchasing.Mvc.Services;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 
 namespace Purchasing.Tests.ServiceTests
 {
     [TestClass]
+    [DoNotParallelize]
     public class DualIndexingTests
     {
         internal static IConfiguration Config(params (string Key, string Value)[] entries) =>
@@ -74,29 +78,186 @@ namespace Purchasing.Tests.ServiceTests
             }
         }
 
-        [TestMethod]
-        public void DeleteFailureDoesNotStopOtherIndexesOrDestination()
+        [DataTestMethod]
+        [DataRow("/_delete_by_query", 200, "{\"deleted\":999,\"failures\":[{\"reason\":\"private response detail\"}]}")]
+        [DataRow("/_delete_by_query", 200, "{\"deleted\":999,\"version_conflicts\":1}")]
+        [DataRow("/_delete_by_query", 200, "{\"timed_out\":true}")]
+        [DataRow("/_delete_by_query", 503, "private response detail")]
+        [DataRow("/_delete_by_query", 0, "")]
+        [DataRow("/_refresh", 200, "{\"_shards\":{\"failed\":1}}")]
+        [DataRow("/_refresh", 503, "private response detail")]
+        [DataRow("/_refresh", 0, "")]
+        public void ReconciliationFailuresStillWriteEveryIndexBatchAndDestination(string failingPath, int status, string response)
         {
-            var bonsai = new RecordingBackend("Bonsai") { FailDeletes = true };
+            using var logs = new CapturedLogs();
+            var bonsai = new RecordingBackend("Bonsai")
+            {
+                ResponseOverride = (method, path, body) => path.Contains(failingPath)
+                    ? status == 0 ? throw new TimeoutException("private transport detail") : (status, response)
+                    : null
+            };
             var cloud = new RecordingBackend("ElasticCloud");
-            var source = new FakeOrderSource(1);
+            var source = new FakeOrderSource(1001);
             var service = new ElasticSearchIndexService(null, new SearchBackendSet(bonsai, bonsai, cloud), source);
             Assert.ThrowsExactly<AggregateException>(() => service.UpdateOrderIndexes());
-            Assert.AreEqual(5, bonsai.Deletes.Count);
-            Assert.AreEqual(0, bonsai.Documents.Count);
-            Assert.AreEqual(5, cloud.Documents.Count);
+            CollectionAssert.AreEqual(new[] { 1000, 1 }, source.Reads.Select(r => r.Length).ToArray());
+            foreach (var index in new[] { Indexes.OrderHistory, Indexes.LineItems, Indexes.CustomAnswers, Indexes.OrderTracking, Indexes.Comments })
+            {
+                foreach (var backend in new[] { bonsai, cloud })
+                {
+                    CollectionAssert.AreEqual(Enumerable.Range(1, 1001).Select(i => i.ToString()).ToArray(),
+                        backend.Documents.Where(d => d.Index == backend.IndexName(index)).Select(d => d.Id).ToArray());
+                    Assert.AreEqual(2, backend.Calls.Count(c => c.Path.StartsWith($"/{backend.IndexName(index)}/_delete_by_query")));
+                }
+                var operation = $"Bonsai/{index} {(failingPath == "/_refresh" ? "refresh" : "delete")}";
+                var failures = logs.Events.Where(e => Operation(e) == operation).ToArray();
+                Assert.AreEqual(2, failures.Length);
+                CollectionAssert.AreEqual(Enumerable.Range(1, 1000).ToArray(), OrderIds(failures[0]));
+                CollectionAssert.AreEqual(new[] { 1001 }, OrderIds(failures[1]));
+            }
+            AssertSafeLogs(logs);
         }
 
         [TestMethod]
         public void UnavailableDestinationDoesNotStopHealthyDestination()
         {
+            using var logs = new CapturedLogs();
             var unavailable = new RecordingBackend("ElasticCloud") { ThrowOnRequest = true };
             var healthy = new RecordingBackend("Bonsai");
             var service = new ElasticSearchIndexService(null, new SearchBackendSet(healthy, unavailable, healthy), new FakeOrderSource(1));
             var exception = Assert.ThrowsExactly<AggregateException>(() => service.UpdateOrderIndexes());
-            Assert.AreEqual(5, unavailable.Calls.Count);
+            Assert.AreEqual(20, unavailable.Calls.Count);
             Assert.AreEqual(5, healthy.Documents.Count);
             Assert.IsFalse(exception.ToString().Contains("private transport detail"));
+            var failures = logs.Events.Where(e => e.Properties.TryGetValue("OrderIds", out var ids) && ids is SequenceValue).ToArray();
+            Assert.AreEqual(20, failures.Length);
+            foreach (var failure in failures) CollectionAssert.AreEqual(new[] { 1 }, OrderIds(failure));
+            AssertSafeLogs(logs);
+        }
+
+        [TestMethod]
+        public void ReconciliationReportsBothDeleteAndReplacementFailures()
+        {
+            using var logs = new CapturedLogs();
+            var backend = new RecordingBackend("Bonsai")
+            {
+                FailingDocument = "7",
+                ResponseOverride = (method, path, body) => path.Contains("/_delete_by_query") ? (200, "{\"version_conflicts\":1}") : null
+            };
+            var failure = Assert.ThrowsExactly<AggregateException>(() => backend.Reconcile(Indexes.Comments, new[] { 42 },
+                new[] { new SearchResults.CommentResult { Id = 7, OrderId = 42, Text = "private document body" } }));
+            Assert.AreEqual(2, failure.Flatten().InnerExceptions.Count);
+            Assert.AreEqual("7", backend.Documents.Single().Id);
+            var bulkFailure = logs.Events.Single(e => Operation(e) == "Bonsai/test-comments bulk request");
+            CollectionAssert.AreEqual(new object[] { 7 }, DocumentValues(bulkFailure, "DocumentId"));
+            CollectionAssert.AreEqual(new object[] { 42 }, DocumentValues(bulkFailure, "OrderId"));
+            AssertSafeLogs(logs);
+        }
+
+        [TestMethod]
+        public void ReconciliationFailureLogsOrdersWithNoReplacementDocuments()
+        {
+            using var logs = new CapturedLogs();
+            var backend = new RecordingBackend("Bonsai")
+            {
+                ResponseOverride = (method, path, body) => path.Contains("/_delete_by_query") ? (503, "private response detail") : null
+            };
+            Assert.ThrowsExactly<AggregateException>(() => backend.Reconcile(Indexes.Comments, new[] { 42, 43 },
+                Array.Empty<SearchResults.CommentResult>()));
+            var failure = logs.Events.Single(e => Operation(e) == "Bonsai/Comments delete");
+            CollectionAssert.AreEqual(new[] { 42, 43 }, OrderIds(failure));
+            Assert.AreEqual(0, backend.Documents.Count);
+            AssertSafeLogs(logs);
+        }
+
+        [DataTestMethod]
+        [DataRow(503, "private response detail", false)]
+        [DataRow(503, "private response detail", true)]
+        [DataRow(200, "{}", false)]
+        [DataRow(200, "{}", true)]
+        [DataRow(200, "{\"items\":[]}", false)]
+        [DataRow(200, "{\"items\":[]}", true)]
+        [DataRow(200, "private invalid JSON", false)]
+        [DataRow(200, "private invalid JSON", true)]
+        [DataRow(0, "", false)]
+        [DataRow(0, "", true)]
+        public void WholeBulkFailuresLogSubmittedIdentifiersAndContinueBatches(int status, string response, bool recreate)
+        {
+            using var logs = new CapturedLogs();
+            var backend = new RecordingBackend("ElasticCloud")
+            {
+                ResponseOverride = (method, path, body) => path == "/_bulk"
+                    ? status == 0 ? throw new TimeoutException("private transport detail") : (status, response)
+                    : null
+            };
+            var documents = Enumerable.Range(1, 1001).Select(i => new SearchResults.CommentResult
+            {
+                Id = i, OrderId = 2000 + i, Text = "private document body"
+            }).ToArray();
+
+            Assert.ThrowsExactly<AggregateException>(() => backend.Write(Indexes.Comments, documents, recreate));
+
+            Assert.AreEqual(2, backend.Calls.Count(c => c.Path == "/_bulk"));
+            Assert.IsFalse(backend.Calls.Any(c => c.Path == "/_aliases"));
+            var failures = logs.Events.Where(e => Operation(e)?.EndsWith(" bulk request") == true).ToArray();
+            Assert.AreEqual(2, failures.Length);
+            Assert.IsTrue(failures.All(e => Operation(e).StartsWith("ElasticCloud/test-comments")));
+            CollectionAssert.AreEqual(Enumerable.Range(1, 1000).Select(i => (object)i).ToArray(), DocumentValues(failures[0], "DocumentId"));
+            CollectionAssert.AreEqual(Enumerable.Range(2001, 1000).Select(i => (object)i).ToArray(), DocumentValues(failures[0], "OrderId"));
+            CollectionAssert.AreEqual(new object[] { 1001 }, DocumentValues(failures[1], "DocumentId"));
+            CollectionAssert.AreEqual(new object[] { 3001 }, DocumentValues(failures[1], "OrderId"));
+            AssertSafeLogs(logs);
+        }
+
+        [TestMethod]
+        public void RecentCommentFailureLogsIdentifiersAndStillWritesHealthyDestination()
+        {
+            using var logs = new CapturedLogs();
+            var unavailable = new RecordingBackend("ElasticCloud")
+            {
+                ResponseOverride = (method, path, body) => path == "/_bulk" ? (503, "private response detail") : null
+            };
+            var healthy = new RecordingBackend("Bonsai");
+            var source = new FakeOrderSource(0)
+            {
+                Comments = new[] { new SearchResults.CommentResult { Id = 7, OrderId = 42, Text = "private document body" } }
+            };
+            var service = new ElasticSearchIndexService(null, new SearchBackendSet(healthy, unavailable, healthy), source);
+            Assert.ThrowsExactly<AggregateException>(() => service.UpdateCommentsIndex());
+            Assert.AreEqual("7", healthy.Documents.Single().Id);
+            var failure = logs.Events.Single(e => Operation(e) == "ElasticCloud/test-comments bulk request");
+            CollectionAssert.AreEqual(new object[] { 7 }, DocumentValues(failure, "DocumentId"));
+            CollectionAssert.AreEqual(new object[] { 42 }, DocumentValues(failure, "OrderId"));
+            AssertSafeLogs(logs);
+        }
+
+        [TestMethod]
+        public void SerializationFailuresLogIdentifiersWithoutPayloadsAndStillWriteHealthyDocuments()
+        {
+            var cases = new (Indexes Index, object Failed, object Healthy, object Id, object OrderId)[]
+            {
+                (Indexes.OrderHistory, new BrokenHistory { Id = 900, OrderId = 42 }, new OrderHistory { OrderId = 43 }, 42, 42),
+                (Indexes.OrderTracking, new BrokenTracking { OrderId = 42 }, new OrderTrackingEntity { OrderId = 43 }, 42, 42),
+                (Indexes.LineItems, new BrokenLine { Id = 7, OrderId = 42 }, new SearchResults.LineResult { Id = 8, OrderId = 43 }, 7, 42),
+                (Indexes.Comments, new BrokenComment { Id = 7, OrderId = 42 }, new SearchResults.CommentResult { Id = 8, OrderId = 43 }, 7, 42),
+                (Indexes.CustomAnswers, new BrokenAnswer { Id = 7, OrderId = 42 }, new SearchResults.CustomFieldResult { Id = 8, OrderId = 43 }, 7, 42),
+                (Indexes.Accounts, new BrokenAccount { Id = "A1" }, new Account { Id = "A2" }, "A1", null),
+                (Indexes.Buildings, new BrokenBuilding { Id = "B1" }, new Building { Id = "B2" }, "B1", null),
+                (Indexes.Commodities, new BrokenCommodity { Id = "C1" }, new Commodity { Id = "C2" }, "C1", null),
+                (Indexes.Vendors, new BrokenVendor { Id = "V1" }, new Vendor { Id = "V2" }, "V1", null)
+            };
+            foreach (var test in cases)
+            {
+                using var logs = new CapturedLogs();
+                var backend = new RecordingBackend("Bonsai");
+                Assert.ThrowsExactly<AggregateException>(() => backend.Write(test.Index, new[] { test.Failed, test.Healthy }));
+                Assert.AreEqual(1, backend.Documents.Count);
+                Assert.AreNotEqual(test.Id.ToString(), backend.Documents.Single().Id);
+                var failure = logs.Events.Single(e => Operation(e) == $"Bonsai/{backend.IndexName(test.Index)} serialization");
+                CollectionAssert.AreEqual(new[] { test.Id }, DocumentValues(failure, "DocumentId"));
+                CollectionAssert.AreEqual(new[] { test.OrderId }, DocumentValues(failure, "OrderId"));
+                AssertSafeLogs(logs);
+            }
         }
 
         [DataTestMethod]
@@ -215,6 +376,7 @@ namespace Purchasing.Tests.ServiceTests
         {
             private readonly int _count;
             public List<int[]> Reads { get; } = new List<int[]>();
+            public IEnumerable<SearchResults.CommentResult> Comments { get; set; } = Array.Empty<SearchResults.CommentResult>();
             public FakeOrderSource(int count) { _count = count; }
             public int[] ChangedOrderIds(DateTime since) => Enumerable.Range(1, _count).ToArray();
             public OrderIndexBatch ReadBatch(int[] ids)
@@ -229,13 +391,13 @@ namespace Purchasing.Tests.ServiceTests
                     Comments = ids.Select(i => new SearchResults.CommentResult { Id = i, OrderId = i }).ToList()
                 };
             }
-            public IEnumerable<SearchResults.CommentResult> RecentComments(DateTime since) => Array.Empty<SearchResults.CommentResult>();
+            public IEnumerable<SearchResults.CommentResult> RecentComments(DateTime since) => Comments;
         }
 
         internal sealed class RecordingBackend : IndexBackend
         {
             public string FailingDocument { get; set; }
-            public bool FailDeletes { get; set; }
+            public Func<string, string, string, (int? Status, string Body)?> ResponseOverride { get; set; }
             public bool FailSearch { get; set; }
             public bool ThrowOnRequest { get; set; }
             public string SearchResponse { get; set; } = "{\"hits\":{\"hits\":[]}}";
@@ -247,11 +409,13 @@ namespace Purchasing.Tests.ServiceTests
             {
                 Calls.Add((method, path, body));
                 if (ThrowOnRequest) throw new TimeoutException("private transport detail");
+                var response = ResponseOverride?.Invoke(method, path, body);
+                if (response.HasValue) return response.Value;
                 if (path.Contains("/_search")) return FailSearch ? (503, "{}") : (200, SearchResponse);
                 if (path.Contains("/_delete_by_query"))
                 {
                     Deletes.Add(JObject.Parse(body)["query"]["terms"]["orderId"].Values<int>().ToArray());
-                    return (200, FailDeletes ? "{\"failures\":[{\"reason\":\"failed\"}]}" : "{\"failures\":[],\"version_conflicts\":0}");
+                    return (200, "{\"failures\":[],\"version_conflicts\":0}");
                 }
                 if (path.EndsWith("/_alias"))
                 {
@@ -274,6 +438,49 @@ namespace Purchasing.Tests.ServiceTests
                 return (200, "{\"acknowledged\":true}");
             }
         }
+
+        private static string Operation(LogEvent entry) => entry.Properties.TryGetValue("Operation", out var value)
+            ? (string)((ScalarValue)value).Value : null;
+
+        private static int[] OrderIds(LogEvent entry) => ((SequenceValue)entry.Properties["OrderIds"]).Elements
+            .Cast<ScalarValue>().Select(v => (int)v.Value).ToArray();
+
+        private static object[] DocumentValues(LogEvent entry, string key) => ((SequenceValue)entry.Properties["Documents"]).Elements
+            .Cast<DictionaryValue>().Select(d => ((ScalarValue)d.Elements.Single(p => (string)p.Key.Value == key).Value).Value).ToArray();
+
+        private static void AssertSafeLogs(CapturedLogs logs)
+        {
+            Assert.IsFalse(logs.Events.Any(e => (e.RenderMessage() + e.Exception).Contains("private")));
+        }
+
+        private sealed class CapturedLogs : IDisposable
+        {
+            private readonly ILogger _previous = Log.Logger;
+            private readonly Logger _logger;
+            public List<LogEvent> Events { get; } = new();
+            public CapturedLogs()
+            {
+                var sink = new Mock<ILogEventSink>();
+                sink.Setup(s => s.Emit(It.IsAny<LogEvent>())).Callback<LogEvent>(Events.Add);
+                _logger = new LoggerConfiguration().WriteTo.Sink(sink.Object).CreateLogger();
+                Log.Logger = _logger;
+            }
+            public void Dispose()
+            {
+                Log.Logger = _previous;
+                _logger.Dispose();
+            }
+        }
+
+        private sealed class BrokenHistory : OrderHistory { [JsonProperty] public string Broken => throw new InvalidOperationException("private document body"); }
+        private sealed class BrokenTracking : OrderTrackingEntity { [JsonProperty] public string Broken => throw new InvalidOperationException("private document body"); }
+        private sealed class BrokenLine : SearchResults.LineResult { [JsonProperty] public string Broken => throw new InvalidOperationException("private document body"); }
+        private sealed class BrokenComment : SearchResults.CommentResult { [JsonProperty] public string Broken => throw new InvalidOperationException("private document body"); }
+        private sealed class BrokenAnswer : SearchResults.CustomFieldResult { [JsonProperty] public string Broken => throw new InvalidOperationException("private document body"); }
+        private sealed class BrokenAccount : Account { [JsonProperty] public string Broken => throw new InvalidOperationException("private document body"); }
+        private sealed class BrokenBuilding : Building { [JsonProperty] public string Broken => throw new InvalidOperationException("private document body"); }
+        private sealed class BrokenCommodity : Commodity { [JsonProperty] public string Broken => throw new InvalidOperationException("private document body"); }
+        private sealed class BrokenVendor : Vendor { [JsonProperty] public string Broken => throw new InvalidOperationException("private document body"); }
 
         private sealed class OptInDocument : UCDArch.Core.DomainModel.DomainObject
         {

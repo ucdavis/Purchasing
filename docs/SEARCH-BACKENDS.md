@@ -4,7 +4,7 @@ Purchasing ships the existing Bonsai/NEST 7.13.2 transport and the Elasticsearch
 
 ## Configuration
 
-Set these values independently in the MVC and jobs applications. App Service environment variables use double underscores, for example `Search__WriteTargets=Both`.
+Set these values independently in the MVC and jobs applications. App Service environment variables use double underscores, for example `Search__WriteTargets=Both`. Both transports use a 60-second request timeout.
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
@@ -15,7 +15,6 @@ Set these values independently in the MVC and jobs applications. App Service env
 | `Search:<backend>:IndexPrefix` | `opp` | Namespace for the nine logical index names, such as `opp-orderhistory`. |
 | `Search:<backend>:Username` and `Password` | Unset | Optional basic authentication. Supply both. |
 | `Search:<backend>:ApiKey` | Unset | Optional encoded API key, as an alternative to basic authentication. |
-| `Search:<backend>:RequestTimeoutSeconds` | `60` | Request timeout, from 1 through 600 seconds. |
 
 Only enabled read/write backends require configuration. Invalid selections, endpoints, prefixes, and credential combinations fail service initialization. No network request is needed for configuration validation. Credentials belong in the existing secret configuration, not committed JSON. Search settings are separate from `Stackify.ElasticUrl` and logging/APM settings.
 
@@ -29,7 +28,7 @@ SQL extraction runs once per batch. Each configured backend receives the same pr
 
 For each selected order batch, reconciliation removes existing history, lines, answers, tracking, and comments, then writes their current SQL projections. Refreshing before deletion makes repeated reconciliation remove documents from a previous unrefreshed run. Changes to related indexes become visible separately; brief lag and temporary inconsistency are accepted.
 
-Each target's bulk items and delete responses are checked. A failure does not prevent other targets, indexes, or later batches from being attempted. Failed document IDs and target/index context are logged without document bodies or transport credentials. Jobs attempt all their indexing operations and then fail if any work failed. AggieEnterprise processing and other business side effects execute once; only the index writes fan out.
+Each target's bulk items and delete responses are checked. Refresh or deletion failures are collected while replacement writes are still attempted. A failure does not prevent other targets, indexes, or later batches from being attempted. Reconciliation failures log affected order IDs; serialization and bulk failures log affected document and order IDs with target/index context, without document bodies or transport credentials. Jobs attempt all their indexing operations and then fail if any work failed. AggieEnterprise processing and other business side effects execute once; only the index writes fan out.
 
 The existing full-index operations write a fresh physical index, refresh it, and promote its alias only after successful writes. The first promotion can atomically replace a legacy concrete index. Later promotions remove previous generations in the same namespace after confirming no other aliases use them. Failed builds leave their physical indexes for inspection; operators must review and remove failed generations to reclaim storage. This is not a coordinated migration runner. Run full rebuilds separately from other writers until cross-process coordination is implemented.
 
