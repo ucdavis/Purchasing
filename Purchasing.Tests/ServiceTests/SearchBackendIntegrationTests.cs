@@ -86,7 +86,9 @@ namespace Purchasing.Tests.ServiceTests
                 backend.Write(Indexes.Buildings, new[] { new Building { Id = "B1", BuildingName = "Office paper" } }, recreate: true);
                 // Existing Bonsai installations start with concrete index names, not aliases.
                 backend.Write(Indexes.Commodities, new[] { new Commodity { Id = "C0", Name = "Previous commodity" } });
+                Assert.AreEqual(DateTime.MinValue, backend.LastModified(Indexes.Commodities));
                 backend.Write(Indexes.Commodities, new[] { new Commodity { Id = "C1", Name = "Office paper" } }, recreate: true);
+                Assert.AreEqual(DateTime.MinValue, backend.LastModified(Indexes.Commodities));
                 backend.Write(Indexes.Vendors, new[] { new Vendor { Id = "V1", Name = "Office paper" } }, recreate: true);
                 backend.Write(Indexes.OrderTracking, new[] { new OrderTrackingEntity
                 {

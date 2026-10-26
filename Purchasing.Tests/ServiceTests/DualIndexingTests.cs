@@ -16,6 +16,7 @@ using Nest.JsonNetSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 using Purchasing.Core.Services;
 using Purchasing.Mvc.Controllers;
@@ -559,6 +560,75 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(0, search.GetOrderHistory(Array.Empty<int>(), null, null, null, null, null).Results.Count);
             Assert.AreEqual(0, reader.Calls.Count);
             Assert.ThrowsExactly<SearchBackendException>(() => search.SearchOrders("test", new[] { 42 }));
+            Assert.AreEqual(0, other.Calls.Count);
+        }
+
+        [DataTestMethod]
+        [DataRow("Bonsai", false)]
+        [DataRow("Bonsai", true)]
+        [DataRow("ElasticCloud", false)]
+        [DataRow("ElasticCloud", true)]
+        public void HistoryPreservesLegacyDateEstimateForSelectedReader(string name, bool emptyPermissions)
+        {
+            var reader = new RecordingBackend(name)
+            {
+                SearchResponse = "{\"hits\":{\"hits\":[{\"_source\":{\"orderId\":42}}]}}"
+            };
+            var other = new RecordingBackend("Other");
+            var service = new ElasticSearchIndexService(null, new SearchBackendSet(reader, other));
+            var before = DateTime.UtcNow.ToPacificTime().AddMinutes(-5).ToLocalTime();
+
+            var history = service.GetOrderHistory(emptyPermissions ? Array.Empty<int>() : new[] { 42 },
+                null, null, null, null, null);
+
+            var after = DateTime.UtcNow.ToPacificTime().AddMinutes(-5).ToLocalTime();
+            Assert.IsTrue(history.LastModified >= before && history.LastModified <= after);
+            Assert.AreEqual(emptyPermissions ? 0 : 1, history.Results.Count);
+            Assert.AreEqual(emptyPermissions ? 0 : 1, reader.Calls.Count);
+            Assert.AreEqual(0, other.Calls.Count);
+        }
+
+        [DataTestMethod]
+        [DataRow("Bonsai", false)]
+        [DataRow("Bonsai", true)]
+        [DataRow("ElasticCloud", false)]
+        [DataRow("ElasticCloud", true)]
+        public void ModificationStatsPreserveLegacyConversionForSelectedReader(string name, bool alias)
+        {
+            var indexName = alias ? "test-orderhistory-generation" : "test-orderhistory";
+            var indexing = new JObject { ["index_time_in_millis"] = 1000 };
+            var response = new JObject
+            {
+                ["indices"] = new JObject { [indexName] = new JObject { ["total"] = new JObject { ["indexing"] = indexing } } }
+            };
+            var reader = new RecordingBackend(name) { ResponseOverride = (_, _, _) => (200, response.ToString()) };
+            var other = new RecordingBackend("Other");
+            var service = new ElasticSearchIndexService(null, new SearchBackendSet(reader, other));
+
+            // NEST's Time string is null when the default stats response omits index_time.
+            Assert.AreEqual(DateTime.MinValue, service.LastModified(Indexes.OrderHistory));
+            Assert.AreEqual("GET", reader.Calls.Single().Method);
+            Assert.AreEqual("/test-orderhistory/_stats", reader.Calls.Single().Path);
+
+            // Preserve the old conversion when a human-readable duration is present.
+            // It is not a date. Correcting this behavior belongs to issue #677.
+            indexing["index_time"] = "1s";
+            Assert.ThrowsExactly<FormatException>(() => service.LastModified(Indexes.OrderHistory));
+            Assert.AreEqual(0, other.Calls.Count);
+        }
+
+        [DataTestMethod]
+        [DataRow(503, "{}")]
+        [DataRow(200, "{\"_shards\":{\"failed\":1}}")]
+        [DataRow(200, "{}")]
+        public void ModificationStatsFailuresDoNotReturnDatesOrFallBack(int status, string response)
+        {
+            var reader = new RecordingBackend("ElasticCloud") { ResponseOverride = (_, _, _) => (status, response) };
+            var other = new RecordingBackend("Bonsai");
+            var service = new ElasticSearchIndexService(null, new SearchBackendSet(reader, other));
+
+            Assert.ThrowsExactly<SearchBackendException>(() => service.LastModified(Indexes.OrderHistory));
+            Assert.AreEqual(1, reader.Calls.Count);
             Assert.AreEqual(0, other.Calls.Count);
         }
 

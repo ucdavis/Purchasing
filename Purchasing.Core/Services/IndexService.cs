@@ -110,8 +110,7 @@ namespace Purchasing.Core.Services
             DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId) =>
             new ElasticSearchService(_backends).GetOrderHistory(orderids, startDate, endDate, startLastActionDate, endLastActionDate, statusId);
 
-        // Without recovery tracking, a reliable freshness checkpoint is unavailable.
-        public DateTime LastModified(Indexes index) => DateTime.MinValue;
+        public DateTime LastModified(Indexes index) => _backends.Reader.LastModified(index);
         public int NumRecords(Indexes index) => _backends.Reader.Count(index);
 
         private void WriteIndex<T>(string sql, Indexes index) where T : class

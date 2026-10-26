@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
+using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
 
 namespace Purchasing.Core.Services
@@ -50,7 +51,7 @@ namespace Purchasing.Core.Services
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderIds, DateTime? startDate, DateTime? endDate,
             DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId)
         {
-            if (orderIds.Length == 0) return new IndexedList<OrderHistory> { Results = new List<OrderHistory>() };
+            if (orderIds.Length == 0) return HistoryResults(new List<OrderHistory>());
             var filters = new JArray();
             if (startLastActionDate.HasValue)
                 filters.Add(Range("lastActionDate", "gte", startLastActionDate.Value, "lte", endLastActionDate ?? DateTime.UtcNow.AddDays(1)));
@@ -65,9 +66,15 @@ namespace Purchasing.Core.Services
                 ["sort"] = new JArray(new JObject { ["lastActionDate"] = "desc" }),
                 ["size"] = Math.Min(orderIds.Length, 10000)
             };
-            // There is no durable freshness checkpoint. Do not invent a "current as of" date.
-            return new IndexedList<OrderHistory> { Results = IndexBackend.Hits<OrderHistory>(_backend.Search(Indexes.OrderHistory, query)) };
+            return HistoryResults(IndexBackend.Hits<OrderHistory>(_backend.Search(Indexes.OrderHistory, query)));
         }
+
+        private static IndexedList<OrderHistory> HistoryResults(List<OrderHistory> results) => new IndexedList<OrderHistory>
+        {
+            Results = results,
+            // Retain the existing display estimate until timestamp accuracy is addressed in #677.
+            LastModified = DateTime.UtcNow.ToPacificTime().AddMinutes(-5).ToLocalTime()
+        };
 
         private static JObject Range(string field, string comparison, DateTime value, string otherComparison = null, DateTime? otherValue = null)
         {

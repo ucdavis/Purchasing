@@ -87,6 +87,22 @@ namespace Purchasing.Core.Services
             return checked((int)result.Value<long>("count"));
         }
 
+        public DateTime LastModified(Indexes index)
+        {
+            var indexName = IndexName(index);
+            var result = Request("GET", $"/{indexName}/_stats");
+            var indices = result["indices"] as JObject
+                ?? throw new SearchBackendException($"{Name}: stats returned no indices for {index}.");
+            // Rebuilt indexes use an alias; stats are keyed by its physical index name.
+            var stats = indices[indexName] ?? (indices.Count == 1 ? indices.Properties().Single().Value : null);
+            if (stats == null) return DateTime.MinValue;
+            var indexing = stats["total"]?["indexing"] as JObject
+                ?? throw new SearchBackendException($"{Name}: stats returned no indexing totals for {index}.");
+            // Preserve the legacy string conversion, including null -> MinValue. This
+            // duration is not a freshness timestamp; accuracy is tracked in issue #677.
+            return Convert.ToDateTime(indexing.Value<string>("index_time"));
+        }
+
         public void Write<T>(Indexes index, IEnumerable<T> documents, bool recreate = false) where T : class
         {
             var materialized = documents as IReadOnlyCollection<T> ?? documents.ToList();
