@@ -36,13 +36,13 @@ Malformed query-string syntax returns HTTP 400 with an invalid-search-syntax mes
 
 ## Limits and follow-up work
 
-This PR intentionally adds no durable checkpoints, retry queue, SQL tracking tables, recovery files, automatic backlog catch-up, or cross-process locks. A logged failure is not a promise of a later retry. Updates outside the existing ten-minute polling window may require manual repair. Overlapping admin actions, full rebuilds, and scheduled jobs can still apply older data after newer data.
+The deployed jobs have no durable checkpoints, retry queue, SQL tracking tables, recovery files, automatic backlog catch-up, or cross-process locks. A logged failure is not a promise of a later retry. Updates outside the existing ten-minute polling window may require manual repair. Overlapping admin actions, full rebuilds, and scheduled jobs can still apply older data after newer data.
 
 There is no reliable freshness checkpoint. At the user's request, the History and System index pages retain their existing date displays and behavior. History uses the existing five-minute estimate. System converts the selected backend's `index_time` string as before; default stats omit that field, producing `DateTime.MinValue`, and a duration string cannot be parsed as a date. These values do not prove freshness. [Issue #677](https://github.com/ucdavis/Purchasing/issues/677) tracks truthful backend-specific dates, failure/partial-success handling, timezone behavior, and unknown states.
 
 The tracking feed also misses some mutations and deletions, including changes to joined data. A one-day replay would not prove completeness.
 
-The standalone local rebuild/catch-up runner, verification and completeness requirements, read-switch and rollback freshness gates, and the Bonsai retirement observation period remain follow-up work. SQL resizing, production configuration, deployment, and production rebuilding require separate operational decisions.
+The [local TEST backfill runner](SEARCH-BACKFILL.md) provides bounded baseline copying, JSON resume, full reconciliation and content verification during controlled TEST maintenance. It uses an isolated Elastic Cloud destination while deployed jobs continue writing Bonsai. It does not add checkpoints or change recovery behavior for deployed jobs. Production read-switch and rollback freshness gates, and the Bonsai retirement observation period, remain separate work. SQL resizing, production configuration, deployment, and production rebuilding require separate operational decisions.
 
 ## Validation
 

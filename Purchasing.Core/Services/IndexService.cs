@@ -58,13 +58,13 @@ namespace Purchasing.Core.Services
             _orders = orders;
         }
 
-        public void CreateAccountsIndex() => WriteIndex<Account>("SELECT [Id], [Name] FROM vAccounts WHERE [IsActive] = 1", Indexes.Accounts);
-        public void CreateBuildingsIndex() => WriteIndex<Building>("SELECT [Id], [BuildingName] FROM vBuildings", Indexes.Buildings);
+        public void CreateAccountsIndex() => WriteIndex<Account>(LookupIndexSource.AccountsSql, Indexes.Accounts);
+        public void CreateBuildingsIndex() => WriteIndex<Building>(LookupIndexSource.BuildingsSql, Indexes.Buildings);
         public void CreateCommentsIndex() => WriteIndex<SearchResults.CommentResult>(SqlOrderIndexSource.CommentsSql, Indexes.Comments);
-        public void CreateCommoditiesIndex() => WriteIndex<Commodity>("SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1", Indexes.Commodities);
+        public void CreateCommoditiesIndex() => WriteIndex<Commodity>(LookupIndexSource.CommoditiesSql, Indexes.Commodities);
         public void CreateCustomAnswersIndex() => WriteIndex<SearchResults.CustomFieldResult>(SqlOrderIndexSource.AnswersSql, Indexes.CustomAnswers);
         public void CreateLineItemsIndex() => WriteIndex<SearchResults.LineResult>(SqlOrderIndexSource.LinesSql, Indexes.LineItems);
-        public void CreateVendorsIndex() => WriteIndex<Vendor>("SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1", Indexes.Vendors);
+        public void CreateVendorsIndex() => WriteIndex<Vendor>(LookupIndexSource.VendorsSql, Indexes.Vendors);
 
         public void CreateHistoricalOrderIndex() => WriteIndex<OrderHistory>(
             "DECLARE @OrderIds OrderIdsTableType; INSERT INTO @OrderIds SELECT Id FROM Orders; SELECT * FROM udf_GetOrderHistoryForOrderIds(@OrderIds)",

@@ -40,6 +40,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UCDARch.testing", "UCDArch.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.Jobs.AggieEnterprise", "Purchasing.Jobs.AggieEnterprise\Purchasing.Jobs.AggieEnterprise.csproj", "{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Purchasing.SearchBackfill", "Purchasing.SearchBackfill\Purchasing.SearchBackfill.csproj", "{28CE04E6-454B-4A57-B1C3-08E4C559C07A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -197,6 +199,16 @@ Global
 		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
 		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{A3BE1E6E-EFBC-4DD0-8E12-FB469AD82E25}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.ReleaseAzure|Any CPU.ActiveCfg = Release|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.ReleaseAzure|Any CPU.Build.0 = Release|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.ReleaseCAES|Any CPU.ActiveCfg = Release|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.ReleaseCAES|Any CPU.Build.0 = Release|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{28CE04E6-454B-4A57-B1C3-08E4C559C07A}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -42,7 +42,7 @@ namespace Purchasing.Core.Services
         public string IndexName(Indexes index) => $"{_prefix}-{index.ToString().ToLowerInvariant()}";
         protected abstract (int? Status, string Body) Send(string method, string path, string body);
 
-        internal JObject Request(string method, string path, object body = null, bool allowNotFound = false)
+        internal JObject Request(string method, string path, object body = null, bool allowNotFound = false, bool preserveSourceValues = false)
         {
             (int? Status, string Body) response;
             try
@@ -63,7 +63,12 @@ namespace Purchasing.Core.Services
                 throw new SearchBackendException($"{Name}: {method} {path} failed with HTTP {response.Status?.ToString() ?? "unavailable"}.");
             try
             {
-                var result = string.IsNullOrWhiteSpace(response.Body) ? new JObject() : JObject.Parse(response.Body);
+                var result = string.IsNullOrWhiteSpace(response.Body) ? new JObject() : preserveSourceValues
+                    ? JsonConvert.DeserializeObject<JObject>(response.Body, new JsonSerializerSettings
+                    {
+                        DateParseHandling = DateParseHandling.None, FloatParseHandling = FloatParseHandling.Decimal
+                    }) ?? throw new JsonSerializationException()
+                    : JObject.Parse(response.Body);
                 if (result["error"] != null || result.Value<bool?>("timed_out") == true ||
                     result["_shards"]?.Value<int?>("failed") > 0 || result.Value<bool?>("acknowledged") == false)
                     throw new SearchBackendException($"{Name}: {method} {path} returned an incomplete or failed response.");
@@ -224,14 +229,8 @@ namespace Purchasing.Core.Services
                 {
                     try
                     {
-                        var idProperty = document is OrderHistory || document is OrderTrackingEntity ? "orderId" : "id";
-                        var source = JObject.FromObject(document, JsonSerializer.Create(DocumentSettings));
-                        var id = source[idProperty];
-                        if (id == null || string.IsNullOrWhiteSpace(id.ToString()))
-                            throw new SearchBackendException($"{Name}/{index}: document has no stable ID.");
-                        // SQL's history Id is a row number that changes with batch boundaries.
-                        if (document is OrderHistory) source["id"] = id.DeepClone();
-                        var metadata = new JObject { ["index"] = new JObject { ["_index"] = index, ["_id"] = id.ToString() } };
+                        var (id, source) = SerializeDocument(document);
+                        var metadata = new JObject { ["index"] = new JObject { ["_index"] = index, ["_id"] = id } };
                         var serialized = source.ToString(Formatting.None);
                         body.AppendLine(metadata.ToString(Formatting.None));
                         body.AppendLine(serialized);
@@ -266,6 +265,18 @@ namespace Purchasing.Core.Services
                 }, $"{Name}/{index} bulk request", submitted);
             }
             errors.ThrowIfAny();
+        }
+
+        internal static (string Id, JObject Source) SerializeDocument(object document)
+        {
+            var idProperty = document is OrderHistory || document is OrderTrackingEntity ? "orderId" : "id";
+            var source = JObject.FromObject(document, JsonSerializer.Create(DocumentSettings));
+            var id = source[idProperty];
+            if (id == null || string.IsNullOrWhiteSpace(id.ToString()))
+                throw new SearchBackendException("Document has no stable ID.");
+            // SQL's history Id is a row number that changes with batch boundaries.
+            if (document is OrderHistory) source["id"] = id.DeepClone();
+            return (id.ToString(), source);
         }
 
         private static Dictionary<string, object> DocumentIdentity(object document)
