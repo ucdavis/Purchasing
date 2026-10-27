@@ -25,6 +25,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Purchasing.Core\Purchasing.Core.csproj"/>
+		<ProjectReference Include="..\Purchasing.Jobs.Common\Purchasing.Jobs.Common.csproj"/>
 		<ProjectReference Include="..\Purchasing.Mvc\Purchasing.Mvc.csproj"/>
 		<ProjectReference Include="..\Purchasing.WS\Purchasing.WS.csproj"/>
 		<ProjectReference Include="..\UCDArch.Testing\UCDARch.Testing.csproj"/>

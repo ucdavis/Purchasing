@@ -18,10 +18,12 @@ namespace Purchasing.Mvc
     public class ComponentInstaller : IWindsorInstaller
     {
         private readonly bool _useRosettaDirectorySearch;
+        private readonly SearchBackendSet _searchBackends;
 
-        public ComponentInstaller(bool useRosettaDirectorySearch = false)
+        public ComponentInstaller(SearchBackendSet searchBackends, bool useRosettaDirectorySearch = false)
         {
             _useRosettaDirectorySearch = useRosettaDirectorySearch;
+            _searchBackends = searchBackends;
         }
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
@@ -30,20 +32,8 @@ namespace Purchasing.Mvc
 
             container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
 
-            //container.Register(Component.For<ISearchService>().ImplementedBy<IndexSearchService>().Named("searchService"));
+            container.Register(Component.For<SearchBackendSet>().Instance(_searchBackends));
             container.Register(Component.For<ISearchService>().ImplementedBy<ElasticSearchService>().Named("searchService"));
-
-            //Register the index service and pass along the current App_Data/Indexes path location if HttpContext is available
-            //TODO: Maybe make it a singleton so we don't have to keep opening the indexreader
-            //container.Register(
-            //    Component.For<IIndexService>().ImplementedBy<IndexService>().Named("indexService").OnCreate(
-            //        service =>
-            //        {
-            //            if (HttpContext.Current != null)
-            //                service.SetIndexRoot(HttpContext.Current.Server.MapPath("~/App_Data/Indexes"));
-            //        }
-            //        ));
-
             container.Register(Component.For<IIndexService>().ImplementedBy<ElasticSearchIndexService>().Named("indexService"));
 
             container.Register(Component.For<IFileService>().ImplementedBy<FileService>().Named("fileService"));//.LifestyleSingleton());

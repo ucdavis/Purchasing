@@ -37,6 +37,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="AggieEnterpriseApi" Version="0.3.37" />
+		<PackageReference Include="Elastic.Clients.Elasticsearch" Version="9.5.3" />
 		<PackageReference Include="NEST.JsonNetSerializer" Version="7.13.2" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />

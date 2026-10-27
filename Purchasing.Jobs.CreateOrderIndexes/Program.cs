@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Ninject;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Services;
@@ -20,17 +20,19 @@ namespace Purchasing.Jobs.CreateOrderIndexes
             {
                 Log.Information("Creating Order Indexes");
 
-                indexService.CreateHistoricalOrderIndex();
-                indexService.CreateLineItemsIndex();
-                indexService.CreateCommentsIndex();
-                indexService.CreateCustomAnswersIndex();
-                indexService.CreateTrackingIndex();
+                IndexingFailures.RunAll(
+                    indexService.CreateHistoricalOrderIndex,
+                    indexService.CreateLineItemsIndex,
+                    indexService.CreateCommentsIndex,
+                    indexService.CreateCustomAnswersIndex,
+                    indexService.CreateTrackingIndex);
 
                 Log.Information("Order indexes created successfully at {0}", DateTime.UtcNow.ToPacificTime());
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "FAILED: Index creation failed because {0}", ex.Message);
+                throw; // Surface the failure only after every operation and target has been attempted.
             }
         }
     }

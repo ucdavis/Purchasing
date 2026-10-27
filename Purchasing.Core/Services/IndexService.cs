@@ -1,27 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using Dapper;
-using Elasticsearch.Net;
-using Nest;
-using Nest.JsonNetSerializer;
 using Purchasing.Core.Domain;
 using Purchasing.Core.Helpers;
 using Purchasing.Core.Queries;
-using UCDArch.Core;
-using Microsoft.Extensions.Configuration;
-using System.Net;
-using System.Text.RegularExpressions;
-using Serilog;
 
 namespace Purchasing.Core.Services
 {
     public interface IIndexService
     {
-        void SetIndexRoot(string root);
 
         void CreateAccountsIndex();
         void CreateBuildingsIndex();
@@ -38,7 +26,6 @@ namespace Purchasing.Core.Services
         int NumRecords(Indexes index);
         void UpdateCommentsIndex();
 
-        ElasticClient GetIndexClient();
         void CreateTrackingIndex();
 
 
@@ -54,293 +41,94 @@ namespace Purchasing.Core.Services
         IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
             DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId);
     }
-    public class Person
-    {
-        public string Id { get; set; }
-        public string Firstname { get; set; }
-        public string Lastname { get; set; }
-        public virtual string Middle { get; set; }
-    }
     public class ElasticSearchIndexService : IIndexService
     {
         private readonly IDbService _dbService;
-        private ElasticClient _client;
-        private const int MaxReturnValues = 10000; //This was 15,000 but ElasticSearch Errors out if it is that big. Tested with 12,000
-        private const int MaxTermCount = 1000000; // allow up to 1M terms to search on (in case someone has lots of orders)
-        private const int CreateIndexQueryTimeout = 60 * 5; // Allow 5 minutes for long index creation queries
+        private readonly SearchBackendSet _backends;
+        private readonly IOrderIndexSource _orders;
+        private const int CreateIndexQueryTimeout = 60 * 5;
 
-        public ElasticSearchIndexService(IDbService dbService)
+        public ElasticSearchIndexService(IDbService dbService, SearchBackendSet backends)
+            : this(dbService, backends, new SqlOrderIndexSource(dbService)) { }
+
+        internal ElasticSearchIndexService(IDbService dbService, SearchBackendSet backends, IOrderIndexSource orders)
         {
             _dbService = dbService;
-            
-            Uri.TryCreate(SmartServiceLocator<IConfiguration>.GetService()["ElasticSearchUrl"], UriKind.Absolute, out var uri);
-
-            var pool = new SingleNodeConnectionPool(uri);
-            var settings = new ConnectionSettings(pool, JsonNetSerializer.Default);
-
-            settings.DefaultIndex("prepurchasing");
-
-            _client = new ElasticClient(settings);
+            _backends = backends;
+            _orders = orders;
         }
 
-        public void SetIndexRoot(string root)
-        {
-            throw new NotImplementedException();
-        }
+        public void CreateAccountsIndex() => WriteIndex<Account>("SELECT [Id], [Name] FROM vAccounts WHERE [IsActive] = 1", Indexes.Accounts);
+        public void CreateBuildingsIndex() => WriteIndex<Building>("SELECT [Id], [BuildingName] FROM vBuildings", Indexes.Buildings);
+        public void CreateCommentsIndex() => WriteIndex<SearchResults.CommentResult>(SqlOrderIndexSource.CommentsSql, Indexes.Comments);
+        public void CreateCommoditiesIndex() => WriteIndex<Commodity>("SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1", Indexes.Commodities);
+        public void CreateCustomAnswersIndex() => WriteIndex<SearchResults.CustomFieldResult>(SqlOrderIndexSource.AnswersSql, Indexes.CustomAnswers);
+        public void CreateLineItemsIndex() => WriteIndex<SearchResults.LineResult>(SqlOrderIndexSource.LinesSql, Indexes.LineItems);
+        public void CreateVendorsIndex() => WriteIndex<Vendor>("SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1", Indexes.Vendors);
 
-        public void CreateAccountsIndex()
-        {
-            WriteIndex<Account>("SELECT [Id], [Name] FROM vAccounts WHERE [IsActive] = 1", Indexes.Accounts);
-        }
-
-        public void CreateBuildingsIndex()
-        {
-            WriteIndex<Building>("SELECT [Id], [BuildingName] FROM vBuildings", Indexes.Buildings);
-        }
-
-        public void CreateCommentsIndex()
-        {
-            Log.Information("CreateCommentsIndex - Start");
-            WriteIndex<SearchResults.CommentResult>(
-                "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults",
-                Indexes.Comments);
-        }
-
-        public void CreateCommoditiesIndex()
-        {
-            WriteIndex<Commodity>("SELECT [Id], [Name] FROM vCommodities WHERE [IsActive] = 1", Indexes.Commodities);
-        }
-
-        public void CreateCustomAnswersIndex()
-        {
-            Log.Information("CreateCustomAnswersIndex - Start");
-            WriteIndex<SearchResults.CustomFieldResult>(
-                "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults",
-                Indexes.CustomAnswers);
-        }
-
-        /// <summary>
-        /// Strongly recommend setting the DB to a S6, then running this locally. 
-        /// </summary>
-        public void CreateHistoricalOrderIndex()
-        {
-            Log.Information("CreateHistoricalOrderIndex - Start");
-            IEnumerable<OrderHistory> orderHistoryEntries;
-
-            using (var conn = _dbService.GetConnection())
-            {
-                orderHistoryEntries = conn.Query<OrderHistory>("SELECT * FROM vOrderHistory", commandTimeout: CreateIndexQueryTimeout);
-                Log.Information($"CreateHistoricalOrderIndex - History Count: {orderHistoryEntries.Count()}");
-            }
-
-            WriteIndex(orderHistoryEntries, Indexes.OrderHistory, o => o.OrderId);
-        }
-
-        public void CreateLineItemsIndex()
-        {
-            Log.Information("CreateLineItemsIndex - Start");
-            WriteIndex<SearchResults.LineResult>(
-                "SELECT [Id], [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults",
-                Indexes.LineItems
-            );
-        }
-
-        public void CreateVendorsIndex()
-        {
-            WriteIndex<Vendor>("SELECT [Id], [Name] FROM vVendors WHERE [IsActive] = 1", Indexes.Vendors);
-        }
+        public void CreateHistoricalOrderIndex() => WriteIndex<OrderHistory>(
+            "DECLARE @OrderIds OrderIdsTableType; INSERT INTO @OrderIds SELECT Id FROM Orders; SELECT * FROM udf_GetOrderHistoryForOrderIds(@OrderIds)",
+            Indexes.OrderHistory);
 
         public void CreateTrackingIndex()
         {
-            Log.Information("CreateTrackingIndex - Start");
-            using (var conn = _dbService.GetConnection())
-            {
-                var orderTrackings =
-                    conn.Query<OrderTrackingDto>(@"select * from [vOrderTrackingIndex] ORDER BY ActionDate DESC", Indexes.OrderTracking, commandTimeout: CreateIndexQueryTimeout).ToList();
-
-                var entities = ProcessTrackingEntities(orderTrackings);
-
-                WriteIndex(entities, Indexes.OrderTracking);
-            }
+            using var connection = _dbService.GetConnection();
+            var tracking = connection.Query<OrderTrackingDto>(
+                "SELECT * FROM vOrderTrackingIndex ORDER BY ActionDate DESC", commandTimeout: CreateIndexQueryTimeout).ToList();
+            WriteAll(ProcessTrackingEntities(tracking).ToList(), Indexes.OrderTracking, true);
         }
 
         public void UpdateOrderIndexes()
         {
-            var lastUpdate = DateTime.UtcNow.ToPacificTime().AddMinutes(-10); //10 minutes ago.
-            //var lastUpdate = DateTime.UtcNow.ToPacificTime().Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
-
-            IEnumerable<OrderHistory> orderHistoryEntries = null;
-            IEnumerable<SearchResults.LineResult> lineItems = null;
-            IEnumerable<SearchResults.CustomFieldResult> customAnswers = null;
-            IEnumerable<OrderTrackingEntity> orderTrackingEntities = null;
-
-            int[] updatedOrderIds;
-
-            using (var conn = _dbService.GetConnection())
+            var ids = _orders.ChangedOrderIds(DateTime.UtcNow.ToPacificTime().AddMinutes(-10));
+            var failures = new IndexingFailures();
+            foreach (var partition in ids.Distinct().Partition(1000))
             {
-                updatedOrderIds = conn.Query<int>("select DISTINCT OrderId from OrderTracking where DateCreated > @lastUpdate", new { lastUpdate }).ToArray();
-
-                if (updatedOrderIds.Any())
+                var batchIds = partition.ToArray();
+                failures.Attempt(() =>
                 {
-                    var batches = updatedOrderIds.Partition(1000);
-                    foreach (var batch in batches)
+                    // Extract each batch once. Finish its writes before moving to the next batch.
+                    var batch = _orders.ReadBatch(batchIds);
+                    foreach (var target in _backends.Writers)
                     {
-                        var localIds = batch.ToArray();
-
-                        var updatedOrderIdsParameter = new StringBuilder();
-                        foreach (var updatedOrderId in localIds)
-                        {
-                            updatedOrderIdsParameter.AppendFormat("({0}),", updatedOrderId);
-                        }
-                        updatedOrderIdsParameter.Remove(updatedOrderIdsParameter.Length - 1, 1);
-                        //take off the last comma
-
-                        orderHistoryEntries =
-                            conn.Query<OrderHistory>(string.Format(@"DECLARE @OrderIds OrderIdsTableType
-                                                INSERT INTO @OrderIds VALUES {0}
-                                                select * from udf_GetOrderHistoryForOrderIds(@OrderIds)",
-                                updatedOrderIdsParameter)).ToList();
-
-                        lineItems =
-                            conn.Query<SearchResults.LineResult>(
-                                "SELECT [Id], [OrderId], [RequestNumber], [Unit], [Quantity], [Description], [Url], [Notes], [CatalogNumber], [CommodityId], [ReceivedNotes], [PaidNotes] FROM vLineResults WHERE orderid in @localIds",
-                                new { localIds }).ToList();
-                        customAnswers =
-                            conn.Query<SearchResults.CustomFieldResult>(
-                                "SELECT [Id], [OrderId], [RequestNumber], [Question], [Answer] FROM vCustomFieldResults WHERE orderid in @localIds",
-                                new { localIds }).ToList();
-
-                        var orderInfo =
-                            conn.Query<OrderTrackingDto>(
-                                "select * from [vOrderTrackingIndex] WHERE orderid in @localIds ORDER BY ActionDate DESC",
-                                new { localIds }).ToList();
-
-                        orderTrackingEntities = ProcessTrackingEntities(orderInfo);
+                        if (batch.History != null) failures.Attempt(() => target.Reconcile(Indexes.OrderHistory, batchIds, batch.History), $"{target.Name} order history");
+                        if (batch.Lines != null) failures.Attempt(() => target.Reconcile(Indexes.LineItems, batchIds, batch.Lines), $"{target.Name} lines");
+                        if (batch.Answers != null) failures.Attempt(() => target.Reconcile(Indexes.CustomAnswers, batchIds, batch.Answers), $"{target.Name} answers");
+                        if (batch.Tracking != null) failures.Attempt(() => target.Reconcile(Indexes.OrderTracking, batchIds, batch.Tracking), $"{target.Name} tracking");
+                        if (batch.Comments != null) failures.Attempt(() => target.Reconcile(Indexes.Comments, batchIds, batch.Comments), $"{target.Name} comments");
                     }
-                }
+                    batch.Failures.ThrowIfAny();
+                }, "extract/index orders", orderIds: batchIds);
             }
-
-            if (updatedOrderIds.Any())
-            {
-
-
-                //Clear out existing lines and custom fields for the orders we are about to recreate
-                _client.DeleteByQuery<SearchResults.LineResult>(d => d.Index(Indices.Index(IndexHelper.GetIndexName(Indexes.LineItems))).Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
-
-                _client.DeleteByQuery<SearchResults.CustomFieldResult>(d => d.Index(Indices.Index(IndexHelper.GetIndexName(Indexes.CustomAnswers))).Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
-                _client.DeleteByQuery<OrderTrackingEntity>(d => d.Index(Indices.Index(IndexHelper.GetIndexName(Indexes.OrderTracking))).Query(rq => rq.Terms(t => t.Field(f => f.OrderId).Terms(updatedOrderIds))));
-
-                WriteIndex(orderHistoryEntries, Indexes.OrderHistory, e => e.OrderId, recreate: false);
-                WriteIndex(lineItems, Indexes.LineItems, recreate: false);
-                WriteIndex(customAnswers, Indexes.CustomAnswers, recreate: false);
-                WriteIndex(orderTrackingEntities, Indexes.OrderTracking, o => o.OrderId, recreate: false);
-            }
+            failures.ThrowIfAny();
         }
 
-        /// <summary>
-        /// return just the orders within the given date ranges
-        /// </summary>
-        /// <param name="orderids"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <param name="startLastActionDate"></param>
-        /// <param name="endLastActionDate"></param>
-        /// <param name="statusId"></param>
-        /// <returns></returns>
+        public void UpdateCommentsIndex() => WriteAll(
+            _orders.RecentComments(DateTime.UtcNow.ToPacificTime().AddMinutes(-10)), Indexes.Comments, false);
+
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
-            DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId)
+            DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId) =>
+            new ElasticSearchService(_backends).GetOrderHistory(orderids, startDate, endDate, startLastActionDate, endLastActionDate, statusId);
+
+        public DateTime LastModified(Indexes index) => _backends.Reader.LastModified(index);
+        public int NumRecords(Indexes index) => _backends.Reader.Count(index);
+
+        private void WriteIndex<T>(string sql, Indexes index) where T : class
         {
-            var filters = new List<QueryContainer>();
-
-            if (!endLastActionDate.HasValue)
-            {
-                endLastActionDate = DateTime.UtcNow.AddDays(1);
-            }
-
-            if (startLastActionDate.HasValue)
-            {
-                filters.Add(
-                    Query<OrderHistory>.DateRange(
-                        o =>
-                            o.Field(x => x.LastActionDate)
-                                .GreaterThanOrEquals(startLastActionDate.Value)
-                                .LessThanOrEquals(endLastActionDate)));
-            }
-
-            if (startDate.HasValue)
-            {
-                filters.Add(Query<OrderHistory>.DateRange(o => o.Field(x => x.DateCreated).GreaterThanOrEquals(startDate)));
-            }
-
-            if (endDate.HasValue)
-            {
-                filters.Add(Query<OrderHistory>.DateRange(o => o.Field(x => x.DateCreated).LessThanOrEquals(endDate)));
-            }
-            if (!string.IsNullOrWhiteSpace(statusId))
-            {
-                filters.Add(Query<OrderHistory>.Term(a => a.StatusId, statusId.ToLower()));
-            }
-
-            var orders = _client.Search<OrderHistory>(
-                s => s.Index(IndexHelper.GetIndexName(Indexes.OrderHistory))
-                    .Query(q => q.Bool(b => b.Must(filters.ToArray())))
-                    .Sort(s1 => s1.Descending(f => f.LastActionDate))
-                    .PostFilter(f => f.ConstantScore(c => c.Filter(x => x.Terms(t => t.Field(q => q.OrderId).Terms(orderids))))) //used to be .Query(f => f.And(filters.ToArray())));.  Now boolean must query/filter
-                    .Size(orderids.Length > MaxReturnValues ? MaxReturnValues : orderids.Length));
-
-            return new IndexedList<OrderHistory>
-            {
-                Results = orders.Hits.Select(h => h.Source).ToList(),
-                LastModified = DateTime.UtcNow.ToPacificTime().AddMinutes(-5).ToLocalTime()
-            };
+            using var connection = _dbService.GetConnection();
+            WriteAll(connection.Query<T>(sql, commandTimeout: CreateIndexQueryTimeout).ToList(), index, true);
         }
 
-        public DateTime LastModified(Indexes index)
+        private void WriteAll<T>(IEnumerable<T> documents, Indexes index, bool recreate) where T : class
         {
-            //TODO: no idea if this will work
-            var indexName = IndexHelper.GetIndexName(index);
-
-            var indexStats = _client.Indices.Stats(indexName);
-
-            if (indexStats.IsValid && indexStats.Indices.ContainsKey(indexName))
-            {
-                return Convert.ToDateTime(indexStats.Indices[indexName].Total.Indexing.Time);
-            }
-
-            return Convert.ToDateTime(DateTime.MinValue);
+            var materialized = documents.ToList();
+            var failures = new IndexingFailures();
+            foreach (var target in _backends.Writers)
+                failures.Attempt(() => target.Write(index, materialized, recreate), $"{target.Name}/{index}");
+            failures.ThrowIfAny();
         }
 
-        public int NumRecords(Indexes index)
-        {
-            var indexName = IndexHelper.GetIndexName(index);
-
-            // hopefully this works despite count not having a generic option.  I overwrote the index inside the action instead.
-            return (int)_client.Count<OrderHistory>(x => x.Index(indexName)).Count;
-        }
-
-        public ElasticClient GetIndexClient()
-        {
-            return _client;
-        }
-
-        public void UpdateCommentsIndex()
-        {
-            var lastUpdate = DateTime.UtcNow.ToPacificTime().Subtract(TimeSpan.FromMinutes(10)); //10 minutes ago.
-
-            IEnumerable<SearchResults.CommentResult> comments;
-
-            using (var conn = _dbService.GetConnection())
-            {
-                comments =
-                    conn.Query<SearchResults.CommentResult>(
-                        "SELECT [Id], [OrderId], [RequestNumber], [Text], [CreatedBy], [DateCreated] FROM vCommentResults where DateCreated > @lastUpdate", new { lastUpdate });
-            }
-
-            WriteIndex(comments, Indexes.Comments, recreate: false);
-        }
-
-
-        private IEnumerable<OrderTrackingEntity> ProcessTrackingEntities(IEnumerable<OrderTrackingDto> orderTrackingDtos)
+        internal static IEnumerable<OrderTrackingEntity> ProcessTrackingEntities(IEnumerable<OrderTrackingDto> orderTrackingDtos)
         {
             //do work
             string[] completeList = { "completed", "cancelled", "denied" };
@@ -415,73 +203,6 @@ namespace Purchasing.Core.Services
             }
 
             return entities;
-        }
-
-        void WriteIndex<T>(string sqlSelect, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
-        {
-            IEnumerable<T> entities;
-
-            using (var conn = _dbService.GetConnection())
-            {
-                entities = conn.Query<T>(sqlSelect);
-            }
-
-            WriteIndex(entities, indexes, idAccessor, recreate);
-        }
-
-        void WriteIndex<T>(IEnumerable<T> entities, Indexes indexes, Func<T, object> idAccessor = null, bool recreate = true) where T : class
-        {
-            Log.Information("WriteIndex - Start");
-            if (entities == null)
-            {
-                return;
-            }
-
-            var index = IndexHelper.GetIndexName(indexes);
-
-            if (recreate) //TODO: might have to check to see if index exists first time
-            {
-                Log.Information("WriteIndex - ReCreate");
-                _client.Indices.Delete(index);
-                _client.Indices.Create(index, opt => opt.Settings(s => s.Setting("index.max_terms_count", MaxTermCount)));
-            }
-
-            var batches = entities.Partition(5000).ToArray(); //split into batches of up to 5000
-            Log.Information($"WriteIndex - Batches Count: {batches.Count()}");
-
-            var count = 0;
-
-            foreach (var batch in batches)
-            {
-                count++;
-                Log.Information($"WriteIndex - Batch: {count}");
-                var bulkOperation = new BulkDescriptor();
-
-                foreach (var item in batch)
-                {
-                    T localItem = item;
-
-                    if (idAccessor == null) //if null let elasticsearch set the id
-                    {
-                        bulkOperation.Index<T>(b => b.Document(localItem).Index(index));
-                    }
-                    else
-                    {
-                        var id = idAccessor(localItem); //Be tricky so we can handle number and string ids
-
-                        if (id is int)
-                        {
-                            bulkOperation.Index<T>(b => b.Document(localItem).Id((int)id).Index(index));
-                        }
-                        else
-                        {
-                            bulkOperation.Index<T>(b => b.Document(localItem).Id(id.ToString()).Index(index));
-                        }
-                    }
-                }
-
-                _client.Bulk(_ => bulkOperation);
-            }
         }
 
     }

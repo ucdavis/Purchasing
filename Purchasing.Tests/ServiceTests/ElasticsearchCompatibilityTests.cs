@@ -61,7 +61,7 @@ namespace Purchasing.Tests.ServiceTests
             try
             {
                 // This assembly references MVC, so it uses the web application's resolved transport.
-                var service = new ElasticSearchIndexService(null);
+                var service = new ElasticSearchIndexService(null, new SearchBackendSet(configuration));
                 var result = service.GetOrderHistory(new[] { 42 }, null, null, null, null, "CP");
 
                 Assert.AreEqual(1, result.Results.Count);

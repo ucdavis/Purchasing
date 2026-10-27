@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -123,10 +123,17 @@ namespace Purchasing.Mvc.Controllers
                     model.CustomFields = _searchService.SearchCustomFieldAnswers(q, orderIds);
                 }
             }
-            catch (Exception ex) //If the search fails, return no results
+            catch (SearchBackendException ex) when (ex.IsInvalidQuery)
+            {
+                Log.Warning("Invalid search syntax");
+                model = new SearchResultModel { Query = q, IsInvalidQuery = true };
+                Response.StatusCode = 400;
+            }
+            catch (Exception ex)
             {
                 Log.Error(ex, "Error searching for {query}", q);
-                model = new SearchResultModel {Query = q};
+                model = new SearchResultModel { Query = q, IsUnavailable = true };
+                Response.StatusCode = 503;
             }
 
             return View(model);
@@ -149,6 +156,8 @@ namespace Purchasing.Mvc.Controllers
         public IList<SearchResults.LineResult> LineItems { get; set; }
         public IList<SearchResults.CustomFieldResult> CustomFields { get; set; }
         public string Query { get; set; }
+        public bool IsUnavailable { get; set; }
+        public bool IsInvalidQuery { get; set; }
         public int ResultCount { get { return (Orders.Count + LineItems.Count + Comments.Count + CustomFields.Count); } }
 
     }
