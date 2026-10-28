@@ -37,28 +37,37 @@ namespace Purchasing.Core.Services
             return connection.Query<int>("SELECT DISTINCT OrderId FROM OrderTracking WHERE DateCreated > @since", new { since }).ToArray();
         }
 
-        public OrderIndexBatch ReadBatch(int[] orderIds)
+        public OrderIndexBatch ReadBatch(int[] orderIds) => ReadBatch(orderIds, null, false);
+
+        internal OrderIndexBatch ReadDocuments(Indexes index, int[] documentIds) => ReadBatch(documentIds, index, true);
+
+        private OrderIndexBatch ReadBatch(int[] orderIds, Indexes? only, bool byDocumentId)
         {
+            if (orderIds.Length == 0) return new OrderIndexBatch
+            {
+                History = new(), Lines = new(), Answers = new(), Comments = new(), Tracking = new()
+            };
             using var connection = _db.GetConnection();
             // Values come only from integer SQL IDs and batches stay within SQL's 1,000-row VALUES limit.
             var values = string.Join(",", orderIds.Select(id => $"({id})"));
             var result = new OrderIndexBatch();
-            result.History = ReadProjection(() => connection.Query<OrderHistory>(
+            var childFilter = byDocumentId ? " WHERE Id IN @orderIds" : " WHERE OrderId IN @orderIds";
+            if (only == null || only == Indexes.OrderHistory) result.History = ReadProjection(() => connection.Query<OrderHistory>(
                 $"DECLARE @OrderIds OrderIdsTableType; INSERT INTO @OrderIds VALUES {values}; SELECT * FROM udf_GetOrderHistoryForOrderIds(@OrderIds)"),
                 Indexes.OrderHistory, orderIds, result.Failures);
-            result.Lines = ReadProjection(() => connection.Query<SearchResults.LineResult>(LinesSql + " WHERE OrderId IN @orderIds", new { orderIds }),
-                Indexes.LineItems, orderIds, result.Failures);
-            result.Answers = ReadProjection(() => connection.Query<SearchResults.CustomFieldResult>(AnswersSql + " WHERE OrderId IN @orderIds", new { orderIds }),
-                Indexes.CustomAnswers, orderIds, result.Failures);
-            result.Comments = ReadProjection(() => connection.Query<SearchResults.CommentResult>(CommentsSql + " WHERE OrderId IN @orderIds", new { orderIds }),
-                Indexes.Comments, orderIds, result.Failures);
-            result.Tracking = ReadProjection(() => ElasticSearchIndexService.ProcessTrackingEntities(connection.Query<OrderTrackingDto>(
+            if (only == null || only == Indexes.LineItems) result.Lines = ReadProjection(() => connection.Query<SearchResults.LineResult>(LinesSql + childFilter, new { orderIds }),
+                Indexes.LineItems, orderIds, result.Failures, byDocumentId);
+            if (only == null || only == Indexes.CustomAnswers) result.Answers = ReadProjection(() => connection.Query<SearchResults.CustomFieldResult>(AnswersSql + childFilter, new { orderIds }),
+                Indexes.CustomAnswers, orderIds, result.Failures, byDocumentId);
+            if (only == null || only == Indexes.Comments) result.Comments = ReadProjection(() => connection.Query<SearchResults.CommentResult>(CommentsSql + childFilter, new { orderIds }),
+                Indexes.Comments, orderIds, result.Failures, byDocumentId);
+            if (only == null || only == Indexes.OrderTracking) result.Tracking = ReadProjection(() => ElasticSearchIndexService.ProcessTrackingEntities(connection.Query<OrderTrackingDto>(
                 "SELECT * FROM vOrderTrackingIndex WHERE OrderId IN @orderIds ORDER BY ActionDate DESC", new { orderIds })),
                 Indexes.OrderTracking, orderIds, result.Failures);
             return result;
         }
 
-        private static List<T> ReadProjection<T>(Func<IEnumerable<T>> read, Indexes index, int[] orderIds, IndexingFailures failures)
+        private static List<T> ReadProjection<T>(Func<IEnumerable<T>> read, Indexes index, int[] orderIds, IndexingFailures failures, bool documentIds = false)
         {
             List<T> documents = null;
             failures.Attempt(() =>
@@ -68,7 +77,7 @@ namespace Purchasing.Core.Services
                 {
                     throw new InvalidOperationException($"SQL {index} extraction failed ({exception.GetType().Name}).");
                 }
-            }, $"SQL/{index} extraction", orderIds: orderIds);
+            }, $"SQL/{index} extraction", orderIds: documentIds ? null : orderIds, documents: documentIds ? orderIds : null);
             return documents;
         }
 

@@ -814,7 +814,7 @@ namespace Purchasing.Tests.ServiceTests
             Assert.IsFalse(logs.Events.Any(e => (e.RenderMessage() + e.Exception).Contains("private")));
         }
 
-        private static Mock<IDbService> Database(Func<DbCommand, DbDataReader> read)
+        internal static Mock<IDbService> Database(Func<DbCommand, DbDataReader> read)
         {
             var db = new Mock<IDbService>();
             db.Setup(d => d.GetConnection(null)).Returns(() =>
