@@ -25,7 +25,7 @@ namespace Purchasing.Mvc.Services
             // Keep the synchronous directory contract used by the existing controllers.
             var people = (searchTerm.Contains("@")
                 ? _client.PeopleGETAsync(email: searchTerm, affiliationState: AffiliationState.All)
-                : _client.PeopleGETAsync(loginid: searchTerm, affiliationState: AffiliationState.All))
+                : _client.PeopleGETAsync(loginId: searchTerm, affiliationState: AffiliationState.All))
                 .GetAwaiter().GetResult();
 
             if (people.Count == 0)
