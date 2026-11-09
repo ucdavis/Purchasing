@@ -130,7 +130,9 @@ namespace Purchasing.Core.Services
             var ids = workgroups.Select(w => w.Id).ToArray();
             if (ids.Length == 0) return new OrderTrackingAggregationByRole
             {
-                OrderTrackingEntities = new List<OrderTrackingEntity>(), NamesInRole = Array.Empty<string>(), PercentilesForRole = new List<double[]>()
+                OrderTrackingEntities = new List<OrderTrackingEntity>(),
+                NamesInRole = Array.Empty<string>(),
+                PercentilesForRole = new List<double[]>()
             };
             var roleField = role == "Approver" ? "approverId" : role == "AccountManager" ? "accountManagerId" : "purchaserId";
             var timeField = role == "Approver" ? "minutesToApprove" : role == "AccountManager" ? "minutesToAccountManagerComplete" : "minutesToPurchaserComplete";

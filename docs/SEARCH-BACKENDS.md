@@ -41,6 +41,6 @@ History retains its existing five-minute date estimate. System index dates retai
 
 ## Validation
 
-`IndexingTests` covers configuration, 2,001-order batching, projection failures, stale-document reconciliation, bulk and lifecycle failures, stable identities, serialization, authorization, date behavior, and search errors. `ElasticsearchCompatibilityTests` exercises the real Elasticsearch 9 transport through MVC's dependency graph.
+`IndexingTests` covers configuration, 2,001-order batching, projection failures, stale-document reconciliation, bulk and lifecycle failures, stable identities, serialization, authorization, date behavior, and search errors. `ElasticsearchCompatibilityTests` exercises the real Elasticsearch 9 transport through MVC's dependency graph, including order-history authorization IDs and status filters.
 
 `SearchBackendIntegrationTests` requires `PURCHASING_TEST_ELASTIC9_URL` pointing to a disposable loopback Elasticsearch 9 server. It uses a unique prefix and removes its indexes. Without the endpoint the tests are explicitly inconclusive. Coverage includes all nine index types, history filtering and sorting, authorization and empty permissions, more than 65,536 permitted IDs, tracking aggregations, replacement aliases, and repeated reconciliation with stale-child removal. No test requires production credentials.

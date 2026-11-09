@@ -32,7 +32,7 @@ All 14 C# projects target `net10.0`. [global.json](../global.json) owns the SDK 
 - Castle Windsor moves to 6.0.0 with Castle.Core 5.2.1. The host uses `Castle.Windsor.MsDependencyInjection` 6.0.0 and its `WindsorServiceProviderFactory`. The existing `Startup.ConfigureContainer` registrations remain. The former adapter's 6.0.0 release compiled but failed on the first HTTP request with `No scope available`; the replacement passes actual HTTP tests. See the [upstream scope issue](https://github.com/castleproject/Windsor/issues/646) and [replacement adapter documentation](https://github.com/volosoft/castle-windsor-ms-adapter).
 - ASP.NET Newtonsoft integration and directory services use 10.0.12; Newtonsoft.Json uses 13.0.4. Azure.Storage.Blobs moves to 12.30.0, and NPOI to 2.7.6 for legacy Excel vendor imports.
 - Serilog.AspNetCore uses 10.0.0, Serilog.Exceptions 8.4.0, ClientInfo 2.9.0 and the jobs' console sink 6.1.1. User-Agent enrichment keeps the `ClientAgent` property with the newer header API. Elastic APM uses 1.35.0 and its Serilog enricher 9.0.0. See [search backends](SEARCH-BACKENDS.md) for search destination configuration and query/index contracts.
-- APM uses targeted ASP.NET Core and Azure Storage packages with subscribers for incoming requests, HTTP, SQL Client, and Blob Storage. Search uses the Elasticsearch 9 client. The independent Serilog sink retains its pinned Elasticsearch.Net logging transport.
+- APM uses targeted ASP.NET Core and Azure Storage packages with subscribers for incoming requests, HTTP, SQL Client, and Blob Storage.
 - The jobs explicitly reference Microsoft.Extensions.Caching.Memory 10.0.12 to override the older AE SDK's vulnerable transitive dependency. MVC gets the cache implementation from the ASP.NET shared framework. The AE SDK and legacy KFS integration are otherwise unchanged.
 - MSTest stays on its compatible 3.x API at 3.11.1, with Test SDK 18.0.1, Moq 4.20.72 and SQLite 1.0.119. ASP.NET TestHost 10.0.12 exercises the real host and Windsor adapter without live credentials or service calls.
 
@@ -59,7 +59,7 @@ On macOS, exclude `RepositoryTests` with `--filter 'FullyQualifiedName!~Reposito
 - Check published CSS/JavaScript bundles and each job's DLL, runtime configuration, `run.cmd` and schedule.
 - Smoke-test application startup and authentication redirects without executing production jobs.
 - Translate the unit-of-measure query used by AE submission through NHibernate's SQL Server provider, including empty, single-unit and repeated-unit inputs. C# 14 can bind array `.Contains` calls to `MemoryExtensions.Contains`, which NHibernate 5.6.2 cannot translate. `QueryOrderUnitsOfMeasure` must use explicit `Enumerable.Contains`; see [Microsoft's compatibility guidance](https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/10.0/csharp-overload-resolution) and [NHibernate issue 3651](https://github.com/nhibernate/nhibernate-core/issues/3651). These offline translation tests do not submit a requisition.
-- Run `ElasticsearchCompatibilityTests` through the MVC dependency graph. Its local HTTP endpoint identifies Elasticsearch 9 and exercises the real order-history service, including authorization IDs and status filters. Run the disposable Elasticsearch 9 integration suite separately.
+- Run the [search validation checks](SEARCH-BACKENDS.md#validation).
 
 ## Combined manual acceptance pass
 

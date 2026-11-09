@@ -144,8 +144,8 @@ Both views share the same controller; unconverted pages retain their existing
 views and layouts. See [frontend development and migration](docs/FRONTEND.md) for
 configuration examples, Vite setup, shared styles, optional React, and publishing.
 
-## Search backends
+## Search
 
 See [search backend configuration and operation](docs/SEARCH-BACKENDS.md) for
 Elasticsearch 9 configuration, indexing, failure handling, local
-integration tests, and the deferred recovery and migration work.
+integration tests, deployment, and recovery limits.
