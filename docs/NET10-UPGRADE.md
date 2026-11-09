@@ -59,7 +59,7 @@ On macOS, exclude `RepositoryTests` with `--filter 'FullyQualifiedName!~Reposito
 - Check published CSS/JavaScript bundles and each job's DLL, runtime configuration, `run.cmd` and schedule.
 - Smoke-test application startup and authentication redirects without executing production jobs.
 - Translate the unit-of-measure query used by AE submission through NHibernate's SQL Server provider, including empty, single-unit and repeated-unit inputs. C# 14 can bind array `.Contains` calls to `MemoryExtensions.Contains`, which NHibernate 5.6.2 cannot translate. `QueryOrderUnitsOfMeasure` must use explicit `Enumerable.Contains`; see [Microsoft's compatibility guidance](https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/10.0/csharp-overload-resolution) and [NHibernate issue 3651](https://github.com/nhibernate/nhibernate-core/issues/3651). These offline translation tests do not submit a requisition.
-- Run the [search validation checks](SEARCH-BACKENDS.md#validation).
+- Run the [local search integration tests](SEARCH-BACKENDS.md#code-and-local-testing).
 
 ## Combined manual acceptance pass
 

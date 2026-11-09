@@ -146,6 +146,5 @@ configuration examples, Vite setup, shared styles, optional React, and publishin
 
 ## Search
 
-See [search backend configuration and operation](docs/SEARCH-BACKENDS.md) for
-Elasticsearch 9 configuration, indexing, failure handling, local
-integration tests, deployment, and recovery limits.
+See [how search works](docs/SEARCH-BACKENDS.md) for indexed data, queries and
+access control, indexing and recovery, configuration, and local integration tests.
