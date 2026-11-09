@@ -1,50 +1,99 @@
-# Elasticsearch search
+# How search works
 
-Purchasing uses Elasticsearch 9 for searches, reports, history, lookups, index counts, and indexing jobs. Web and jobs use one configured endpoint and the same document serialization and query definitions. Requests have a 60-second timeout.
+SQL is the source of purchasing data. Background jobs copy selected SQL records into Elasticsearch 9, which serves order searches, history, lookup suggestions, and tracking reports. Search results reflect the last successful indexing work, so they can lag behind SQL.
+
+The web application and indexing jobs use one Elasticsearch endpoint per environment. Both must use the same endpoint and index prefix to read and update the same data.
+
+## Indexed data
+
+Logical index names combine the configured prefix with the lowercase index type. For example, the order-history index in production is `purchasing-prod-orderhistory`.
+
+| Index type | Contents and use |
+| --- | --- |
+| `OrderHistory` | Order summaries for search, history, and workgroup reports |
+| `LineItems` | Searchable line-item descriptions and details |
+| `CustomAnswers` | Answers to workgroup custom questions |
+| `Comments` | Order comments and recent-comment lists |
+| `OrderTracking` | Order status, completion times, and role-based report metrics |
+| `Accounts` | Active account lookup suggestions |
+| `Buildings` | Building lookup suggestions |
+| `Commodities` | Active commodity lookup suggestions |
+| `Vendors` | Vendor lookup suggestions |
+
+History and tracking documents use `OrderId` as their Elasticsearch document ID. Child records and lookup records use their own IDs. Stable IDs let subsequent writes replace the same record instead of creating duplicates.
+
+Documents use camel-case JSON properties and the model's Newtonsoft serialization attributes. String fields have searchable text and `.keyword` fields for exact values and aggregations. Dates, numbers, and booleans use their corresponding Elasticsearch types.
+
+## Queries and access control
+
+Order searches query history, line items, custom answers, or comments using Elasticsearch query-string syntax. The application supplies the order IDs the user may access, and the search service filters results to those IDs. An empty permission list returns no results without contacting Elasticsearch. Workgroup reports filter by the supplied workgroups and date range.
+
+Order-history queries support creation dates, last-action dates, and status, sorted by latest action first. Tracking reports calculate completion-time averages and role-based percentiles in Elasticsearch. Account, building, commodity, and vendor lookups return up to ten suggestions.
+
+Search requests time out after 60 seconds. On the search page, malformed query syntax returns HTTP 400 with an invalid-syntax message. Backend failures return HTTP 503 with an unavailable message. Timeouts, shard failures, malformed responses, and unsuccessful requests are treated as errors, not empty result sets.
+
+## Keeping indexes up to date
+
+The order-update job finds orders with tracking records created in the preceding ten minutes. It processes distinct order IDs in batches of at most 1,000, loading their history, line items, custom answers, comments, and tracking data from SQL.
+
+For each successfully loaded set of records, the job:
+
+1. Refreshes the index so documents from previous writes are visible to deletion.
+2. Removes the indexed records for the selected orders.
+3. Writes their current SQL records using stable document IDs.
+
+An empty SQL result removes stale indexed records. A failed SQL query is handled differently: the job preserves the existing documents for that set of records and records the failure. It continues processing the other indexes and later batches, then reports an aggregate failure if any operation failed.
+
+Comments also have a separate update operation that writes comments created in the preceding ten minutes. The lookup job rebuilds accounts, buildings, commodities, and vendors from SQL.
+
+Updates to related indexes become visible separately. A search can briefly see different stages of an order's update. Reconciliation is not a transaction: a write failure after deletion can leave missing documents until the affected orders are processed successfully again.
+
+### Full rebuilds
+
+A full-index operation writes a new physical index, refreshes it, and switches the logical alias only after the new data has been written successfully. A failed build leaves the active index in place. Failed replacement indexes remain available for inspection and require manual cleanup.
+
+After a successful switch, older generations in the same namespace are removed only if no other aliases reference them. Rebuilds must run separately from other writers because there is no cross-process coordination to prevent concurrent work from overwriting newer data.
+
+### Freshness and recovery
+
+The ten-minute polling window is not a durable queue. Failed updates can leave that window without being retried, and changes to joined data or deletions may not create a tracking record. A successful job therefore does not prove that every indexed document matches SQL. Repair affected orders or rebuild the relevant indexes when changes have been missed.
+
+The displayed dates are not reliable freshness checkpoints. History shows a five-minute estimate derived from the request time. System index dates use an Elasticsearch indexing-duration field rather than the time of the last successful update; missing values can display a minimum date, and duration strings can fail conversion. Use job outcomes and comparisons with SQL to investigate freshness.
+
+Failure logs include the affected index and available order/document IDs without logging document bodies or credentials. Check extraction, refresh, deletion, bulk-write, and alias errors when diagnosing missing or stale results.
 
 ## Configuration
 
-Configure MVC and jobs independently. App Service uses double underscores, for example `Search__ElasticCloud__Url`.
+Configure MVC and jobs independently using these settings. In Azure App Service, replace colons with double underscores, for example `Search__ElasticCloud__Url`.
 
-| Setting | Default | Meaning |
+| Setting | Default | Purpose |
 | --- | --- | --- |
-| `Search:ElasticCloud:Url` | Required | HTTP(S) Elasticsearch endpoint. |
-| `Search:ElasticCloud:IndexPrefix` | `opp` | Namespace for the nine logical indexes. Preserve the deployed `purchasing-prod` and `purchasing-test` prefixes. |
-| `Search:ElasticCloud:Username` and `Password` | Unset | Optional basic authentication; supply both. Credentials embedded in the endpoint URL are also supported. |
-| `Search:ElasticCloud:ApiKey` | Unset | Optional encoded API key, as an alternative to basic authentication. |
+| `Search:ElasticCloud:Url` | Required | HTTP(S) Elasticsearch endpoint |
+| `Search:ElasticCloud:IndexPrefix` | `opp` | Namespace for the nine logical indexes; deployed environments use `purchasing-prod` and `purchasing-test` |
+| `Search:ElasticCloud:Username` and `Password` | Unset | Basic authentication; supply both |
+| `Search:ElasticCloud:ApiKey` | Unset | Encoded API key, as an alternative to basic authentication |
 
-Invalid endpoints, prefixes, and conflicting credential sources fail service initialization without a network request. Keep credentials in secret configuration. Search settings are separate from `Stackify.ElasticUrl` and APM settings. The Serilog sink independently uses `Elasticsearch.Net`, pinned to preserve its existing resolved version.
+Credentials embedded in the endpoint URL are also supported. Configure only one credential source and keep it in secret configuration. Invalid endpoints, prefixes, and conflicting credentials fail service initialization without making a network request.
 
-Settings are captured at process startup. Verify each slot's endpoint, prefix, credentials, and job scheduling flags before a swap. Staging may share production SQL and search; keep its scheduled jobs disabled. A swap does not copy indexes or establish freshness.
+Settings are read at process startup. Restart the affected application after changing them. Search configuration is independent of the logging endpoint in `Stackify.ElasticUrl` and of APM settings.
 
-## Indexing and failures
+Before using a deployment slot, verify its endpoint, prefix, credentials, and job scheduling flags. Staging can share production SQL and search, so its scheduled jobs must remain disabled. Swapping slots does not copy or validate index data.
 
-SQL extraction runs once per batch. Scheduled order updates process all batches of at most 1,000 order IDs. Failed projections preserve existing documents; successful empty projections remove stale documents. Other projections and later batches continue after a failure. Jobs attempt their operations and report aggregate failure afterward. AggieEnterprise business side effects execute once.
+### Changing endpoints or prefixes
 
-History and tracking use `OrderId` as their document identity; child and lookup records use their own IDs. History's incidental SQL row-number `Id` is normalized to `OrderId`. Full and incremental history extraction use the same SQL function. Newtonsoft attributes, including inherited opt-in serialization, define the existing document format.
+Reusing the same populated endpoint and prefix preserves the existing data. A matching prefix on another endpoint does not establish completeness. Before directing reads to a new, empty, or incomplete target, backfill orders and all lookup indexes and verify their IDs and contents against SQL. Coordinate writers during backfill and verification; the scheduled update job cannot populate older missing records.
 
-Reconciliation refreshes before removing old history, lines, answers, tracking, and comments, then writes their current projections. Related indexes become visible separately. Bulk items, refreshes, deletes, and alias operations are checked. Failure logs include available document/order IDs without document bodies or credentials.
+## Code and local testing
 
-Full-index operations build and refresh a new physical index before promoting its alias. Failed builds do not replace the active index. Promotion can replace an existing concrete index; old generations are removed only after checking their aliases. Failed generations remain for operator inspection. Run full rebuilds separately from other writers until cross-process coordination exists.
+- [IndexSearchService.cs](../Purchasing.Core/Services/IndexSearchService.cs) defines searches, history queries, access filters, and report aggregations.
+- [IndexService.cs](../Purchasing.Core/Services/IndexService.cs) coordinates indexing operations; [OrderIndexSource.cs](../Purchasing.Core/Services/OrderIndexSource.cs) reads the SQL records.
+- [IndexBackend.cs](../Purchasing.Core/Services/IndexBackend.cs) handles mappings, serialization, reconciliation, bulk writes, aliases, and response validation.
+- [ElasticCloudIndexBackend.cs](../Purchasing.Core/Services/ElasticCloudIndexBackend.cs) sends requests through the Elasticsearch 9 client; [SearchEndpoint.cs](../Purchasing.Core/Services/SearchEndpoint.cs) validates configuration.
 
-Malformed query-string syntax returns HTTP 400 with an invalid-syntax message. Other backend failures return HTTP 503 on the search page, rather than zero matches. Timeouts, shard failures, malformed responses, and unsuccessful requests remain errors.
+To run the integration tests, set `PURCHASING_TEST_ELASTIC9_URL` to a disposable local Elasticsearch 9 instance and run:
 
-## Deployment and follow-up
+```sh
+dotnet test Purchasing.Tests/Purchasing.Tests.csproj --filter FullyQualifiedName~SearchBackendIntegrationTests
+```
 
-This removal assumes the environment already reads and writes the populated Elasticsearch 9 endpoint. Keep that endpoint, its credentials, and its existing index prefix. Under that condition, the unchanged document format requires no rebuild. A matching prefix alone does not establish completeness. If an environment is switching endpoints or its target is empty or incomplete, complete a full backfill of orders and all lookup indexes and verify their IDs and contents against SQL before switching reads. Coordinate writers during backfill and verification. The scheduled ten-minute update window cannot populate older missing records.
-
-Deploy and verify TEST before PROD. Exercise search, history, reports, lookups, an order update, scheduled indexing, AggieEnterprise commodity indexing, and logging. Audit all slots, deployment variables, developer secrets, and operational scripts. Remove obsolete endpoint and backend-selection settings only after deploying the single-endpoint code and preserving the rollback configuration below. Retiring the old hosted service and its credentials is a separate operational step after confirming no remaining consumers.
-
-For rollback to the previous dual-backend release, restore `Search:ReadBackend=ElasticCloud` and `Search:WriteTargets=ElasticCloud` before starting that build or swapping it into service. In App Service these are `Search__ReadBackend` and `Search__WriteTargets`. Preserve those values in the rollback procedure together with the current `Search:ElasticCloud:*` endpoint, credentials, and prefix. The older build defaults to the retired backend when selectors are absent; removing the selectors from the new release must not remove the ability to restore them for rollback. Keep staging jobs disabled while preparing and validating rollback. Rollback continues to use the current populated Elasticsearch 9 endpoint.
-
-Draft [PR #679](https://github.com/ucdavis/Purchasing/pull/679) must be rebased and adapted before merging: construct `SearchEndpoint(configuration)` without a backend enum, inject a single `IndexBackend` into services, and update tests that used the previous backend collection. Its runner continues to use `Search:ElasticCloud:*` and must retain its explicit source/target safety checks.
-
-There are no durable checkpoints, retry queues, automatic catch-up, or cross-process locks in deployed jobs. Failed updates outside the ten-minute polling window may need manual repair. The tracking feed misses some mutations and deletions. Overlapping rebuilds and scheduled jobs can still apply older data after newer data.
-
-History retains its existing five-minute date estimate. System index dates retain the existing `index_time` conversion, including `DateTime.MinValue` when absent and a conversion error for duration strings. These displays do not establish freshness. [Issue #677](https://github.com/ucdavis/Purchasing/issues/677) owns their correction.
-
-## Validation
-
-`IndexingTests` covers configuration, 2,001-order batching, projection failures, stale-document reconciliation, bulk and lifecycle failures, stable identities, serialization, authorization, date behavior, and search errors. `ElasticsearchCompatibilityTests` exercises the real Elasticsearch 9 transport through MVC's dependency graph, including order-history authorization IDs and status filters.
-
-`SearchBackendIntegrationTests` requires `PURCHASING_TEST_ELASTIC9_URL` pointing to a disposable loopback Elasticsearch 9 server. It uses a unique prefix and removes its indexes. Without the endpoint the tests are explicitly inconclusive. Coverage includes all nine index types, history filtering and sorting, authorization and empty permissions, more than 65,536 permitted IDs, tracking aggregations, replacement aliases, and repeated reconciliation with stale-child removal. No test requires production credentials.
+The tests require a loopback endpoint, create uniquely named indexes, and remove their indexes afterward. They are inconclusive when the endpoint is unset. They do not require production credentials.
