@@ -47,7 +47,7 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual("opp", options.IndexPrefix);
         }
 
-        [DataTestMethod]
+        [TestMethod]
         [DataRow("Username", "user")]
         [DataRow("Password", "secret")]
         public void ConfigurationRejectsIncompleteBasicCredentials(string key, string value)
@@ -302,7 +302,9 @@ namespace Purchasing.Tests.ServiceTests
             };
             var documents = Enumerable.Range(1, 1001).Select(i => new SearchResults.CommentResult
             {
-                Id = i, OrderId = 2000 + i, Text = "private document body"
+                Id = i,
+                OrderId = 2000 + i,
+                Text = "private document body"
             }).ToArray();
 
             Assert.ThrowsExactly<AggregateException>(() => backend.Write(Indexes.Comments, documents, recreate));
