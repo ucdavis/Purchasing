@@ -74,7 +74,6 @@ namespace Purchasing.Mvc
                         webBuilder.ConfigureAppConfiguration(builder => builder.AddUserSecrets<Program>());
                     }
                 })
-                // Keep instrumentation scoped so APM cannot upgrade the Bonsai search transport.
                 .UseElasticApm(
                     new AspNetCoreDiagnosticSubscriber(),
                     new HttpDiagnosticsSubscriber(),

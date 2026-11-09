@@ -17,7 +17,7 @@ namespace Purchasing.Jobs.Common
         {
             Bind<IDbService>().To<DbService>().Named("dbService");
             // Indexing jobs resolve this at startup. Unrelated email jobs do not need search configuration.
-            Bind<SearchBackendSet>().ToMethod(_ => new SearchBackendSet(_configuration)).InSingletonScope();
+            Bind<IndexBackend>().ToMethod(_ => new ElasticCloudIndexBackend(new SearchEndpoint(_configuration))).InSingletonScope();
             Bind<IIndexService>().To<ElasticSearchIndexService>().Named("indexService");
             Bind<IConfiguration>().ToConstant(_configuration);
         }

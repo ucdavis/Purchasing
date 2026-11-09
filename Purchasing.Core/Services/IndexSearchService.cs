@@ -12,7 +12,7 @@ namespace Purchasing.Core.Services
     public class ElasticSearchService : ISearchService
     {
         private readonly IndexBackend _backend;
-        public ElasticSearchService(SearchBackendSet backends) { _backend = backends.Reader; }
+        public ElasticSearchService(IndexBackend backend) { _backend = backend; }
 
         private static JObject Permissions(int[] ids) => JObject.FromObject(new
         {

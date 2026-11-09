@@ -1,53 +1,46 @@
-# Search backends
+# Elasticsearch search
 
-Purchasing ships the existing Bonsai/NEST 7.13.2 transport and the Elasticsearch 9 client together. Both use the same document serialization and query definitions. Search reads use one configured backend. Indexing can write to either backend or both.
+Purchasing uses Elasticsearch 9 for searches, reports, history, lookups, index counts, and indexing jobs. Web and jobs use one configured endpoint and the same document serialization and query definitions. Requests have a 60-second timeout.
 
 ## Configuration
 
-Set these values independently in the MVC and jobs applications. App Service environment variables use double underscores, for example `Search__WriteTargets=Both`. Both transports use a 60-second request timeout.
+Configure MVC and jobs independently. App Service uses double underscores, for example `Search__ElasticCloud__Url`.
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
-| `Search:ReadBackend` | `Bonsai` | `Bonsai` or `ElasticCloud`; applies to searches, reports, history, lookups, index counts, and index modification stats. |
-| `Search:WriteTargets` | `Bonsai` | `Bonsai`, `ElasticCloud`, or `Both`. |
-| `Search:Bonsai:Url` | Existing `ElasticSearchUrl` | Bonsai search endpoint. Existing credentials embedded in that URL remain supported. |
-| `Search:ElasticCloud:Url` | Required when selected | Elasticsearch 9 endpoint. |
-| `Search:<backend>:IndexPrefix` | `opp` | Namespace for the nine logical index names, such as `opp-orderhistory`. |
-| `Search:<backend>:Username` and `Password` | Unset | Optional basic authentication. Supply both. |
-| `Search:<backend>:ApiKey` | Unset | Optional encoded API key, as an alternative to basic authentication. |
+| `Search:ElasticCloud:Url` | Required | HTTP(S) Elasticsearch endpoint. |
+| `Search:ElasticCloud:IndexPrefix` | `opp` | Namespace for the nine logical indexes. Preserve the deployed `purchasing-prod` and `purchasing-test` prefixes. |
+| `Search:ElasticCloud:Username` and `Password` | Unset | Optional basic authentication; supply both. Credentials embedded in the endpoint URL are also supported. |
+| `Search:ElasticCloud:ApiKey` | Unset | Optional encoded API key, as an alternative to basic authentication. |
 
-Only enabled read/write backends require configuration. Invalid selections, endpoints, prefixes, and credential combinations fail service initialization. No network request is needed for configuration validation. Credentials belong in the existing secret configuration, not committed JSON. Search settings are separate from `Stackify.ElasticUrl` and logging/APM settings.
+Invalid endpoints, prefixes, and conflicting credential sources fail service initialization without a network request. Keep credentials in secret configuration. Search settings are separate from `Stackify.ElasticUrl` and APM settings. The Serilog sink independently uses `Elasticsearch.Net`, pinned to preserve its existing resolved version.
 
-Settings are captured at process startup. Restart each affected application after changes. Verify slot-specific settings before a swap. A swap does not copy indexes, establish freshness, or make manual jobs in staging safe. In particular, staging and production may share SQL and search endpoints.
-
-To enable dual writes while continuing to read Bonsai, configure both endpoints and set `Search:WriteTargets=Both`, leaving `Search:ReadBackend=Bonsai`. Later, selecting `ElasticCloud` or returning to `Bonsai` changes the reader after restart. There is no automatic fallback. These examples describe configuration behavior, not authorization or readiness for a production switch.
+Settings are captured at process startup. Verify each slot's endpoint, prefix, credentials, and job scheduling flags before a swap. Staging may share production SQL and search; keep its scheduled jobs disabled. A swap does not copy indexes or establish freshness.
 
 ## Indexing and failures
 
-SQL extraction runs once per batch. Each configured backend receives the same projected documents. If one projection fails, the other projections are still extracted and written, and later batches continue. Failed projections are skipped without deleting existing documents; successful empty projections still remove stale documents. Scheduled order updates process every batch of at most 1,000 order IDs. History and tracking use `OrderId` as their document identity; child and lookup records use their own IDs. History's incidental SQL row-number `Id` is normalized to `OrderId`. Full history extraction uses the same SQL function as incremental extraction to avoid inconsistent latest-action projections.
+SQL extraction runs once per batch. Scheduled order updates process all batches of at most 1,000 order IDs. Failed projections preserve existing documents; successful empty projections remove stale documents. Other projections and later batches continue after a failure. Jobs attempt their operations and report aggregate failure afterward. AggieEnterprise business side effects execute once.
 
-For each selected order batch, reconciliation removes existing history, lines, answers, tracking, and comments, then writes their current SQL projections. Refreshing before deletion makes repeated reconciliation remove documents from a previous unrefreshed run. Changes to related indexes become visible separately; brief lag and temporary inconsistency are accepted.
+History and tracking use `OrderId` as their document identity; child and lookup records use their own IDs. History's incidental SQL row-number `Id` is normalized to `OrderId`. Full and incremental history extraction use the same SQL function. Newtonsoft attributes, including inherited opt-in serialization, define the existing document format.
 
-Each target's bulk items and delete responses are checked. Refresh or deletion failures are collected while replacement writes are still attempted. A failure does not prevent other targets, indexes, or later batches from being attempted. Extraction and reconciliation failures log affected order IDs; write failures, including index setup and alias promotion, log available document and order IDs with target/index context, without document bodies or transport credentials. Jobs attempt all their indexing operations and then fail if any work failed. AggieEnterprise processing and other business side effects execute once; only the index writes fan out.
+Reconciliation refreshes before removing old history, lines, answers, tracking, and comments, then writes their current projections. Related indexes become visible separately. Bulk items, refreshes, deletes, and alias operations are checked. Failure logs include available document/order IDs without document bodies or credentials.
 
-The existing full-index operations write a fresh physical index, refresh it, and promote its alias only after successful writes. The first promotion can atomically replace a legacy concrete index. Later promotions remove previous generations in the same namespace after confirming no other aliases use them. Failed builds leave their physical indexes for inspection; operators must review and remove failed generations to reclaim storage. This is not a coordinated migration runner. Run full rebuilds separately from other writers until cross-process coordination is implemented.
+Full-index operations build and refresh a new physical index before promoting its alias. Failed builds do not replace the active index. Promotion can replace an existing concrete index; old generations are removed only after checking their aliases. Failed generations remain for operator inspection. Run full rebuilds separately from other writers until cross-process coordination exists.
 
-Malformed query-string syntax returns HTTP 400 with an invalid-search-syntax message. Other search errors, including mapping/configuration HTTP 400 responses, remain backend failures. Search timeouts, shard failures, and unsuccessful responses throw an error. For backend failures, the search page returns HTTP 503 and shows an unavailable message. It does not turn an outage into zero matches or try another backend. Other callers use their existing error handling.
+Malformed query-string syntax returns HTTP 400 with an invalid-syntax message. Other backend failures return HTTP 503 on the search page, rather than zero matches. Timeouts, shard failures, malformed responses, and unsuccessful requests remain errors.
 
-## Limits and follow-up work
+## Deployment and follow-up
 
-This PR intentionally adds no durable checkpoints, retry queue, SQL tracking tables, recovery files, automatic backlog catch-up, or cross-process locks. A logged failure is not a promise of a later retry. Updates outside the existing ten-minute polling window may require manual repair. Overlapping admin actions, full rebuilds, and scheduled jobs can still apply older data after newer data.
+Deploy and verify TEST before PROD. Exercise search, history, reports, lookups, an order update, scheduled indexing, AggieEnterprise commodity indexing, and logging. The existing index format and prefixes require no data migration. Remove obsolete endpoint and backend-selection settings only after deploying the single-endpoint code. Audit all slots, deployment variables, developer secrets, and operational scripts. Retiring the old hosted service and its credentials is a separate operational step after confirming no remaining consumers. Rollback builds must support the existing Elasticsearch 9 configuration.
 
-There is no reliable freshness checkpoint. At the user's request, the History and System index pages retain their existing date displays and behavior. History uses the existing five-minute estimate. System converts the selected backend's `index_time` string as before; default stats omit that field, producing `DateTime.MinValue`, and a duration string cannot be parsed as a date. These values do not prove freshness. [Issue #677](https://github.com/ucdavis/Purchasing/issues/677) tracks truthful backend-specific dates, failure/partial-success handling, timezone behavior, and unknown states.
+Draft [PR #679](https://github.com/ucdavis/Purchasing/pull/679) must be rebased and adapted before merging: construct `SearchEndpoint(configuration)` without a backend enum, inject a single `IndexBackend` into services, and update tests that used the previous backend collection. Its runner continues to use `Search:ElasticCloud:*` and must retain its explicit source/target safety checks.
 
-The tracking feed also misses some mutations and deletions, including changes to joined data. A one-day replay would not prove completeness.
+There are no durable checkpoints, retry queues, automatic catch-up, or cross-process locks in deployed jobs. Failed updates outside the ten-minute polling window may need manual repair. The tracking feed misses some mutations and deletions. Overlapping rebuilds and scheduled jobs can still apply older data after newer data.
 
-The standalone local rebuild/catch-up runner, verification and completeness requirements, read-switch and rollback freshness gates, and the Bonsai retirement observation period remain follow-up work. SQL resizing, production configuration, deployment, and production rebuilding require separate operational decisions.
+History retains its existing five-minute date estimate. System index dates retain the existing `index_time` conversion, including `DateTime.MinValue` when absent and a conversion error for duration strings. These displays do not establish freshness. [Issue #677](https://github.com/ucdavis/Purchasing/issues/677) owns their correction.
 
 ## Validation
 
-`DualIndexingTests` exercises configuration, batching across 2,001 orders, independent target failures, delete and bulk errors, stable IDs, legacy serialization, failed replacement protection, the preserved date behavior and selected-backend stats, and the search error response. `ElasticsearchCompatibilityTests` uses an HTTP fixture with Bonsai's Elasticsearch 7.10.2 OSS identity and no `X-Elastic-Product` header.
+`IndexingTests` covers configuration, 2,001-order batching, projection failures, stale-document reconciliation, bulk and lifecycle failures, stable identities, serialization, authorization, date behavior, and search errors. `ElasticsearchCompatibilityTests` exercises the real Elasticsearch 9 transport through MVC's dependency graph.
 
-`SearchBackendIntegrationTests` writes disposable, uniquely named indexes on local Elasticsearch instances. Set `PURCHASING_TEST_ELASTIC7_URL` and `PURCHASING_TEST_ELASTIC9_URL` to loopback endpoints to enable it. It rejects non-loopback endpoints and removes its own indexes afterward. Without those settings these tests are explicitly inconclusive.
-
-The integration suite covers all nine index types, searches, history filters and sorting, authorization and empty permissions, more than 65,536 permitted IDs, tracking aggregations and percentiles, replacement aliases, and repeated reconciliation with stale-child removal. The selected server versions are Elasticsearch 7.10.2 OSS and 9.5.4. No test needs production SQL or production search credentials.
+`SearchBackendIntegrationTests` requires `PURCHASING_TEST_ELASTIC9_URL` pointing to a disposable loopback Elasticsearch 9 server. It uses a unique prefix and removes its indexes. Without the endpoint the tests are explicitly inconclusive. Coverage includes all nine index types, history filtering and sorting, authorization and empty permissions, more than 65,536 permitted IDs, tracking aggregations, replacement aliases, and repeated reconciliation with stale-child removal. No test requires production credentials.

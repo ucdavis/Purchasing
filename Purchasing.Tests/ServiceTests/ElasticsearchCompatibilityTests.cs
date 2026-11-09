@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
@@ -25,7 +26,7 @@ namespace Purchasing.Tests.ServiceTests
     public class ElasticsearchCompatibilityTests
     {
         [TestMethod]
-        public async Task OrderHistoryAcceptsElasticsearch710OssAndReturnsMatchingOrders()
+        public async Task OrderHistoryUsesElasticsearch9AndReturnsMatchingOrders()
         {
             string searchBody = null;
             using var server = await new HostBuilder().ConfigureWebHost(web => web
@@ -33,14 +34,17 @@ namespace Purchasing.Tests.ServiceTests
                 .Configure(app => app.Run(async context =>
                 {
                     context.Response.ContentType = "application/json";
+                    context.Response.Headers["X-Elastic-Product"] = "Elasticsearch";
                     if (context.Request.Path == "/")
                     {
-                        // Bonsai's actual version/build flavor, without X-Elastic-Product.
-                        await context.Response.WriteAsync("{\"version\":{\"number\":\"7.10.2\",\"build_flavor\":\"oss\"},\"tagline\":\"You Know, for Search\"}");
+                        // Exercise the real Elasticsearch 9 transport through MVC dependencies.
+                        await context.Response.WriteAsync("{\"version\":{\"number\":\"9.5.4\",\"build_flavor\":\"default\"},\"tagline\":\"You Know, for Search\"}");
                     }
                     else if (context.Request.Path == "/opp-orderhistory/_search")
                     {
-                        using var reader = new StreamReader(context.Request.Body);
+                        using var decompressed = context.Request.Headers.ContentEncoding == "gzip"
+                            ? new GZipStream(context.Request.Body, CompressionMode.Decompress, leaveOpen: true) : null;
+                        using var reader = new StreamReader(decompressed ?? context.Request.Body);
                         searchBody = await reader.ReadToEndAsync();
                         await context.Response.WriteAsync("{\"took\":1,\"timed_out\":false,\"_shards\":{\"total\":1,\"successful\":1,\"failed\":0},\"hits\":{\"total\":{\"value\":1,\"relation\":\"eq\"},\"hits\":[{\"_index\":\"opp-orderhistory\",\"_id\":\"42\",\"_source\":{\"orderId\":42,\"requestNumber\":\"TEST-42\",\"statusId\":\"cp\"}}]}}");
                     }
@@ -53,7 +57,7 @@ namespace Purchasing.Tests.ServiceTests
             var address = server.Services.GetRequiredService<IServer>()
                 .Features.Get<IServerAddressesFeature>().Addresses.Single();
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(
-                new Dictionary<string, string> { ["ElasticSearchUrl"] = address }).Build();
+                new Dictionary<string, string> { ["Search:ElasticCloud:Url"] = address }).Build();
             var previousLocator = ServiceLocator.IsLocationProviderSet ? ServiceLocator.Current : null;
             var locator = new Mock<IServiceLocator>();
             locator.Setup(l => l.GetService(typeof(IConfiguration))).Returns(configuration);
@@ -61,7 +65,7 @@ namespace Purchasing.Tests.ServiceTests
             try
             {
                 // This assembly references MVC, so it uses the web application's resolved transport.
-                var service = new ElasticSearchIndexService(null, new SearchBackendSet(configuration));
+                var service = new ElasticSearchIndexService(null, new ElasticCloudIndexBackend(new SearchEndpoint(configuration)));
                 var result = service.GetOrderHistory(new[] { 42 }, null, null, null, null, "CP");
 
                 Assert.AreEqual(1, result.Results.Count);

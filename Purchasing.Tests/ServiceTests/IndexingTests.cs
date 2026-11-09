@@ -11,8 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Moq.Protected;
-using Nest;
-using Nest.JsonNetSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Purchasing.Core.Domain;
@@ -29,51 +27,60 @@ namespace Purchasing.Tests.ServiceTests
 {
     [TestClass]
     [DoNotParallelize]
-    public class DualIndexingTests
+    public class IndexingTests
     {
         internal static IConfiguration Config(params (string Key, string Value)[] entries) =>
             new ConfigurationBuilder().AddInMemoryCollection(entries.ToDictionary(e => e.Key, e => e.Value)).Build();
 
         [TestMethod]
-        public void DefaultsKeepBonsaiAndReadSelectionIsIndependent()
+        public void ConfigurationValidatesEndpointAndProtectsCredentials()
         {
-            var defaults = new SearchBackendConfiguration(Config(("ElasticSearchUrl", "http://localhost:9200")));
-            Assert.AreEqual(SearchBackend.Bonsai, defaults.ReadBackend);
-            CollectionAssert.AreEqual(new[] { SearchBackend.Bonsai }, defaults.WriteTargets.ToArray());
-            var selected = new SearchBackendConfiguration(Config(("ElasticSearchUrl", "http://localhost:9200"),
-                ("Search:ReadBackend", "ElasticCloud"), ("Search:ElasticCloud:Url", "http://localhost:9201")));
-            Assert.AreEqual(SearchBackend.ElasticCloud, selected.ReadBackend);
-            CollectionAssert.AreEqual(new[] { SearchBackend.Bonsai }, selected.WriteTargets.ToArray());
-        }
-
-        [TestMethod]
-        public void ConfigurationRejectsMissingTargetAndInvalidNamesWithoutLeakingCredentials()
-        {
-            Assert.ThrowsExactly<ArgumentException>(() => new SearchBackendConfiguration(Config(
-                ("ElasticSearchUrl", "http://localhost:9200"), ("Search:WriteTargets", "Both"))));
-            Assert.ThrowsExactly<ArgumentException>(() => new SearchBackendConfiguration(Config(("Search:ReadBackend", "unknown"))));
-            Assert.ThrowsExactly<ArgumentException>(() => new SearchBackendConfiguration(Config(
-                ("ElasticSearchUrl", "http://localhost:9200"), ("Search:Bonsai:IndexPrefix", "shared/*"))));
-            var error = Assert.ThrowsExactly<ArgumentException>(() => new SearchBackendConfiguration(Config(
-                ("ElasticSearchUrl", "http://user:secret@localhost:9200/?secret=value"))));
+            Assert.ThrowsExactly<ArgumentException>(() => new SearchEndpoint(Config()));
+            Assert.ThrowsExactly<ArgumentException>(() => new SearchEndpoint(Config(
+                ("Search:ElasticCloud:Url", "http://localhost:9200"), ("Search:ElasticCloud:IndexPrefix", "shared/*"))));
+            var error = Assert.ThrowsExactly<ArgumentException>(() => new SearchEndpoint(Config(
+                ("Search:ElasticCloud:Url", "http://user:secret@localhost:9200/?secret=value"))));
             Assert.IsFalse(error.Message.Contains("secret"));
-            var options = new SearchBackendConfiguration(Config(("ElasticSearchUrl", "http://user:p%40ss@localhost:9200")));
-            Assert.AreEqual("p@ss", options.Endpoints[SearchBackend.Bonsai].Password);
-            Assert.AreEqual("", options.Endpoints[SearchBackend.Bonsai].Url.UserInfo);
+            var options = new SearchEndpoint(Config(("Search:ElasticCloud:Url", "http://user:p%40ss@localhost:9200")));
+            Assert.AreEqual("p@ss", options.Password);
+            Assert.AreEqual("", options.Url.UserInfo);
+            Assert.AreEqual("opp", options.IndexPrefix);
+        }
+
+        [DataTestMethod]
+        [DataRow("Username", "user")]
+        [DataRow("Password", "secret")]
+        public void ConfigurationRejectsIncompleteBasicCredentials(string key, string value)
+        {
+            Assert.ThrowsExactly<ArgumentException>(() => new SearchEndpoint(Config(
+                ("Search:ElasticCloud:Url", "http://localhost:9200"), ($"Search:ElasticCloud:{key}", value))));
         }
 
         [TestMethod]
-        public void MoreThan1000OrdersAreExtractedOnceAndAllBatchesReachBothTargetsAfterFailures()
+        public void ConfigurationRejectsConflictingCredentialsAndPreservesNamespace()
+        {
+            Assert.ThrowsExactly<ArgumentException>(() => new SearchEndpoint(Config(
+                ("Search:ElasticCloud:Url", "http://user:secret@localhost:9200"), ("Search:ElasticCloud:ApiKey", "key"))));
+            Assert.ThrowsExactly<ArgumentException>(() => new SearchEndpoint(Config(
+                ("Search:ElasticCloud:Url", "http://localhost:9200"), ("Search:ElasticCloud:Username", "user"),
+                ("Search:ElasticCloud:Password", "secret"), ("Search:ElasticCloud:ApiKey", "key"))));
+            var endpoint = new SearchEndpoint(Config(("Search:ElasticCloud:Url", "http://localhost:9200"),
+                ("Search:ElasticCloud:IndexPrefix", "purchasing-test"), ("Search:ElasticCloud:ApiKey", "key")));
+            Assert.AreEqual("purchasing-test-orderhistory", new ElasticCloudIndexBackend(endpoint).IndexName(Indexes.OrderHistory));
+            Assert.AreEqual("key", endpoint.ApiKey);
+        }
+
+        [TestMethod]
+        public void MoreThan1000OrdersAreExtractedOnceAndAllBatchesAreWrittenAfterFailures()
         {
             var source = new FakeOrderSource(2001);
-            var bonsai = new RecordingBackend("Bonsai") { FailingDocument = "3" };
-            var cloud = new RecordingBackend("ElasticCloud");
-            var service = new ElasticSearchIndexService(null, new SearchBackendSet(bonsai, bonsai, cloud), source);
+            var target = new RecordingBackend("ElasticCloud") { FailingDocument = "3" };
+            var service = new ElasticSearchIndexService(null, target, source);
 
             Assert.ThrowsExactly<AggregateException>(() => service.UpdateOrderIndexes());
 
             CollectionAssert.AreEqual(new[] { 1000, 1000, 1 }, source.Reads.Select(r => r.Length).ToArray());
-            foreach (var backend in new[] { bonsai, cloud })
+            foreach (var backend in new[] { target })
             {
                 var history = backend.Documents.Where(d => d.Index.EndsWith("-orderhistory")).ToList();
                 Assert.AreEqual(2001, history.Count);
@@ -124,9 +131,8 @@ namespace Purchasing.Tests.ServiceTests
                 }
                 return ProjectionRows(batchNumber == 1 ? Enumerable.Range(1, 1000) : new[] { 1001 });
             });
-            var bonsai = new RecordingBackend("Bonsai");
-            var cloud = new RecordingBackend("ElasticCloud");
-            var service = new ElasticSearchIndexService(db.Object, new SearchBackendSet(bonsai, bonsai, cloud));
+            var target = new RecordingBackend("ElasticCloud");
+            var service = new ElasticSearchIndexService(db.Object, target);
 
             if (fail)
             {
@@ -145,7 +151,7 @@ namespace Purchasing.Tests.ServiceTests
             foreach (var index in queries.Keys)
             {
                 Assert.AreEqual(2, reads[index]);
-                foreach (var backend in new[] { bonsai, cloud })
+                foreach (var backend in new[] { target })
                 {
                     var expectedOrders = index == affectedIndex ? new[] { 1001 } : Enumerable.Range(1, 1001).ToArray();
                     CollectionAssert.AreEqual(expectedOrders, backend.Documents.Where(d => d.Index == backend.IndexName(index))
@@ -176,14 +182,12 @@ namespace Purchasing.Tests.ServiceTests
                 attempts++;
                 throw new DataException("private database row and credentials");
             });
-            var bonsai = new RecordingBackend("Bonsai");
-            var cloud = new RecordingBackend("ElasticCloud");
-            var service = new ElasticSearchIndexService(db.Object, new SearchBackendSet(bonsai, bonsai, cloud));
+            var target = new RecordingBackend("ElasticCloud");
+            var service = new ElasticSearchIndexService(db.Object, target);
             var error = Assert.ThrowsExactly<AggregateException>(() => service.UpdateOrderIndexes());
             Assert.AreEqual(5, error.Flatten().InnerExceptions.Count);
             Assert.AreEqual(5, attempts);
-            Assert.AreEqual(0, bonsai.Calls.Count);
-            Assert.AreEqual(0, cloud.Calls.Count);
+            Assert.AreEqual(0, target.Calls.Count);
             AssertSafeLogs(logs);
         }
 
@@ -196,29 +200,28 @@ namespace Purchasing.Tests.ServiceTests
         [DataRow("/_refresh", 200, "{\"_shards\":{\"failed\":1}}")]
         [DataRow("/_refresh", 503, "private response detail")]
         [DataRow("/_refresh", 0, "")]
-        public void ReconciliationFailuresStillWriteEveryIndexBatchAndDestination(string failingPath, int status, string response)
+        public void ReconciliationFailuresStillWriteEveryIndexBatch(string failingPath, int status, string response)
         {
             using var logs = new CapturedLogs();
-            var bonsai = new RecordingBackend("Bonsai")
+            var target = new RecordingBackend("ElasticCloud")
             {
                 ResponseOverride = (method, path, body) => path.Contains(failingPath)
                     ? status == 0 ? throw new TimeoutException("private transport detail") : (status, response)
                     : null
             };
-            var cloud = new RecordingBackend("ElasticCloud");
             var source = new FakeOrderSource(1001);
-            var service = new ElasticSearchIndexService(null, new SearchBackendSet(bonsai, bonsai, cloud), source);
+            var service = new ElasticSearchIndexService(null, target, source);
             Assert.ThrowsExactly<AggregateException>(() => service.UpdateOrderIndexes());
             CollectionAssert.AreEqual(new[] { 1000, 1 }, source.Reads.Select(r => r.Length).ToArray());
             foreach (var index in new[] { Indexes.OrderHistory, Indexes.LineItems, Indexes.CustomAnswers, Indexes.OrderTracking, Indexes.Comments })
             {
-                foreach (var backend in new[] { bonsai, cloud })
+                foreach (var backend in new[] { target })
                 {
                     CollectionAssert.AreEqual(Enumerable.Range(1, 1001).Select(i => i.ToString()).ToArray(),
                         backend.Documents.Where(d => d.Index == backend.IndexName(index)).Select(d => d.Id).ToArray());
                     Assert.AreEqual(2, backend.Calls.Count(c => c.Path.StartsWith($"/{backend.IndexName(index)}/_delete_by_query")));
                 }
-                var operation = $"Bonsai/{index} {(failingPath == "/_refresh" ? "refresh" : "delete")}";
+                var operation = $"ElasticCloud/{index} {(failingPath == "/_refresh" ? "refresh" : "delete")}";
                 var failures = logs.Events.Where(e => Operation(e) == operation).ToArray();
                 Assert.AreEqual(2, failures.Length);
                 CollectionAssert.AreEqual(Enumerable.Range(1, 1000).ToArray(), OrderIds(failures[0]));
@@ -228,15 +231,13 @@ namespace Purchasing.Tests.ServiceTests
         }
 
         [TestMethod]
-        public void UnavailableDestinationDoesNotStopHealthyDestination()
+        public void UnavailableBackendReportsEveryAttempt()
         {
             using var logs = new CapturedLogs();
             var unavailable = new RecordingBackend("ElasticCloud") { ThrowOnRequest = true };
-            var healthy = new RecordingBackend("Bonsai");
-            var service = new ElasticSearchIndexService(null, new SearchBackendSet(healthy, unavailable, healthy), new FakeOrderSource(1));
+            var service = new ElasticSearchIndexService(null, unavailable, new FakeOrderSource(1));
             var exception = Assert.ThrowsExactly<AggregateException>(() => service.UpdateOrderIndexes());
             Assert.AreEqual(20, unavailable.Calls.Count);
-            Assert.AreEqual(5, healthy.Documents.Count);
             Assert.IsFalse(exception.ToString().Contains("private transport detail"));
             var failures = logs.Events.Where(e => e.Properties.TryGetValue("OrderIds", out var ids) && ids is SequenceValue).ToArray();
             Assert.AreEqual(20, failures.Length);
@@ -248,7 +249,7 @@ namespace Purchasing.Tests.ServiceTests
         public void ReconciliationReportsBothDeleteAndReplacementFailures()
         {
             using var logs = new CapturedLogs();
-            var backend = new RecordingBackend("Bonsai")
+            var backend = new RecordingBackend("ElasticCloud")
             {
                 FailingDocument = "7",
                 ResponseOverride = (method, path, body) => path.Contains("/_delete_by_query") ? (200, "{\"version_conflicts\":1}") : null
@@ -257,7 +258,7 @@ namespace Purchasing.Tests.ServiceTests
                 new[] { new SearchResults.CommentResult { Id = 7, OrderId = 42, Text = "private document body" } }));
             Assert.AreEqual(2, failure.Flatten().InnerExceptions.Count);
             Assert.AreEqual("7", backend.Documents.Single().Id);
-            var bulkFailure = logs.Events.Single(e => Operation(e) == "Bonsai/test-comments bulk request");
+            var bulkFailure = logs.Events.Single(e => Operation(e) == "ElasticCloud/test-comments bulk request");
             CollectionAssert.AreEqual(new object[] { 7 }, DocumentValues(bulkFailure, "DocumentId"));
             CollectionAssert.AreEqual(new object[] { 42 }, DocumentValues(bulkFailure, "OrderId"));
             AssertSafeLogs(logs);
@@ -267,13 +268,13 @@ namespace Purchasing.Tests.ServiceTests
         public void ReconciliationFailureLogsOrdersWithNoReplacementDocuments()
         {
             using var logs = new CapturedLogs();
-            var backend = new RecordingBackend("Bonsai")
+            var backend = new RecordingBackend("ElasticCloud")
             {
                 ResponseOverride = (method, path, body) => path.Contains("/_delete_by_query") ? (503, "private response detail") : null
             };
             Assert.ThrowsExactly<AggregateException>(() => backend.Reconcile(Indexes.Comments, new[] { 42, 43 },
                 Array.Empty<SearchResults.CommentResult>()));
-            var failure = logs.Events.Single(e => Operation(e) == "Bonsai/Comments delete");
+            var failure = logs.Events.Single(e => Operation(e) == "ElasticCloud/Comments delete");
             CollectionAssert.AreEqual(new[] { 42, 43 }, OrderIds(failure));
             Assert.AreEqual(0, backend.Documents.Count);
             AssertSafeLogs(logs);
@@ -322,7 +323,7 @@ namespace Purchasing.Tests.ServiceTests
         [DataRow("bulk")]
         [DataRow("exists")]
         [DataRow("missing-create")]
-        public void RecentCommentFailureLogsIdentifiersAndStillWritesHealthyDestination(string stage)
+        public void RecentCommentFailureLogsIdentifiers(string stage)
         {
             using var logs = new CapturedLogs();
             var unavailable = new RecordingBackend("ElasticCloud")
@@ -334,14 +335,12 @@ namespace Purchasing.Tests.ServiceTests
                     return stage == "missing-create" && method == "HEAD" ? (404, "{}") : null;
                 }
             };
-            var healthy = new RecordingBackend("Bonsai");
             var source = new FakeOrderSource(0)
             {
                 Comments = new[] { new SearchResults.CommentResult { Id = 7, OrderId = 42, Text = "private document body" } }
             };
-            var service = new ElasticSearchIndexService(null, new SearchBackendSet(healthy, unavailable, healthy), source);
+            var service = new ElasticSearchIndexService(null, unavailable, source);
             Assert.ThrowsExactly<AggregateException>(() => service.UpdateCommentsIndex());
-            Assert.AreEqual("7", healthy.Documents.Single().Id);
             var failure = logs.Events.Single(e => Operation(e) == "ElasticCloud/Comments write");
             CollectionAssert.AreEqual(new object[] { 7 }, DocumentValues(failure, "DocumentId"));
             CollectionAssert.AreEqual(new object[] { 42 }, DocumentValues(failure, "OrderId"));
@@ -405,11 +404,11 @@ namespace Purchasing.Tests.ServiceTests
                 foreach (var id in Enumerable.Range(1, 1001))
                     yield return new BrokenComment { Id = id, OrderId = 2000 + id };
             }
-            var backend = new RecordingBackend("Bonsai") { ThrowOnRequest = true };
+            var backend = new RecordingBackend("ElasticCloud") { ThrowOnRequest = true };
             Assert.ThrowsExactly<SearchBackendException>(() => backend.Write(Indexes.Comments, Documents()));
             Assert.AreEqual(1, enumerations);
             Assert.AreEqual(1, backend.Calls.Count);
-            var failures = logs.Events.Where(e => Operation(e) == "Bonsai/Comments write").ToArray();
+            var failures = logs.Events.Where(e => Operation(e) == "ElasticCloud/Comments write").ToArray();
             CollectionAssert.AreEqual(new[] { 1000, 1 }, failures.Select(e => DocumentValues(e, "DocumentId").Length).ToArray());
             CollectionAssert.AreEqual(Enumerable.Range(1, 1001).Select(i => (object)i).ToArray(), failures.SelectMany(e => DocumentValues(e, "DocumentId")).ToArray());
             CollectionAssert.AreEqual(Enumerable.Range(2001, 1001).Select(i => (object)i).ToArray(), failures.SelectMany(e => DocumentValues(e, "OrderId")).ToArray());
@@ -417,7 +416,7 @@ namespace Purchasing.Tests.ServiceTests
         }
 
         [TestMethod]
-        public void FullTrackingPromotionFailureLogsOrderIdsAndStillWritesOtherTarget()
+        public void FullTrackingPromotionFailureLogsOrderIds()
         {
             using var logs = new CapturedLogs();
             var reads = 0;
@@ -426,12 +425,9 @@ namespace Purchasing.Tests.ServiceTests
             {
                 ResponseOverride = (method, path, body) => path == "/_aliases" ? (503, "private response detail") : null
             };
-            var healthy = new RecordingBackend("Bonsai");
-            var service = new ElasticSearchIndexService(db.Object, new SearchBackendSet(healthy, unavailable, healthy));
+            var service = new ElasticSearchIndexService(db.Object, unavailable);
             Assert.ThrowsExactly<AggregateException>(() => service.CreateTrackingIndex());
             Assert.AreEqual(1, reads);
-            Assert.AreEqual("42", healthy.Documents.Single().Id);
-            Assert.IsTrue(healthy.Calls.Any(c => c.Path == "/_aliases"));
             var failure = logs.Events.Single(e => Operation(e) == "ElasticCloud/OrderTracking write");
             CollectionAssert.AreEqual(new object[] { 42 }, DocumentValues(failure, "DocumentId"));
             CollectionAssert.AreEqual(new object[] { 42 }, DocumentValues(failure, "OrderId"));
@@ -456,11 +452,11 @@ namespace Purchasing.Tests.ServiceTests
             foreach (var test in cases)
             {
                 using var logs = new CapturedLogs();
-                var backend = new RecordingBackend("Bonsai");
+                var backend = new RecordingBackend("ElasticCloud");
                 Assert.ThrowsExactly<AggregateException>(() => backend.Write(test.Index, new[] { test.Failed, test.Healthy }));
                 Assert.AreEqual(1, backend.Documents.Count);
                 Assert.AreNotEqual(test.Id.ToString(), backend.Documents.Single().Id);
-                var failure = logs.Events.Single(e => Operation(e) == $"Bonsai/{backend.IndexName(test.Index)} serialization");
+                var failure = logs.Events.Single(e => Operation(e) == $"ElasticCloud/{backend.IndexName(test.Index)} serialization");
                 CollectionAssert.AreEqual(new[] { test.Id }, DocumentValues(failure, "DocumentId"));
                 CollectionAssert.AreEqual(new[] { test.OrderId }, DocumentValues(failure, "OrderId"));
                 AssertSafeLogs(logs);
@@ -474,15 +470,15 @@ namespace Purchasing.Tests.ServiceTests
         [DataRow("not JSON")]
         public void IncompleteSearchResponsesAreErrors(string response)
         {
-            var backend = new RecordingBackend("Bonsai") { SearchResponse = response };
-            var search = new ElasticSearchService(new SearchBackendSet(backend, backend));
+            var backend = new RecordingBackend("ElasticCloud") { SearchResponse = response };
+            var search = new ElasticSearchService(backend);
             Assert.ThrowsExactly<SearchBackendException>(() => search.SearchOrders("paper", new[] { 42 }));
         }
 
         [TestMethod]
         public void InheritedOptInSerializationExcludesUnmarkedProperties()
         {
-            var backend = new RecordingBackend("Bonsai");
+            var backend = new RecordingBackend("ElasticCloud");
             backend.Write(Indexes.Accounts, new[] { new OptInDocument { Id = 42, Included = "visible", Excluded = "private" } });
             var source = backend.Documents.Single().Source;
             Assert.AreEqual(42, source.Value<int>("id"));
@@ -505,7 +501,7 @@ namespace Purchasing.Tests.ServiceTests
         [TestMethod]
         public void ReplacementFailureDoesNotPromoteOrDeleteActiveIndex()
         {
-            var backend = new RecordingBackend("Bonsai") { FailingDocument = "42" };
+            var backend = new RecordingBackend("ElasticCloud") { FailingDocument = "42" };
             Assert.ThrowsExactly<AggregateException>(() => backend.Write(Indexes.OrderTracking,
                 new[] { new OrderTrackingEntity { OrderId = 42 } }, recreate: true));
             Assert.IsFalse(backend.Calls.Any(c => c.Method == "DELETE" || c.Path == "/_aliases"));
@@ -515,7 +511,7 @@ namespace Purchasing.Tests.ServiceTests
         [TestMethod]
         public void ReplacementIsRefreshedBeforeAtomicAliasPromotion()
         {
-            var backend = new RecordingBackend("Bonsai");
+            var backend = new RecordingBackend("ElasticCloud");
             backend.Write(Indexes.Commodities, new[] { new Commodity { Id = "A", Name = "Paper" } }, recreate: true);
             var promotion = backend.Calls.Single(c => c.Path == "/_aliases");
             var actions = JObject.Parse(promotion.Body)["actions"];
@@ -525,19 +521,60 @@ namespace Purchasing.Tests.ServiceTests
         }
 
         [TestMethod]
-        public void DocumentsMatchLegacyNewtonsoftSerializationAndUseStableHistoryIdentity()
+        public void DocumentsPreserveJsonContractAndUseStableHistoryIdentity()
         {
-            var legacy = new ElasticClient(new ConnectionSettings(new Elasticsearch.Net.SingleNodeConnectionPool(new Uri("http://localhost:9200")), JsonNetSerializer.Default));
             var document = new OrderHistory { Id = 999, OrderId = 42, RequestNumber = "OLD-42", DateCreated = new DateTime(2012, 3, 4), LastActionDate = new DateTime(2026, 10, 26), TotalAmount = 12.34m };
-            using var stream = new MemoryStream();
-            legacy.SourceSerializer.Serialize(document, stream);
-            stream.Position = 0;
-            using var reader = new StreamReader(stream);
-            var expected = JObject.Parse(reader.ReadToEnd());
-            expected["id"] = 42;
-            var backend = new RecordingBackend("Bonsai");
+            var backend = new RecordingBackend("ElasticCloud");
             backend.Write(Indexes.OrderHistory, new[] { document });
-            Assert.IsTrue(JToken.DeepEquals(expected, backend.Documents.Single().Source), $"Expected {expected}; actual {backend.Documents.Single().Source}");
+            var expected = JObject.Parse("""
+                {
+                  "orderId": 42,
+                  "workgroupId": 0,
+                  "statusId": null,
+                  "orderTypeId": null,
+                  "requestNumber": "OLD-42",
+                  "requestType": null,
+                  "poNumber": null,
+                  "tag": null,
+                  "justification": null,
+                  "businessPurpose": null,
+                  "workgroupName": null,
+                  "vendor": null,
+                  "createdBy": null,
+                  "creatorId": null,
+                  "dateCreated": "2012-03-04T00:00:00",
+                  "status": null,
+                  "isComplete": false,
+                  "totalAmount": 12.34,
+                  "lineItems": null,
+                  "accountSummary": null,
+                  "hasAccountSplit": false,
+                  "shipTo": null,
+                  "shipToEmail": null,
+                  "allowBackorder": null,
+                  "restricted": null,
+                  "dateNeeded": "0001-01-01T00:00:00",
+                  "shippingType": null,
+                  "referenceNumber": null,
+                  "lastActionDate": "2026-10-26T00:00:00",
+                  "lastActionUser": null,
+                  "received": null,
+                  "paid": null,
+                  "orderType": null,
+                  "shippingAmount": 0.0,
+                  "approver": null,
+                  "accountManager": null,
+                  "purchaser": null,
+                  "fpdCompleted": null,
+                  "apUserAssigned": null,
+                  "apUser": null,
+                  "postStatus": null,
+                  "orderNote": null,
+                  "id": 42
+                }
+                """);
+            Assert.IsTrue(JToken.DeepEquals(expected, backend.Documents.Single().Source),
+                $"Expected {expected}; actual {backend.Documents.Single().Source}");
             Assert.AreEqual("42", backend.Documents.Single().Id);
             var mapping = IndexBackend.Mapping<OrderHistory>();
             Assert.AreEqual(1000000, mapping["settings"]["index.max_terms_count"]);
@@ -549,9 +586,8 @@ namespace Purchasing.Tests.ServiceTests
         public void EmptyPermissionsNeverContactBackendAndReadFailureNeverFallsBack()
         {
             var reader = new RecordingBackend("ElasticCloud") { FailSearch = true };
-            var other = new RecordingBackend("Bonsai");
-            var set = new SearchBackendSet(reader, other, reader);
-            var search = new ElasticSearchService(set);
+            var backend = reader;
+            var search = new ElasticSearchService(backend);
             Assert.AreEqual(0, search.SearchOrders("test", Array.Empty<int>()).Count);
             Assert.AreEqual(0, search.SearchComments("test", Array.Empty<int>()).Count);
             Assert.AreEqual(0, search.SearchLineItems("test", Array.Empty<int>()).Count);
@@ -560,12 +596,9 @@ namespace Purchasing.Tests.ServiceTests
             Assert.AreEqual(0, search.GetOrderHistory(Array.Empty<int>(), null, null, null, null, null).Results.Count);
             Assert.AreEqual(0, reader.Calls.Count);
             Assert.ThrowsExactly<SearchBackendException>(() => search.SearchOrders("test", new[] { 42 }));
-            Assert.AreEqual(0, other.Calls.Count);
         }
 
         [DataTestMethod]
-        [DataRow("Bonsai", false)]
-        [DataRow("Bonsai", true)]
         [DataRow("ElasticCloud", false)]
         [DataRow("ElasticCloud", true)]
         public void HistoryPreservesLegacyDateEstimateForSelectedReader(string name, bool emptyPermissions)
@@ -574,8 +607,7 @@ namespace Purchasing.Tests.ServiceTests
             {
                 SearchResponse = "{\"hits\":{\"hits\":[{\"_source\":{\"orderId\":42}}]}}"
             };
-            var other = new RecordingBackend("Other");
-            var service = new ElasticSearchIndexService(null, new SearchBackendSet(reader, other));
+            var service = new ElasticSearchIndexService(null, reader);
             var before = DateTime.UtcNow.ToPacificTime().AddMinutes(-5).ToLocalTime();
 
             var history = service.GetOrderHistory(emptyPermissions ? Array.Empty<int>() : new[] { 42 },
@@ -585,12 +617,9 @@ namespace Purchasing.Tests.ServiceTests
             Assert.IsTrue(history.LastModified >= before && history.LastModified <= after);
             Assert.AreEqual(emptyPermissions ? 0 : 1, history.Results.Count);
             Assert.AreEqual(emptyPermissions ? 0 : 1, reader.Calls.Count);
-            Assert.AreEqual(0, other.Calls.Count);
         }
 
         [DataTestMethod]
-        [DataRow("Bonsai", false)]
-        [DataRow("Bonsai", true)]
         [DataRow("ElasticCloud", false)]
         [DataRow("ElasticCloud", true)]
         public void ModificationStatsPreserveLegacyConversionForSelectedReader(string name, bool alias)
@@ -602,10 +631,9 @@ namespace Purchasing.Tests.ServiceTests
                 ["indices"] = new JObject { [indexName] = new JObject { ["total"] = new JObject { ["indexing"] = indexing } } }
             };
             var reader = new RecordingBackend(name) { ResponseOverride = (_, _, _) => (200, response.ToString()) };
-            var other = new RecordingBackend("Other");
-            var service = new ElasticSearchIndexService(null, new SearchBackendSet(reader, other));
+            var service = new ElasticSearchIndexService(null, reader);
 
-            // NEST's Time string is null when the default stats response omits index_time.
+            // The index_time string is null when the default stats response omits index_time.
             Assert.AreEqual(DateTime.MinValue, service.LastModified(Indexes.OrderHistory));
             Assert.AreEqual("GET", reader.Calls.Single().Method);
             Assert.AreEqual("/test-orderhistory/_stats", reader.Calls.Single().Path);
@@ -614,7 +642,6 @@ namespace Purchasing.Tests.ServiceTests
             // It is not a date. Correcting this behavior belongs to issue #677.
             indexing["index_time"] = "1s";
             Assert.ThrowsExactly<FormatException>(() => service.LastModified(Indexes.OrderHistory));
-            Assert.AreEqual(0, other.Calls.Count);
         }
 
         [DataTestMethod]
@@ -624,12 +651,10 @@ namespace Purchasing.Tests.ServiceTests
         public void ModificationStatsFailuresDoNotReturnDatesOrFallBack(int status, string response)
         {
             var reader = new RecordingBackend("ElasticCloud") { ResponseOverride = (_, _, _) => (status, response) };
-            var other = new RecordingBackend("Bonsai");
-            var service = new ElasticSearchIndexService(null, new SearchBackendSet(reader, other));
+            var service = new ElasticSearchIndexService(null, reader);
 
             Assert.ThrowsExactly<SearchBackendException>(() => service.LastModified(Indexes.OrderHistory));
             Assert.AreEqual(1, reader.Calls.Count);
-            Assert.AreEqual(0, other.Calls.Count);
         }
 
         private static string QuerySyntaxErrorResponse() => new JObject
@@ -650,13 +675,11 @@ namespace Purchasing.Tests.ServiceTests
         }.ToString();
 
         [DataTestMethod]
-        [DataRow("Bonsai")]
         [DataRow("ElasticCloud")]
         public void QuerySyntaxErrorsAreClassifiedWithoutChangingInputOrFallingBack(string name)
         {
             var reader = new RecordingBackend(name) { ResponseOverride = (_, _, _) => (400, QuerySyntaxErrorResponse()) };
-            var other = new RecordingBackend("Other");
-            var search = new ElasticSearchService(new SearchBackendSet(reader, other));
+            var search = new ElasticSearchService(reader);
             const string query = "\"unterminated";
 
             var error = Assert.ThrowsExactly<SearchBackendException>(() => search.SearchOrders(query, new[] { 42 }));
@@ -664,7 +687,6 @@ namespace Purchasing.Tests.ServiceTests
             Assert.IsTrue(error.IsInvalidQuery);
             Assert.IsFalse(error.Message.Contains("private"));
             Assert.AreEqual(query, JObject.Parse(reader.Calls.Single().Body)["query"]["query_string"].Value<string>("query"));
-            Assert.AreEqual(0, other.Calls.Count);
         }
 
         [DataTestMethod]
@@ -677,8 +699,8 @@ namespace Purchasing.Tests.ServiceTests
         [DataRow(503, null)]
         public void OtherSearchFailuresAreNotInvalidQueries(int status, string response)
         {
-            var reader = new RecordingBackend("Bonsai") { ResponseOverride = (_, _, _) => (status, response ?? QuerySyntaxErrorResponse()) };
-            var search = new ElasticSearchService(new SearchBackendSet(reader, reader));
+            var reader = new RecordingBackend("ElasticCloud") { ResponseOverride = (_, _, _) => (status, response ?? QuerySyntaxErrorResponse()) };
+            var search = new ElasticSearchService(reader);
             var error = Assert.ThrowsExactly<SearchBackendException>(() => search.SearchOrders("paper", new[] { 42 }));
             Assert.IsFalse(error.IsInvalidQuery);
         }
@@ -686,7 +708,7 @@ namespace Purchasing.Tests.ServiceTests
         [TestMethod]
         public void NonSearchParserErrorsRemainBackendFailures()
         {
-            var reader = new RecordingBackend("Bonsai") { ResponseOverride = (_, _, _) => (400, QuerySyntaxErrorResponse()) };
+            var reader = new RecordingBackend("ElasticCloud") { ResponseOverride = (_, _, _) => (400, QuerySyntaxErrorResponse()) };
             var error = Assert.ThrowsExactly<SearchBackendException>(() => reader.Count(Indexes.OrderHistory));
             Assert.IsFalse(error.IsInvalidQuery);
         }

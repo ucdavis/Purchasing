@@ -44,17 +44,17 @@ namespace Purchasing.Core.Services
     public class ElasticSearchIndexService : IIndexService
     {
         private readonly IDbService _dbService;
-        private readonly SearchBackendSet _backends;
+        private readonly IndexBackend _backend;
         private readonly IOrderIndexSource _orders;
         private const int CreateIndexQueryTimeout = 60 * 5;
 
-        public ElasticSearchIndexService(IDbService dbService, SearchBackendSet backends)
-            : this(dbService, backends, new SqlOrderIndexSource(dbService)) { }
+        public ElasticSearchIndexService(IDbService dbService, IndexBackend backend)
+            : this(dbService, backend, new SqlOrderIndexSource(dbService)) { }
 
-        internal ElasticSearchIndexService(IDbService dbService, SearchBackendSet backends, IOrderIndexSource orders)
+        internal ElasticSearchIndexService(IDbService dbService, IndexBackend backend, IOrderIndexSource orders)
         {
             _dbService = dbService;
-            _backends = backends;
+            _backend = backend;
             _orders = orders;
         }
 
@@ -89,14 +89,11 @@ namespace Purchasing.Core.Services
                 {
                     // Extract each batch once. Finish its writes before moving to the next batch.
                     var batch = _orders.ReadBatch(batchIds);
-                    foreach (var target in _backends.Writers)
-                    {
-                        if (batch.History != null) failures.Attempt(() => target.Reconcile(Indexes.OrderHistory, batchIds, batch.History), $"{target.Name} order history");
-                        if (batch.Lines != null) failures.Attempt(() => target.Reconcile(Indexes.LineItems, batchIds, batch.Lines), $"{target.Name} lines");
-                        if (batch.Answers != null) failures.Attempt(() => target.Reconcile(Indexes.CustomAnswers, batchIds, batch.Answers), $"{target.Name} answers");
-                        if (batch.Tracking != null) failures.Attempt(() => target.Reconcile(Indexes.OrderTracking, batchIds, batch.Tracking), $"{target.Name} tracking");
-                        if (batch.Comments != null) failures.Attempt(() => target.Reconcile(Indexes.Comments, batchIds, batch.Comments), $"{target.Name} comments");
-                    }
+                    if (batch.History != null) failures.Attempt(() => _backend.Reconcile(Indexes.OrderHistory, batchIds, batch.History), $"{_backend.Name} order history");
+                    if (batch.Lines != null) failures.Attempt(() => _backend.Reconcile(Indexes.LineItems, batchIds, batch.Lines), $"{_backend.Name} lines");
+                    if (batch.Answers != null) failures.Attempt(() => _backend.Reconcile(Indexes.CustomAnswers, batchIds, batch.Answers), $"{_backend.Name} answers");
+                    if (batch.Tracking != null) failures.Attempt(() => _backend.Reconcile(Indexes.OrderTracking, batchIds, batch.Tracking), $"{_backend.Name} tracking");
+                    if (batch.Comments != null) failures.Attempt(() => _backend.Reconcile(Indexes.Comments, batchIds, batch.Comments), $"{_backend.Name} comments");
                     batch.Failures.ThrowIfAny();
                 }, "extract/index orders", orderIds: batchIds);
             }
@@ -108,10 +105,10 @@ namespace Purchasing.Core.Services
 
         public IndexedList<OrderHistory> GetOrderHistory(int[] orderids, DateTime? startDate, DateTime? endDate,
             DateTime? startLastActionDate, DateTime? endLastActionDate, string statusId) =>
-            new ElasticSearchService(_backends).GetOrderHistory(orderids, startDate, endDate, startLastActionDate, endLastActionDate, statusId);
+            new ElasticSearchService(_backend).GetOrderHistory(orderids, startDate, endDate, startLastActionDate, endLastActionDate, statusId);
 
-        public DateTime LastModified(Indexes index) => _backends.Reader.LastModified(index);
-        public int NumRecords(Indexes index) => _backends.Reader.Count(index);
+        public DateTime LastModified(Indexes index) => _backend.LastModified(index);
+        public int NumRecords(Indexes index) => _backend.Count(index);
 
         private void WriteIndex<T>(string sql, Indexes index) where T : class
         {
@@ -123,8 +120,7 @@ namespace Purchasing.Core.Services
         {
             var materialized = documents.ToList();
             var failures = new IndexingFailures();
-            foreach (var target in _backends.Writers)
-                failures.Attempt(() => target.Write(index, materialized, recreate), $"{target.Name}/{index}");
+            failures.Attempt(() => _backend.Write(index, materialized, recreate), $"{_backend.Name}/{index}");
             failures.ThrowIfAny();
         }
 

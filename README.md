@@ -147,5 +147,5 @@ configuration examples, Vite setup, shared styles, optional React, and publishin
 ## Search backends
 
 See [search backend configuration and operation](docs/SEARCH-BACKENDS.md) for
-Bonsai and Elasticsearch 9 selection, dual indexing, failure handling, local
+Elasticsearch 9 configuration, indexing, failure handling, local
 integration tests, and the deferred recovery and migration work.
