@@ -9,6 +9,7 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Purchasing.Core.Models.Configuration;
 using Serilog;
 using Serilog.Sinks.OpenTelemetry;
 
@@ -19,29 +20,34 @@ namespace Purchasing.Core.Telemetry
         public const string JobActivitySourceName = "Purchasing.Jobs";
         public static readonly ActivitySource JobActivities = new ActivitySource(JobActivitySourceName);
 
-        public static IDictionary<string, object> ResourceAttributes(IConfiguration configuration, string serviceName)
+        public static IDictionary<string, object> ResourceAttributes(IConfiguration configuration, string serviceName) =>
+            ResourceAttributes(configuration.Get<TelemetryOptions>() ?? new TelemetryOptions(), serviceName);
+
+        private static IDictionary<string, object> ResourceAttributes(TelemetryOptions options, string serviceName)
         {
             var attributes = new Dictionary<string, object>
             {
                 ["service.name"] = serviceName,
                 ["service.namespace"] = "purchasing",
-                ["deployment.environment.name"] = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production"
+                ["deployment.environment.name"] = options.EnvironmentName ?? "Production"
             };
-            foreach (var pair in ParsePairs(configuration["OTEL_RESOURCE_ATTRIBUTES"]))
+            foreach (var pair in ParsePairs(options.ResourceAttributes))
                 attributes[pair.Key] = pair.Value;
-            if (!string.IsNullOrWhiteSpace(configuration["OTEL_SERVICE_NAME"]))
-                attributes["service.name"] = configuration["OTEL_SERVICE_NAME"];
+            if (!string.IsNullOrWhiteSpace(options.ServiceName))
+                attributes["service.name"] = options.ServiceName;
             return attributes;
         }
 
         public static LoggerConfiguration WriteToOpenTelemetry(this LoggerConfiguration logger,
             IConfiguration configuration, string serviceName)
         {
-            var attributes = ResourceAttributes(configuration, serviceName);
+            var telemetry = configuration.Get<TelemetryOptions>() ?? new TelemetryOptions();
+            var attributes = ResourceAttributes(telemetry, serviceName);
             logger.Enrich.WithProperty("Application", attributes["service.name"])
                 .Enrich.WithProperty("AppEnvironment", attributes["deployment.environment.name"]);
 
-            var endpoint = Endpoint(configuration, "LOGS");
+            var logs = ResolveSignal(telemetry, TelemetrySignal.Logs);
+            var endpoint = Endpoint(logs);
             if (endpoint == null)
                 return logger;
 
@@ -50,9 +56,9 @@ namespace Purchasing.Core.Telemetry
                 // Only Serilog exports logs. The OpenTelemetry SDK owns traces and metrics.
                 options.Endpoint = null;
                 options.LogsEndpoint = endpoint.ToString();
-                options.Protocol = Protocol(configuration, "LOGS") == OtlpExportProtocol.Grpc
+                options.Protocol = Protocol(logs.Protocol) == OtlpExportProtocol.Grpc
                     ? OtlpProtocol.Grpc : OtlpProtocol.HttpProtobuf;
-                options.Headers = ParsePairs(Setting(configuration, "LOGS", "HEADERS"));
+                options.Headers = ParsePairs(logs.Headers);
                 options.ResourceAttributes = attributes;
                 options.OnBeginSuppressInstrumentation = SuppressInstrumentationScope.Begin;
                 options.BatchingOptions.BufferingTimeLimit = TimeSpan.FromSeconds(2);
@@ -64,7 +70,8 @@ namespace Purchasing.Core.Telemetry
         {
             // Azure SDK releases that still gate ActivitySource support require this switch.
             AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
-            var attributes = ResourceAttributes(configuration, serviceName);
+            var telemetry = configuration.Get<TelemetryOptions>() ?? new TelemetryOptions();
+            var attributes = ResourceAttributes(telemetry, serviceName);
             services.AddOpenTelemetry()
                 .ConfigureResource(resource => resource.AddAttributes(attributes))
                 .WithTracing(tracing =>
@@ -74,32 +81,51 @@ namespace Purchasing.Core.Telemetry
                         .AddSqlClientInstrumentation();
                     if (web)
                         tracing.AddAspNetCoreInstrumentation();
-                    if (Endpoint(configuration, "TRACES") != null)
-                        tracing.AddOtlpExporter(options => ConfigureExporter(options, configuration, "TRACES"));
+                    var traces = ResolveSignal(telemetry, TelemetrySignal.Traces);
+                    var endpoint = Endpoint(traces);
+                    if (endpoint != null)
+                        tracing.AddOtlpExporter(options => ConfigureExporter(options, traces, endpoint));
                 })
                 .WithMetrics(metrics =>
                 {
                     metrics.AddHttpClientInstrumentation().AddSqlClientInstrumentation();
                     if (web)
                         metrics.AddAspNetCoreInstrumentation();
-                    if (Endpoint(configuration, "METRICS") != null)
-                        metrics.AddOtlpExporter(options => ConfigureExporter(options, configuration, "METRICS"));
+                    var metricOptions = ResolveSignal(telemetry, TelemetrySignal.Metrics);
+                    var endpoint = Endpoint(metricOptions);
+                    if (endpoint != null)
+                        metrics.AddOtlpExporter(options => ConfigureExporter(options, metricOptions, endpoint));
                 });
         }
 
-        private static void ConfigureExporter(OtlpExporterOptions options, IConfiguration configuration, string signal)
+        private static void ConfigureExporter(OtlpExporterOptions options, SignalOptions signal, Uri endpoint)
         {
-            options.Protocol = Protocol(configuration, signal);
-            options.Endpoint = Endpoint(configuration, signal);
-            options.Headers = Setting(configuration, signal, "HEADERS");
+            options.Protocol = Protocol(signal.Protocol);
+            options.Endpoint = endpoint;
+            options.Headers = signal.Headers;
         }
 
-        private static string Setting(IConfiguration configuration, string signal, string name) =>
-            configuration[$"OTEL_EXPORTER_OTLP_{signal}_{name}"] ?? configuration[$"OTEL_EXPORTER_OTLP_{name}"];
+        private enum TelemetrySignal { Logs, Traces, Metrics }
 
-        private static OtlpExportProtocol Protocol(IConfiguration configuration, string signal)
+        private sealed record SignalOptions(TelemetrySignal Signal, string Endpoint, string Protocol,
+            string Headers, bool HasSpecificEndpoint);
+
+        private static SignalOptions ResolveSignal(TelemetryOptions options, TelemetrySignal signal)
         {
-            return Setting(configuration, signal, "PROTOCOL") switch
+            var (endpoint, protocol, headers) = signal switch
+            {
+                TelemetrySignal.Logs => (options.LogsEndpoint, options.LogsProtocol, options.LogsHeaders),
+                TelemetrySignal.Traces => (options.TracesEndpoint, options.TracesProtocol, options.TracesHeaders),
+                TelemetrySignal.Metrics => (options.MetricsEndpoint, options.MetricsProtocol, options.MetricsHeaders),
+                _ => throw new ArgumentOutOfRangeException(nameof(signal))
+            };
+            return new SignalOptions(signal, endpoint ?? options.Endpoint, protocol ?? options.Protocol,
+                headers ?? options.Headers, endpoint != null);
+        }
+
+        private static OtlpExportProtocol Protocol(string protocol)
+        {
+            return protocol switch
             {
                 null or "" or "grpc" => OtlpExportProtocol.Grpc,
                 "http/protobuf" => OtlpExportProtocol.HttpProtobuf,
@@ -107,18 +133,17 @@ namespace Purchasing.Core.Telemetry
             };
         }
 
-        private static Uri Endpoint(IConfiguration configuration, string signal)
+        private static Uri Endpoint(SignalOptions signal)
         {
-            var specific = configuration[$"OTEL_EXPORTER_OTLP_{signal}_ENDPOINT"];
-            var value = specific ?? configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+            var value = signal.Endpoint;
             if (string.IsNullOrWhiteSpace(value))
                 return null;
             if (!Uri.TryCreate(value, UriKind.Absolute, out var uri) ||
                 (uri.Scheme != "https" && uri.Scheme != "http") ||
                 !string.IsNullOrEmpty(uri.UserInfo) || !string.IsNullOrEmpty(uri.Query) || !string.IsNullOrEmpty(uri.Fragment))
                 throw new InvalidOperationException("OTLP endpoint must be an HTTP(S) URL without credentials, query, or fragment. Use OTLP headers for authentication.");
-            if (specific == null && Protocol(configuration, signal) == OtlpExportProtocol.HttpProtobuf)
-                return new Uri(value.TrimEnd('/') + "/v1/" + signal.ToLowerInvariant());
+            if (!signal.HasSpecificEndpoint && Protocol(signal.Protocol) == OtlpExportProtocol.HttpProtobuf)
+                return new Uri(value.TrimEnd('/') + "/v1/" + signal.Signal.ToString().ToLowerInvariant());
             return uri;
         }
 
