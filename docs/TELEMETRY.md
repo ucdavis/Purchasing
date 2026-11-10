@@ -6,7 +6,7 @@ Only Serilog exports application logs. Registering an additional OpenTelemetry l
 
 ## Configuration
 
-Set these values in App Service application settings, local environment variables, or development user secrets. Each process reads them at startup. Credentials belong in secret configuration.
+Set these values in App Service application settings, local environment variables, or development user secrets. Each process reads them at startup. MVC resolves the log, trace, and metric settings from the same final host configuration. Credentials belong in secret configuration.
 
 | Setting | Purpose |
 | --- | --- |
@@ -27,7 +27,7 @@ Web and job hosts can use different service names. If all jobs share one `OTEL_S
 
 Logs retain structured message properties, exception details, `Application`, and `AppEnvironment`. The latter two come from the telemetry service name and `deployment.environment.name`. Web logs also include the existing user, client IP, user agent, session, endpoint, and response content-type enrichment.
 
-`RequestId` is the ASP.NET request identifier. OTLP's trace and span IDs come from the current .NET activity and correlate a log with its trace. Logs outside an activity, including early startup messages, have no trace correlation.
+`RequestId` is the ASP.NET request identifier. OTLP's trace and span IDs come from the current .NET activity and correlate a log with its trace. Logs outside an activity have no trace correlation. MVC's bootstrap logger writes only to the console until the host configures the final logger; those early events are not exported later.
 
 Web tracing covers ASP.NET Core requests, outgoing HTTP calls, SQL commands, and Azure Blob SDK operations. Each job starts a root activity for its run, so SQL and HTTP work and job logs share a trace. HTTP and SQL instrumentation produce metrics; web hosts also collect ASP.NET Core metrics. Sampling affects exported traces, not whether Serilog writes a log.
 
@@ -43,7 +43,11 @@ Queues are in memory. Forced termination, a sustained receiver outage, or a shut
 
 Select the service name and deployment environment in Elastic Observability. The receiver determines the data streams and field mapping. The Elastic APM OTLP endpoint maps telemetry into APM/ECS fields; other receivers can store native OTLP fields. Verify actual documents before updating queries or dashboards.
 
+With Elastic APM intake, application logs use `logs-apm.app.<service.name>-<namespace>` and exception records use `logs-apm.error-<namespace>`. Traces use `traces-apm-<namespace>` and application metrics use `metrics-apm.app.<service.name>-<namespace>`. Receiver configuration can reroute these streams. The namespace does not automatically follow the application's deployment environment. See [APM data streams](https://www.elastic.co/docs/solutions/observability/apm/data-streams) for naming and routing rules.
+
 Existing `aspnet-purchasing-*` indexes remain historical data. New OTLP events do not continue those monthly indexes. Data views, saved searches, alerts, and retention must cover the receiver's destination streams. A view that searches only `aspnet-purchasing-*` will not show new events.
+
+Update saved queries for the receiver's stored field names. Elastic's [application log view](https://www.elastic.co/docs/solutions/observability/apm/logs) supports correlation through `trace.id`; the HTTP `RequestId` identifies a request, not a distributed trace. Custom log properties can appear in `_source` without searchable mappings because APM application logs disable dynamic mapping. Check mappings before relying on filters for `Application`, `AppEnvironment`, or order IDs; see [OTLP intake limitations](https://www.elastic.co/docs/solutions/observability/apm/opentelemetry/limitations#opentelemetry-logs).
 
 For an environment change, verify a web request and a short job produce stored logs, correlated traces, and metrics. Check an exception, the service/environment fields, and the receiver's retention policy. Keep historical views available when switching dashboards. To roll back the application, restore the previous build and its logging/APM settings; that build does not understand this OTLP configuration.
 

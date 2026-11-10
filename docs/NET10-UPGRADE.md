@@ -32,7 +32,6 @@ All 14 C# projects target `net10.0`. [global.json](../global.json) owns the SDK 
 - Castle Windsor moves to 6.0.0 with Castle.Core 5.2.1. The host uses `Castle.Windsor.MsDependencyInjection` 6.0.0 and its `WindsorServiceProviderFactory`. The existing `Startup.ConfigureContainer` registrations remain. The former adapter's 6.0.0 release compiled but failed on the first HTTP request with `No scope available`; the replacement passes actual HTTP tests. See the [upstream scope issue](https://github.com/castleproject/Windsor/issues/646) and [replacement adapter documentation](https://github.com/volosoft/castle-windsor-ms-adapter).
 - ASP.NET Newtonsoft integration and directory services use 10.0.12; Newtonsoft.Json uses 13.0.4. Azure.Storage.Blobs moves to 12.30.0, and NPOI to 2.7.6 for legacy Excel vendor imports.
 - Serilog.AspNetCore uses 10.0.0, Serilog.Exceptions 8.4.0, ClientInfo 2.9.0 and the jobs' console sink 6.1.1. User-Agent enrichment keeps the `ClientAgent` property with the newer header API. Logs, traces, and metrics use [OpenTelemetry](TELEMETRY.md). See [search backends](SEARCH-BACKENDS.md) for search destination configuration and query/index contracts.
-- APM uses targeted ASP.NET Core and Azure Storage packages with subscribers for incoming requests, HTTP, SQL Client, and Blob Storage.
 - The jobs explicitly reference Microsoft.Extensions.Caching.Memory 10.0.12 to override the older AE SDK's vulnerable transitive dependency. MVC gets the cache implementation from the ASP.NET shared framework. The AE SDK and legacy KFS integration are otherwise unchanged.
 - MSTest stays on its compatible 3.x API at 3.11.1, with Test SDK 18.0.1, Moq 4.20.72 and SQLite 1.0.119. ASP.NET TestHost 10.0.12 exercises the real host and Windsor adapter without live credentials or service calls.
 
@@ -80,7 +79,7 @@ Run this after the final code and package versions are deployed to Azure test. U
 - [ ] PDF and Excel exports, including non-ASCII content and dates/amounts, plus bulk vendor `.xls` import
 - [ ] Aggie Enterprise validation and submission against the test integration, including an order with multiple unit codes and repeated codes. Confirm the outgoing requisition has the correct unit names and reaches the API without an NHibernate translation error.
 - [ ] CSS/JavaScript bundles, form validation and browser console on key pages
-- [ ] Logging and APM receive expected requests/errors without startup or serialization failures; confirm request, outgoing HTTP, SQL and Blob Storage spans after the targeted APM change
+- [ ] Complete the [telemetry delivery and dashboard checks](TELEMETRY.md#finding-data-in-elastic).
 - [ ] EmailNotifications and DailyEmailNotifications produce the expected test messages without duplicates
 - [ ] UpdateOrderIndexes and UpdateLookupIndexes produce searchable updated data
 - [ ] AggieEnterprise job processes the intended test records and records outcomes
