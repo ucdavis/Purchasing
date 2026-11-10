@@ -112,8 +112,10 @@ namespace Purchasing.Tests.Telemetry
                     using var response = await client.GetAsync(receiver.Endpoint + "/health");
                     response.EnsureSuccessStatusCode();
                 }
-                Assert.IsTrue(host.Services.GetRequiredService<TracerProvider>().ForceFlush(10000));
-                Assert.IsTrue(host.Services.GetRequiredService<MeterProvider>().ForceFlush(10000));
+                // Shutdown waits for in-flight exports; ForceFlush can return once
+                // a batch leaves the SDK queue, before the receiver has captured it.
+                Assert.IsTrue(host.Services.GetRequiredService<TracerProvider>().Shutdown(10000));
+                Assert.IsTrue(host.Services.GetRequiredService<MeterProvider>().Shutdown(10000));
                 await host.StopAsync();
             }
             finally
@@ -192,8 +194,8 @@ namespace Purchasing.Tests.Telemetry
                         await client.GetAsync(receiver.Endpoint + "/health");
                     }
                 }
-                Assert.IsTrue(traces.ForceFlush(10000));
-                Assert.IsTrue(metrics.ForceFlush(10000));
+                Assert.IsTrue(traces.Shutdown(10000));
+                Assert.IsTrue(metrics.Shutdown(10000));
             }
             finally
             {
@@ -265,7 +267,7 @@ namespace Purchasing.Tests.Telemetry
                 var blob = new BlobClient(new Uri(receiver.Endpoint + "/container/blob"));
                 await blob.DownloadContentAsync();
             }
-            Assert.IsTrue(traces.ForceFlush(10000));
+            Assert.IsTrue(traces.Shutdown(10000));
             var spans = receiver.Requests.Where(r => r.Signal == "traces")
                 .Select(r => ExportTracesRequest.Parser.ParseFrom(r.Body)).SelectMany(r => r.ResourceSpans)
                 .SelectMany(r => r.ScopeSpans).SelectMany(r => r.Spans).ToArray();
