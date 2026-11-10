@@ -10,9 +10,8 @@ namespace Purchasing.Jobs.CreateOrderIndexes
 {
     class Program : WebJobBase
     {
-        static void Main(string[] args)
+        static void Main(string[] args) => Run(kernel =>
         {
-            var kernel = ConfigureServices();
 
             var indexService = kernel.Get<IIndexService>();
 
@@ -34,6 +33,6 @@ namespace Purchasing.Jobs.CreateOrderIndexes
                 Log.Error(ex, "FAILED: Index creation failed because {0}", ex.Message);
                 throw; // Surface the failure only after every operation and target has been attempted.
             }
-        }
+        });
     }
 }

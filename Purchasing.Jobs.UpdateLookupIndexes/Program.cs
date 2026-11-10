@@ -10,9 +10,8 @@ namespace Purchasing.Jobs.UpdateLookupIndexes
 {
     class Program : WebJobBase
     {
-        static void Main(string[] args)
+        static void Main(string[] args) => Run(kernel =>
         {
-            var kernel = ConfigureServices();
 
             var indexService = kernel.Get<IIndexService>();
 
@@ -32,6 +31,6 @@ namespace Purchasing.Jobs.UpdateLookupIndexes
                 Log.Error(ex, "FAILED: Indexes failed because {0}", ex.Message);
                 throw; // Surface the failure only after every operation and target has been attempted.
             }
-        }
+        });
     }
 }

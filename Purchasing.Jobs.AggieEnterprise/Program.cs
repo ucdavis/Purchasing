@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Ninject;
 using Purchasing.Core;
 using Purchasing.Core.Helpers;
@@ -9,18 +9,17 @@ using Serilog;
 
 class Program : WebJobBase
 {
-    static async Task Main(string[] args)
+    static Task Main(string[] args) => RunAsync(async kernel =>
     {
-        var kernel = ConfigureServices();
         var indexService = kernel.Get<IIndexService>();
 
-        var provider = ConfigureServicesLocal();
+        using var provider = ConfigureServicesLocal();
 
         try
         {
             Log.Information("Updating Aggie Enterprise Purchasing Categories (Commodities)");
             var aeLookupService = provider.GetService<IAeLookupsService>();
-            if(aeLookupService == null)
+            if (aeLookupService == null)
             {
                 throw new Exception("Could not get the aeCommodityCodeService service");
             }
@@ -39,7 +38,7 @@ class Program : WebJobBase
 
             throw; // rethrow the exception so the job fails
         }
-    }
+    });
 
     private static ServiceProvider ConfigureServicesLocal()
     {

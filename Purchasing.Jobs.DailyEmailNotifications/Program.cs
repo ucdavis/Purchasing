@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Azure.WebJobs;
 using Ninject;
 using Purchasing.Core.Services;
@@ -13,12 +13,11 @@ namespace Purchasing.Jobs.DailyEmailNotifications
     {
         private static IDbService _dbService;
 
-        static void Main(string[] args)
+        static void Main(string[] args) => Run(kernel =>
         {
-            var kernel = ConfigureServices();
             _dbService = kernel.Get<IDbService>();
             EmailNotifications();
-        }
+        });
 
         public static void EmailNotifications()
         {

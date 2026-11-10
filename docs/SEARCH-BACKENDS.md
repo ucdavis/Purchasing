@@ -50,7 +50,7 @@ Updates to related indexes become visible separately. A search can briefly see d
 
 ### Full rebuilds
 
-A full-index operation writes a new physical index, refreshes it, and switches the logical alias only after the new data has been written successfully. A failed build leaves the active index in place. Failed replacement indexes remain available for inspection and require manual cleanup.
+A full-index operation writes a new physical index, refreshes it, and switches the logical alias only after the new data has been written successfully. A failure before alias promotion leaves the active index in place. Cleanup can also fail after promotion, when the replacement is already active. Inspect the logical alias before deleting any physical index; never delete an index targeted by an active alias. Unreferenced failed replacements remain available for inspection and manual cleanup.
 
 After a successful switch, older generations in the same namespace are removed only if no other aliases reference them. Rebuilds must run separately from other writers because there is no cross-process coordination to prevent concurrent work from overwriting newer data.
 
@@ -75,13 +75,13 @@ Configure MVC and jobs independently using these settings. In Azure App Service,
 
 Credentials embedded in the endpoint URL are also supported. Configure only one credential source and keep it in secret configuration. Invalid endpoints, prefixes, and conflicting credentials fail service initialization without making a network request.
 
-Settings are read at process startup. Restart the affected application after changing them. Search configuration is independent of the logging endpoint in `Stackify.ElasticUrl` and of APM settings.
+Settings are read at process startup. Restart the affected application after changing them. Search configuration is independent of [OpenTelemetry logging, tracing, and metrics](TELEMETRY.md).
 
 Before using a deployment slot, verify its endpoint, prefix, credentials, and job scheduling flags. Staging can share production SQL and search, so its scheduled jobs must remain disabled. Swapping slots does not copy or validate index data.
 
 ### Changing endpoints or prefixes
 
-Reusing the same populated endpoint and prefix preserves the existing data. A matching prefix on another endpoint does not establish completeness. Before directing reads to a new, empty, or incomplete target, backfill orders and all lookup indexes and verify their IDs and contents against SQL. Coordinate writers during backfill and verification; the scheduled update job cannot populate older missing records.
+Reusing the same populated endpoint and prefix preserves the existing data. A matching prefix on another endpoint does not establish completeness. Before directing reads to a new, empty, or incomplete target, backfill orders and all lookup indexes and verify their IDs and contents against SQL. Coordinate indexing writers during backfill and verification. Also pause SQL writes through verification and cutover, or capture and reconcile every SQL change since the backfill snapshot before directing reads to the target. Changes older than ten minutes can escape the polling window while indexing is paused; restarting the scheduled job does not repair them or populate older missing records.
 
 ## Code and local testing
 

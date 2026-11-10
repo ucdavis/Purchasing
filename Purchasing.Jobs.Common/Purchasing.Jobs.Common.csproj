@@ -21,9 +21,6 @@
     <!-- Override the legacy AE SDK dependency in console hosts. MVC uses the shared framework. -->
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.12" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
-		<!-- Keep the logging transport version stable independently of the search client. -->
-    <PackageReference Include="Elasticsearch.Net" Version="7.13.2" />
-    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1"/>
 		<PackageReference Include="CommonServiceLocator" Version="2.0.6"/>
 		<PackageReference Include="Ninject" Version="3.3.4"/>
     <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />

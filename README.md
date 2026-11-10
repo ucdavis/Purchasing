@@ -148,3 +148,5 @@ configuration examples, Vite setup, shared styles, optional React, and publishin
 
 See [how search works](docs/SEARCH-BACKENDS.md) for indexed data, queries and
 access control, indexing and recovery, configuration, and local integration tests.
+
+See [telemetry configuration](docs/TELEMETRY.md) for structured logging, tracing, metrics, and OTLP export.

@@ -13,11 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Purchasing.Mvc.Logging;
-using Elastic.Apm.AspNetCore.DiagnosticListener;
-using Elastic.Apm.Azure.Storage;
-using Elastic.Apm.DiagnosticSource;
-using Elastic.Apm.Extensions.Hosting;
-using Elastic.Apm.Instrumentations.SqlClient;
+using Purchasing.Core.Telemetry;
 using Castle.Windsor.MsDependencyInjection;
 
 namespace Purchasing.Mvc
@@ -40,12 +36,13 @@ namespace Purchasing.Mvc
             }
             var configuration = builder.Build();
 
+            using var diagnostics = new TelemetryDiagnostics();
             LogConfig.ConfigureLogging(configuration);
 
             try
             {
                 Log.Information("Building web host");
-                var host = CreateHostBuilder(args, isProductionDebug && !isDevelopment).Build();
+                using var host = CreateHostBuilder(args, isProductionDebug && !isDevelopment).Build();
 
                 Log.Information("Starting web host");
                 host.Run();
@@ -74,10 +71,7 @@ namespace Purchasing.Mvc
                         webBuilder.ConfigureAppConfiguration(builder => builder.AddUserSecrets<Program>());
                     }
                 })
-                .UseElasticApm(
-                    new AspNetCoreDiagnosticSubscriber(),
-                    new HttpDiagnosticsSubscriber(),
-                    new SqlClientDiagnosticSubscriber(),
-                    new AzureBlobStorageDiagnosticsSubscriber());
+                .ConfigureServices((context, services) =>
+                    services.AddPurchasingTelemetry(context.Configuration, "purchasing.web", web: true));
     }
 }
