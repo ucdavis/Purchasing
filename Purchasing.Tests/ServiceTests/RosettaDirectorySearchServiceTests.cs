@@ -41,7 +41,7 @@ namespace Purchasing.Tests.ServiceTests
 
             Assert.AreEqual("/api/v1/people", handler.RequestUri.AbsolutePath);
             var query = QueryHelpers.ParseQuery(handler.RequestUri.Query);
-            Assert.AreEqual("testuser", query["loginid"].ToString());
+            Assert.AreEqual("testuser", query["loginId"].ToString());
             Assert.AreEqual("all", query["affiliationState"].ToString());
             Assert.IsFalse(query.ContainsKey("email"));
             Assert.AreEqual("testuser", user.LoginId);
@@ -67,7 +67,7 @@ namespace Purchasing.Tests.ServiceTests
             var query = QueryHelpers.ParseQuery(handler.RequestUri.Query);
             Assert.AreEqual("TEST+ALIAS@health.ucdavis.edu", query["email"].ToString());
             Assert.AreEqual("all", query["affiliationState"].ToString());
-            Assert.IsFalse(query.ContainsKey("loginid"));
+            Assert.IsFalse(query.ContainsKey("loginId"));
             Assert.AreEqual("test+alias@health.ucdavis.edu", user.EmailAddress);
         }
 

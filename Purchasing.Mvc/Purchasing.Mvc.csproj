@@ -19,7 +19,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
-    <AssemblyVersion>2.1.0.2</AssemblyVersion>
+    <AssemblyVersion>2.1.0.3</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -88,7 +88,7 @@
     <PackageReference Include="Castle.Windsor.MsDependencyInjection" Version="6.0.0" />
     <PackageReference Include="AspNetCore.Security.CAS" Version="2.0.5" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.30.0" />
-    <PackageReference Include="UCD.Rosetta.Client" Version="1.0.6" />
+    <PackageReference Include="UCD.Rosetta.Client" Version="1.0.7" />
   </ItemGroup>
 
   <Target Name="BundleMinify" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' ">
