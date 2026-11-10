@@ -1,11 +1,7 @@
-using System;
-using System.Web;
 using Serilog;
-using Serilog.Configuration;
-using Serilog.Sinks.Elasticsearch;
+using Purchasing.Core.Telemetry;
 using Serilog.Exceptions;
 using Microsoft.Extensions.Configuration;
-using Elastic.Apm.SerilogEnricher;
 using Serilog.Events;
 
 namespace Purchasing.Mvc.Logging
@@ -15,57 +11,23 @@ namespace Purchasing.Mvc.Logging
     /// </summary>
     public static class LogConfig
     {
-        private static bool _loggingSetup;
+        public static Serilog.Core.Logger CreateLogger(IConfiguration configuration) =>
+            ConfigureLogging(new LoggerConfiguration(), configuration).CreateLogger();
 
-        /// <summary>
-        /// Configure Application Logging
-        /// </summary>
-        public static void ConfigureLogging(IConfiguration configuration)
-        {
-            if (_loggingSetup) return; //only setup logging once
-
-            Log.Logger = new LoggerConfiguration()
+        public static LoggerConfiguration ConfigureLogging(LoggerConfiguration logger, IConfiguration configuration) =>
+            logger
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 // .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning) // uncomment this to hide EF core general info logs
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                .MinimumLevel.Override("Elastic.Apm", LogEventLevel.Warning)
                 .MinimumLevel.Override("System", LogEventLevel.Warning)
                 .WriteTo.Console()
-                .WriteToElasticSearchCustom(configuration)
+                .WriteToOpenTelemetry(configuration, "purchasing.web")
                 .Enrich.WithClientIp()
                 .Enrich.WithRequestHeader("User-Agent", "ClientAgent")
                 .Enrich.WithExceptionDetails()
-                .Enrich.WithProperty("Application", configuration["Stackify.AppName"])
-                .Enrich.WithProperty("AppEnvironment", configuration["Stackify.Environment"])
-                .Enrich.WithElasticApmCorrelationInfo()
                 .Enrich.With<SerilogHttpContextEnricher>()
-                .Enrich.FromLogContext()
-                //.Filter.ByExcluding(e => e.Exception != null && e.Exception.GetBaseException() is HttpException) //filter out those 404s and headers exceptions
-                .CreateLogger();
+                .Enrich.FromLogContext();
 
-            _loggingSetup = true;
-        }
-
-        public static LoggerConfiguration WriteToElasticSearchCustom(this LoggerConfiguration logConfig, IConfiguration configuration)
-        {
-            var esUrl = configuration["Stackify.ElasticUrl"];
-
-            // only continue if a valid http url is setup in the config
-            if (esUrl == null || !esUrl.StartsWith("http"))
-            {
-                return logConfig;
-            }
-
-            logConfig.Enrich.WithProperty("Application", configuration["Stackify.AppName"]);
-            logConfig.Enrich.WithProperty("AppEnvironment", configuration["Stackify.Environment"]);
-
-
-            return logConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(esUrl))
-            {
-                IndexFormat = "aspnet-purchasing-{0:yyyy.MM}",
-                TypeName = null
-            });
-        }
     }
 }

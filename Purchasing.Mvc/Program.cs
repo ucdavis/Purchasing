@@ -4,20 +4,12 @@
 // For more information on ASP.NET Core hosting, see https://docs.microsoft.com/aspnet/core/fundamentals/host/web-host
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Purchasing.Mvc.Logging;
-using Elastic.Apm.AspNetCore.DiagnosticListener;
-using Elastic.Apm.Azure.Storage;
-using Elastic.Apm.DiagnosticSource;
-using Elastic.Apm.Extensions.Hosting;
-using Elastic.Apm.Instrumentations.SqlClient;
+using Purchasing.Core.Telemetry;
 using Castle.Windsor.MsDependencyInjection;
 
 namespace Purchasing.Mvc
@@ -28,27 +20,19 @@ namespace Purchasing.Mvc
         {
             var isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.OrdinalIgnoreCase);
             var isProductionDebug = !isDevelopment && string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_DEBUG_PRODUCTION"), "true", StringComparison.OrdinalIgnoreCase);
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables();
 
-            //only add secrets in development or when debugging in production
-            if (isDevelopment || isProductionDebug)
-            {
-                builder.AddUserSecrets<Program>();
-            }
-            var configuration = builder.Build();
-
-            LogConfig.ConfigureLogging(configuration);
+            using var diagnostics = new TelemetryDiagnostics();
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
+            IHost host = null;
 
             try
             {
                 Log.Information("Building web host");
-                var host = CreateHostBuilder(args, isProductionDebug && !isDevelopment).Build();
+                host = CreateHostBuilder(args, isProductionDebug).Build();
 
                 Log.Information("Starting web host");
-                host.Run();
+                host.Start();
+                host.WaitForShutdown();
             }
             catch (Exception ex)
             {
@@ -57,13 +41,14 @@ namespace Purchasing.Mvc
             }
             finally
             {
+                host?.Dispose();
                 Log.CloseAndFlush();
             }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args, bool addUserSecrets) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog()
+                .UseSerilog((context, logger) => LogConfig.ConfigureLogging(logger, context.Configuration))
                 .UseServiceProviderFactory(new WindsorServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
@@ -74,11 +59,7 @@ namespace Purchasing.Mvc
                         webBuilder.ConfigureAppConfiguration(builder => builder.AddUserSecrets<Program>());
                     }
                 })
-                // Keep instrumentation scoped so APM cannot upgrade the Bonsai search transport.
-                .UseElasticApm(
-                    new AspNetCoreDiagnosticSubscriber(),
-                    new HttpDiagnosticsSubscriber(),
-                    new SqlClientDiagnosticSubscriber(),
-                    new AzureBlobStorageDiagnosticsSubscriber());
+                .ConfigureServices((context, services) =>
+                    services.AddPurchasingTelemetry(context.Configuration, "purchasing.web", web: true));
     }
 }

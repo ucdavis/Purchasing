@@ -20,8 +20,7 @@ namespace Purchasing.Core.Services
         }
     }
 
-    // Both transports use the same Elasticsearch JSON contract. Domain documents retain
-    // Newtonsoft attributes, including inherited opt-in serialization, on both versions.
+    // Domain documents retain Newtonsoft attributes, including inherited opt-in serialization.
     public abstract class IndexBackend
     {
         internal static readonly JsonSerializerSettings DocumentSettings = new JsonSerializerSettings

@@ -10,46 +10,7 @@ namespace Purchasing.Tests.ServiceTests
     [TestClass]
     public class SearchBackendIntegrationTests
     {
-        [TestMethod]
-        [TestCategory("SearchIntegration")]
-        public void DualWritesAndReadSwitchesWorkWithBothRealServers()
-        {
-            var bonsai = Environment.GetEnvironmentVariable("PURCHASING_TEST_ELASTIC7_URL");
-            var cloud = Environment.GetEnvironmentVariable("PURCHASING_TEST_ELASTIC9_URL");
-            if (string.IsNullOrEmpty(bonsai) || string.IsNullOrEmpty(cloud))
-                Assert.Inconclusive("Both disposable local Elasticsearch instances are required.");
-            Assert.IsTrue(new Uri(bonsai).IsLoopback && new Uri(cloud).IsLoopback);
-            var prefix = "opp-test-" + Guid.NewGuid().ToString("N");
-            SearchBackendSet Select(string reader) => new SearchBackendSet(DualIndexingTests.Config(
-                ("Search:ReadBackend", reader), ("Search:WriteTargets", "Both"),
-                ("Search:Bonsai:Url", bonsai), ("Search:ElasticCloud:Url", cloud),
-                ("Search:Bonsai:IndexPrefix", prefix), ("Search:ElasticCloud:IndexPrefix", prefix)));
-            var initial = Select("Bonsai");
-            try
-            {
-                var source = new DualIndexingTests.FakeOrderSource(2);
-                new ElasticSearchIndexService(null, initial, source).UpdateOrderIndexes();
-                Assert.AreEqual(1, source.Reads.Count);
-                foreach (var target in initial.Writers) target.Request("POST", $"/{prefix}-*/_refresh");
-                foreach (var reader in new[] { "Bonsai", "ElasticCloud", "Bonsai" })
-                {
-                    var service = new ElasticSearchIndexService(null, Select(reader));
-                    Assert.AreEqual(2, service.GetOrderHistory(new[] { 1, 2 }, null, null, null, null, null).Results.Count);
-                }
-            }
-            finally
-            {
-                foreach (var target in initial.Writers)
-                {
-                    var indexes = target.Request("GET", $"/{prefix}-*", allowNotFound: true);
-                    if (indexes != null)
-                        foreach (var index in indexes.Properties()) target.Request("DELETE", "/" + index.Name);
-                }
-            }
-        }
-
         [DataTestMethod]
-        [DataRow("Bonsai", "PURCHASING_TEST_ELASTIC7_URL")]
         [DataRow("ElasticCloud", "PURCHASING_TEST_ELASTIC9_URL")]
         [TestCategory("SearchIntegration")]
         public void SearchReportsAndRepeatableIndexingWorkOnRealServer(string name, string variable)
@@ -58,11 +19,9 @@ namespace Purchasing.Tests.ServiceTests
             if (string.IsNullOrEmpty(url)) Assert.Inconclusive($"Set {variable} to a disposable local Elasticsearch instance.");
             Assert.IsTrue(new Uri(url).IsLoopback, "Integration tests only write to loopback instances.");
             var prefix = "opp-test-" + Guid.NewGuid().ToString("N");
-            var configuration = DualIndexingTests.Config(("Search:ReadBackend", name), ("Search:WriteTargets", name),
-                ($"Search:{name}:Url", url), ($"Search:{name}:IndexPrefix", prefix));
-            var set = new SearchBackendSet(configuration);
-            var backend = set.Reader;
-            var search = new ElasticSearchService(set);
+            var configuration = IndexingTests.Config(($"Search:{name}:Url", url), ($"Search:{name}:IndexPrefix", prefix));
+            var backend = new ElasticCloudIndexBackend(new SearchEndpoint(configuration));
+            var search = new ElasticSearchService(backend);
             var date = new DateTime(2012, 5, 10);
             try
             {
@@ -84,7 +43,7 @@ namespace Purchasing.Tests.ServiceTests
                 backend.Write(Indexes.CustomAnswers, new[] { new SearchResults.CustomFieldResult { Id = 1, OrderId = 42, Question = "What?", Answer = "Office paper" } }, recreate: true);
                 backend.Write(Indexes.Accounts, new[] { new Account { Id = "A1", Name = "Office paper" } }, recreate: true);
                 backend.Write(Indexes.Buildings, new[] { new Building { Id = "B1", BuildingName = "Office paper" } }, recreate: true);
-                // Existing Bonsai installations start with concrete index names, not aliases.
+                // Existing installations start with concrete index names, not aliases.
                 backend.Write(Indexes.Commodities, new[] { new Commodity { Id = "C0", Name = "Previous commodity" } });
                 Assert.AreEqual(DateTime.MinValue, backend.LastModified(Indexes.Commodities));
                 backend.Write(Indexes.Commodities, new[] { new Commodity { Id = "C1", Name = "Office paper" } }, recreate: true);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Ninject;
 using Purchasing.Core.Services;
 using Purchasing.Jobs.Common;
@@ -12,12 +12,11 @@ namespace Purchasing.Jobs.EmailNotifications
     {
         private static IDbService _dbService;
 
-        static void Main(string[] args)
+        static void Main(string[] args) => Run(kernel =>
         {
-            var kernel = ConfigureServices();
             _dbService = kernel.Get<IDbService>();
             EmailNotifications();
-        }
+        });
 
         private static void EmailNotifications()
         {

@@ -144,8 +144,9 @@ Both views share the same controller; unconverted pages retain their existing
 views and layouts. See [frontend development and migration](docs/FRONTEND.md) for
 configuration examples, Vite setup, shared styles, optional React, and publishing.
 
-## Search backends
+## Search
 
-See [search backend configuration and operation](docs/SEARCH-BACKENDS.md) for
-Bonsai and Elasticsearch 9 selection, dual indexing, failure handling, local
-integration tests, and the deferred recovery and migration work.
+See [how search works](docs/SEARCH-BACKENDS.md) for indexed data, queries and
+access control, indexing and recovery, configuration, and local integration tests.
+
+See [telemetry configuration](docs/TELEMETRY.md) for structured logging, tracing, metrics, and OTLP export.

@@ -12,7 +12,7 @@ namespace Purchasing.Core.Services
     public class ElasticSearchService : ISearchService
     {
         private readonly IndexBackend _backend;
-        public ElasticSearchService(SearchBackendSet backends) { _backend = backends.Reader; }
+        public ElasticSearchService(IndexBackend backend) { _backend = backend; }
 
         private static JObject Permissions(int[] ids) => JObject.FromObject(new
         {
@@ -130,7 +130,9 @@ namespace Purchasing.Core.Services
             var ids = workgroups.Select(w => w.Id).ToArray();
             if (ids.Length == 0) return new OrderTrackingAggregationByRole
             {
-                OrderTrackingEntities = new List<OrderTrackingEntity>(), NamesInRole = Array.Empty<string>(), PercentilesForRole = new List<double[]>()
+                OrderTrackingEntities = new List<OrderTrackingEntity>(),
+                NamesInRole = Array.Empty<string>(),
+                PercentilesForRole = new List<double[]>()
             };
             var roleField = role == "Approver" ? "approverId" : role == "AccountManager" ? "accountManagerId" : "purchaserId";
             var timeField = role == "Approver" ? "minutesToApprove" : role == "AccountManager" ? "minutesToAccountManagerComplete" : "minutesToPurchaserComplete";

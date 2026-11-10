@@ -1,0 +1,48 @@
+syntax = "proto3";
+package purchasing.tests.otlp;
+// The subset of the public OTLP wire contract asserted by the receiver tests.
+// Field numbers: https://github.com/open-telemetry/opentelemetry-proto/tree/v1.7.0/opentelemetry/proto
+message AnyValue {
+  oneof value {
+    string string_value = 1;
+    bool bool_value = 2;
+    int64 int_value = 3;
+    double double_value = 4;
+    ArrayValue array_value = 5;
+    KeyValueList kvlist_value = 6;
+    bytes bytes_value = 7;
+  }
+}
+message ArrayValue { repeated AnyValue values = 1; }
+message KeyValueList { repeated KeyValue values = 1; }
+message KeyValue { string key = 1; AnyValue value = 2; }
+message Resource { repeated KeyValue attributes = 1; }
+message ExportLogsRequest { repeated ResourceLogs resource_logs = 1; }
+message ResourceLogs { Resource resource = 1; repeated ScopeLogs scope_logs = 2; }
+message ScopeLogs { repeated LogRecord log_records = 2; }
+message LogRecord {
+  fixed64 time_unix_nano = 1;
+  int32 severity_number = 2;
+  string severity_text = 3;
+  AnyValue body = 5;
+  repeated KeyValue attributes = 6;
+  bytes trace_id = 9;
+  bytes span_id = 10;
+}
+message ExportTracesRequest { repeated ResourceSpans resource_spans = 1; }
+message ResourceSpans { Resource resource = 1; repeated ScopeSpans scope_spans = 2; }
+message ScopeSpans { repeated Span spans = 2; }
+message Span {
+  bytes trace_id = 1;
+  bytes span_id = 2;
+  bytes parent_span_id = 4;
+  string name = 5;
+  int32 kind = 6;
+  fixed64 start_time_unix_nano = 7;
+  fixed64 end_time_unix_nano = 8;
+  repeated KeyValue attributes = 9;
+}
+message ExportMetricsRequest { repeated ResourceMetrics resource_metrics = 1; }
+message ResourceMetrics { Resource resource = 1; repeated ScopeMetrics scope_metrics = 2; }
+message ScopeMetrics { repeated Metric metrics = 2; }
+message Metric { string name = 1; }

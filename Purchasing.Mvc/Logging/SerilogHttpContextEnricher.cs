@@ -12,7 +12,8 @@ namespace Purchasing.Mvc.Logging
     public class SerilogHttpContextEnricher : ILogEventEnricher
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private bool _enriching = false;
+        [ThreadStatic]
+        private static bool _enriching;
 
         public SerilogHttpContextEnricher(IHttpContextAccessor contextAccessor)
         {
@@ -41,7 +42,7 @@ namespace Purchasing.Mvc.Logging
                 // Set HttpContext properties
                 AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "User", () => httpContext.User?.Identity?.Name);
                 AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "SessionId", () => httpContext.SafeSession()?.Id);
-                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "TraceId", () => httpContext.TraceIdentifier);
+                AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "RequestId", () => httpContext.TraceIdentifier);
                 AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "EndpointName", () => httpContext.GetEndpoint()?.DisplayName);
                 AddOrUpdateProperty(httpContext, logEvent, propertyFactory, "ResponseContentType", () => httpContext.Response?.ContentType?.ToString());
             }

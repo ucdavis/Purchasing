@@ -18,12 +18,12 @@ namespace Purchasing.Mvc
     public class ComponentInstaller : IWindsorInstaller
     {
         private readonly bool _useRosettaDirectorySearch;
-        private readonly SearchBackendSet _searchBackends;
+        private readonly IndexBackend _searchBackend;
 
-        public ComponentInstaller(SearchBackendSet searchBackends, bool useRosettaDirectorySearch = false)
+        public ComponentInstaller(IndexBackend searchBackend, bool useRosettaDirectorySearch = false)
         {
             _useRosettaDirectorySearch = useRosettaDirectorySearch;
-            _searchBackends = searchBackends;
+            _searchBackend = searchBackend;
         }
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
@@ -32,7 +32,7 @@ namespace Purchasing.Mvc
 
             container.Register(Component.For<IUserIdentity>().ImplementedBy<UserIdentity>().Named("userIdentity"));
 
-            container.Register(Component.For<SearchBackendSet>().Instance(_searchBackends));
+            container.Register(Component.For<IndexBackend>().Instance(_searchBackend));
             container.Register(Component.For<ISearchService>().ImplementedBy<ElasticSearchService>().Named("searchService"));
             container.Register(Component.For<IIndexService>().ImplementedBy<ElasticSearchIndexService>().Named("indexService"));
 
