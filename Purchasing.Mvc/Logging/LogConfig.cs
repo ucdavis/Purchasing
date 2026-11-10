@@ -11,22 +11,11 @@ namespace Purchasing.Mvc.Logging
     /// </summary>
     public static class LogConfig
     {
-        private static bool _loggingSetup;
-
-        /// <summary>
-        /// Configure Application Logging
-        /// </summary>
-        public static void ConfigureLogging(IConfiguration configuration)
-        {
-            if (_loggingSetup) return; //only setup logging once
-
-            Log.Logger = CreateLogger(configuration);
-
-            _loggingSetup = true;
-        }
-
         public static Serilog.Core.Logger CreateLogger(IConfiguration configuration) =>
-            new LoggerConfiguration()
+            ConfigureLogging(new LoggerConfiguration(), configuration).CreateLogger();
+
+        public static LoggerConfiguration ConfigureLogging(LoggerConfiguration logger, IConfiguration configuration) =>
+            logger
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 // .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning) // uncomment this to hide EF core general info logs
@@ -38,9 +27,7 @@ namespace Purchasing.Mvc.Logging
                 .Enrich.WithRequestHeader("User-Agent", "ClientAgent")
                 .Enrich.WithExceptionDetails()
                 .Enrich.With<SerilogHttpContextEnricher>()
-                .Enrich.FromLogContext()
-                //.Filter.ByExcluding(e => e.Exception != null && e.Exception.GetBaseException() is HttpException) //filter out those 404s and headers exceptions
-                .CreateLogger();
+                .Enrich.FromLogContext();
 
     }
 }

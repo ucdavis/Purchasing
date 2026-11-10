@@ -4,13 +4,9 @@
 // For more information on ASP.NET Core hosting, see https://docs.microsoft.com/aspnet/core/fundamentals/host/web-host
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Purchasing.Mvc.Logging;
 using Purchasing.Core.Telemetry;
@@ -24,28 +20,19 @@ namespace Purchasing.Mvc
         {
             var isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.OrdinalIgnoreCase);
             var isProductionDebug = !isDevelopment && string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_DEBUG_PRODUCTION"), "true", StringComparison.OrdinalIgnoreCase);
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables();
-
-            //only add secrets in development or when debugging in production
-            if (isDevelopment || isProductionDebug)
-            {
-                builder.AddUserSecrets<Program>();
-            }
-            var configuration = builder.Build();
 
             using var diagnostics = new TelemetryDiagnostics();
-            LogConfig.ConfigureLogging(configuration);
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
+            IHost host = null;
 
             try
             {
                 Log.Information("Building web host");
-                using var host = CreateHostBuilder(args, isProductionDebug && !isDevelopment).Build();
+                host = CreateHostBuilder(args, isProductionDebug).Build();
 
                 Log.Information("Starting web host");
-                host.Run();
+                host.Start();
+                host.WaitForShutdown();
             }
             catch (Exception ex)
             {
@@ -54,13 +41,14 @@ namespace Purchasing.Mvc
             }
             finally
             {
+                host?.Dispose();
                 Log.CloseAndFlush();
             }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args, bool addUserSecrets) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog()
+                .UseSerilog((context, logger) => LogConfig.ConfigureLogging(logger, context.Configuration))
                 .UseServiceProviderFactory(new WindsorServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

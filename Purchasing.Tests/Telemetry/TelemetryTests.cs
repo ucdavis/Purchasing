@@ -10,19 +10,23 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Purchasing.Core.Telemetry;
 using Purchasing.Jobs.Common.Logging;
+using Purchasing.Mvc;
 using Purchasing.Mvc.Logging;
 using Purchasing.Tests.Otlp;
 using Serilog;
@@ -33,6 +37,123 @@ namespace Purchasing.Tests.Telemetry
     [DoNotParallelize]
     public class TelemetryTests
     {
+        [TestMethod]
+        [DataRow(false, false, false)]
+        [DataRow(true, false, false)]
+        [DataRow(false, true, true)]
+        [DataRow(true, true, true)]
+        public async Task WebHostUsesResolvedConfigurationForEverySignal(bool grpc, bool signalSpecific, bool productionDebug)
+        {
+            await using var rejectedReceiver = await OtlpReceiver.Start(!grpc);
+            await using var receiver = await OtlpReceiver.Start(grpc);
+            var lowerPriority = Configuration(rejectedReceiver.Endpoint, !grpc, new Dictionary<string, string>
+            {
+                ["OTEL_EXPORTER_OTLP_HEADERS"] = "Authorization=ApiKey%20rejected-key",
+                ["OTEL_SERVICE_NAME"] = "purchasing.rejected",
+                ["OTEL_RESOURCE_ATTRIBUTES"] = "deployment.environment.name=Rejected,precedence.source=lower"
+            });
+            var higherPriority = Configuration(receiver.Endpoint, grpc, new Dictionary<string, string>
+            {
+                ["OTEL_EXPORTER_OTLP_HEADERS"] = "Authorization=ApiKey%20resolved-key",
+                ["OTEL_SERVICE_NAME"] = "purchasing.resolved",
+                ["OTEL_RESOURCE_ATTRIBUTES"] = "deployment.environment.name=Resolved,precedence.source=host"
+            });
+            if (signalSpecific)
+            {
+                foreach (var signal in new[] { "LOGS", "TRACES", "METRICS" })
+                {
+                    lowerPriority[$"OTEL_EXPORTER_OTLP_{signal}_ENDPOINT"] = rejectedReceiver.Endpoint;
+                    lowerPriority[$"OTEL_EXPORTER_OTLP_{signal}_PROTOCOL"] = !grpc ? "grpc" : "http/protobuf";
+                    lowerPriority[$"OTEL_EXPORTER_OTLP_{signal}_HEADERS"] = "Authorization=ApiKey%20rejected-signal-key";
+                    higherPriority[$"OTEL_EXPORTER_OTLP_{signal}_ENDPOINT"] = receiver.Endpoint +
+                        (grpc ? "" : "/custom/" + signal.ToLowerInvariant());
+                    higherPriority[$"OTEL_EXPORTER_OTLP_{signal}_PROTOCOL"] = grpc ? "grpc" : "http/protobuf";
+                    higherPriority[$"OTEL_EXPORTER_OTLP_{signal}_HEADERS"] = "Authorization=ApiKey%20resolved-signal-key";
+                }
+            }
+
+            var originalLogger = Log.Logger;
+            string traceId;
+            try
+            {
+                Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
+                using var host = await Program.CreateHostBuilder(Array.Empty<string>(), addUserSecrets: productionDebug)
+                    .UseEnvironment(productionDebug ? Environments.Production : Environments.Development)
+                    .ConfigureAppConfiguration((_, configuration) =>
+                    {
+                        configuration.Sources.Clear();
+                        configuration.AddInMemoryCollection(new Dictionary<string, string>
+                        {
+                            ["CasUrl"] = "https://cas.example.test/cas",
+                            ["ConnectionStrings:MainDB"] = "Server=127.0.0.1;Database=Unused;User ID=unused;Password=unused;Connect Timeout=1",
+                            ["MainDB:Schema"] = "dbo",
+                            ["Search:ElasticCloud:Url"] = "http://localhost:9200"
+                        });
+                        configuration.AddInMemoryCollection(lowerPriority.AsEnumerable());
+                        configuration.AddInMemoryCollection(higherPriority.AsEnumerable());
+                    })
+                    .ConfigureWebHost(web => web
+                        .UseSetting(WebHostDefaults.ApplicationKey, typeof(Startup).Assembly.GetName().Name)
+                        .UseTestServer()
+                        .ConfigureServices(services => services.AddDataProtection().UseEphemeralDataProtectionProvider()))
+                    .StartAsync();
+                using (var activity = TelemetryConfiguration.JobActivities.StartActivity("host-configuration"))
+                {
+                    Assert.IsNotNull(activity);
+                    traceId = activity.TraceId.ToHexString();
+                    Log.Information("Static configuration event");
+                    host.Services.GetRequiredService<ILoggerFactory>().CreateLogger("ConfigurationTest")
+                        .LogInformation("Injected configuration event");
+                    using var client = new HttpClient
+                    {
+                        DefaultRequestVersion = grpc ? HttpVersion.Version20 : HttpVersion.Version11,
+                        DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact
+                    };
+                    using var response = await client.GetAsync(receiver.Endpoint + "/health");
+                    response.EnsureSuccessStatusCode();
+                }
+                Assert.IsTrue(host.Services.GetRequiredService<TracerProvider>().ForceFlush(10000));
+                Assert.IsTrue(host.Services.GetRequiredService<MeterProvider>().ForceFlush(10000));
+                await host.StopAsync();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+                Log.Logger = originalLogger;
+            }
+
+            Assert.AreEqual(0, rejectedReceiver.Requests.Count);
+            var requests = receiver.Requests.ToArray();
+            CollectionAssert.AreEquivalent(new[] { "logs", "traces", "metrics" }, requests.Select(r => r.Signal).Distinct().ToArray());
+            var paths = grpc
+                ? new[] { "/opentelemetry.proto.collector.logs.v1.LogsService/Export", "/opentelemetry.proto.collector.trace.v1.TraceService/Export", "/opentelemetry.proto.collector.metrics.v1.MetricsService/Export" }
+                : signalSpecific ? new[] { "/custom/logs", "/custom/traces", "/custom/metrics" }
+                : new[] { "/v1/logs", "/v1/traces", "/v1/metrics" };
+            CollectionAssert.AreEquivalent(paths, requests.Select(r => r.Path).Distinct().ToArray());
+            Assert.IsTrue(requests.All(r => r.Authorization == (signalSpecific ? "ApiKey resolved-signal-key" : "ApiKey resolved-key")));
+            var logs = requests.Where(r => r.Signal == "logs").Select(r => ExportLogsRequest.Parser.ParseFrom(r.Body))
+                .SelectMany(r => r.ResourceLogs).ToArray();
+            var spans = requests.Where(r => r.Signal == "traces").Select(r => ExportTracesRequest.Parser.ParseFrom(r.Body))
+                .SelectMany(r => r.ResourceSpans).ToArray();
+            var metrics = requests.Where(r => r.Signal == "metrics").Select(r => ExportMetricsRequest.Parser.ParseFrom(r.Body))
+                .SelectMany(r => r.ResourceMetrics).ToArray();
+            foreach (var message in new[] { "Static configuration event", "Injected configuration event" })
+            {
+                var record = logs.SelectMany(r => r.ScopeLogs).SelectMany(r => r.LogRecords).Single(r => r.Body.StringValue == message);
+                Assert.AreEqual(traceId, Convert.ToHexString(record.TraceId.ToByteArray()).ToLowerInvariant());
+                Assert.AreEqual("purchasing.resolved", record.Attributes.Single(a => a.Key == "Application").Value.StringValue);
+                Assert.AreEqual("Resolved", record.Attributes.Single(a => a.Key == "AppEnvironment").Value.StringValue);
+            }
+            Assert.AreEqual(1, spans.SelectMany(r => r.ScopeSpans).SelectMany(r => r.Spans).Count(s => s.Name == "host-configuration"));
+            Assert.IsTrue(metrics.SelectMany(r => r.ScopeMetrics).SelectMany(r => r.Metrics).Any(m => m.Name == "http.client.request.duration"));
+            foreach (var resource in logs.Select(r => r.Resource).Concat(spans.Select(r => r.Resource)).Concat(metrics.Select(r => r.Resource)))
+            {
+                Assert.AreEqual("purchasing.resolved", resource.Attributes.Single(a => a.Key == "service.name").Value.StringValue);
+                Assert.AreEqual("Resolved", resource.Attributes.Single(a => a.Key == "deployment.environment.name").Value.StringValue);
+                Assert.AreEqual("host", resource.Attributes.Single(a => a.Key == "precedence.source").Value.StringValue);
+            }
+        }
+
         [TestMethod]
         [DataRow(false, false)]
         [DataRow(false, true)]
