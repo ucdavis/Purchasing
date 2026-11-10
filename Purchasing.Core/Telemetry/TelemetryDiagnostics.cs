@@ -12,6 +12,12 @@ namespace Purchasing.Core.Telemetry
             SelfLog.Enable(_ => Console.Error.WriteLine("Serilog telemetry export failed. Check OTLP connectivity, authentication, and receiver health."));
         }
 
+        public override void Dispose()
+        {
+            SelfLog.Disable();
+            base.Dispose();
+        }
+
         protected override void OnEventSourceCreated(EventSource eventSource)
         {
             if (eventSource.Name.StartsWith("OpenTelemetry-", StringComparison.Ordinal))

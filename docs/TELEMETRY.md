@@ -12,7 +12,7 @@ Set these values in App Service application settings, local environment variable
 | --- | --- |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP receiver URL. Use the receiver's ingestion endpoint, not the Elasticsearch search URL. No embedded credentials, query, or fragment. |
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `grpc`, the default, or `http/protobuf`. Match the receiver. |
-| `OTEL_EXPORTER_OTLP_HEADERS` | Authentication headers, for example `Authorization=ApiKey <secret>` or the authentication scheme required by the receiver. Comma-separated values support percent encoding. |
+| `OTEL_EXPORTER_OTLP_HEADERS` | Authentication headers, for example `Authorization=ApiKey <secret>` or the authentication scheme required by the receiver. Use comma-separated `key=value` pairs. Values can use percent encoding, but must not contain commas, including `%2C`. The trace and metric exporters decode before splitting headers, which can make startup fail. |
 | `OTEL_SERVICE_NAME` | Service identity. Defaults to `purchasing.web` for MVC and the entry assembly name for each job. |
 | `OTEL_RESOURCE_ATTRIBUTES` | Comma-separated attributes, for example `service.namespace=purchasing,deployment.environment.name=Test`. The namespace defaults to `purchasing`; environment defaults to `ASPNETCORE_ENVIRONMENT`, then `Production`. |
 | `OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG` | Standard OpenTelemetry SDK sampling configuration. The default respects the parent's sampling decision and samples all root traces. Use `parentbased_traceidratio` and a ratio such as `0.2` to reduce root trace volume. |

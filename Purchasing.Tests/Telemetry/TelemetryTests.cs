@@ -325,6 +325,24 @@ namespace Purchasing.Tests.Telemetry
         }
 
         [TestMethod]
+        public void DisposedDiagnosticsStopWritingToStandardError()
+        {
+            var output = new StringWriter();
+            var original = Console.Error;
+            Console.SetError(TextWriter.Synchronized(output));
+            try
+            {
+                using (var diagnostics = new TelemetryDiagnostics())
+                    Serilog.Debugging.SelfLog.WriteLine("Synthetic exporter failure");
+                StringAssert.Contains(output.ToString(), "Serilog telemetry export failed");
+                output.GetStringBuilder().Clear();
+                Serilog.Debugging.SelfLog.WriteLine("After diagnostic disposal");
+                Assert.AreEqual(string.Empty, output.ToString());
+            }
+            finally { Console.SetError(original); }
+        }
+
+        [TestMethod]
         public void UnavailableReceiverDoesNotPreventJobLoggerShutdown()
         {
             var output = new StringWriter();
