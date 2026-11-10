@@ -55,7 +55,9 @@
             attachPoNumberEvents();
             attachOrderNotesEvents();
         }
-        attachNav();
+        if (!options.SkipNavigation) {
+            attachNav();
+        }
         attachPostStatusEvents();
 
     };

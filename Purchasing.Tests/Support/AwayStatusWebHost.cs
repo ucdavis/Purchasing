@@ -11,6 +11,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +29,7 @@ using Purchasing.Mvc;
 using Purchasing.Mvc.App_GlobalResources;
 using Purchasing.Mvc.Helpers;
 using Purchasing.Mvc.Infrastructure.ModernUi;
+using Purchasing.Mvc.Models;
 using Purchasing.Mvc.Services;
 using UCDArch.Core.PersistanceSupport;
 
@@ -55,7 +61,7 @@ namespace Purchasing.Tests.Support
                 CurrentUser.IsAway = CurrentUser.AwayUntil.HasValue && CurrentUser.AwayUntil.Value.Date > DateTime.Today);
         }
 
-        public async Task StartAsync(string url = null, bool useDevServer = false, string contentRoot = null)
+        public async Task StartAsync(string url = null, bool useDevServer = false, string contentRoot = null, ReviewOrderViewModel reviewModel = null)
         {
             if (contentRoot == null)
             {
@@ -90,7 +96,11 @@ namespace Purchasing.Tests.Support
                         services.AddSession();
                         services.AddHttpContextAccessor();
                         services.AddAuthentication("Test").AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>("Test", _ => { });
-                        services.AddControllersWithViews()
+                        services.AddControllersWithViews(options =>
+                            {
+                                if (reviewModel != null)
+                                    options.Filters.Add(new ReviewPreviewFilter(reviewModel));
+                            })
                             .AddApplicationPart(typeof(Startup).Assembly)
                             .AddRazorOptions(options => options.ViewLocationExpanders.Add(new ModernUiViewLocationExpander()));
                         services.AddSingleton(Users.Object);
@@ -133,6 +143,34 @@ namespace Purchasing.Tests.Support
         {
             Host?.Dispose();
             ServiceLocator.SetLocatorProvider(() => _previousLocator);
+        }
+
+        // Render the real review views without constructing the database-backed OrderController.
+        // Authentication and routing still run, including the modern view allowlist.
+        private sealed class ReviewPreviewFilter : IResourceFilter
+        {
+            private readonly ReviewOrderViewModel _model;
+
+            public ReviewPreviewFilter(ReviewOrderViewModel model) => _model = model;
+
+            public void OnResourceExecuting(ResourceExecutingContext context)
+            {
+                if (!HttpMethods.IsGet(context.HttpContext.Request.Method)
+                    || context.ActionDescriptor is not ControllerActionDescriptor action
+                    || action.ControllerName != "Order" || action.ActionName != "Review")
+                    return;
+
+                context.Result = new ViewResult
+                {
+                    ViewName = "Review",
+                    ViewData = new ViewDataDictionary<ReviewOrderViewModel>(new EmptyModelMetadataProvider(), context.ModelState)
+                    {
+                        Model = _model
+                    }
+                };
+            }
+
+            public void OnResourceExecuted(ResourceExecutedContext context) { }
         }
 
         private sealed class TestAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>

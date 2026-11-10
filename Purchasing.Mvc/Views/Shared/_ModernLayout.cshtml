@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="purchasing">
+<html lang="en" data-theme="gunrock">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Purchasing - @ViewBag.Title</title>
     <link rel="author" type="text/plain" href="@Url.Content("~/humans.txt")" />
     <link rel="icon" href="@Url.Content("~/favicon.ico")" />
+    @await RenderSectionAsync("Styles", required: false)
     <vite-entry src="src/styles.css" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GHQXSM337H"></script>
     <script>

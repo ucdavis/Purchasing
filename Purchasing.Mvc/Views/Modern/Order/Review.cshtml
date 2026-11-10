@@ -1,0 +1,207 @@
+@using Purchasing.Core.Domain
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration
+@model ReviewOrderViewModel
+
+@{
+    Layout = "_ModernLayout";
+    ViewBag.Title = "Order Review";
+    ViewBag.SubTitle = "Review the request, supporting documents, and next steps.";
+}
+
+@section Styles {
+    @* Retained widgets need their own styles; the legacy site stylesheet is not loaded. *@
+    <link rel="stylesheet" href="~/Css/jquery-ui-1.8.16.caes.css" />
+    <link rel="stylesheet" href="~/Css/jquery.qtip.min.css" />
+    <link rel="stylesheet" href="~/Css/single/fileuploader/fileuploader.css" />
+}
+
+@section SubNav {
+    <div class="flex flex-wrap items-center gap-2">
+        <button type="button" class="btn btn-outline btn-primary" id="toggle-fav">
+            <span id="fav-button-star" class="@(Model.Favorite.IsActive ? "ui-icon ui-icon-star" : "")" aria-hidden="true"></span>
+            Favorite
+        </button>
+        @if (Model.CanEditOrder)
+        {
+            <a class="btn btn-primary" href="@Url.Action("Edit", new { Model.Order.Id })">Edit order</a>
+        }
+        @if (Model.IsRequesterInWorkgroup)
+        {
+            <a class="btn btn-outline" href="@Url.Action("Copy", new { id = Model.Order.Id })">Duplicate</a>
+        }
+        <details class="dropdown dropdown-end">
+            <summary class="btn btn-outline">Print</summary>
+            <ul class="dropdown-content menu z-30 mt-2 w-56 rounded-box border border-base-300 bg-base-100 p-2 shadow-lg">
+                <li><a href="@Url.Action("Invoice", "Report", new { id = Model.Order.Id })" target="invoice">Print order</a></li>
+                <li><a href="@Url.Action("Invoice", "Report", new { id = Model.Order.Id, showOrderHistory = true })" target="invoice">Print with order history</a></li>
+                <li><a href="@Url.Action("Invoice", "Report", new { id = Model.Order.Id, forVendor = true })" target="invoice">Print for vendor</a></li>
+            </ul>
+        </details>
+    </div>
+}
+
+<div class="modern-order-review space-y-6">
+    <div id="forgery-token" hidden>@Html.AntiForgeryToken()</div>
+
+    <section class="overflow-hidden rounded-box border border-base-300 bg-base-100 shadow-sm" aria-labelledby="request-summary-heading">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-base-300 p-6">
+            <div>
+                <p class="mb-1 text-sm font-medium text-base-content/70">Purchase request</p>
+                <h2 id="request-summary-heading" class="text-2xl font-semibold tracking-tight text-primary">@Model.Order.RequestNumber</h2>
+            </div>
+            <span class="badge badge-lg badge-outline">@Model.Status</span>
+        </div>
+        <dl class="grid gap-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+                <dt class="text-sm text-base-content/70">Estimated total</dt>
+                <dd class="mt-1 text-2xl font-semibold text-primary">@Model.Order.GrandTotalFromDb.ToString("c")</dd>
+            </div>
+            <div>
+                <dt class="text-sm text-base-content/70">Date needed</dt>
+                <dd class="mt-2 font-semibold">@Model.Order.DateNeeded.ToString("d")</dd>
+            </div>
+            <div>
+                <dt class="text-sm text-base-content/70">Workgroup</dt>
+                <dd class="mt-2 font-semibold">@Model.WorkgroupName</dd>
+            </div>
+            <div>
+                <dt class="text-sm text-base-content/70">Department</dt>
+                <dd class="mt-2 font-semibold">@Model.OrganizationName</dd>
+            </div>
+        </dl>
+    </section>
+
+    <nav aria-label="Order sections" class="order-review-section-nav rounded-box border border-base-300 bg-base-100 p-3 shadow-sm">
+        <ul class="flex gap-1">
+            <li><a class="btn btn-ghost btn-sm" href="#order-details">Request details</a></li>
+            <li><a class="btn btn-ghost btn-sm" href="#line-items">Line items</a></li>
+            @if (!Model.HasLineSplits)
+            {
+                <li><a class="btn btn-ghost btn-sm" href="#accounts">Accounts</a></li>
+            }
+            <li><a class="btn btn-ghost btn-sm" href="#notes">Notes</a></li>
+            <li><a class="btn btn-ghost btn-sm" href="#attachments">Attachments</a></li>
+            @if (!Model.Complete)
+            {
+                <li><a class="btn btn-ghost btn-sm" href="#approvals">Approvals</a></li>
+            }
+            <li><a class="btn btn-ghost btn-sm" href="#history">History</a></li>
+            @if (Model.CanEditOrder || Model.CanCancelOrder || Model.CanCancelCompletedOrder || Model.CanEditFdpCompleted)
+            {
+                <li><a class="btn btn-ghost btn-sm" href="#order-actions">Order actions</a></li>
+            }
+        </ul>
+    </nav>
+
+    @* Share the existing permission checks, form contracts, and widget IDs with the legacy page. *@
+    @await Html.PartialAsync("_ReviewMessage")
+    @await Html.PartialAsync("_ReviewOrderDetails")
+    @if (Model.Order.IsValidKfs())
+    {
+        @await Html.PartialAsync("_ReviewKfs")
+    }
+    @if (Model.Order.IsValidAe())
+    {
+        @await Html.PartialAsync("_ReviewAe")
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Order.BusinessPurpose))
+    {
+        @await Html.PartialAsync("_ReviewBusinessPurpose")
+    }
+    @await Html.PartialAsync("_ReviewLineItems")
+    @await Html.PartialAsync("_ReviewLineSplits")
+    @await Html.PartialAsync("_ReviewControlledSubstances")
+    @await Html.PartialAsync("_ReviewCustomFields")
+    @await Html.PartialAsync("_ReviewNotes")
+    @await Html.PartialAsync("_ReviewAttachments")
+    @await Html.PartialAsync("_ReviewApprovals")
+    @await Html.PartialAsync("_ReviewHistory")
+
+    <div id="order-actions" class="space-y-6">
+        @await Html.PartialAsync("_ReviewSubmit")
+        @await Html.PartialAsync("_ReviewCancel")
+        @await Html.PartialAsync("_ReviewFpdComplete")
+    </div>
+    @await Html.PartialAsync("_ReviewFavs")
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_JsBundle", "~/bundles/jqueryui")
+    <script src="~/Scripts/public/common/jquery.qtip.js" asp-append-version="true"></script>
+    <script src="~/Scripts/public/common/jquery.validate.js" asp-append-version="true"></script>
+    <script src="~/Scripts/public/common/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+    <script src="~/Scripts/public/single/fileuploader.js" asp-append-version="true"></script>
+    <script src="~/Scripts/public/single/jquery.tmpl.min.js" asp-append-version="true"></script>
+    <script src="~/Scripts/public/single/OrderReview.js" asp-append-version="true"></script>
+    <script>
+        $(function () {
+            $(".order-review-section-nav").on("focusin", "a", function () {
+                this.scrollIntoView({ block: "nearest", inline: "nearest" });
+            });
+
+            window.Configuration = window.Configuration || {};
+            window.Configuration.PersonLookup = @Json.Serialize(configuration["PersonLookupUrl"]);
+
+            // Initialize only the retained review controls, leaving modern navigation and native checkboxes alone.
+            $(".modern-order-review .button").button();
+            $(document).on("dialogcreate", function (event) {
+                $(event.target).dialog("widget").addClass("modern-order-review-dialog");
+            });
+            // qtip removes titles, so label icon links before initializing tooltips.
+            $(".modern-order-review a.ui-icon[title]").each(function () {
+                $(this).attr("aria-label", $(this).attr("title"));
+            });
+
+            purchasing.options({
+                AddCommentUrl: "@Url.Action("AddComment", "Order", new { id = Model.Order.Id })",
+                UpdateFavoriteUrl: "@Url.Action("ToggleFavorite", "Favorites", new { orderId = Model.Order.Id })",
+                UpdateReferenceNumberUrl: "@Url.Action("UpdateReferenceNumber", "Order", new { id = Model.Order.Id })",
+                UpdatePoNumberUrl: "@Url.Action("UpdatePoNumber", "Order", new { id = Model.Order.Id })",
+                UpdateTagUrl: "@Url.Action("UpdateTag", "Order", new { id = Model.Order.Id })",
+                UpdatePostStatusUrl: "@Url.Action("UpdatePostStatus", "Order", new { id = Model.Order.Id })",
+                UpdateNoteUrl: "@Url.Action("UpdateNote", "Order", new { id = Model.Order.Id })",
+                ReRouteApprovalUrl: "@Url.Action("ReRouteApproval", new { id = Model.Order.Id })",
+                FileUploadUrl: "@Url.Action("UploadFile", "Order", new { orderId = Model.Order.Id })",
+                KfsStatusUrl: "@Url.Action("GetKfsStatus", "Order", new { id = Model.Order.Id })",
+                AeStatusUrl: "@Url.Action("GetAeStatus", "Order", new { id = Model.Order.Id })",
+                UserSearchUrl: "@Url.Action("SearchUsers", "DirectorySearch")",
+                PeepsUrl: "@Url.Action("GetPeeps", "Order", new { id = Model.Order.Id })",
+                AntiForgeryToken: $('#forgery-token > input[name="__RequestVerificationToken"]').val(),
+                CanEdit: @Json.Serialize(Model.CanEditOrder),
+                CanCancel: @Json.Serialize(Model.CanCancelOrder),
+                CanCancelCompletedOrder: @Json.Serialize(Model.CanCancelCompletedOrder),
+                CanComplete: @Json.Serialize(Model.IsPurchaser),
+                IsKfsOrder: @Json.Serialize(Model.Order.IsValidKfs()),
+                IsAeOrder: @Json.Serialize(Model.Order.IsValidAe()),
+                IsComplete: @Json.Serialize(Model.Order.StatusCode.IsComplete),
+                SkipNavigation: true,
+                UpdateAttachmentCategoryUrl: "@Url.Action("UpdateAttachmentCategory", new { id = Model.Order.Id })",
+                AttachmentCategorySource: ["Order Confirmation", "Invoice", "Shipping Notification", "Packing Slip", "Licenses and Agreements", "Miscellaneous"],
+                ViewAttachment: "@Url.Action("ViewFile")"
+            });
+            purchasing.init();
+
+            var isFavorite = $('#fav-is-active').data('is-active');
+            $('#toggle-favorite-btn span').text(isFavorite === true || isFavorite === "True" || isFavorite === "true" ? "Remove Favorite" : "Add Favorite");
+
+            $("#line-items > .section-contents > .col1, #line-items > .section-contents > .col2").each(function () {
+                if (!$(this).text().trim()) $(this).hide();
+            });
+
+            // Keep wide data tables scrollable without forcing the entire page wider on phones.
+            $(".modern-order-review .section-contents > table, .modern-order-review .row-split > table")
+                .wrap('<div class="order-review-table-scroll" tabindex="0" role="region"></div>')
+                .each(function () {
+                    $(this).parent().attr("aria-label", $(this).closest("section").children("header").text().trim());
+                });
+            $(".modern-order-review .workgroupDetails").attr({ role: "button", tabindex: "0" })
+                .on("keydown", function (event) {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        $(this).click();
+                    }
+                });
+        });
+    </script>
+}

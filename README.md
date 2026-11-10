@@ -137,7 +137,9 @@ AutoMapper replacements, the combined acceptance checklist, and deployment check
 
 ## Modern frontend
 
-Away Status has an optional Tailwind/daisyUI Razor view with a Cally date picker.
+Away Status and Order Review have optional Tailwind/daisyUI Razor views. Away
+Status uses a Cally date picker; Order Review adds a request summary, section
+navigation, and responsive styling while retaining the existing review controls.
 The legacy interface remains the default. Set `ModernUi:Enabled` to true and add
 login IDs to `ModernUi:AllowedLogins` to select the modern view for those users.
 Both views share the same controller; unconverted pages retain their existing
